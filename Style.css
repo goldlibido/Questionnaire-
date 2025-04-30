@@ -1,5 +1,5 @@
 body {
-    background-color: #4A0000; /* Red background from the image */
+    background-color: #4A0000; /* Red background */
     color: white; /* Default text color */
     font-family: Arial, sans-serif; /* Fallback font */
     margin: 0;
@@ -7,7 +7,7 @@ body {
 }
 
 .questionnaire-container {
-    border: 5px solid #ff0000; /* Keep the red border */
+    border: 5px solid #ff0000; /* Red border */
     padding: 20px;
     max-width: 600px;
     margin: 0 auto;
@@ -20,18 +20,18 @@ body {
 }
 
 h1 {
-    font-family: 'Great Vibes', cursive; /* Cursive font for title */
-    font-size: 36px; /* Larger size to match the style */
+    font-family: 'Dancing Script', cursive; /* Cursive font for title */
+    font-size: 36px;
     color: white; /* White fill */
     text-shadow: 
         0 0 5px #FF69B4, /* Neon pink outline */
         0 0 10px #FF69B4, 
-        0 0 15px #FF69B4; /* Multiple layers for glow effect */
+        0 0 15px #FF69B4; /* Glow effect */
     margin-bottom: 10px;
 }
 
 h3 {
-    font-family: 'Great Vibes', cursive; /* Same cursive font for subheader */
+    font-family: 'Dancing Script', cursive; /* Same cursive font for subheader */
     font-size: 18px;
     color: white; /* All white text */
     margin: 0;
@@ -51,15 +51,17 @@ h2 {
 
 .options {
     margin-top: 10px;
+    list-style: none; /* Ensure no bullets */
+    padding: 0; /* Remove default padding */
 }
 
 .option-label {
-    display: block; /* Stack options vertically */
-    margin-bottom: 15px; /* Space between options */
-    padding: 8px 12px; /* Padding inside the red box */
+    display: block !important; /* Force vertical stacking */
+    margin-bottom: 20px; /* Increased spacing between options */
+    padding: 10px 15px; /* Increased padding inside the red box */
     background-color: #ff0000; /* Red box for options */
     color: white; /* White text */
-    line-height: 1.5; /* Better text spacing */
+    line-height: 1.6; /* Better text spacing */
     cursor: pointer;
     font-family: 'Broadway', sans-serif; /* Broadway-style font for answers */
 }
