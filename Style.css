@@ -1,57 +1,87 @@
 body {
-    background-color: #1a1a1a;
-    color: white;
+    background-color: #1a1a1a; /* Black background from the example */
+    color: white; /* White text */
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
 }
 
-.container {
-    border: 5px solid #ff0000;
+.questionnaire-container {
+    border: 5px solid #ff0000; /* Red border from the example */
     padding: 20px;
     max-width: 600px;
     margin: 0 auto;
+    background-color: #1a1a1a; /* Ensure container background matches */
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 h1 {
-    text-align: center;
     font-size: 24px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+    color: white; /* Ensure white text */
+}
+
+h3 {
+    font-size: 16px;
+    margin: 0;
+    color: white; /* Ensure white text */
 }
 
 .question {
-    margin-bottom: 30px;
+    margin-bottom: 40px; /* Space between questions */
 }
 
-label {
-    display: block;
+h2 {
     font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     text-decoration: underline;
+    color: white; /* Ensure white text */
 }
 
-ul {
-    list-style-type: disc;
-    padding-left: 20px;
+.options {
+    margin-top: 10px;
 }
 
-li {
-    margin-bottom: 10px;
-}
-
-input[type="checkbox"] {
-    display: none;
-}
-
-input[type="checkbox"] + span {
-    display: inline-block;
-    background-color: #ff0000;
-    color: white;
-    padding: 5px 10px;
+.option-label {
+    display: block; /* Stack options vertically */
+    margin-bottom: 15px; /* Space between options */
+    padding: 8px 12px; /* Padding inside the red box */
+    background-color: #ff0000; /* Red box for options from the example */
+    color: white; /* White text inside the red box */
+    line-height: 1.5; /* Better text spacing */
     cursor: pointer;
 }
 
-input[type="checkbox"]:checked + span::before {
-    content: "✔ ";
+input[type="radio"] {
+    display: none; /* Hide default radio button */
+}
+
+input[type="radio"]:checked + .option-label::before {
+    content: "✔ "; /* Add checkmark when selected */
+}
+
+button {
+    background-color: #ff0000; /* Red button to match the palette */
+    color: white; /* White text */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+}
+
+button:hover {
+    background-color: #cc0000; /* Slightly darker red on hover */
+}
+
+.result {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 18px;
+    color: white; /* Ensure white text */
 }
