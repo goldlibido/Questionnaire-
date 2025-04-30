@@ -1,17 +1,17 @@
 body {
-    background-color: #1a1a1a; /* Black background from the example */
-    color: white; /* White text */
-    font-family: Arial, sans-serif;
+    background-color: #4A0000; /* Red background from the image */
+    color: white; /* Default text color */
+    font-family: Arial, sans-serif; /* Fallback font */
     margin: 0;
     padding: 20px;
 }
 
 .questionnaire-container {
-    border: 5px solid #ff0000; /* Red border from the example */
+    border: 5px solid #ff0000; /* Keep the red border */
     padding: 20px;
     max-width: 600px;
     margin: 0 auto;
-    background-color: #1a1a1a; /* Ensure container background matches */
+    background-color: #4A0000; /* Match the red background */
 }
 
 .header {
@@ -20,15 +20,21 @@ body {
 }
 
 h1 {
-    font-size: 24px;
+    font-family: 'Great Vibes', cursive; /* Cursive font for title */
+    font-size: 36px; /* Larger size to match the style */
+    color: white; /* White fill */
+    text-shadow: 
+        0 0 5px #FF69B4, /* Neon pink outline */
+        0 0 10px #FF69B4, 
+        0 0 15px #FF69B4; /* Multiple layers for glow effect */
     margin-bottom: 10px;
-    color: white; /* Ensure white text */
 }
 
 h3 {
-    font-size: 16px;
+    font-family: 'Great Vibes', cursive; /* Same cursive font for subheader */
+    font-size: 18px;
+    color: white; /* All white text */
     margin: 0;
-    color: white; /* Ensure white text */
 }
 
 .question {
@@ -36,10 +42,11 @@ h3 {
 }
 
 h2 {
+    font-family: 'Broadway', sans-serif; /* Broadway-style font for questions */
     font-size: 20px;
     margin-bottom: 15px;
     text-decoration: underline;
-    color: white; /* Ensure white text */
+    color: white; /* White text */
 }
 
 .options {
@@ -50,10 +57,11 @@ h2 {
     display: block; /* Stack options vertically */
     margin-bottom: 15px; /* Space between options */
     padding: 8px 12px; /* Padding inside the red box */
-    background-color: #ff0000; /* Red box for options from the example */
-    color: white; /* White text inside the red box */
+    background-color: #ff0000; /* Red box for options */
+    color: white; /* White text */
     line-height: 1.5; /* Better text spacing */
     cursor: pointer;
+    font-family: 'Broadway', sans-serif; /* Broadway-style font for answers */
 }
 
 input[type="radio"] {
@@ -65,7 +73,7 @@ input[type="radio"]:checked + .option-label::before {
 }
 
 button {
-    background-color: #ff0000; /* Red button to match the palette */
+    background-color: #ff0000; /* Red button */
     color: white; /* White text */
     border: none;
     padding: 10px 20px;
@@ -73,6 +81,7 @@ button {
     cursor: pointer;
     display: block;
     margin: 20px auto;
+    font-family: 'Broadway', sans-serif; /* Broadway-style font for button */
 }
 
 button:hover {
@@ -83,5 +92,6 @@ button:hover {
     margin-top: 20px;
     text-align: center;
     font-size: 18px;
-    color: white; /* Ensure white text */
+    color: white; /* White text */
+    font-family: 'Broadway', sans-serif; /* Broadway-style font for result */
 }
