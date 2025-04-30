@@ -1,20 +1,30 @@
 document.getElementById('questionnaire-form').addEventListener('submit', function(event) {
-event.preventDefault();
+    event.preventDefault(); // Prevent form from submitting
 
-// Get the answer to Question 4
-const vibe = document.querySelector('input[name="q4"]:checked').value;
+    // Get the selected answers
+    const formData = new FormData(this);
+    const answers = {};
+    for (let [name, value] of formData) {
+        answers[name] = value;
+    }
 
-// Determine the result based on Question 4
-let result;
-if (vibe === "blue-room") {
-    result = "Visit the blue room to meet people compatible with your personality!";
-} else if (vibe === "green-room") {
-    result = "Visit the green room to meet people compatible with your personality!";
-} else if (vibe === "red-room") {
-    result = "Visit the red room to meet people compatible with your personality!";
-}
+    // Determine the result based on Question 4 (vibe preference)
+    let resultMessage = '';
+    switch (answers['q4']) {
+        case 'blue-room':
+            resultMessage = 'You belong in the Blue Room! You’re all about passion, intimacy, and connection.';
+            break;
+        case 'green-room':
+            resultMessage = 'You belong in the Green Room! You’re into adventurous, playful, and experimental vibes.';
+            break;
+        case 'red-room':
+            resultMessage = 'You belong in the Red Room! You crave intensity, power dynamics, and bold experiences.';
+            break;
+        default:
+            resultMessage = 'Please answer all questions to see your result.';
+    }
 
-// Display the result
-const resultDiv = document.getElementById('result');
-resultDiv.textContent = result;
-resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Display the result
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = resultMessage;
+});
