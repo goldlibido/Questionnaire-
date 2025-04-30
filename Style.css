@@ -3,11 +3,11 @@ body {
     color: white !important; /* Default text color */
     font-family: Arial, sans-serif; /* Fallback font */
     margin: 0;
-    padding: 20px;
+    padding: 30px !important; /* Add padding to prevent content from touching screen edges */
 }
 
 .questionnaire-container {
-    border: 5px solid #FF69B4 !important; /* Neon pink border */
+    border: 10px solid #FF69B4 !important; /* Thicker neon pink border */
     padding: 20px;
     max-width: 600px;
     margin: 0 auto;
@@ -31,20 +31,21 @@ h1 {
 }
 
 h3 {
-    font-family: 'Dancing Script', cursive, 'Times New Roman', serif !important; /* Same cursive font with fallback */
+    font-family: 'Broadway', 'Arial Black', sans-serif !important; /* Broadway font, italic */
+    font-style: italic !important;
     font-size: 18px;
-    color: white !important; /* All white text */
+    color: white !important; /* White text */
     margin: 0;
 }
 
 .question {
-    margin-bottom: 50px; /* Increased space between questions */
+    margin-bottom: 50px; /* Space between questions */
 }
 
 h2 {
     font-family: 'Broadway', 'Arial Black', sans-serif !important; /* Broadway-style font with fallback */
     font-size: 20px;
-    margin-bottom: 25px; /* Increased spacing below question */
+    margin-bottom: 25px; /* Spacing below question */
     text-decoration: underline;
     color: white !important; /* White text */
 }
@@ -57,11 +58,11 @@ h2 {
 
 .option-label {
     display: block !important; /* Force vertical stacking */
-    margin-bottom: 30px !important; /* Increased spacing between answers for better readability */
-    padding: 12px 15px; /* Increased padding inside the red box */
+    margin-bottom: 30px !important; /* Increased spacing between answers */
+    padding: 12px 15px; /* Padding inside the red box */
     background-color: #ff0000 !important; /* Red box for options */
     color: white !important; /* White text */
-    line-height: 2.0 !important; /* Increased line height for better readability */
+    line-height: 2.0 !important; /* Increased line height for readability */
     cursor: pointer;
     font-family: 'Broadway', 'Arial Black', sans-serif !important; /* Broadway-style font with fallback */
     position: relative; /* For positioning the checkbox symbol */
