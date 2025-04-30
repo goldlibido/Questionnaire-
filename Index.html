@@ -3,109 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>You Check All My Boxes</title>
+    <title>You Check All My Boxes: The 1st In-Person Dating App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="questionnaire-container">
-        <!-- Title and Subheading -->
-        <div class="header">
-            <img id="logo" src="logo-placeholder.png" alt="Logo Placeholder" style="display: none;">
-            <h1>You Check All My Boxes: The 1st In-Person Dating App</h1>
-            <h3>(Answer 10 quick questions, and uncover who you have sexual chemistry with - 100% private, & anonymous)</h3>
-        </div>
+    <div class="container">
+        <h1>You Check All My Boxes: The 1st In-Person Dating App</h1>
+        <form>
+            <div class="question">
+                <label>AGE:</label>
+                <ul>
+                    <li><input type="checkbox" name="age" value="18-24"> 18-24</li>
+                    <li><input type="checkbox" name="age" value="25-31"> 25-31</li>
+                    <li><input type="checkbox" name="age" value="32-38" checked> 32-38</li>
+                    <li><input type="checkbox" name="age" value="39-45"> 39-45</li>
+                    <li><input type="checkbox" name="age" value="46-51"> 46-51</li>
+                    <li><input type="checkbox" name="age" value="52-up"> 52 & UP</li>
+                </ul>
+            </div>
 
+            <div class="question">
+                <label>I HAVE A:</label>
+                <ul>
+                    <li><input type="checkbox" name="have-a" value="eggplant" checked> 🍆</li>
+                    <li><input type="checkbox" name="have-a" value="cat"> 🐱</li>
+                </ul>
+            </div>
 
-    <form id="questionnaire-form">
-        <!-- Question 1 -->
-        <h2>1… I like ___ and have a ___</h2>
-        <div class="options">
-            <label><input type="radio" name="q1" value="like-cat-have-eggplant" required> I like 🐈 & have a 🍆</label>
-            <label><input type="radio" name="q1" value="like-cat-have-cat"> I like 🐈 & have a 🐈</label>
-            <label><input type="radio" name="q1" value="like-eggplant-have-cat"> I like 🍆 & have a 🐈</label>
-            <label><input type="radio" name="q1" value="like-eggplant-have-eggplant"> I like 🍆 & have a 🍆</label>
-            <label><input type="radio" name="q1" value="like-both-have-eggplant"> I like both & have a 🍆</label>
-            <label><input type="radio" name="q1" value="like-both-have-cat"> I like both & have a 🐈</label>
-        </div>
+            <div class="question">
+                <label>RELATIONSHIP PREFERENCE:</label>
+                <ul>
+                    <li><input type="checkbox" name="relationship" value="monogamous" checked> MONOGAMOUS</li>
+                    <li><input type="checkbox" name="relationship" value="no-strings"> NO STRINGS ATTACHED</li>
+                    <li><input type="checkbox" name="relationship" value="polyamorous"> POLYAMOROUS</li>
+                </ul>
+            </div>
 
-        <!-- Question 2 -->
-        <h2>2… Do you prefer to make the first move or get approached?</h2>
-        <div class="options">
-            <label><input type="radio" name="q2" value="make-first-move" required> I want to make the first move</label>
-            <label><input type="radio" name="q2" value="get-approached"> I want to get approached</label>
-        </div>
-
-        <!-- Question 3 -->
-        <h2>3… Are you looking for love or a good time?</h2>
-        <div class="options">
-            <label><input type="radio" name="q3" value="love" required> Love</label>
-            <label><input type="radio" name="q3" value="evolve-naturally"> Either one, I like to let things evolve naturally</label>
-            <label><input type="radio" name="q3" value="good-time"> A good time</label>
-        </div>
-
-        <!-- Question 4 (Determines Result) -->
-        <h2>4… Which vibe turns you on the most?</h2>
-        <div class="options">
-            <label><input type="radio" name="q4" value="blue-room" required> Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, playing with whipped cream</label>
-            <label><input type="radio" name="q4" value="green-room"> One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, experimenting with new sex toys</label>
-            <label><input type="radio" name="q4" value="red-room"> Power exchange, rough sex, spanking, BDSM, naughty mind games, filthy dirty talk</label>
-        </div>
-
-        <!-- Question 5 -->
-        <h2>5… Are you comfortable with PDA (public displays of affection)?</h2>
-        <div class="options">
-            <label><input type="radio" name="q5" value="yes" required> Yes</label>
-            <label><input type="radio" name="q5" value="only-a-little"> Only a little</label>
-            <label><input type="radio" name="q5" value="no"> No</label>
-        </div>
-
-        <!-- Question 6 -->
-        <h2>6… Do you like to be the center of attention?</h2>
-        <div class="options">
-            <label><input type="radio" name="q6" value="flaunt-it" required> Yes, like they say, “if you got it, flaunt it.”</label>
-            <label><input type="radio" name="q6" value="partner-shine"> Yes, but I prefer to let my partner shine</label>
-            <label><input type="radio" name="q6" value="no-spotlight"> No, I don’t want to be in the spotlight but I don’t mind if my partner wants to be the main character</label>
-            <label><input type="radio" name="q6" value="blend-in"> No, I’d rather my partner and I blend in</label>
-        </div>
-
-        <!-- Question 7 -->
-        <h2>7… Would you enjoy a threesome?</h2>
-        <div class="options">
-            <label><input type="radio" name="q7" value="mine-only" required> No I’d like my partner to be mine & only mine</label>
-            <label><input type="radio" name="q7" value="consider-it"> Maybe, I’d consider it</label>
-            <label><input type="radio" name="q7" value="fun"> Yeah it’d be fun</label>
-            <label><input type="radio" name="q7" value="more-the-merrier"> Hell yeah! Why stop at 3? The more the merrier</label>
-        </div>
-
-        <!-- Question 8 -->
-        <h2>8… Do you prefer to give pleasure or receive it?</h2>
-        <div class="options">
-            <label><input type="radio" name="q8" value="give" required> Give pleasure</label>
-            <label><input type="radio" name="q8" value="receive"> Receive pleasure</label>
-        </div>
-
-        <!-- Question 9 -->
-        <h2>9… Who do you want to wear the pants?</h2>
-        <div class="options">
-            <label><input type="radio" name="q9" value="in-control" required> I like to be in control</label>
-            <label><input type="radio" name="q9" value="partner-control"> I want my partner to take control</label>
-            <label><input type="radio" name="q9" value="dominant-streets"> I’m dominant in the streets & submissive in the sheets</label>
-            <label><input type="radio" name="q9" value="submissive-streets"> I’m submissive in the streets & dominant in the sheets</label>
-            <label><input type="radio" name="q9" value="switch-it-up"> I like to switch it up</label>
-        </div>
-
-        <!-- Question 10 -->
-        <h2>10… Feeling frisky? Want to audition to be a star in our reality dating show?</h2>
-        <div class="options">
-            <label><input type="radio" name="q10" value="ready" required> Let’s do it! I’m ready for my close-up</label>
-            <label><input type="radio" name="q10" value="pass"> Tempting, but I’ll pass this time</label>
-        </div>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <div id="result" class="result"></div>
-</div>
-
-<script src="script.js"></script> </body>
+            <div class="question">
+                <label>I AM INTERESTED IN:</label>
+                <ul>
+                    <li><input type="checkbox" name="interested-in" value="men"> MEN</li>
+                    <li><input type="checkbox" name="interested-in" value="women"> WOMEN</li>
+                    <li><input type="checkbox" name="interested-in" value="everyone"> EVERYONE</li>
+                </ul>
+            </div>
+        </form>
+    </div>
+</body>
 </html>
