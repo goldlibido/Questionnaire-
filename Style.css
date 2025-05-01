@@ -3,7 +3,7 @@ body {
     color: white !important; /* Default text color */
     font-family: Arial, sans-serif; /* Fallback font */
     margin: 0;
-    padding: 30px !important; /* Add padding to prevent content from touching screen edges */
+    padding: 30px !important; /* Padding to prevent content from touching screen edges */
 }
 
 .questionnaire-container {
@@ -58,11 +58,11 @@ h2 {
 
 .option-label {
     display: block !important; /* Force vertical stacking */
-    margin-bottom: 30px !important; /* Increased spacing between answers */
+    margin-bottom: 40px !important; /* Spacing between answers */
     padding: 12px 15px; /* Padding inside the red box */
     background-color: #ff0000 !important; /* Red box for options */
     color: white !important; /* White text */
-    line-height: 2.0 !important; /* Increased line height for readability */
+    line-height: 2.2 !important; /* Increased line height for readability */
     cursor: pointer;
     font-family: 'Broadway', 'Arial Black', sans-serif !important; /* Broadway-style font with fallback */
     position: relative; /* For positioning the checkbox symbol */
