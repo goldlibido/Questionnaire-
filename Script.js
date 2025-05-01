@@ -8,9 +8,9 @@ document.getElementById('questionnaire-form').addEventListener('submit', functio
         answers[name] = value;
     }
 
-    // Determine the result based on Question 4 (vibe preference)
+    // Determine the result based on Question 3 (vibe preference, previously Question 4)
     let resultMessage = '';
-    switch (answers['q4']) {
+    switch (answers['q3']) {
         case 'blue-room':
             resultMessage = 'You belong in the Blue Room! You’re all about passion, intimacy, and connection.';
             break;
