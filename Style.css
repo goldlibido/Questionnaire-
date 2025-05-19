@@ -1,124 +1,173 @@
-/* Load Beon Medium font */
-@font-face {
-    font-family: 'Beon Medium';
-    src: url('fonts/Beon-Medium.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    background-color: #4A0000; /* Red background */
-    color: #FFFFFF; /* Default text color: pure white */
-    font-family: 'Beon Medium'; /* Beon Medium only */
-    margin: 0;
-    padding: 30px; /* Padding to prevent content from touching screen edges */
+    background-color: #1A1A1A; /* Deep charcoal background */
+    color: #FFFFFF; /* White text */
+    font-family: 'Poppins', sans-serif; /* Modern, legible font */
+    line-height: 1.6;
+    padding: 40px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .questionnaire-container {
-    border: 10px solid #FF69B4; /* Thicker neon pink border */
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #4A0000; /* Match the red background */
+    max-width: 700px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05); /* Glassmorphism effect */
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3); /* Subtle neon pink glow */
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 h1 {
-    font-family: 'Beon Medium'; /* Beon Medium only */
-    font-size: 48px; /* Larger for legibility */
-    color: #FFFFFF; /* Pure white */
-    text-shadow: 
-        0 0 2px #FFFFFF, /* White inner glow */
-        0 0 4px #FFFFFF, /* White outer glow */
-        0 0 8px #FF69B4, /* Pink neon halo */
-        0 0 10px #00B7EB; /* Blue accent for title */
+    font-family: 'Orbitron', sans-serif; /* Futuristic heading font */
+    font-size: 2.5rem;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px rgba(255, 105, 180, 0.7); /* Subtle neon glow */
     margin-bottom: 10px;
 }
 
 h3 {
-    font-family: 'Beon Medium'; /* Beon Medium only */
-    font-style: normal; /* No italic for clarity */
-    font-size: 26px; /* Larger for legibility */
-    color: #FFFFFF; /* Pure white */
-    text-shadow: 
-        0 0 2px #FFFFFF, 
-        0 0 4px #FFFFFF, 
-        0 0 8px #FF69B4, /* Pink neon halo */
-        0 0 10px #00B7EB; /* Blue accent for title */
-    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: #E0E0E0; /* Slightly muted white for contrast */
+    text-shadow: 0 0 3px rgba(255, 105, 180, 0.5);
 }
 
 .question {
-    margin-bottom: 50px; /* Space between questions */
+    margin-bottom: 40px;
 }
 
 h2 {
-    font-family: 'Beon Medium'; /* Beon Medium only */
-    font-size: 28px; /* Larger for legibility */
-    margin-bottom: 25px; /* Spacing below question */
-    text-decoration: underline;
-    color: #FFFFFF; /* Pure white */
-    text-shadow: 
-        0 0 2px #FFFFFF, 
-        0 0 4px #FFFFFF, 
-        0 0 8px #FF69B4, /* Pink neon halo */
-        0 0 10px #00B7EB; /* Blue accent for title */
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.6rem;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    margin-bottom: 20px;
 }
 
 .options {
-    margin-top: 15px;
-    list-style: none; /* Ensure no bullets */
-    padding: 0; /* Remove default padding */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .option-label {
-    display: block; /* Force vertical stacking */
-    margin-bottom: 40px; /* Spacing between answers */
-    padding: 12px 15px; /* Padding inside the red box */
-    background-color: #ff0000; /* Red box for options */
-    color: #FFFFFF; /* Pure white */
-    line-height: 2.2; /* Increased line height for readability */
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism for options */
+    padding: 15px;
+    border-radius: 10px;
     cursor: pointer;
-    font-family: 'Beon Medium'; /* Beon Medium only */
-    font-size: 22px; /* Larger for legibility */
-    text-shadow: 
-        0 0 2px #FFFFFF, 
-        0 0 4px #FFFFFF, 
-        0 0 8px #FF69B4; /* Pink neon glow for body text */
-    position: relative; /* For positioning the checkbox symbol */
+    transition: all 0.3s ease;
+    text-shadow: 0 0 3px rgba(255, 105, 180, 0.5);
 }
 
-.option-label::before {
-    content: "☐ "; /* Add checkbox symbol before each answer */
-    font-size: 22px; /* Match text size */
-    margin-right: 10px; /* Space between checkbox and text */
-    text-shadow: none; /* No glow on checkbox for clarity */
+.option-label:hover {
+    background: rgba(255, 105, 180, 0.2); /* Neon pink hover effect */
+    transform: translateY(-2px);
 }
 
 input[type="radio"] {
-    display: none; /* Hide default radio button */
+    display: none;
+}
+
+.option-label::before {
+    content: "◯"; /* Custom radio button */
+    font-size: 1.2rem;
+    margin-right: 15px;
+    color: #FFFFFF;
+    transition: all 0.3s ease;
 }
 
 input[type="radio"]:checked + .option-label::before {
-    content: "✔ "; /* Replace checkbox with checkmark */
-    text-shadow: none; /* No glow on checkmark */
+    content: "●"; /* Filled radio button */
+    color: #FF69B4; /* Neon pink */
+}
+
+input[type="radio"]:checked + .option-label {
+    background: rgba(255, 105, 180, 0.3);
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
 }
 
 button {
-    background-color: #ff0000; /* Red button */
-    color: #FFFFFF; /* Pure white */
+    background: linear-gradient(45deg, #FF69B4, #A100A1); /* Gradient button */
+    color: #FFFFFF;
     border: none;
-    padding: 10px 20px;
-    font-size: 24px; /* Larger for legibility */
+    padding: 15px 30px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    border-radius: 10px;
     cursor: pointer;
     display: block;
-    margin: 20px auto;
-    font-family: 'Beon Medium'; /* Beon Medium only */
-    text-shadow: 
-        0 0 2px #FFFFFF, 
-        0 0 4px #FFFFFF, 
-        0 0 8px #FF69B4; /* Pink neon glow ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
+    margin: 30px auto;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
+    animation: pulse 1.5s infinite;
+}
+
+.result {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    margin-top: 20px;
+}
+
+/* Pulse animation for button */
+@keyframes pulse {
+    0% { box-shadow: 0 0 10px rgba(255, 105, 180, 0.7); }
+    50% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.9); }
+    100% { box-shadow: 0 0 10px rgba(255, 105, 180, 0.7); }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    body {
+        padding: 20px;
+    }
+
+    .questionnaire-container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    .option-label {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+
+    button {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}
