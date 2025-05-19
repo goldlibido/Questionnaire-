@@ -1,17 +1,25 @@
+/* Load Beon Medium font */
+@font-face {
+    font-family: 'Beon Medium';
+    src: url('fonts/Beon-Medium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
-    background-color: #4A0000 !important; /* Red background */
-    color: white !important; /* Default text color */
-    font-family: Arial, sans-serif; /* Fallback font */
+    background-color: #4A0000; /* Red background */
+    color: #FFFFFF; /* Default text color: pure white */
+    font-family: 'Beon Medium'; /* Beon Medium only */
     margin: 0;
-    padding: 30px !important; /* Padding to prevent content from touching screen edges */
+    padding: 30px; /* Padding to prevent content from touching screen edges */
 }
 
 .questionnaire-container {
-    border: 10px solid #FF69B4 !important; /* Thicker neon pink border */
+    border: 10px solid #FF69B4; /* Thicker neon pink border */
     padding: 20px;
     max-width: 600px;
     margin: 0 auto;
-    background-color: #4A0000 !important; /* Match the red background */
+    background-color: #4A0000; /* Match the red background */
 }
 
 .header {
@@ -20,21 +28,27 @@ body {
 }
 
 h1 {
-    font-family: 'Dancing Script', cursive, 'Times New Roman', serif !important; /* Cursive font with fallback */
-    font-size: 36px;
-    color: white !important; /* White fill */
+    font-family: 'Beon Medium'; /* Beon Medium only */
+    font-size: 48px; /* Larger for legibility */
+    color: #FFFFFF; /* Pure white */
     text-shadow: 
-        0 0 5px #FF69B4, /* Neon pink outline */
-        0 0 10px #FF69B4, 
-        0 0 15px #FF69B4 !important; /* Glow effect */
+        0 0 2px #FFFFFF, /* White inner glow */
+        0 0 4px #FFFFFF, /* White outer glow */
+        0 0 8px #FF69B4, /* Pink neon halo */
+        0 0 10px #00B7EB; /* Blue accent for title */
     margin-bottom: 10px;
 }
 
 h3 {
-    font-family: 'Broadway', 'Arial Black', sans-serif !important; /* Broadway font, italic */
-    font-style: italic !important;
-    font-size: 18px;
-    color: white !important; /* White text */
+    font-family: 'Beon Medium'; /* Beon Medium only */
+    font-style: normal; /* No italic for clarity */
+    font-size: 26px; /* Larger for legibility */
+    color: #FFFFFF; /* Pure white */
+    text-shadow: 
+        0 0 2px #FFFFFF, 
+        0 0 4px #FFFFFF, 
+        0 0 8px #FF69B4, /* Pink neon halo */
+        0 0 10px #00B7EB; /* Blue accent for title */
     margin: 0;
 }
 
@@ -43,65 +57,68 @@ h3 {
 }
 
 h2 {
-    font-family: 'Broadway', 'Arial Black', sans-serif !important; /* Broadway-style font with fallback */
-    font-size: 20px;
+    font-family: 'Beon Medium'; /* Beon Medium only */
+    font-size: 28px; /* Larger for legibility */
     margin-bottom: 25px; /* Spacing below question */
     text-decoration: underline;
-    color: white !important; /* White text */
+    color: #FFFFFF; /* Pure white */
+    text-shadow: 
+        0 0 2px #FFFFFF, 
+        0 0 4px #FFFFFF, 
+        0 0 8px #FF69B4, /* Pink neon halo */
+        0 0 10px #00B7EB; /* Blue accent for title */
 }
 
 .options {
     margin-top: 15px;
-    list-style: none !important; /* Ensure no bullets */
-    padding: 0 !important; /* Remove default padding */
+    list-style: none; /* Ensure no bullets */
+    padding: 0; /* Remove default padding */
 }
 
 .option-label {
-    display: block !important; /* Force vertical stacking */
-    margin-bottom: 40px !important; /* Spacing between answers */
+    display: block; /* Force vertical stacking */
+    margin-bottom: 40px; /* Spacing between answers */
     padding: 12px 15px; /* Padding inside the red box */
-    background-color: #ff0000 !important; /* Red box for options */
-    color: white !important; /* White text */
-    line-height: 2.2 !important; /* Increased line height for readability */
+    background-color: #ff0000; /* Red box for options */
+    color: #FFFFFF; /* Pure white */
+    line-height: 2.2; /* Increased line height for readability */
     cursor: pointer;
-    font-family: 'Broadway', 'Arial Black', sans-serif !important; /* Broadway-style font with fallback */
+    font-family: 'Beon Medium'; /* Beon Medium only */
+    font-size: 22px; /* Larger for legibility */
+    text-shadow: 
+        0 0 2px #FFFFFF, 
+        0 0 4px #FFFFFF, 
+        0 0 8px #FF69B4; /* Pink neon glow for body text */
     position: relative; /* For positioning the checkbox symbol */
 }
 
 .option-label::before {
     content: "☐ "; /* Add checkbox symbol before each answer */
-    font-size: 18px;
+    font-size: 22px; /* Match text size */
     margin-right: 10px; /* Space between checkbox and text */
+    text-shadow: none; /* No glow on checkbox for clarity */
 }
 
 input[type="radio"] {
-    display: none !important; /* Hide default radio button */
+    display: none; /* Hide default radio button */
 }
 
 input[type="radio"]:checked + .option-label::before {
-    content: "✔ "; /* Replace checkbox with checkmark when selected */
+    content: "✔ "; /* Replace checkbox with checkmark */
+    text-shadow: none; /* No glow on checkmark */
 }
 
 button {
-    background-color: #ff0000 !important; /* Red button */
-    color: white !important; /* White text */
+    background-color: #ff0000; /* Red button */
+    color: #FFFFFF; /* Pure white */
     border: none;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 24px; /* Larger for legibility */
     cursor: pointer;
     display: block;
     margin: 20px auto;
-    font-family: 'Broadway', 'Arial Black', sans-serif !important; /* Broadway-style font with fallback */
-}
-
-button:hover {
-    background-color: #cc0000 !important; /* Slightly darker red on hover */
-}
-
-.result {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 18px;
-    color: white !important; /* White text */
-    font-family: 'Broadway', 'Arial Black', sans-serif !important; /* Broadway-style font with fallback */
-}
+    font-family: 'Beon Medium'; /* Beon Medium only */
+    text-shadow: 
+        0 0 2px #FFFFFF, 
+        0 0 4px #FFFFFF, 
+        0 0 8px #FF69B4; /* Pink neon glow ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
