@@ -8,7 +8,7 @@ document.getElementById('questionnaire-form').addEventListener('submit', functio
         answers[name] = value;
     }
 
-    // Determine the result based on Question 3 (vibe preference, previously Question 4)
+    // Determine the result based on Question 3 (vibe preference)
     let resultMessage = '';
     switch (answers['q3']) {
         case 'blue-room':
