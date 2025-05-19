@@ -6,9 +6,9 @@
 }
 
 body {
-    background-color: #1A1A1A; /* Deep charcoal background */
+    background-color: #4A0000; /* Restored red background */
     color: #FFFFFF; /* White text */
-    font-family: 'Poppins', sans-serif; /* Modern, legible font */
+    font-family: 'Montserrat', sans-serif; /* Modern, legible font for body */
     line-height: 1.6;
     padding: 40px;
     min-height: 100vh;
@@ -20,12 +20,11 @@ body {
 .questionnaire-container {
     max-width: 700px;
     width: 100%;
-    background: rgba(255, 255, 255, 0.05); /* Glassmorphism effect */
-    backdrop-filter: blur(10px);
+    background: rgba(74, 0, 0, 0.8); /* Semi-transparent red to blend with background */
     border-radius: 15px;
     padding: 40px;
-    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3); /* Subtle neon pink glow */
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.5); /* Neon pink glow */
+    border: 2px solid #FF69B4; /* Restored pink border */
 }
 
 .header {
@@ -34,19 +33,22 @@ body {
 }
 
 h1 {
-    font-family: 'Orbitron', sans-serif; /* Futuristic heading font */
+    font-family: 'Exo 2', sans-serif; /* Futuristic heading font */
     font-size: 2.5rem;
     color: #FFFFFF;
-    text-shadow: 0 0 5px rgba(255, 105, 180, 0.7); /* Subtle neon glow */
+    text-shadow: 
+        0 0 5px #FF69B4, 
+        0 0 10px #FF69B4, 
+        0 0 15px #FF69B4; /* Restored neon pink glow */
     margin-bottom: 10px;
 }
 
 h3 {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     font-size: 1.2rem;
-    color: #E0E0E0; /* Slightly muted white for contrast */
-    text-shadow: 0 0 3px rgba(255, 105, 180, 0.5);
+    color: #FFFFFF;
+    text-shadow: 0 0 3px #FF69B4; /* Subtle pink glow */
 }
 
 .question {
@@ -54,10 +56,10 @@ h3 {
 }
 
 h2 {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Exo 2', sans-serif;
     font-size: 1.6rem;
     color: #FFFFFF;
-    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    text-shadow: 0 0 5px #FF69B4; /* Subtle pink glow */
     margin-bottom: 20px;
 }
 
@@ -69,41 +71,42 @@ h2 {
 
 .option-label {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Align items to top for multi-line options */
     font-size: 1rem;
     color: #FFFFFF;
-    background: rgba(255, 255, 255, 0.1); /* Glassmorphism for options */
+    background: rgba(255, 105, 180, 0.1); /* Light pink background for options */
     padding: 15px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-shadow: 0 0 3px rgba(255, 105, 180, 0.5);
+    text-shadow: 0 0 3px #FF69B4; /* Subtle pink glow */
 }
 
 .option-label:hover {
-    background: rgba(255, 105, 180, 0.2); /* Neon pink hover effect */
+    background: rgba(255, 105, 180, 0.3); /* Brighter pink on hover */
     transform: translateY(-2px);
 }
 
 input[type="radio"] {
-    display: none;
+    display: none; /* Hide default radio button */
 }
 
 .option-label::before {
-    content: "◯"; /* Custom radio button */
+    content: "☐"; /* Checkbox symbol */
     font-size: 1.2rem;
     margin-right: 15px;
     color: #FFFFFF;
-    transition: all 0.3s ease;
+    flex-shrink: 0; /* Prevent checkbox from shrinking */
+    text-shadow: none; /* No glow on checkbox */
 }
 
 input[type="radio"]:checked + .option-label::before {
-    content: "●"; /* Filled radio button */
+    content: "✔"; /* Checkmark for selected option */
     color: #FF69B4; /* Neon pink */
 }
 
 input[type="radio"]:checked + .option-label {
-    background: rgba(255, 105, 180, 0.3);
+    background: rgba(255, 105, 180, 0.4); /* Slightly brighter pink for selected */
     box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
 }
 
@@ -112,19 +115,19 @@ button {
     color: #FFFFFF;
     border: none;
     padding: 15px 30px;
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Exo 2', sans-serif;
     font-size: 1.2rem;
     border-radius: 10px;
     cursor: pointer;
     display: block;
     margin: 30px auto;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 5px #FF69B4; /* Pink glow */
     transition: all 0.3s ease;
 }
 
 button:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
+    box-shadow: 0 0 15px #FF69B4;
     animation: pulse 1.5s infinite;
 }
 
@@ -132,15 +135,15 @@ button:hover {
     text-align: center;
     font-size: 1.2rem;
     color: #FFFFFF;
-    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    text-shadow: 0 0 5px #FF69B4;
     margin-top: 20px;
 }
 
 /* Pulse animation for button */
 @keyframes pulse {
-    0% { box-shadow: 0 0 10px rgba(255, 105, 180, 0.7); }
-    50% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.9); }
-    100% { box-shadow: 0 0 10px rgba(255, 105, 180, 0.7); }
+    0% { box-shadow: 0 0 10px #FF69B4; }
+    50% { box-shadow: 0 0 20px #FF69B4; }
+    100% { box-shadow: 0 0 10px #FF69B4; }
 }
 
 /* Responsive design */
@@ -161,9 +164,18 @@ button:hover {
         font-size: 1.4rem;
     }
 
+    h3 {
+        font-size: 1rem;
+    }
+
     .option-label {
         font-size: 0.9rem;
         padding: 10px;
+    }
+
+    .option-label::before {
+        font-size: 1rem;
+        margin-right: 10px;
     }
 
     button {
