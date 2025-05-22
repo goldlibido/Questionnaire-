@@ -1,85 +1,96 @@
-body {
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
-  background: linear-gradient(to right, #06954E, #064D95);
+/* ----------  GENERAL  ---------- */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Montserrat',sans-serif;
+  /* full-bleed gradient border */
+  background:linear-gradient(to right,#06954E,#064D95);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:40px 20px;
+  color:#fff;
 }
 
-.gradient-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(to right, #06954E, #064D95);
+/* ----------  RED CARD  ---------- */
+.content-box{
+  background:#950606;
+  border-radius:30px;
+  max-width:900px;
+  width:100%;
+  padding:50px 40px 60px;
+  position:relative;
 }
 
-.content-container {
-  background-color: #950606;
-  padding: 40px;
-  border-radius: 20px;
-  max-width: 800px;
-  width: 90%;
-  color: white;
+/* logo in top-left corner of card */
+.logo{
+  position:absolute;
+  top:-30px;
+  left:-30px;
+  width:65px;
+  height:auto;
 }
 
-.main-title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 2.8em;
-  font-weight: bold;
-  text-align: center;
-  color: white;
-  font-style: italic;
+/* ----------  TYPOGRAPHY  ---------- */
+.neon-title{
+  font-family:'Poppins',sans-serif;
+  font-style:italic;
+  font-weight:600;
+  text-align:center;
+  line-height:1.05;
+  font-size:2.7rem;
+  margin:0 0 18px;
+  color:#ffffff;
   text-shadow:
-    0 0 5px #FF69B4,
-    0 0 10px #FF69B4,
-    0 0 20px #FF69B4;
+    0 0 6px #ff69b4,
+    0 0 12px #ff69b4,
+    0 0 20px #ff69b4;
 }
 
-.subheading {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.2em;
-  margin-bottom: 30px;
+.subheader{
+  text-align:center;
+  font-size:1.1rem;
+  margin-bottom:35px;
+  color:rgba(255,255,255,0.8); /* slightly faded white */
 }
 
-.scan-dalous {
-  font-style: italic;
-  position: relative;
-  display: inline-block;
+.scan-dalous{
+  font-style:italic;
+  display:inline-block;
+  animation:wave 1.8s ease-in-out infinite;
 }
 
-.scan-dalous::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  height: 2px;
-  width: 100%;
-  background: linear-gradient(to right, white 50%, transparent 50%);
-  background-size: 200% 100%;
-  animation: swipe 6s linear infinite;
+/* playful wobble */
+@keyframes wave{
+  0%,100%{transform:rotate(0deg);}
+  25%{transform:rotate(1deg);}
+  50%{transform:rotate(-1.5deg);}
+  75%{transform:rotate(1deg);}
 }
 
-@keyframes swipe {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+/* ----------  FORM  ---------- */
+.question{margin-bottom:24px;}
+.question p{margin:0 0 10px;}
+label{
+  display:block;
+  margin:6px 0;
+  line-height:1.4;
+  white-space:normal;      /* allow long labels to wrap */
 }
+input[type="radio"]{margin-right:8px;}
 
-.question {
-  margin-bottom: 25px;
+button{
+  display:block;
+  margin:35px auto 0;
+  padding:12px 28px;
+  font-size:1rem;
+  font-weight:600;
+  background:#ffffff;
+  color:#950606;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  transition:transform .15s;
 }
-
-.button-wrapper {
-  text-align: center;
-  margin-top: 30px;
-}
-
-button {
-  background-color: #fff;
-  color: #950606;
-  font-weight: bold;
-  padding: 12px 25px;
-  font-size: 1em;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
+button:hover{transform:scale(1.05);}
