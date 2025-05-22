@@ -2,19 +2,22 @@ body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
   background: linear-gradient(to right, #06954E, #064D95);
-  padding: 0;
 }
 
-.gradient-border {
-  background-color: #950606;
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 0 20px #000;
+.gradient-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to right, #06954E, #064D95);
 }
 
 .content-container {
+  background-color: #950606;
+  padding: 40px;
+  border-radius: 20px;
+  max-width: 800px;
+  width: 90%;
   color: white;
 }
 
@@ -22,9 +25,9 @@ body {
   font-family: 'Poppins', sans-serif;
   font-size: 2.8em;
   font-weight: bold;
-  line-height: 1.2;
   text-align: center;
   color: white;
+  font-style: italic;
   text-shadow:
     0 0 5px #FF69B4,
     0 0 10px #FF69B4,
@@ -53,7 +56,7 @@ body {
   width: 100%;
   background: linear-gradient(to right, white 50%, transparent 50%);
   background-size: 200% 100%;
-  animation: swipe 2s linear infinite;
+  animation: swipe 6s linear infinite;
 }
 
 @keyframes swipe {
@@ -62,7 +65,12 @@ body {
 }
 
 .question {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+}
+
+.button-wrapper {
+  text-align: center;
+  margin-top: 30px;
 }
 
 button {
@@ -74,5 +82,4 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 20px;
 }
