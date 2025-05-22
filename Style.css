@@ -1,80 +1,78 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Outfit:wght@400;700&display=swap');
-
 body {
   margin: 0;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   background: linear-gradient(to right, #06954E, #064D95);
-  color: white;
+  padding: 0;
 }
 
-.border-wrapper {
-  padding: 2em;
-}
-
-.container {
-  max-width: 800px;
-  margin: auto;
+.gradient-border {
   background-color: #950606;
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
   border-radius: 20px;
-  padding: 2em;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px #000;
 }
 
-.title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2.5em;
-  font-weight: bold;
+.content-container {
   color: white;
+}
+
+.main-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.8em;
+  font-weight: bold;
+  line-height: 1.2;
   text-align: center;
-  text-shadow: 0 0 8px #ff69b4;
-  margin-bottom: 0.5em;
+  color: white;
+  text-shadow:
+    0 0 5px #FF69B4,
+    0 0 10px #FF69B4,
+    0 0 20px #FF69B4;
 }
 
 .subheading {
-  font-size: 1.2em;
-  color: rgba(255, 255, 255, 0.8);
   text-align: center;
-  margin-bottom: 2em;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.2em;
+  margin-bottom: 30px;
 }
 
 .scan-dalous {
   font-style: italic;
   position: relative;
+  display: inline-block;
 }
 
 .scan-dalous::after {
-  content: '';
+  content: "";
   position: absolute;
-  bottom: -2px;
   left: 0;
-  width: 100%;
+  bottom: -4px;
   height: 2px;
-  background: white;
-  animation: swipe 2s infinite linear;
+  width: 100%;
+  background: linear-gradient(to right, white 50%, transparent 50%);
+  background-size: 200% 100%;
+  animation: swipe 2s linear infinite;
 }
 
 @keyframes swipe {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .question {
-  margin-bottom: 1.5em;
+  margin-bottom: 20px;
 }
 
 button {
-  background-color: #ffffff;
+  background-color: #fff;
   color: #950606;
   font-weight: bold;
-  padding: 0.8em 1.5em;
+  padding: 12px 25px;
   font-size: 1em;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  display: block;
-  margin: 2em auto 0;
-}
-
-button:hover {
-  background-color: #ffd6d6;
+  margin-top: 20px;
 }
