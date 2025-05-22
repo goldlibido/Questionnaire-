@@ -1,52 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Meet Your Type</title>
+  <title>Results</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
     body {
-      background-color: #a30000;
+      font-family: 'Montserrat', sans-serif;
+      text-align: center;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      text-align: center;
-      color: white;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .result-container {
+      height: 100vh;
       padding: 20px;
-      max-width: 600px;
     }
 
-    .result-title {
+    h1 {
       font-family: 'Poppins', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 700;
+      font-style: italic;
+      font-size: 2.8rem;
       color: white;
-      text-shadow: 0 0 10px #ff0077;
       margin-bottom: 20px;
     }
 
-    .result-subtitle {
-      font-size: 1.25rem;
-      line-height: 1.6;
+    .red h1 {
+      text-shadow: 0 0 8px #ff4d4d;
     }
 
-    em {
-      font-style: italic;
+    .green h1 {
+      text-shadow: 0 0 8px #00ff99;
     }
+
+    .blue h1 {
+      text-shadow: 0 0 8px #00ccff;
+    }
+
+    p {
+      font-size: 1.4rem;
+      max-width: 600px;
+    }
+
+    .red { background-color: #950606; }
+    .green { background-color: #06954E; }
+    .blue { background-color: #064D95; }
   </style>
 </head>
-<body>
-  <div class="result-container">
-    <h1 class="result-title"><em>Meet your type<br>in the red room!</em></h1>
-    <p class="result-subtitle">
-      Audition for our reality dating show by participating in our speed-dating game, <em>The Pickup Line!</em>
-    </p>
-  </div>
+<body class="">
+  <h1 id="roomTitle"></h1>
+  <p id="extraText"></p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const room = params.get("room");
+    const show = params.get("show");
+
+    const titleMap = {
+      red: "Meet your type in the <em>red room</em>!",
+      green: "Meet your type in the <em>green room</em>!",
+      blue: "Meet your type in the <em>blue room</em>!"
+    };
+
+    const body = document.body;
+    body.classList.add(room);
+
+    document.getElementById("roomTitle").innerHTML = titleMap[room] || "";
+    if (show === "yes") {
+      document.getElementById("extraText").innerHTML = 
+        'Audition for our reality dating show by participating in our speed-dating game, <em>The Pickup Line!</em>';
+    }
+  </script>
 </body>
 </html>
