@@ -3,101 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Result</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      color: white;
-      text-align: center;
-      padding: 50px 20px;
-    }
-
-    .title {
-      font-size: 2.6rem;
-      font-weight: bold;
-      font-style: italic;
-      line-height: 1.2;
-      margin-bottom: 25px;
-    }
-
-    .subtitle {
-      font-size: 1.2rem;
-      font-weight: 400;
-      margin-bottom: 30px;
-    }
-
-    .highlight {
-      color: #ffccff;
-      text-shadow: 0 0 2px #ffccff, 0 0 4px #ff99ff;
-    }
-
-    .highlight.green-room {
-      text-shadow: 0 0 1px #ccffee, 0 0 2px #99ffee;
-    }
-
-    .bonus {
-      font-size: 1.1rem;
-      margin-top: 20px;
-      line-height: 1.5;
-    }
-
-    .red {
-      background-color: #950606;
-      text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
-    }
-
-    .green {
-      background-color: #06954E;
-    }
-
-    .blue {
-      background-color: #064D95;
-    }
-  </style>
+  <title>Results</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body id="resultBody">
-  <div class="title" id="resultText">Meet your type<br>in our<br>ROOM!</div>
-  <div class="subtitle">
-    Audition for our reality dating show by participating in our speed-dating game, <span id="pickupLine">The Pickup Line!</span>
-  </div>
-  <div class="bonus" id="bonusText" style="display: none;">
-    Visit our chocolate shop and use the password: <span id="sweetSpot" class="highlight">Sweet Spot!</span><br>
-    to gain entry to our speakeasy:<br>
-    <span id="sugarDaddys" class="highlight">Sugar Daddy’s</span>
+  <div class="result-container">
+    <h1 id="resultTitle" class="result-title"></h1>
+    <p class="result-desc">
+      Audition for our reality dating show by participating in our speed-dating game,
+      <span class="glow" id="pickupLine">The Pickup Line!</span>
+    </p>
+    <p id="bonusText" class="result-desc"></p>
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const room = params.get("room");
-    const sugar = params.get("sugar");
+    const room = localStorage.getItem('resultRoom');
+    const wantsSugar = localStorage.getItem('sugar') === 'true';
 
-    const resultText = document.getElementById("resultText");
-    const resultBody = document.getElementById("resultBody");
-    const bonusText = document.getElementById("bonusText");
-    const sweetSpot = document.getElementById("sweetSpot");
-    const sugarDaddys = document.getElementById("sugarDaddys");
+    const titleEl = document.getElementById('resultTitle');
+    const bodyEl = document.getElementById('resultBody');
+    const pickupLine = document.getElementById('pickupLine');
+    const bonusText = document.getElementById('bonusText');
 
-    if (room === "red") {
-      resultText.innerHTML = "Meet your type<br>in our<br>RED ROOM!";
-      resultBody.classList.add("red");
-    } else if (room === "green") {
-      resultText.innerHTML = "Meet your type<br>in our<br>GREEN ROOM!";
-      resultBody.classList.add("green");
-      sweetSpot.classList.add("green-room");
-      sugarDaddys.classList.add("green-room");
-    } else if (room === "blue") {
-      resultText.innerHTML = "Meet your type<br>in our<br>BLUE ROOM!";
-      resultBody.classList.add("blue");
+    let roomText = '';
+    let roomClass = '';
+
+    switch (room) {
+      case 'red':
+        roomText = 'Meet your type<br>in our<br>RED ROOM!';
+        roomClass = 'neon-red';
+        bodyEl.style.backgroundColor = '#950606';
+        break;
+      case 'green':
+        roomText = 'Meet your type<br>in our<br>GREEN ROOM!';
+        roomClass = 'neon-green';
+        bodyEl.style.backgroundColor = '#06954E';
+        break;
+      default:
+        roomText = 'Meet your type<br>in our<br>BLUE ROOM!';
+        roomClass = 'neon-blue';
+        bodyEl.style.backgroundColor = '#064D95';
+        break;
     }
 
-    if (sugar === "true") {
-      bonusText.style.display = "block";
+    titleEl.innerHTML = roomText;
+    titleEl.classList.add(roomClass);
+
+    if (room === 'green') {
+      pickupLine.classList.remove('glow');
+      pickupLine.classList.add('glow-green');
     }
 
-    // Add glow to “The Pickup Line!” like Sweet Spot
-    document.getElementById("pickupLine").classList.add("highlight");
+    if (wantsSugar) {
+      bonusText.innerHTML = `
+        Visit our chocolate shop and use the password:
+        <span class="glow">Sweet Spot!</span><br>
+        to gain entry to our speakeasy:<br>
+        <span class="glow">Sugar Daddy’s</span>
+      `;
+    }
   </script>
 </body>
 </html>
