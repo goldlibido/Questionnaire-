@@ -2,52 +2,70 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Results</title>
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
   <style>
-    .message {
+    body {
+      margin: 0;
+      padding: 40px;
+      font-family: 'Montserrat', sans-serif;
+      color: white;
       text-align: center;
-      font-size: 2em;
-      padding-top: 30vh;
+    }
+
+    h1 {
+      font-size: 2.8em;
+      font-family: 'Poppins', sans-serif;
+      font-style: italic;
+    }
+
+    p {
+      font-size: 1.5em;
+      margin-top: 20px;
     }
 
     .underline-animate {
       font-style: italic;
       position: relative;
+      display: inline-block;
     }
 
     .underline-animate::after {
-      content: '';
+      content: "";
       position: absolute;
-      bottom: -2px;
       left: 0;
-      width: 100%;
+      bottom: -5px;
       height: 2px;
-      background: white;
-      animation: swipe 2s infinite linear;
+      width: 100%;
+      background: linear-gradient(to right, white 50%, transparent 50%);
+      background-size: 200% 100%;
+      animation: swipe 6s linear infinite;
+    }
+
+    @keyframes swipe {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
   </style>
 </head>
 <body>
-  <div class="message" id="result-message"></div>
+  <h1 id="resultText"></h1>
+  <p id="auditionText"></p>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const type = params.get("type");
-    const audition = params.get("audition");
+    const color = params.get("color");
+    const audition = params.get("audition") === "true";
 
-    const messages = {
-      red: "Meet your type in the <span class='underline-animate'>red room</span>!",
-      green: "Meet your type in the <span class='underline-animate'>green room</span>!",
-      blue: "Meet your type in the <span class='underline-animate'>blue room</span>!",
-    };
+    document.body.style.backgroundColor = color;
 
-    document.body.style.backgroundColor = type;
-    const resultText = messages[type] || "No match found.";
-    const extra = audition ? "<br><br>Audition for our reality dating show by participating in our speed dating game, <strong>The Pickup Line!</strong>" : "";
+    const roomText = `meet your type in the <span class="underline-animate">${color} room</span>!`;
+    document.getElementById("resultText").innerHTML = roomText;
 
-    document.getElementById("result-message").innerHTML = resultText + extra;
+    if (audition) {
+      document.getElementById("auditionText").innerText =
+        "Audition for our reality dating show by participating in our speed dating game, The Pickup Line!";
+    }
   </script>
 </body>
 </html>
