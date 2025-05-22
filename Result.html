@@ -2,70 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Results</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Match Room</title>
+
+  <!-- same fonts as main page -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,600&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      padding: 40px;
-      font-family: 'Montserrat', sans-serif;
-      color: white;
-      text-align: center;
+    body{
+      margin:0;
+      font-family:'Montserrat',sans-serif;
+      color:#ffffff;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+      text-align:center;
+      padding:20px;
     }
-
-    h1 {
-      font-size: 2.8em;
-      font-family: 'Poppins', sans-serif;
-      font-style: italic;
+    h1{
+      font-family:'Poppins',sans-serif;
+      font-style:italic;
+      font-weight:600;
+      font-size:2.6rem;
+      margin:0;
+      line-height:1.1;
+      text-shadow:
+        0 0 6px #ff69b4,
+        0 0 12px #ff69b4,
+        0 0 20px #ff69b4;
     }
-
-    p {
-      font-size: 1.5em;
-      margin-top: 20px;
-    }
-
-    .underline-animate {
-      font-style: italic;
-      position: relative;
-      display: inline-block;
-    }
-
-    .underline-animate::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -5px;
-      height: 2px;
-      width: 100%;
-      background: linear-gradient(to right, white 50%, transparent 50%);
-      background-size: 200% 100%;
-      animation: swipe 6s linear infinite;
-    }
-
-    @keyframes swipe {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
+    p{font-size:1.2rem;margin-top:24px;}
+    .room-name{font-style:italic;}
   </style>
 </head>
 <body>
-  <h1 id="resultText"></h1>
-  <p id="auditionText"></p>
+  <div id="resultBox"></div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const color = params.get("color");
-    const audition = params.get("audition") === "true";
+    const resultColor = localStorage.getItem("resultColor") || "blue";
+    const showExtra   = localStorage.getItem("showExtra") === "true";
 
-    document.body.style.backgroundColor = color;
+    let bg   = "#064D95",
+        room = "blue room";
+    if(resultColor === "green"){ bg="#06954E"; room="green room"; }
+    if(resultColor === "red")  { bg="#950606"; room="red room";  }
 
-    const roomText = `meet your type in the <span class="underline-animate">${color} room</span>!`;
-    document.getElementById("resultText").innerHTML = roomText;
-
-    if (audition) {
-      document.getElementById("auditionText").innerText =
-        "Audition for our reality dating show by participating in our speed dating game, The Pickup Line!";
-    }
+    document.body.style.backgroundColor = bg;
+    document.getElementById("resultBox").innerHTML = `
+      <h1>Meet your type in the <span class="room-name">${room}</span>!</h1>
+      ${ showExtra ? `<p>Audition for our reality dating show by participating in our speed-dating game, <em>The Pickup Line</em>!</p>` : "" }
+    `;
   </script>
 </body>
 </html>
