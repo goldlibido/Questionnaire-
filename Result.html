@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meet Your Type</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .result {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
+      flex-direction: column;
+    }
+    .result h1 {
+      font-size: 2.5rem;
+    }
+    .result p {
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="result" id="resultBox"></div>
+
+  <script>
+    const resultColor = localStorage.getItem('resultColor');
+    const showExtra = localStorage.getItem('showExtra') === 'true';
+    const resultBox = document.getElementById('resultBox');
+
+    let background = '#064D95', room = 'blue';
+    if (resultColor === 'green') {
+      background = '#06954E'; room = 'green';
+    } else if (resultColor === 'red') {
+      background = '#950606'; room = 'red';
+    }
+
+    document.body.style.backgroundColor = background;
+
+    resultBox.innerHTML = `
+      <h1>Meet your type in the ${room} room!</h1>
+      ${showExtra ? '<p>Audition for our reality dating show by participating in our speed dating game, The Pickup Line!</p>' : ''}
+    `;
+  </script>
+</body>
+</html>
