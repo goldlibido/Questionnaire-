@@ -1,30 +1,26 @@
-document.getElementById('questionnaire-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent form from submitting
+document.getElementById('questionnaire').addEventListener('submit', function (e) {
+  e.preventDefault();
 
-    // Get the selected answers
-    const formData = new FormData(this);
-    const answers = {};
-    for (let [name, value] of formData) {
-        answers[name] = value;
-    }
+  function getAnswer(name) {
+    const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+    return Array.from(checkboxes).map(cb => cb.value);
+  }
 
-    // Determine the result based on Question 3 (vibe preference)
-    let resultMessage = '';
-    switch (answers['q3']) {
-        case 'blue-room':
-            resultMessage = 'You belong in the Blue Room! You’re all about passion, intimacy, and connection.';
-            break;
-        case 'green-room':
-            resultMessage = 'You belong in the Green Room! You’re into adventurous, playful, and experimental vibes.';
-            break;
-        case 'red-room':
-            resultMessage = 'You belong in the Red Room! You crave intensity, power dynamics, and bold experiences.';
-            break;
-        default:
-            resultMessage = 'Please answer all questions to see your result.';
-    }
+  const q4 = getAnswer('q4')[0];
+  const q7 = getAnswer('q7')[0];
+  const q10 = getAnswer('q10')[0];
 
-    // Display the result
-    const resultDiv = document.getElementById('result');
-    resultDiv.textContent = resultMessage;
+  let result = 'blue'; // default fallback
+
+  if (q4 === 'passion' && (q7 === 'no' || q7 === 'maybe')) {
+    result = 'blue';
+  } else if (q4 === 'kinky-fun' && ['no', 'maybe', 'fun'].includes(q7)) {
+    result = 'green';
+  } else if (q4 === 'bdsm' && ['no', 'maybe', 'fun', 'more'].includes(q7)) {
+    result = 'red';
+  }
+
+  localStorage.setItem('resultColor', result);
+  localStorage.setItem('showExtra', q10 === 'yes');
+  window.location.href = 'result.html';
 });
