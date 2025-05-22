@@ -5,96 +5,92 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The 1st In-Person Dating App</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <div class="content-box">
-      <h1>The 1st In-Person Dating App</h1>
-      <h2>10 questions, 100% private, 1000X more scan-dalous than swiping.</h2>
-      <form id="questionnaire">
-        <!-- Question 1 -->
-        <div class="question">
-          <p>1… Do you prefer to make the first move or get approached?</p>
-          <label><input type="checkbox" name="q1" value="make"> I want to make the first move</label>
-          <label><input type="checkbox" name="q1" value="approached"> I want to get approached</label>
-        </div>
+    <div class="gradient-border">
+      <img src="A1124577-94BD-4B7D-A734-044783597524.jpeg" alt="Logo" class="logo" />
+      <div class="content-box">
+        <h1>The 1st In-Person Dating App</h1>
+        <h2>10 questions, 100% private, 1000X more <span class="wave">scan-dalous</span> than swiping.</h2>
+        <form id="questionnaire">
 
-        <!-- Question 2 -->
-        <div class="question">
-          <p>2… Are you looking for love or a good time?</p>
-          <label><input type="checkbox" name="q2" value="love"> Love</label>
-          <label><input type="checkbox" name="q2" value="both"> Either one, I like to let things evolve naturally</label>
-          <label><input type="checkbox" name="q2" value="fun"> A good time</label>
-        </div>
+          <!-- QUESTION TEMPLATE -->
+          <div class="question">
+            <p><strong>1… Do you prefer to make the first move or get approached?</strong></p>
+            <label><input type="radio" name="q1" value="make"> I want to make the first move</label>
+            <label><input type="radio" name="q1" value="approached"> I want to get approached</label>
+          </div>
 
-        <!-- Question 4 -->
-        <div class="question">
-          <p>4… Which vibe turns you on the most</p>
-          <label><input type="checkbox" name="q4" value="passion"> Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, playing with whipped cream</label>
-          <label><input type="checkbox" name="q4" value="kinky-fun"> One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, experimenting with new sex toys</label>
-          <label><input type="checkbox" name="q4" value="bdsm"> Power exchange, rough sex, spanking, BDSM, naughty mind games, filthy dirty talk</label>
-        </div>
+          <div class="question">
+            <p><strong>2… Are you looking for love or a good time?</strong></p>
+            <label><input type="radio" name="q2" value="love"> Love</label>
+            <label><input type="radio" name="q2" value="both"> Either one, I like to let things evolve naturally</label>
+            <label><input type="radio" name="q2" value="fun"> A good time</label>
+          </div>
 
-        <!-- Question 5 -->
-        <div class="question">
-          <p>5… Are you comfortable with PDA?</p>
-          <label><input type="checkbox" name="q5" value="yes"> Yes</label>
-          <label><input type="checkbox" name="q5" value="some"> Only a little</label>
-          <label><input type="checkbox" name="q5" value="no"> No</label>
-        </div>
+          <div class="question">
+            <p><strong>4… Which vibe turns you on the most</strong></p>
+            <label><input type="radio" name="q4" value="passion"> Passionate sex...</label>
+            <label><input type="radio" name="q4" value="kinky-fun"> One-night stands...</label>
+            <label><input type="radio" name="q4" value="bdsm"> Power exchange...</label>
+          </div>
 
-        <!-- Question 6 (sugar) -->
-        <div class="question">
-          <p>6… Are you looking for a sugar daddy/momma?</p>
-          <label><input type="checkbox" name="q6" value="yes"> Yes</label>
-          <label><input type="checkbox" name="q6" value="no"> No thank you</label>
-          <label><input type="checkbox" name="q6" value="iam"> Are you kidding? I am the sugar daddy/momma!</label>
-        </div>
+          <div class="question">
+            <p><strong>5… Are you comfortable with PDA?</strong></p>
+            <label><input type="radio" name="q5" value="yes"> Yes</label>
+            <label><input type="radio" name="q5" value="some"> Only a little</label>
+            <label><input type="radio" name="q5" value="no"> No</label>
+          </div>
 
-        <!-- Question 6 (attention) -->
-        <div class="question">
-          <p>6… Do you like to be the center of attention?</p>
-          <label><input type="checkbox" name="q6b" value="yes"> Yes, like they say, “if you got it, flaunt it.”</label>
-          <label><input type="checkbox" name="q6b" value="shared"> Yes, but I prefer to let my partner shine</label>
-          <label><input type="checkbox" name="q6b" value="neutral"> No, but I don’t mind if my partner wants to be the main character</label>
-          <label><input type="checkbox" name="q6b" value="blend"> No, I’d rather my partner and I blend in</label>
-        </div>
+          <div class="question">
+            <p><strong>6… Are you looking for a sugar daddy/momma?</strong></p>
+            <label><input type="radio" name="q6" value="yes"> Yes</label>
+            <label><input type="radio" name="q6" value="no"> No thank you</label>
+            <label><input type="radio" name="q6" value="iam"> Are you kidding? I am the sugar daddy/momma!</label>
+          </div>
 
-        <!-- Question 7 -->
-        <div class="question">
-          <p>7… Would you enjoy a threesome?</p>
-          <label><input type="checkbox" name="q7" value="no"> No I’d like my partner to be mine & only mine</label>
-          <label><input type="checkbox" name="q7" value="maybe"> Maybe, I’d consider it</label>
-          <label><input type="checkbox" name="q7" value="fun"> Yeah it’d be fun</label>
-          <label><input type="checkbox" name="q7" value="more"> Hell yeah! Why stop at 3? The more the merrier</label>
-        </div>
+          <div class="question">
+            <p><strong>6… Do you like to be the center of attention?</strong></p>
+            <label><input type="radio" name="q6b" value="yes"> Yes, like they say...</label>
+            <label><input type="radio" name="q6b" value="shared"> Yes, but I prefer...</label>
+            <label><input type="radio" name="q6b" value="neutral"> No, but I don’t mind...</label>
+            <label><input type="radio" name="q6b" value="blend"> No, I’d rather...</label>
+          </div>
 
-        <!-- Question 8 -->
-        <div class="question">
-          <p>8… Do you prefer to give pleasure or receive it?</p>
-          <label><input type="checkbox" name="q8" value="give"> Give pleasure</label>
-          <label><input type="checkbox" name="q8" value="receive"> Receive pleasure</label>
-        </div>
+          <div class="question">
+            <p><strong>7… Would you enjoy a threesome?</strong></p>
+            <label><input type="radio" name="q7" value="no"> No I’d like my partner...</label>
+            <label><input type="radio" name="q7" value="maybe"> Maybe, I’d consider it</label>
+            <label><input type="radio" name="q7" value="fun"> Yeah it’d be fun</label>
+            <label><input type="radio" name="q7" value="more"> Hell yeah! Why stop...</label>
+          </div>
 
-        <!-- Question 9 -->
-        <div class="question">
-          <p>9… Who do you want to wear the pants?</p>
-          <label><input type="checkbox" name="q9" value="control"> I like to be in control</label>
-          <label><input type="checkbox" name="q9" value="partner"> I want my partner to take control</label>
-          <label><input type="checkbox" name="q9" value="domsub"> I’m dominant in the streets & submissive in the sheets</label>
-          <label><input type="checkbox" name="q9" value="subdom"> I’m submissive in the streets & dominant in the sheets</label>
-          <label><input type="checkbox" name="q9" value="switch"> I like to switch it up</label>
-        </div>
+          <div class="question">
+            <p><strong>8… Do you prefer to give pleasure or receive it?</strong></p>
+            <label><input type="radio" name="q8" value="give"> Give pleasure</label>
+            <label><input type="radio" name="q8" value="receive"> Receive pleasure</label>
+          </div>
 
-        <!-- Question 10 -->
-        <div class="question">
-          <p>10… Feeling frisky? Want to audition to be a star in our reality dating show? Once you’re in, you won’t want to pull out.</p>
-          <label><input type="checkbox" name="q10" value="yes"> Let’s do it! I’m ready for my close-up</label>
-          <label><input type="checkbox" name="q10" value="no"> Tempting, but I’ll pass this time</label>
-        </div>
+          <div class="question">
+            <p><strong>9… Who do you want to wear the pants?</strong></p>
+            <label><input type="radio" name="q9" value="control"> I like to be in control</label>
+            <label><input type="radio" name="q9" value="partner"> I want my partner to take control</label>
+            <label><input type="radio" name="q9" value="domsub"> I’m dominant in the streets & submissive in the sheets</label>
+            <label><input type="radio" name="q9" value="subdom"> I’m submissive in the streets & dominant in the sheets</label>
+            <label><input type="radio" name="q9" value="switch"> I like to switch it up</label>
+          </div>
 
-        <button type="submit">Meet your type now!</button>
-      </form>
+          <div class="question">
+            <p><strong>10… Feeling frisky? Want to audition for our reality dating show?</strong></p>
+            <label><input type="radio" name="q10" value="yes"> Let’s do it! I’m ready for my close-up</label>
+            <label><input type="radio" name="q10" value="no"> Tempting, but I’ll pass</label>
+          </div>
+
+          <button type="submit">Meet your type now!</button>
+        </form>
+      </div>
     </div>
   </div>
 
