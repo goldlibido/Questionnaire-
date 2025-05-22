@@ -1,26 +1,33 @@
-document.getElementById("quizForm").addEventListener("submit", function(event) {
-  event.preventDefault();
+document.getElementById('quizForm').addEventListener('submit', function (e) {
+  e.preventDefault();
 
-  const totalQuestions = 10;
-  for (let i = 1; i <= totalQuestions; i++) {
-    if (!document.querySelector(`input[name="q${i}"]:checked`)) {
-      alert("Complete questionnaire to see results!");
-      return;
+  const answers = {};
+  for (let i = 1; i <= 10; i++) {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    if (selected) {
+      answers[`q${i}`] = selected.value;
     }
   }
 
-  const q3 = document.querySelector('input[name="q3"]:checked').value;
-  const q5 = document.querySelector('input[name="q5"]:checked').value;
-
-  let room = "";
-  if (q3 === "whipped") {
-    room = "blue";
-  } else if (q3 === "toys") {
-    room = "green";
-  } else if (q3 === "bdsm") {
-    room = "red";
+  if (Object.keys(answers).length < 10) {
+    document.getElementById('alert').textContent = "Complete questionnaire to see results!";
+    return;
   }
 
-  const sugar = (q5 === "yes" || q5 === "iam") ? "true" : "false";
-  window.location.href = `result.html?room=${room}&sugar=${sugar}`;
+  localStorage.setItem('sugar', answers.q5 === 'yes' || answers.q5 === 'iam');
+  const q3 = answers.q3;
+  const q7 = answers.q7;
+
+  let result = 'blue'; // default
+
+  if (q3 === 'red') {
+    result = 'red';
+  } else if (q3 === 'green') {
+    result = 'green';
+  } else if (q3 === 'blue') {
+    result = 'blue';
+  }
+
+  localStorage.setItem('resultRoom', result);
+  window.location.href = "result.html";
 });
