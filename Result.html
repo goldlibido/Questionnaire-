@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Result</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -28,10 +28,19 @@
       margin-bottom: 30px;
     }
 
+    .highlight {
+      color: #ffccff;
+      text-shadow: 0 0 2px #ffccff, 0 0 4px #ff99ff;
+    }
+
+    .highlight.green-room {
+      text-shadow: 0 0 1px #ccffee, 0 0 2px #99ffee;
+    }
+
     .bonus {
       font-size: 1.1rem;
       margin-top: 20px;
-      color: #ffccff;
+      line-height: 1.5;
     }
 
     .red {
@@ -41,23 +50,22 @@
 
     .green {
       background-color: #06954E;
-      text-shadow: 0 0 5px #6fffca, 0 0 10px #6fffca;
     }
 
     .blue {
       background-color: #064D95;
-      text-shadow: 0 0 5px #64aaff, 0 0 10px #64aaff;
     }
   </style>
 </head>
 <body id="resultBody">
   <div class="title" id="resultText">Meet your type<br>in our<br>ROOM!</div>
   <div class="subtitle">
-    Audition for our reality dating show by participating in our speed-dating game, The Pickup Line!
+    Audition for our reality dating show by participating in our speed-dating game, <span id="pickupLine">The Pickup Line!</span>
   </div>
   <div class="bonus" id="bonusText" style="display: none;">
-    Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
-    to gain entry to our speakeasy, <strong>Sugar Daddy’s</strong>
+    Visit our chocolate shop and use the password: <span id="sweetSpot" class="highlight">Sweet Spot!</span><br>
+    to gain entry to our speakeasy:<br>
+    <span id="sugarDaddys" class="highlight">Sugar Daddy’s</span>
   </div>
 
   <script>
@@ -68,6 +76,8 @@
     const resultText = document.getElementById("resultText");
     const resultBody = document.getElementById("resultBody");
     const bonusText = document.getElementById("bonusText");
+    const sweetSpot = document.getElementById("sweetSpot");
+    const sugarDaddys = document.getElementById("sugarDaddys");
 
     if (room === "red") {
       resultText.innerHTML = "Meet your type<br>in our<br>RED ROOM!";
@@ -75,6 +85,8 @@
     } else if (room === "green") {
       resultText.innerHTML = "Meet your type<br>in our<br>GREEN ROOM!";
       resultBody.classList.add("green");
+      sweetSpot.classList.add("green-room");
+      sugarDaddys.classList.add("green-room");
     } else if (room === "blue") {
       resultText.innerHTML = "Meet your type<br>in our<br>BLUE ROOM!";
       resultBody.classList.add("blue");
@@ -83,6 +95,9 @@
     if (sugar === "true") {
       bonusText.style.display = "block";
     }
+
+    // Add glow to “The Pickup Line!” like Sweet Spot
+    document.getElementById("pickupLine").classList.add("highlight");
   </script>
 </body>
 </html>
