@@ -6,13 +6,13 @@ body {
 }
 
 .border-wrapper {
-  padding: 40px;
+  padding: 20px 10px; /* Reduced left/right padding */
   background: linear-gradient(to right, #06954E, #064D95);
 }
 
 .container {
   background-color: #950606;
-  padding: 30px;
+  padding: 30px 20px;
   border-radius: 25px;
   max-width: 700px;
   margin: auto;
@@ -21,17 +21,20 @@ body {
 .title {
   font-family: 'Poppins', sans-serif;
   font-style: italic;
-  font-size: 2.8rem;
+  font-size: 2.6rem;
   color: white;
   text-align: center;
   text-shadow: 0 0 8px #ff00ff, 0 0 12px #ff00ff;
+  line-height: 1.1; /* Tighter line height */
   margin-bottom: 10px;
 }
 
 .subtitle {
+  font-family: 'Poppins', sans-serif; /* Match title font */
   text-align: center;
-  font-size: 1.2rem;
-  line-height: 1.6;
+  font-size: 1.6rem; /* Between title and body */
+  line-height: 1.4;
+  margin-bottom: 30px;
 }
 
 .underline-animate {
@@ -48,6 +51,7 @@ body {
   width: 100%;
   background: white;
   animation: underlineMove 2s linear infinite;
+  clip-path: inset(0 0 0 0);
 }
 
 @keyframes underlineMove {
@@ -68,17 +72,19 @@ body {
 }
 
 .question {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .question p {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+  font-weight: bold;
 }
 
 label {
   display: block;
-  margin-left: 20px;
-  margin-bottom: 5px;
+  margin-left: 15px;
+  margin-bottom: 4px; /* Tighter answer spacing */
+  font-size: 0.98rem;
 }
 
 .submit-btn {
