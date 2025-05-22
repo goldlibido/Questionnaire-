@@ -4,95 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The 1st In-Person Dating App</title>
+  <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:ital,wght@1,700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background-color: #950606;
-      color: white;
-    }
-
-    .border-wrapper {
-      padding: 25px;
-      background: linear-gradient(to right, #06954E, #064D95);
-    }
-
-    .container {
-      background-color: #950606;
-      padding: 30px 20px;
-      border-radius: 25px;
-      max-width: 700px;
-      margin: auto;
-    }
-
-    .title {
-      font-family: 'Poppins', sans-serif;
-      font-style: italic;
-      font-size: 2.6rem;
-      color: white;
-      text-align: center;
-      text-shadow: 0 0 8px #ff00ff, 0 0 12px #ff00ff;
-      line-height: 1.1;
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: bold;
-      color: rgba(255, 255, 255, 0.7);
-      text-align: center;
-      font-size: 1.1rem;
-      line-height: 1.4;
-      margin-bottom: 30px;
-    }
-
-    .scan-dalous {
-      display: inline-block;
-      animation: waveItalic 2.5s ease-in-out infinite;
-    }
-
-    @keyframes waveItalic {
-      0%, 100% {
-        font-style: normal;
-      }
-      50% {
-        font-style: italic;
-      }
-    }
-
-    .question {
-      margin-bottom: 22px;
-    }
-
-    .question p {
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
-
-    label {
-      display: block;
-      margin-left: 15px;
-      margin-bottom: 3px;
-      font-size: 0.98rem;
-    }
-
-    .submit-btn {
-      background-color: white;
-      color: #950606;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    .center {
-      text-align: center;
-    }
-  </style>
 </head>
 <body>
   <div class="border-wrapper">
@@ -106,54 +19,76 @@
         </div>
       </div>
 
-      <form>
+      <form id="quizForm">
         <div class="question">
-          <p>1. Do you prefer to make the first move or get approached?</p>
+          <p>1… Do you prefer to make the first move or get approached?</p>
           <label><input type="radio" name="q1" value="first"> I want to make the first move</label>
           <label><input type="radio" name="q1" value="get"> I want to get approached</label>
         </div>
 
         <div class="question">
-          <p>2. Are you looking for love or a good time?</p>
+          <p>2… Are you looking for love or a good time?</p>
           <label><input type="radio" name="q2" value="love"> Love</label>
           <label><input type="radio" name="q2" value="either"> Either one, I like to let things evolve naturally</label>
-          <label><input type="radio" name="q2" value="good"> A good time</label>
+          <label><input type="radio" name="q2" value="fun"> A good time</label>
         </div>
 
         <div class="question">
-          <p>3. What excites you the most?</p>
-          <label><input type="radio" name="q3" value="whipped cream"> Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, playing with whipped cream.</label>
-          <label><input type="radio" name="q3" value="sex toys"> One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, experimenting with new sex toys.</label>
-          <label><input type="radio" name="q3" value="BDSM"> Power exchange, rough sex, spanking, BDSM, naughty mind games, filthy dirty talk.</label>
+          <p>3… Which vibe turns you on the most</p>
+          <label><input type="radio" name="q3" value="whipped"> Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, playing with whipped cream</label>
+          <label><input type="radio" name="q3" value="toys"> One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, experimenting with new sex toys</label>
+          <label><input type="radio" name="q3" value="bdsm"> Power exchange, rough sex, spanking, BDSM, naughty mind games, filthy dirty talk</label>
         </div>
 
         <div class="question">
-          <p>4. How do you feel about public displays of affection?</p>
-          <label><input type="radio" name="q4" value="love it"> I love it</label>
-          <label><input type="radio" name="q4" value="only in private"> Only in private</label>
-          <label><input type="radio" name="q4" value="depends"> Depends on the vibe</label>
+          <p>4… Are you comfortable with PDA?</p>
+          <label><input type="radio" name="q4" value="yes"> Yes</label>
+          <label><input type="radio" name="q4" value="little"> Only a little</label>
+          <label><input type="radio" name="q4" value="no"> No</label>
         </div>
 
         <div class="question">
-          <p>5. What turns you on more?</p>
-          <label><input type="radio" name="q5" value="confidence"> Confidence and eye contact</label>
-          <label><input type="radio" name="q5" value="style"> Someone’s style and the way they move</label>
-          <label><input type="radio" name="q5" value="mystery"> Mystery and challenge</label>
+          <p>5… Are you looking for a sugar daddy/momma?</p>
+          <label><input type="radio" name="q5" value="yes"> Yes</label>
+          <label><input type="radio" name="q5" value="no"> No thank you</label>
+          <label><input type="radio" name="q5" value="iam"> Are you kidding? I am the sugar daddy/momma!</label>
         </div>
 
         <div class="question">
-          <p>6. Ideal first date?</p>
-          <label><input type="radio" name="q6" value="coffee"> Coffee or drinks</label>
-          <label><input type="radio" name="q6" value="adventure"> Something adventurous</label>
-          <label><input type="radio" name="q6" value="netflix"> Netflix and chill</label>
+          <p>6… Do you like to be the center of attention?</p>
+          <label><input type="radio" name="q6" value="flaunt"> Yes, like they say, “if you got it, flaunt it.”</label>
+          <label><input type="radio" name="q6" value="partner shine"> Yes, but I prefer to let my partner shine</label>
+          <label><input type="radio" name="q6" value="partner main"> No, I don’t want to be in the spotlight but I don’t mind if my partner wants to be the main character</label>
+          <label><input type="radio" name="q6" value="blend"> No, I’d rather my partner and I blend in</label>
         </div>
 
         <div class="question">
-          <p>7. Thoughts on open relationships?</p>
+          <p>7… Would you enjoy a threesome?</p>
           <label><input type="radio" name="q7" value="no"> No I’d like my partner to be mine & only mine</label>
           <label><input type="radio" name="q7" value="maybe"> Maybe, I’d consider it</label>
           <label><input type="radio" name="q7" value="yeah"> Yeah it’d be fun</label>
-          <label><input type="radio" name="q7" value="hell yeah"> Hell yeah! Why stop at 3? The more the merrier.</label>
+          <label><input type="radio" name="q7" value="hell yeah"> Hell yeah! Why stop at 3? The more the merrier</label>
+        </div>
+
+        <div class="question">
+          <p>8… Do you prefer to give pleasure or receive it?</p>
+          <label><input type="radio" name="q8" value="give"> Give pleasure</label>
+          <label><input type="radio" name="q8" value="receive"> Receive pleasure</label>
+        </div>
+
+        <div class="question">
+          <p>9… Who do you want to wear the pants?</p>
+          <label><input type="radio" name="q9" value="control"> I like to be in control</label>
+          <label><input type="radio" name="q9" value="partner control"> I want my partner to take control</label>
+          <label><input type="radio" name="q9" value="dom street"> I’m dominant in the streets & submissive in the sheets</label>
+          <label><input type="radio" name="q9" value="sub street"> I’m submissive in the streets & dominant in the sheets</label>
+          <label><input type="radio" name="q9" value="switch"> I like to switch it up</label>
+        </div>
+
+        <div class="question">
+          <p>10… Feeling frisky? Want to audition to be a star in our reality dating show? Once you’re in, you won’t want to pull out.</p>
+          <label><input type="radio" name="q10" value="yes"> Let’s do it! I’m ready for my close-up</label>
+          <label><input type="radio" name="q10" value="pass"> Tempting, but I’ll pass this time</label>
         </div>
 
         <div class="center">
@@ -162,33 +97,6 @@
       </form>
     </div>
   </div>
-
-  <script>
-    document.querySelector("form").addEventListener("submit", function(event) {
-      event.preventDefault();
-
-      const required = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
-      let unanswered = required.filter(name => !document.querySelector(`input[name="${name}"]:checked`));
-
-      if (unanswered.length > 0) {
-        alert("Complete questionnaire to see results!");
-        return;
-      }
-
-      const q3 = document.querySelector('input[name="q3"]:checked').value;
-
-      let room = "";
-
-      if (q3 === "whipped cream") {
-        room = "blue";
-      } else if (q3 === "sex toys") {
-        room = "green";
-      } else if (q3 === "BDSM") {
-        room = "red";
-      }
-
-      window.location.href = `result.html?room=${room}&show=yes`;
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
