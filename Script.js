@@ -1,25 +1,20 @@
-// ----------------------  UTILITY  ----------------------
-const getValue = (name) => {
-  const el = document.querySelector(`input[name="${name}"]:checked`);
-  return el ? el.value : null;
-};
-
-// ----------------------  FORM HANDLER  -----------------
-document.getElementById("questionnaire").addEventListener("submit", (e) => {
+document.getElementById("quiz-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const q4  = getValue("q4");
-  const q7  = getValue("q7");
-  const q10 = getValue("q10");
+  const q4 = document.querySelector('input[name="q4"]:checked')?.value;
+  const q8 = document.querySelector('input[name="q8"]:checked')?.value;
+  const q11 = document.querySelector('input[name="q11"]:checked')?.value;
 
-  // ---------  DETERMINE RESULT COLOR  ---------
-  let result = "blue"; // default
-  if (q4 === "passion"   && (q7 === "no" || q7 === "maybe"))        result = "blue";
-  else if (q4 === "kinky-fun" && ["no","maybe","fun"].includes(q7)) result = "green";
-  else if (q4 === "bdsm"   && ["no","maybe","fun","more"].includes(q7)) result = "red";
+  let result = '';
+  if (q4 === "1" && (q8 === "1" || q8 === "2")) {
+    result = "blue";
+  } else if (q4 === "2" && ["1", "2", "3"].includes(q8)) {
+    result = "green";
+  } else if (q4 === "3" && ["1", "2", "3", "4"].includes(q8)) {
+    result = "red";
+  }
 
-  // store + move
-  localStorage.setItem("resultColor", result);
-  localStorage.setItem("showExtra", q10 === "yes");
-  window.location.href = "result.html";
+  const audition = q11 === "1" ? "&audition=true" : "";
+
+  window.location.href = `result.html?type=${result}${audition}`;
 });
