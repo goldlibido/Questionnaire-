@@ -1,20 +1,19 @@
-document.getElementById("quiz-form").addEventListener("submit", function (e) {
+document.getElementById("questionnaire").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const q4 = document.querySelector('input[name="q4"]:checked')?.value;
-  const q8 = document.querySelector('input[name="q8"]:checked')?.value;
-  const q11 = document.querySelector('input[name="q11"]:checked')?.value;
+  const q3 = document.querySelector("input[name='q3']:checked")?.value;
+  const q7 = document.querySelector("input[name='q7']:checked")?.value;
+  const q10 = document.querySelector("input[name='q10']:checked")?.value;
 
-  let result = '';
-  if (q4 === "1" && (q8 === "1" || q8 === "2")) {
-    result = "blue";
-  } else if (q4 === "2" && ["1", "2", "3"].includes(q8)) {
-    result = "green";
-  } else if (q4 === "3" && ["1", "2", "3", "4"].includes(q8)) {
+  let result = "blue";
+
+  if (q3 === "kinky" && ["no", "maybe", "yeah", "more"].includes(q7)) {
     result = "red";
+  } else if (q3 === "casual" && ["no", "maybe", "yeah"].includes(q7)) {
+    result = "green";
+  } else if (q3 === "passionate" && ["no", "maybe"].includes(q7)) {
+    result = "blue";
   }
 
-  const audition = q11 === "1" ? "&audition=true" : "";
-
-  window.location.href = `result.html?type=${result}${audition}`;
+  window.location.href = `result.html?color=${result}&audition=${q10 === "yes"}`;
 });
