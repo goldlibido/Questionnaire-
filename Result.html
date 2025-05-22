@@ -2,56 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Match Room</title>
-
-  <!-- same fonts as main page -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,600&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meet Your Type</title>
+  <link rel="stylesheet" href="style.css"/>
   <style>
-    body{
-      margin:0;
-      font-family:'Montserrat',sans-serif;
-      color:#ffffff;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      min-height:100vh;
-      text-align:center;
-      padding:20px;
+    body {
+      background-color: #a30000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
     }
-    h1{
-      font-family:'Poppins',sans-serif;
-      font-style:italic;
-      font-weight:600;
-      font-size:2.6rem;
-      margin:0;
-      line-height:1.1;
-      text-shadow:
-        0 0 6px #ff69b4,
-        0 0 12px #ff69b4,
-        0 0 20px #ff69b4;
+
+    .result-container {
+      padding: 20px;
+      max-width: 600px;
     }
-    p{font-size:1.2rem;margin-top:24px;}
-    .room-name{font-style:italic;}
+
+    .result-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 0 10px #ff0077;
+      margin-bottom: 20px;
+    }
+
+    .result-subtitle {
+      font-size: 1.25rem;
+      line-height: 1.6;
+    }
+
+    em {
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
-  <div id="resultBox"></div>
-
-  <script>
-    const resultColor = localStorage.getItem("resultColor") || "blue";
-    const showExtra   = localStorage.getItem("showExtra") === "true";
-
-    let bg   = "#064D95",
-        room = "blue room";
-    if(resultColor === "green"){ bg="#06954E"; room="green room"; }
-    if(resultColor === "red")  { bg="#950606"; room="red room";  }
-
-    document.body.style.backgroundColor = bg;
-    document.getElementById("resultBox").innerHTML = `
-      <h1>Meet your type in the <span class="room-name">${room}</span>!</h1>
-      ${ showExtra ? `<p>Audition for our reality dating show by participating in our speed-dating game, <em>The Pickup Line</em>!</p>` : "" }
-    `;
-  </script>
+  <div class="result-container">
+    <h1 class="result-title"><em>Meet your type<br>in the red room!</em></h1>
+    <p class="result-subtitle">
+      Audition for our reality dating show by participating in our speed-dating game, <em>The Pickup Line!</em>
+    </p>
+  </div>
 </body>
 </html>
