@@ -1,20 +1,25 @@
-document.getElementById("quizForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const q3 = document.querySelector('input[name="q3"]:checked')?.value;
-  const q7 = document.querySelector('input[name="q7"]:checked')?.value;
-  const q10 = document.querySelector('input[name="q10"]:checked')?.value;
+document.getElementById("quizForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const required = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
+  let unanswered = required.filter(name => !document.querySelector(`input[name="${name}"]:checked`));
+
+  if (unanswered.length > 0) {
+    alert("Complete questionnaire to see results!");
+    return;
+  }
+
+  const q3 = document.querySelector('input[name="q3"]:checked').value;
 
   let room = "";
-  if (q3 === "passionate" && (q7 === "no" || q7 === "maybe")) {
+
+  if (q3 === "whipped cream") {
     room = "blue";
-  } else if (q3 === "wild" && (q7 === "no" || q7 === "maybe" || q7 === "yeah")) {
+  } else if (q3 === "sex toys") {
     room = "green";
-  } else if (q3 === "kinky" && ["no", "maybe", "yeah", "hellyeah"].includes(q7)) {
+  } else if (q3 === "BDSM") {
     room = "red";
   }
 
-  if (room) {
-    const url = `result.html?room=${room}&show=${q10}`;
-    window.location.href = url;
-  }
+  window.location.href = `result.html?room=${room}`;
 });
