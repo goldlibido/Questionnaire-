@@ -1,87 +1,96 @@
-body {
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #950606;
-  color: white;
+/* ----------  GENERAL  ---------- */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Montserrat',sans-serif;
+  /* full-bleed gradient border */
+  background:linear-gradient(to right,#06954E,#064D95);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:40px 20px;
+  color:#fff;
 }
 
-.container {
-  display: flex;
-  justify-content: center;
-  padding: 40px 20px;
+/* ----------  RED CARD  ---------- */
+.content-box{
+  background:#950606;
+  border-radius:30px;
+  max-width:900px;
+  width:100%;
+  padding:50px 40px 60px;
+  position:relative;
 }
 
-.gradient-border {
-  background: linear-gradient(90deg, #06954E, #064D95);
-  padding: 8px;
-  border-radius: 30px;
-  position: relative;
-  max-width: 900px;
-  width: 100%;
+/* logo in top-left corner of card */
+.logo{
+  position:absolute;
+  top:-30px;
+  left:-30px;
+  width:65px;
+  height:auto;
 }
 
-.logo {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 60px;
+/* ----------  TYPOGRAPHY  ---------- */
+.neon-title{
+  font-family:'Poppins',sans-serif;
+  font-style:italic;
+  font-weight:600;
+  text-align:center;
+  line-height:1.05;
+  font-size:2.7rem;
+  margin:0 0 18px;
+  color:#ffffff;
+  text-shadow:
+    0 0 6px #ff69b4,
+    0 0 12px #ff69b4,
+    0 0 20px #ff69b4;
 }
 
-.content-box {
-  background-color: #950606;
-  padding: 40px;
-  border-radius: 22px;
-  position: relative;
+.subheader{
+  text-align:center;
+  font-size:1.1rem;
+  margin-bottom:35px;
+  color:rgba(255,255,255,0.8); /* slightly faded white */
 }
 
-h1 {
-  font-family: 'Pacifico', cursive;
-  color: white;
-  text-align: center;
-  font-size: 2.5rem;
-  text-shadow: 0 0 10px hotpink;
+.scan-dalous{
+  font-style:italic;
+  display:inline-block;
+  animation:wave 1.8s ease-in-out infinite;
 }
 
-h2 {
-  text-align: center;
-  font-size: 1.1rem;
-  margin-top: 10px;
+/* playful wobble */
+@keyframes wave{
+  0%,100%{transform:rotate(0deg);}
+  25%{transform:rotate(1deg);}
+  50%{transform:rotate(-1.5deg);}
+  75%{transform:rotate(1deg);}
 }
 
-.wave {
-  font-style: italic;
-  display: inline-block;
-  animation: wave 2s infinite ease-in-out;
+/* ----------  FORM  ---------- */
+.question{margin-bottom:24px;}
+.question p{margin:0 0 10px;}
+label{
+  display:block;
+  margin:6px 0;
+  line-height:1.4;
+  white-space:normal;      /* allow long labels to wrap */
 }
+input[type="radio"]{margin-right:8px;}
 
-@keyframes wave {
-  0%, 100% { transform: rotate(-2deg); }
-  50% { transform: rotate(2deg); }
+button{
+  display:block;
+  margin:35px auto 0;
+  padding:12px 28px;
+  font-size:1rem;
+  font-weight:600;
+  background:#ffffff;
+  color:#950606;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  transition:transform .15s;
 }
-
-.question {
-  margin: 20px 0;
-}
-
-.question p {
-  font-weight: bold;
-}
-
-label {
-  display: block;
-  margin: 5px 0;
-}
-
-button {
-  margin-top: 30px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 12px 25px;
-  font-size: 1rem;
-  background: white;
-  color: #950606;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
+button:hover{transform:scale(1.05);}
