@@ -1,25 +1,26 @@
 document.getElementById("quizForm").addEventListener("submit", function(event) {
   event.preventDefault();
 
-  const required = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
-  let unanswered = required.filter(name => !document.querySelector(`input[name="${name}"]:checked`));
-
-  if (unanswered.length > 0) {
-    alert("Complete questionnaire to see results!");
-    return;
+  const totalQuestions = 10;
+  for (let i = 1; i <= totalQuestions; i++) {
+    if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+      alert("Complete questionnaire to see results!");
+      return;
+    }
   }
 
   const q3 = document.querySelector('input[name="q3"]:checked').value;
+  const q5 = document.querySelector('input[name="q5"]:checked').value;
 
   let room = "";
-
-  if (q3 === "whipped cream") {
+  if (q3 === "whipped") {
     room = "blue";
-  } else if (q3 === "sex toys") {
+  } else if (q3 === "toys") {
     room = "green";
-  } else if (q3 === "BDSM") {
+  } else if (q3 === "bdsm") {
     room = "red";
   }
 
-  window.location.href = `result.html?room=${room}`;
+  const sugar = (q5 === "yes" || q5 === "iam") ? "true" : "false";
+  window.location.href = `result.html?room=${room}&sugar=${sugar}`;
 });
