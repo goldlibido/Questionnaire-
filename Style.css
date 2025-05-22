@@ -1,175 +1,54 @@
-/* Reset default styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
-    background-color: #4A0000; /* Red background */
-    color: #FFFFFF; /* White text */
-    font-family: 'Montserrat', sans-serif; /* Custom font for body */
-    line-height: 1.6;
-    padding: 30px;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #950606;
+  color: white;
 }
 
-.questionnaire-container {
-    max-width: 700px;
-    width: 100%;
-    background-color: #4A0000; /* Match body background */
-    border: 2px solid #FF69B4; /* Neon pink border */
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 0 15px #FF69B4; /* Neon pink glow */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 20px;
 }
 
-.header {
-    text-align: center;
-    margin-bottom: 30px;
+.content-box {
+  background: linear-gradient(to right, #06954E, #064D95);
+  border-radius: 25px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
 }
 
 h1 {
-    font-family: 'Exo 2', sans-serif; /* Custom font for headings */
-    font-size: 2.5rem;
-    color: #FFFFFF;
-    text-shadow: 
-        0 0 5px #FF69B4,
-        0 0 10px #FF69B4,
-        0 0 15px #FF69B4; /* Neon pink glow */
-    margin-bottom: 10px;
-}
-
-h3 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-    font-size: 1.2rem;
-    color: #FFFFFF;
-    text-shadow: 0 0 3px #FF69B4; /* Subtle pink glow */
-}
-
-.question {
-    margin-bottom: 30px;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
 }
 
 h2 {
-    font-family: 'Exo 2', sans-serif;
-    font-size: 1.6rem;
-    color: #FFFFFF;
-    text-shadow: 0 0 5px #FF69B4; /* Subtle pink glow */
-    margin-bottom: 15px;
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 30px;
 }
 
-.options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.question {
+  margin-bottom: 20px;
 }
 
-.option-label {
-    display: flex;
-    align-items: flex-start;
-    font-size: 1rem;
-    color: #FFFFFF;
-    background-color: #FF0000; /* Red background for options */
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-shadow: 0 0 3px #FF69B4; /* Subtle pink glow */
-}
-
-.option-label:hover {
-    background-color: #FF3333; /* Lighter red on hover */
-}
-
-input[type="radio"] {
-    display: none;
-}
-
-.option-label::before {
-    content: "☐"; /* Checkbox symbol */
-    font-size: 1.2rem;
-    margin-right: 10px;
-    color: #FFFFFF;
-    flex-shrink: 0;
-    text-shadow: none;
-}
-
-input[type="radio"]:checked + .option-label::before {
-    content: "✔"; /* Checkmark */
-    color: #FF69B4; /* Neon pink */
-}
-
-input[type="radio"]:checked + .option-label {
-    background-color: #FF3333; /* Lighter red for selected */
+label {
+  display: block;
+  margin: 5px 0;
 }
 
 button {
-    background: linear-gradient(45deg, #FF69B4, #A100A1); /* Gradient button */
-    color: #FFFFFF;
-    border: none;
-    padding: 12px 25px;
-    font-family: 'Exo 2', sans-serif;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    cursor: pointer;
-    display: block;
-    margin: 20px auto;
-    text-shadow: 0 0 3px #FF69B4;
-    transition: transform 0.3s ease;
-}
-
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px #FF69B4;
-}
-
-.result {
-    text-align: center;
-    font-size: 1.2rem;
-    color: #FFFFFF;
-    text-shadow: 0 0 3px #FF69B4;
-    margin-top: 20px;
-}
-
-/* Responsive design */
-@media (max-width: 600px) {
-    body {
-        padding: 20px;
-    }
-
-    .questionnaire-container {
-        padding: 20px;
-    }
-
-    h1 {
-        font-size: 2rem;
-    }
-
-    h2 {
-        font-size: 1.4rem;
-    }
-
-    h3 {
-        font-size: 1rem;
-    }
-
-    .option-label {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
-
-    .option-label::before {
-        font-size: 1rem;
-        margin-right: 8px;
-    }
-
-    button {
-        padding: 10px 20px;
-        font-size: 1rem;
-    }
+  display: block;
+  margin: 30px auto 0;
+  padding: 12px 25px;
+  font-size: 1rem;
+  background: white;
+  color: #950606;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
