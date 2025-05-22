@@ -2,56 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Match Room</title>
-
-  <!-- same fonts as main page -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,600&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Results</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body{
-      margin:0;
-      font-family:'Montserrat',sans-serif;
-      color:#ffffff;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      min-height:100vh;
-      text-align:center;
-      padding:20px;
+    .message {
+      text-align: center;
+      font-size: 2em;
+      padding-top: 30vh;
     }
-    h1{
-      font-family:'Poppins',sans-serif;
-      font-style:italic;
-      font-weight:600;
-      font-size:2.6rem;
-      margin:0;
-      line-height:1.1;
-      text-shadow:
-        0 0 6px #ff69b4,
-        0 0 12px #ff69b4,
-        0 0 20px #ff69b4;
+
+    .underline-animate {
+      font-style: italic;
+      position: relative;
     }
-    p{font-size:1.2rem;margin-top:24px;}
-    .room-name{font-style:italic;}
+
+    .underline-animate::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: white;
+      animation: swipe 2s infinite linear;
+    }
   </style>
 </head>
 <body>
-  <div id="resultBox"></div>
+  <div class="message" id="result-message"></div>
 
   <script>
-    const resultColor = localStorage.getItem("resultColor") || "blue";
-    const showExtra   = localStorage.getItem("showExtra") === "true";
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("type");
+    const audition = params.get("audition");
 
-    let bg   = "#064D95",
-        room = "blue room";
-    if(resultColor === "green"){ bg="#06954E"; room="green room"; }
-    if(resultColor === "red")  { bg="#950606"; room="red room";  }
+    const messages = {
+      red: "Meet your type in the <span class='underline-animate'>red room</span>!",
+      green: "Meet your type in the <span class='underline-animate'>green room</span>!",
+      blue: "Meet your type in the <span class='underline-animate'>blue room</span>!",
+    };
 
-    document.body.style.backgroundColor = bg;
-    document.getElementById("resultBox").innerHTML = `
-      <h1>Meet your type in the <span class="room-name">${room}</span>!</h1>
-      ${ showExtra ? `<p>Audition for our reality dating show by participating in our speed-dating game, <em>The Pickup Line</em>!</p>` : "" }
-    `;
+    document.body.style.backgroundColor = type;
+    const resultText = messages[type] || "No match found.";
+    const extra = audition ? "<br><br>Audition for our reality dating show by participating in our speed dating game, <strong>The Pickup Line!</strong>" : "";
+
+    document.getElementById("result-message").innerHTML = resultText + extra;
   </script>
 </body>
 </html>
