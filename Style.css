@@ -6,7 +6,7 @@ body {
 }
 
 .border-wrapper {
-  padding: 25px; /* Adjusted for better border thickness */
+  padding: 25px;
   background: linear-gradient(to right, #06954E, #064D95);
 }
 
@@ -32,47 +32,29 @@ body {
 .subtitle {
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
-  color: rgba(255, 255, 255, 0.7); /* Faded white */
+  color: rgba(255, 255, 255, 0.7);
   text-align: center;
-  font-size: 1rem;
-  line-height: 1.3;
+  font-size: 1.1rem;
+  line-height: 1.4;
   margin-bottom: 30px;
 }
 
-.underline-animate {
+.scan-dalous {
   display: inline-block;
-  position: relative;
+  animation: waveItalic 2.5s ease-in-out infinite;
 }
 
-.underline-animate::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  height: 2px;
-  width: 100%;
-  background: white;
-  animation: underlineMove 2s linear infinite;
-}
-
-@keyframes underlineMove {
-  0% {
-    width: 0;
-    opacity: 1;
+@keyframes waveItalic {
+  0%, 100% {
+    font-style: normal;
   }
   50% {
-    width: 100%;
-    opacity: 1;
-  }
-  100% {
-    width: 0;
-    opacity: 0;
-    left: 100%;
+    font-style: italic;
   }
 }
 
 .question {
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 
 .question p {
@@ -83,7 +65,7 @@ body {
 label {
   display: block;
   margin-left: 15px;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   font-size: 0.98rem;
 }
 
