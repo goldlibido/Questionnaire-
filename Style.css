@@ -1,86 +1,129 @@
 body {
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #950606;
+  font-family: 'Arial', sans-serif;
+  background-color: #000;
   color: white;
-}
-
-.border-wrapper {
-  padding: 25px;
-  background: linear-gradient(to right, #06954E, #064D95);
 }
 
 .container {
-  background-color: #950606;
-  padding: 30px 20px;
-  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.gradient-border {
+  border: 12px solid;
+  border-image: linear-gradient(to right, #06954E, #064D95) 1;
+  padding: 30px;
   max-width: 700px;
-  margin: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .title {
-  font-family: 'Poppins', sans-serif;
-  font-style: italic;
-  font-size: 2.6rem;
-  color: white;
   text-align: center;
-  text-shadow: 0 0 8px #ff00ff, 0 0 12px #ff00ff;
+  font-size: 2.8em;
   line-height: 1.1;
-  margin-bottom: 10px;
+  color: white;
+  text-shadow: 0 0 5px hotpink;
+  margin-bottom: 20px;
 }
 
-.subtitle {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: bold;
-  color: rgba(255, 255, 255, 0.7);
+.subheader {
   text-align: center;
-  font-size: 1.1rem;
-  line-height: 1.4;
-  margin-bottom: 30px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #e0e0e0;
+  margin-bottom: 25px;
 }
 
 .scan-dalous {
-  display: inline-block;
-  animation: waveItalic 2.5s ease-in-out infinite;
+  font-style: italic;
+  animation: italicWave 3s infinite ease-in-out;
 }
 
-@keyframes waveItalic {
-  0%, 100% {
-    font-style: normal;
-  }
-  50% {
-    font-style: italic;
-  }
+@keyframes italicWave {
+  0%, 100% { font-style: normal; }
+  50% { font-style: italic; }
 }
 
 .question {
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 .question p {
-  margin-bottom: 6px;
-  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 label {
   display: block;
-  margin-left: 15px;
-  margin-bottom: 3px;
-  font-size: 0.98rem;
+  margin: 4px 0;
 }
 
-.submit-btn {
-  background-color: white;
-  color: #950606;
+.submit-button {
+  background-color: #950606;
+  color: white;
+  padding: 12px 24px;
+  font-size: 1em;
   border: none;
-  padding: 10px 20px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: 10px;
   cursor: pointer;
   margin-top: 20px;
 }
 
-.center {
+.alert-message {
+  color: red;
+  font-weight: bold;
   text-align: center;
+  margin-top: 10px;
+}
+
+.result-container {
+  text-align: center;
+  padding: 50px 20px;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+
+.result-title {
+  font-size: 2.8em;
+  font-style: italic;
+  line-height: 1.1;
+  margin-bottom: 25px;
+}
+
+.result-desc {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #e0e0e0;
+}
+
+.neon-blue {
+  text-shadow: 0 0 8px #00f0ff;
+}
+
+.neon-green {
+  text-shadow: 0 0 8px #00ff99;
+}
+
+.neon-red {
+  text-shadow: 0 0 8px #ff4f4f;
+}
+
+.glow {
+  text-shadow: 0 0 4px #fff, 0 0 8px #fff;
+}
+
+.glow-green {
+  text-shadow: 0 0 4px #99ffcc;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 2em;
+  }
+
+  .result-title {
+    font-size: 2em;
+  }
 }
