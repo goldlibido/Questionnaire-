@@ -15,36 +15,49 @@
       align-items: center;
       height: 100vh;
       padding: 20px;
+      color: white;
+      margin: 0;
+    }
+
+    .red {
+      background-color: #950606;
+    }
+
+    .green {
+      background-color: #06954E;
+    }
+
+    .blue {
+      background-color: #064D95;
     }
 
     h1 {
       font-family: 'Poppins', sans-serif;
       font-style: italic;
-      font-size: 2.8rem;
-      color: white;
+      font-size: 2.6rem;
+      line-height: 1.2;
       margin-bottom: 20px;
+      white-space: pre-line;
     }
 
     .red h1 {
-      text-shadow: 0 0 8px #ff4d4d;
+      color: white;
+      text-shadow: 
+        0 0 5px #ff0000,
+        0 0 10px #ff0000,
+        0 0 20px #ff0000,
+        0 0 40px #ff0000;
     }
 
-    .green h1 {
-      text-shadow: 0 0 8px #00ff99;
-    }
-
-    .blue h1 {
-      text-shadow: 0 0 8px #00ccff;
+    .green h1, .blue h1 {
+      text-shadow: 0 0 8px #fff;
     }
 
     p {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       max-width: 600px;
+      font-family: 'Montserrat', sans-serif;
     }
-
-    .red { background-color: #950606; }
-    .green { background-color: #06954E; }
-    .blue { background-color: #064D95; }
   </style>
 </head>
 <body class="">
@@ -57,15 +70,16 @@
     const show = params.get("show");
 
     const titleMap = {
-      red: "Meet your type in the <em>red room</em>!",
-      green: "Meet your type in the <em>green room</em>!",
-      blue: "Meet your type in the <em>blue room</em>!"
+      red: "Meet your type\nin the RED ROOM",
+      green: "Meet your type\nin the GREEN ROOM",
+      blue: "Meet your type\nin the BLUE ROOM"
     };
 
     const body = document.body;
     body.classList.add(room);
 
-    document.getElementById("roomTitle").innerHTML = titleMap[room] || "";
+    document.getElementById("roomTitle").innerText = titleMap[room] || "";
+
     if (show === "yes") {
       document.getElementById("extraText").innerHTML = 
         'Audition for our reality dating show by participating in our speed-dating game, <em>The Pickup Line!</em>';
