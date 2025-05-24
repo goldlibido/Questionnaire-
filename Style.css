@@ -100,11 +100,7 @@ label {
   }
 }
 
-.logo {
-  display: block;
-  max-width: 125px;
-  height: auto;
-  margin: 0 auto;
-  padding: 0px 0;
+.logo-img {
+max-width: 125px; height: auto;
   animation: goldGlow 3s ease-in-out infinite;
 }
