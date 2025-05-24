@@ -6,7 +6,7 @@ body {
 }
 
 .border-wrapper {
-  padding: 25px;
+  padding: 60px 25px 25px;
   background: linear-gradient(to right, #06954E, #064D95);
 }
 
@@ -83,4 +83,13 @@ label {
 
 .center {
   text-align: center;
+}
+.logo-wrapper {
+  padding-top: 40px;
+  padding-bottom: 20px;
+}
+
+.logo-img {
+  max-width: 150px;
+  height: auto;
 }
