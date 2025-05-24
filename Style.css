@@ -6,13 +6,13 @@ body {
 }
 
 .border-wrapper {
-  padding: 10px 25px 25px;
+  padding: 0px 25px 25px;
   background: linear-gradient(to right, #06954E, #064D95);
 }
 
 .container {
   background-color: #950606;
-  padding: 30px 20px;
+  padding: 20px 20px;
   border-radius: 25px;
   max-width: 700px;
   margin: auto;
@@ -85,7 +85,7 @@ label {
   text-align: center;
 }
 .logo-wrapper {
-  padding-top: 30px;
+  padding-top: 20px;
   padding-bottom: 20px;
 }
 
