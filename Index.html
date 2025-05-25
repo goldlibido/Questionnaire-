@@ -19,7 +19,48 @@
           10 questions<br>
           100% private<br>
           1000X more <br>
-          <span class="scan-dalous">SCAN-DALOUS</span> <br>
+         .scan-dalous {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  padding-bottom: 4px;
+}
+
+.scan-dalous::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #ffd700, #fff8b0, #ffd700);
+  animation: underline-sweep 2s ease-in-out infinite;
+  opacity: 0;
+}
+
+@keyframes underline-sweep {
+  0% {
+    left: 0;
+    width: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    width: 100%;
+    opacity: 1;
+  }
+  90% {
+    opacity: 0;
+  }
+  100% {
+    left: 100%;
+    width: 0;
+    opacity: 0;
+  }
+}
           than swiping
         </div>
       </div>
