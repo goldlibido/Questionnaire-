@@ -52,9 +52,8 @@
 </head>
 <body id="resultBody">
   <div class="title" id="resultText">Meet your type<br>in the<br>ROOM!</div>
-  <div class="subtitle">
-    Audition for our reality dating show by participating in our speed-dating game, <strong id="pickupLine">The Pickup Line!</strong>
-  </div>
+  <div class="subtitle" id="subtitleText"></div>
+
   <div class="bonus" id="bonusText" style="display: none;">
     Visit our chocolate shop and use the password: <strong id="sweetSpot">Sweet Spot!</strong><br>
     to gain entry to our speakeasy:<br>
@@ -70,6 +69,7 @@
 
     const resultText = document.getElementById("resultText");
     const resultBody = document.getElementById("resultBody");
+    const subtitleText = document.getElementById("subtitleText");
     const bonusText = document.getElementById("bonusText");
 
     if (room === "red") {
@@ -87,16 +87,13 @@
       bonusText.style.display = "block";
     }
 
-    // Audition invite logic
+    // Show custom subtitle if q4 and q6 match the desired values
     if (q4 === "yes" && (q6 === "flaunt" || q6 === "partner shine")) {
-      const inviteMessage = document.createElement("div");
-      inviteMessage.className = "bonus";
-      inviteMessage.innerHTML = `
+      subtitleText.innerHTML = `
         <strong>You’re invited to audition for our reality dating show!</strong><br>
-        Participate in the speed dating game <em>The Pickup Line</em> to audition.<br>
+        Participate in the speed dating game <em><strong>The Pickup Line</strong></em> to audition.<br>
         Once you’re in, you won’t want to pull out.
       `;
-      document.body.appendChild(inviteMessage);
     }
   </script>
 </body>
