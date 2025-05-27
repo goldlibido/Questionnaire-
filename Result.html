@@ -51,10 +51,12 @@
   </style>
 </head>
 <body id="resultBody">
+  <!-- Title remains always visible -->
   <div class="title" id="resultText">Meet your type<br>in the<br>ROOM!</div>
-  <div class="subtitle">
-    Audition for our reality dating show by participating in our speed-dating game, <strong id="pickupLine">The Pickup Line!</strong>
-  </div>
+  
+  <!-- The subtitle will be used for the audition text, but will remain empty unless conditions are met -->
+  <div class="subtitle" id="auditionText"></div>
+  
   <div class="bonus" id="bonusText" style="display: none;">
     Visit our chocolate shop and use the password: <strong id="sweetSpot">Sweet Spot!</strong><br>
     to gain entry to our speakeasy:<br>
@@ -65,11 +67,15 @@
     const params = new URLSearchParams(window.location.search);
     const room = params.get("room");
     const sugar = params.get("sugar");
+    const q4 = params.get("q4");
+    const q6 = params.get("q6");
 
     const resultText = document.getElementById("resultText");
     const resultBody = document.getElementById("resultBody");
     const bonusText = document.getElementById("bonusText");
+    const auditionText = document.getElementById("auditionText");
 
+    // Set background color and title based on room value (set by question 3)
     if (room === "red") {
       resultText.innerHTML = "Meet your type<br>in our<br>RED ROOM!";
       resultBody.classList.add("red");
@@ -81,8 +87,17 @@
       resultBody.classList.add("blue");
     }
 
+    // Show bonus if sugar parameter is true
     if (sugar === "true") {
       bonusText.style.display = "block";
+    }
+
+    // Conditionally show the audition text only when:
+    // Q4 is "yes" or "little" AND Q6 is "flaunt" or "partner shine"
+    if ((q4 === "yes" || q4 === "little") && (q6 === "flaunt" || q6 === "partner shine")) {
+      auditionText.innerHTML = 'You’re invited to audition for our reality dating show! Participate in the speed dating game <strong>The Pickup Line</strong> to audition. Once you’re in, you won’t want to pull out.';
+    } else {
+      auditionText.innerHTML = "";
     }
   </script>
 </body>
