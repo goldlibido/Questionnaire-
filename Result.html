@@ -34,17 +34,6 @@
       line-height: 1.5;
     }
 
-    .audition {
-      font-size: 1.2rem;
-      margin-top: 40px;
-      font-weight: 500;
-      line-height: 1.6;
-    }
-
-    .audition strong {
-      font-weight: 700;
-    }
-
     .red {
       background-color: #950606;
       text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
@@ -63,16 +52,13 @@
 </head>
 <body id="resultBody">
   <div class="title" id="resultText">Meet your type<br>in the<br>ROOM!</div>
-
-  <div class="bonus" id="bonusText" style="display: none;">
-    Visit our chocolate shop and use the password: <strong id="sweetSpot">Sweet Spot!</strong><br>
-    to gain entry to our speakeasy:<br>
-    <strong id="sugarDaddys">Sugar Daddy’s</strong>
+  <div class="subtitle" id="auditionText" style="display:none;">
+    You’re invited to audition for our reality dating show! Participate in the speed dating game <strong>The Pickup Line</strong> to audition. Once you’re in, you won’t want to pull out.
   </div>
-
-  <div class="audition" id="auditionText" style="display: none;">
-    You’re invited to audition for our reality dating show! Participate in the speed dating game
-    <strong>The Pickup Line</strong> to audition. Once you’re in, you won’t want to pull out.
+  <div class="bonus" id="bonusText" style="display: none;">
+    Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
+    to gain entry to our speakeasy:<br>
+    <strong>Sugar Daddy’s</strong>
   </div>
 
   <script>
@@ -87,6 +73,7 @@
     const bonusText = document.getElementById("bonusText");
     const auditionText = document.getElementById("auditionText");
 
+    // ROOM logic
     if (room === "red") {
       resultText.innerHTML = "Meet your type<br>in our<br>RED ROOM!";
       resultBody.classList.add("red");
@@ -98,12 +85,15 @@
       resultBody.classList.add("blue");
     }
 
-    if (sugar === "true") {
-      bonusText.style.display = "block";
+    // New audition logic (based on q4 or q6)
+    const showAudition = (q4 === "yes" || q6 === "flaunt" || q6 === "partner shine");
+    if (showAudition) {
+      auditionText.style.display = "block";
     }
 
-    if (q4 === "yes" && (q6 === "flaunt" || q6 === "partner shine")) {
-      auditionText.style.display = "block";
+    // Sugar logic
+    if (sugar === "true") {
+      bonusText.style.display = "block";
     }
   </script>
 </body>
