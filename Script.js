@@ -10,7 +10,9 @@ document.getElementById("quizForm").addEventListener("submit", function(event) {
   }
 
   const q3 = document.querySelector('input[name="q3"]:checked').value;
+  const q4 = document.querySelector('input[name="q4"]:checked').value;
   const q5 = document.querySelector('input[name="q5"]:checked').value;
+  const q6 = document.querySelector('input[name="q6"]:checked').value;
 
   let room = "";
   if (q3 === "whipped") {
@@ -22,5 +24,14 @@ document.getElementById("quizForm").addEventListener("submit", function(event) {
   }
 
   const sugar = (q5 === "yes" || q5 === "iam") ? "true" : "false";
-  window.location.href = `result.html?room=${room}&sugar=${sugar}`;
+
+  // Pass q4 and q6 to result.html for audition logic
+  const params = new URLSearchParams({
+    room,
+    sugar,
+    q4,
+    q6
+  });
+
+  window.location.href = `result.html?${params.toString()}`;
 });
