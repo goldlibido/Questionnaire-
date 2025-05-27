@@ -65,6 +65,8 @@
     const params = new URLSearchParams(window.location.search);
     const room = params.get("room");
     const sugar = params.get("sugar");
+    const q4 = params.get("q4");
+    const q6 = params.get("q6");
 
     const resultText = document.getElementById("resultText");
     const resultBody = document.getElementById("resultBody");
@@ -83,6 +85,18 @@
 
     if (sugar === "true") {
       bonusText.style.display = "block";
+    }
+
+    // Audition invite logic
+    if (q4 === "yes" && (q6 === "flaunt" || q6 === "partner shine")) {
+      const inviteMessage = document.createElement("div");
+      inviteMessage.className = "bonus";
+      inviteMessage.innerHTML = `
+        <strong>You’re invited to audition for our reality dating show!</strong><br>
+        Participate in the speed dating game <em>The Pickup Line</em> to audition.<br>
+        Once you’re in, you won’t want to pull out.
+      `;
+      document.body.appendChild(inviteMessage);
     }
   </script>
 </body>
