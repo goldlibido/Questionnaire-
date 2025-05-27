@@ -3,87 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Result</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      color: white;
-      text-align: center;
-      padding: 50px 20px;
-    }
-
-    .title {
-      font-size: 2.6rem;
-      font-weight: bold;
-      font-style: italic;
-      line-height: 1.2;
-      margin-bottom: 25px;
-    }
-
-    .subtitle {
-      font-size: 1.2rem;
-      font-weight: 400;
-      margin-bottom: 30px;
-    }
-
-    .bonus {
-      font-size: 1.1rem;
-      margin-top: 20px;
-      line-height: 1.5;
-    }
-
-    .red {
-      background-color: #950606;
-      text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
-    }
-
-    .green {
-      background-color: #06954E;
-      text-shadow: 0 0 5px #88e788, 0 0 10px #88e788;
-    }
-
-    .blue {
-      background-color: #064D95;
-      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
-    }
-  </style>
+  <title>The 1st In-Person Dating App</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:ital,wght@1,700&display=swap" rel="stylesheet">
 </head>
-<body id="resultBody">
-  <div class="title" id="resultText">Meet your type<br>in the<br>ROOM!</div>
-  <div class="subtitle">
-    Audition for our reality dating show by participating in our speed-dating game, <strong id="pickupLine">The Pickup Line!</strong>
-  </div>
-  <div class="bonus" id="bonusText" style="display: none;">
-    Visit our chocolate shop and use the password: <strong id="sweetSpot">Sweet Spot!</strong><br>
-    to gain entry to our speakeasy:<br>
-    <strong id="sugarDaddys">Sugar Daddy’s</strong>
+<body>
+  <div class="border-wrapper">
+    <div class="logo-wrapper center">
+      <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="golden-le-libido-logo" class="logo-img">
+    </div>
+    <div class="container">
+      <div class="center">
+        <div class="title">The 1st<br>In-Person<br>Dating App</div>
+        <div class="subtitle">
+          10 questions<br>
+          100% private<br>
+          1000X more <br>
+        <span class="scan-dalous">SCAN-DALOUS</span><br>
+          than swiping
+        </div>
+      </div>
+
+      <form id="quizForm">
+        <!-- QUESTIONS START HERE -->
+
+        <!-- Q1–Q10 already included in your version -->
+
+        <div class="question">
+          <p>1. Do you prefer to make the first move or get approached?</p>
+          <label><input type="radio" name="q1" value="first"> I want to make the first move</label>
+          <label><input type="radio" name="q1" value="get"> I want to get approached</label>
+        </div>
+
+        <div class="question">
+          <p>2. Are you looking for love or a good time?</p>
+          <label><input type="radio" name="q2" value="love"> Love</label>
+          <label><input type="radio" name="q2" value="either"> Either one, I like to let things evolve naturally</label>
+          <label><input type="radio" name="q2" value="fun"> A good time</label>
+        </div>
+
+        <div class="question">
+          <p>3. Which vibe turns you on the most</p>
+          <label><input type="radio" name="q3" value="whipped"> Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, playing with whipped cream</label>
+          <label><input type="radio" name="q3" value="toys"> One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, experimenting with new sex toys</label>
+          <label><input type="radio" name="q3" value="bdsm"> Power exchange, rough sex, spanking, BDSM, naughty mind games, filthy dirty talk</label>
+        </div>
+
+        <div class="question">
+          <p>4. Are you comfortable with PDA?</p>
+          <label><input type="radio" name="q4" value="yes"> Yes</label>
+          <label><input type="radio" name="q4" value="little"> Only a little</label>
+          <label><input type="radio" name="q4" value="no"> No</label>
+        </div>
+
+        <div class="question">
+          <p>5. Are you looking for a sugar daddy/mama?</p>
+          <label><input type="radio" name="q5" value="yes"> Yes</label>
+          <label><input type="radio" name="q5" value="no"> No thank you</label>
+          <label><input type="radio" name="q5" value="iam"> Are you kidding? I am the sugar daddy/momma!</label>
+        </div>
+
+        <div class="question">
+          <p>6. Do you like to be the center of attention?</p>
+          <label><input type="radio" name="q6" value="flaunt"> Yes, like they say, “if you got it, flaunt it.”</label>
+          <label><input type="radio" name="q6" value="partner shine"> Yes, but I prefer to let my partner shine</label>
+          <label><input type="radio" name="q6" value="partner main"> No, I don’t want to be in the spotlight but I don’t mind if my partner wants to be the main character</label>
+          <label><input type="radio" name="q6" value="blend"> No, I’d rather my partner and I blend in</label>
+        </div>
+
+        <div class="question">
+          <p>7. Would you enjoy a threesome?</p>
+          <label><input type="radio" name="q7" value="no"> No I’d like my partner to be mine & only mine</label>
+          <label><input type="radio" name="q7" value="maybe"> Maybe, I’d consider it</label>
+          <label><input type="radio" name="q7" value="yeah"> Yeah it’d be fun</label>
+          <label><input type="radio" name="q7" value="hell yeah"> Hell yeah! Why stop at 3? The more the merrier</label>
+        </div>
+
+        <div class="question">
+          <p>8. Do you prefer to give pleasure or receive it?</p>
+          <label><input type="radio" name="q8" value="give"> Give pleasure</label>
+          <label><input type="radio" name="q8" value="receive"> Receive pleasure</label>
+        </div>
+
+        <div class="question">
+          <p>9. Who do you want to wear the pants?</p>
+          <label><input type="radio" name="q9" value="control"> I like to be in control</label>
+          <label><input type="radio" name="q9" value="partner control"> I want my partner to take control</label>
+          <label><input type="radio" name="q9" value="dom street"> I’m dominant in the streets & submissive in the sheets</label>
+          <label><input type="radio" name="q9" value="sub street"> I’m submissive in the streets & dominant in the sheets</label>
+          <label><input type="radio" name="q9" value="switch"> I like to switch it up</label>
+        </div>
+
+        <div class="question">
+          <p>10. When the clothes come off, what kind of dirty talk makes you melt?</p>
+          <label><input type="radio" name="q10" value="praise"> Praise</label>
+          <label><input type="radio" name="q10" value="teasing"> Playful teasing</label>
+          <label><input type="radio" name="q10" value="degradation"> Degradation (we don’t judge, unless you’re into that)</label>
+          <label><input type="radio" name="q10" value="filthy"> The filthier, the better</label>
+          <label><input type="radio" name="q10" value="fifth"> I plead the fifth</label>
+        </div>
+
+        <div class="center">
+          <button class="submit-btn" type="submit">Meet Your Type Now!</button>
+        </div>
+      </form>
+    </div>
   </div>
 
+  <!-- JavaScript to pass q4 and q6 values -->
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const room = params.get("room");
-    const sugar = params.get("sugar");
+    document.getElementById("quizForm").addEventListener("submit", function(event) {
+      event.preventDefault();
 
-    const resultText = document.getElementById("resultText");
-    const resultBody = document.getElementById("resultBody");
-    const bonusText = document.getElementById("bonusText");
+      const q4 = document.querySelector('input[name="q4"]:checked')?.value;
+      const q6 = document.querySelector('input[name="q6"]:checked')?.value;
 
-    if (room === "red") {
-      resultText.innerHTML = "Meet your type<br>in our<br>RED ROOM!";
-      resultBody.classList.add("red");
-    } else if (room === "green") {
-      resultText.innerHTML = "Meet your type<br>in our<br>GREEN ROOM!";
-      resultBody.classList.add("green");
-    } else if (room === "blue") {
-      resultText.innerHTML = "Meet your type<br>in our<br>BLUE ROOM!";
-      resultBody.classList.add("blue");
-    }
+      const params = new URLSearchParams();
+      if (q4) params.set("q4", q4);
+      if (q6) params.set("q6", q6);
 
-    if (sugar === "true") {
-      bonusText.style.display = "block";
-    }
+      window.location.href = `result.html?${params.toString()}`;
+    });
   </script>
 </body>
 </html>
