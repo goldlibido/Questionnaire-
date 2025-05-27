@@ -25,6 +25,10 @@
       </div>
 
       <form id="quizForm">
+        <!-- QUESTIONS START HERE -->
+
+        <!-- Q1–Q10 already included in your version -->
+
         <div class="question">
           <p>1. Do you prefer to make the first move or get approached?</p>
           <label><input type="radio" name="q1" value="first"> I want to make the first move</label>
@@ -90,14 +94,14 @@
           <label><input type="radio" name="q9" value="switch"> I like to switch it up</label>
         </div>
 
-       <div class="question">
-  <p>10. When the clothes come off, what kind of dirty talk makes you melt?</p>
-  <label><input type="radio" name="q10" value="praise"> Praise</label>
-  <label><input type="radio" name="q10" value="teasing"> Playful teasing</label>
-  <label><input type="radio" name="q10" value="degradation"> Degradation (we don’t judge, unless you’re into that)</label>
-  <label><input type="radio" name="q10" value="filthy"> The filthier, the better</label>
-  <label><input type="radio" name="q10" value="fifth"> I plead the fifth</label>
-</div>
+        <div class="question">
+          <p>10. When the clothes come off, what kind of dirty talk makes you melt?</p>
+          <label><input type="radio" name="q10" value="praise"> Praise</label>
+          <label><input type="radio" name="q10" value="teasing"> Playful teasing</label>
+          <label><input type="radio" name="q10" value="degradation"> Degradation (we don’t judge, unless you’re into that)</label>
+          <label><input type="radio" name="q10" value="filthy"> The filthier, the better</label>
+          <label><input type="radio" name="q10" value="fifth"> I plead the fifth</label>
+        </div>
 
         <div class="center">
           <button class="submit-btn" type="submit">Meet Your Type Now!</button>
@@ -105,6 +109,21 @@
       </form>
     </div>
   </div>
-  <script src="script.js"></script>
+
+  <!-- JavaScript to pass q4 and q6 values -->
+  <script>
+    document.getElementById("quizForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const q4 = document.querySelector('input[name="q4"]:checked')?.value;
+      const q6 = document.querySelector('input[name="q6"]:checked')?.value;
+
+      const params = new URLSearchParams();
+      if (q4) params.set("q4", q4);
+      if (q6) params.set("q6", q6);
+
+      window.location.href = `result.html?${params.toString()}`;
+    });
+  </script>
 </body>
 </html>
