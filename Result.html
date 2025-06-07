@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Result</title>
+  <title>Your Results</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -13,6 +13,7 @@
       text-align: center;
       padding: 50px 20px;
     }
+
     .title {
       font-size: 2.6rem;
       font-weight: bold;
@@ -20,118 +21,140 @@
       line-height: 1.2;
       margin-bottom: 25px;
     }
-    .red { background-color: #950606; text-shadow: 0 0 5px #ff4d4d; }
-    .green { background-color: #06954E; text-shadow: 0 0 5px #88e788; }
-    .blue { background-color: #064D95; text-shadow: 0 0 5px #57b9ff; }
-    .section { margin-top: 20px; font-size: 1.1rem; line-height: 1.6; }
+
+    .subtitle {
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      margin: 20px auto;
+      max-width: 700px;
+    }
+
+    .red {
+      background-color: #950606;
+      text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
+    }
+
+    .green {
+      background-color: #06954E;
+      text-shadow: 0 0 5px #88e788, 0 0 10px #88e788;
+    }
+
+    .blue {
+      background-color: #064D95;
+      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
+    }
   </style>
 </head>
 <body id="resultBody">
-  <div class="title" id="resultTitle"></div>
-  <div class="section" id="archetypeInfo"></div>
-  <div class="section" id="sugarInvite" style="display:none;"></div>
-  <div class="section" id="auditionInvite" style="display:none;"></div>
-  <div class="section" id="compatibilityMatches"></div>
+  <div class="title" id="roomTitle">Your Room:</div>
+  <div class="subtitle" id="archetypeText">Your Archetype</div>
+
+  <div class="section" id="inviteText"></div>
+  <div class="section" id="sugarText"></div>
+  <div class="section" id="compatibilityText"></div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const answers = {};
-    for (let i = 1; i <= 10; i++) {
-      answers[`q${i}`] = params.get(`q${i}`);
-    }
+    const q3 = params.get("q3");
+    const q4 = params.get("q4");
+    const q5 = params.get("q5");
+    const q6 = params.get("q6");
+    const q9 = params.get("q9");
 
+    const roomTitle = document.getElementById("roomTitle");
     const resultBody = document.getElementById("resultBody");
-    const resultTitle = document.getElementById("resultTitle");
-    const archetypeInfo = document.getElementById("archetypeInfo");
-    const sugarInvite = document.getElementById("sugarInvite");
-    const auditionInvite = document.getElementById("auditionInvite");
-    const compatibilityMatches = document.getElementById("compatibilityMatches");
+    const archetypeText = document.getElementById("archetypeText");
+    const inviteText = document.getElementById("inviteText");
+    const sugarText = document.getElementById("sugarText");
+    const compatibilityText = document.getElementById("compatibilityText");
 
-    // Room = determined ONLY by Q3
-    let room;
-    switch (answers.q3) {
-      case "whipped": room = "blue"; break;
-      case "toys": room = "green"; break;
-      case "bdsm": room = "red"; break;
-      default: room = "blue";
+    // Room (Q3 dominates)
+    let room = "";
+    if (q3 === "whipped") {
+      room = "blue";
+      resultBody.classList.add("blue");
+      roomTitle.innerText = "You're in the BLUE ROOM";
+    } else if (q3 === "toys") {
+      room = "green";
+      resultBody.classList.add("green");
+      roomTitle.innerText = "You're in the GREEN ROOM";
+    } else if (q3 === "bdsm") {
+      room = "red";
+      resultBody.classList.add("red");
+      roomTitle.innerText = "You're in the RED ROOM";
     }
-    resultBody.classList.add(room);
-    resultTitle.innerHTML = `Welcome to the <strong>${room.toUpperCase()} ROOM</strong>`;
 
-    // Archetype logic: combine Q9 with room
+    // Archetype logic
+    let type = "";
     const archetypes = {
-      blue: {
-        "control": "Tender Protector",
-        "partner control": "Devoted Darling",
-        "switch": "Mood Multiplier",
-        "dom street": "Hottie Next Door",
-        "sub street": "Hottie Next Door"
-      },
-      green: {
-        "control": "Charmer in Charge",
-        "partner control": "Promiscuous Plaything",
-        "switch": "Generous Giver",
-        "dom street": "Bedroom Adventurer",
-        "sub street": "Bedroom Adventurer"
-      },
-      red: {
-        "control": "Dungeon Master",
-        "partner control": "Obedient Pet",
-        "switch": "The Punish Me",
-        "dom street": "The Provoker",
-        "sub street": "The Provoker"
-      }
+      // Blue Room
+      "blue-control": ["Type 4: Tender Protector", "Your calm is commanding."],
+      "blue-partner control": ["Type 1: Devoted Darling", "Obedience isn’t weakness. It’s devotion."],
+      "blue-switch": ["Type 2: Mood Multiplier", "You match their vibe—and raise it."],
+      "blue-dom street": ["Type 3: Hottie Next Door", "You bring the heat when it counts."],
+      "blue-sub street": ["Type 2: Mood Multiplier", "You match their vibe—and raise it."],
+
+      // Green Room
+      "green-control": ["Type 8: Charmer in Charge", "You don’t just take control. You make them want you to."],
+      "green-partner control": ["Type 5: Promiscuous Plaything", "Curious. Craving. Ready."],
+      "green-switch": ["Type 6: Generous Giver", "If it feels good, it goes both ways."],
+      "green-dom street": ["Type 7: Bedroom Adventurer", "Curiosity leads. Desire follows."],
+      "green-sub street": ["Type 6: Generous Giver", "If it feels good, it goes both ways."],
+
+      // Red Room
+      "red-control": ["Type 12: Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it."],
+      "red-partner control": ["Type 9: Obedient Pet", "Obedience is pleasure."],
+      "red-switch": ["Type 10: The Punish Me", "What you call defiance, I call foreplay."],
+      "red-dom street": ["Type 11: The Provoker", "You press buttons—on purpose."],
+      "red-sub street": ["Type 10: The Punish Me", "What you call defiance, I call foreplay."]
     };
 
-    const q9 = answers.q9?.trim();
-    const archetype = archetypes[room][q9] || "Mood Multiplier"; // fallback
+    const key = `${room}-${q9}`;
+    const [typeName, slogan] = archetypes[key] || ["Unknown", "Let's explore further."];
+    archetypeText.innerHTML = `<strong>${typeName}</strong><br><em>${slogan}</em>`;
 
-    archetypeInfo.innerHTML = `<strong>Your Archetype:</strong> ${archetype}`;
-
-    // Compatibility
-    const compatibility = {
-      "Dungeon Master": ["Obedient Pet", "The Punish Me", "Promiscuous Plaything"],
-      "The Provoker": ["The Punish Me", "Obedient Pet", "Generous Giver"],
-      "The Punish Me": ["The Provoker", "Dungeon Master", "Bedroom Adventurer"],
-      "Obedient Pet": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
-      "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Obedient Pet"],
-      "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "The Punish Me"],
-      "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "The Provoker"],
-      "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
-      "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
-      "Hottie Next Door": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
-      "Mood Multiplier": ["Hottie Next Door", "Tender Protector", "Bedroom Adventurer"],
-      "Devoted Darling": ["Tender Protector", "Hottie Next Door", "Charmer in Charge"]
+    // Compatibility logic
+    const matches = {
+      "Type 1: Devoted Darling": ["Type 4: Tender Protector", "Type 3: Hottie Next Door", "Wildcard: Type 8"],
+      "Type 2: Mood Multiplier": ["Type 3: Hottie Next Door", "Type 4: Tender Protector", "Wildcard: Type 7"],
+      "Type 3: Hottie Next Door": ["Type 2: Mood Multiplier", "Type 1: Devoted Darling", "Wildcard: Type 6"],
+      "Type 4: Tender Protector": ["Type 1: Devoted Darling", "Type 2: Mood Multiplier", "Wildcard: Type 5"],
+      "Type 5: Promiscuous Plaything": ["Type 8: Charmer in Charge", "Type 7: Bedroom Adventurer", "Wildcard: Type 12"],
+      "Type 6: Generous Giver": ["Type 7: Bedroom Adventurer", "Type 8: Charmer in Charge", "Wildcard: Type 11"],
+      "Type 7: Bedroom Adventurer": ["Type 6: Generous Giver", "Type 5: Promiscuous Plaything", "Wildcard: Type 10"],
+      "Type 8: Charmer in Charge": ["Type 5: Promiscuous Plaything", "Type 6: Generous Giver", "Wildcard: Type 9"],
+      "Type 9: Obedient Pet": ["Type 12: Dungeon Master", "Type 11: The Provoker", "Wildcard: Type 8"],
+      "Type 10: The Punish Me": ["Type 11: The Provoker", "Type 12: Dungeon Master", "Wildcard: Type 7"],
+      "Type 11: The Provoker": ["Type 10: The Punish Me", "Type 9: Obedient Pet", "Wildcard: Type 6"],
+      "Type 12: Dungeon Master": ["Type 9: Obedient Pet", "Type 10: The Punish Me", "Wildcard: Type 5"]
     };
 
-    const [match1, match2, wildcard] = compatibility[archetype] || [];
-    compatibilityMatches.innerHTML = `
-      <strong>Your Matches:</strong><br>
-      ❤️ ${match1}<br>
-      💞 ${match2}<br>
-      🎲 Wildcard: ${wildcard}
-    `;
-
-    // Sugar Daddy’s Speakeasy Invite — Q5
-    if (["yes", "iam"].includes(answers.q5)) {
-      sugarInvite.style.display = "block";
-      sugarInvite.innerHTML = `
-        🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
-        to gain entry to our speakeasy: <strong>Sugar Daddy’s</strong>
+    if (matches[typeName]) {
+      const [match1, match2, wildcard] = matches[typeName];
+      compatibilityText.innerHTML = `
+        <strong>Top Compatibility Matches:</strong><br>
+        1. ${match1}<br>
+        2. ${match2}<br>
+        <strong>${wildcard}</strong>
       `;
     }
 
-    // Audition Invite — Q4 + Q6
+    // Sugar Daddy’s Invite
+    if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
+      sugarText.innerHTML = `🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>to gain entry to our Speakeasy:<br><strong>Sugar Daddy’s</strong>`;
+    }
+
+    // Audition Invite
     if (
-      ["yes", "little"].includes(answers.q4) &&
-      ["flaunt", "partner shine"].includes(answers.q6)
+      q4 === "yes" || q4 === "little" ||
+      q6 === "flaunt" || q6 === "partner shine"
     ) {
-      auditionInvite.style.display = "block";
-      auditionInvite.innerHTML = `
-        🎬 You’re invited to audition for our reality dating show!<br>
-        Participate in the speed dating game <strong>The Pickup Line</strong> to audition.<br>
-        Once you’re in, you won’t want to pull out.
-      `;
+      inviteText.innerHTML = `🎬 You’re invited to audition for our reality dating show!<br>
+      Participate in the speed dating game <strong>The Pickup Line</strong> to audition.<br>Once you’re in, you won’t want to pull out.`;
     }
   </script>
 </body>
