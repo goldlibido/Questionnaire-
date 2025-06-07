@@ -13,43 +13,37 @@
       text-align: center;
       padding: 50px 20px;
     }
-
     .title {
       font-size: 2.6rem;
       font-weight: bold;
       font-style: italic;
       line-height: 1.2;
       margin-bottom: 25px;
+      white-space: pre-line;
     }
-
     .subtitle {
       font-size: 1.2rem;
       font-weight: 400;
       margin-bottom: 30px;
     }
-
     .section {
       margin: 25px auto;
       max-width: 700px;
       font-size: 1.1rem;
       line-height: 1.6;
     }
-
     .red {
       background-color: #950606;
       text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
     }
-
     .green {
       background-color: #06954E;
       text-shadow: 0 0 5px #88e788, 0 0 10px #88e788;
     }
-
     .blue {
       background-color: #064D95;
       text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
     }
-
     button {
       margin-top: 20px;
       padding: 10px 18px;
@@ -61,19 +55,16 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     #typeDetails {
       margin-top: 20px;
-      font-style: italic;
       font-size: 1rem;
       display: none;
     }
   </style>
 </head>
-<body id="resultBody">
+<body class="" id="resultBody">
   <div class="title" id="roomTitle">Meet your type in the ROOM</div>
   <div class="subtitle" id="archetypeText">Your Archetype</div>
-
   <div class="section" id="inviteText"></div>
   <div class="section" id="sugarText"></div>
   <div class="section" id="compatibilityText"></div>
@@ -112,58 +103,20 @@
     }
 
     const archetypes = {
-      "blue-control": ["Tender Protector", "Your calm is commanding.", "“The strongest love is the love that can demonstrate its fragility.” – Paulo Coelho"],
-      "blue-partner control": ["Devoted Darling", "Obedience isn’t weakness. It’s devotion.", "“Love is composed of a single soul inhabiting two bodies.” – Aristotle"],
-      "blue-switch": ["Mood Multiplier", "You match their vibe—and raise it.", "“Tell me what you like, and I’ll show you how much I’m listening.” – Anonymous"],
-      "blue-dom street": ["Hottie Next Door", "You bring the heat when it counts.", "“I like being in control of how I feel and who I share that with.” – SZA"],
-      "blue-sub street": ["Mood Multiplier", "You match their vibe—and raise it.", "“Tell me what you like, and I’ll show you how much I’m listening.” – Anonymous"],
-
-      "green-control": ["Charmer in Charge", "You don’t just take control. You make them want you to.", "“If you can make them laugh, you can make them do anything.” – Marilyn Monroe"],
-      "green-partner control": ["Promiscuous Plaything", "Curious. Craving. Ready.", "“Sex is part of nature. I go along with nature.” – Marilyn Monroe"],
-      "green-switch": ["Generous Giver", "If it feels good, it goes both ways.", "“Sex is an emotion in motion.” – Mae West"],
-      "green-dom street": ["Bedroom Adventurer", "Curiosity leads. Desire follows.", "“It is not by obeying the rules that we come to know pleasure, but by breaking them.” – Anaïs Nin"],
-      "green-sub street": ["Generous Giver", "If it feels good, it goes both ways.", "“Sex is an emotion in motion.” – Mae West"],
-
-      "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "“Power is the ultimate aphrodisiac.” – Henry Kissinger"],
-      "red-partner control": ["Obedient Pet", "Obedience is pleasure.", "“True strength lies in submission.” – Henry Miller"],
-      "red-switch": ["The Punish Me", "What you call defiance, I call foreplay.", "“Sometimes I want to be punished… because it means you’re paying attention.” – Anonymous"],
-      "red-dom street": ["The Provoker", "You press buttons—on purpose.", "“I don’t do subtle. I do powerful.” – Madonna"],
-      "red-sub street": ["The Punish Me", "What you call defiance, I call foreplay.", "“Sometimes I want to be punished… because it means you’re paying attention.” – Anonymous"]
+      "blue-control": ["Tender Protector", "Your calm is commanding.", "“The strongest love is the love that can demonstrate its fragility.” – Paulo Coelho", "You’re not loud—you’re grounded. You lead through presence, not pressure. People follow you not because you demand it, but because they trust you’ll catch them."],
+      "blue-partner control": ["Devoted Darling", "Obedience isn’t weakness. It’s devotion.", "“Love is composed of a single soul inhabiting two bodies.” – Aristotle", "You’re not looking to impress. You’re looking to belong. Loyalty is your kink, and closeness is your turn-on. When trust is earned, you open wide."],
+      "blue-switch": ["Mood Multiplier", "You match their vibe—and raise it.", "“Tell me what you like, and I’ll show you how much I’m listening.” – Anonymous", "You’re tuned in and turned on by the energy around you. You shift roles naturally—never forced, always felt. Being fluid isn’t indecision—it’s intuition."],
+      "blue-dom street": ["Hottie Next Door", "You bring the heat when it counts.", "“I like being in control of how I feel and who I share that with.” – SZA", "Most of the time, you like to take charge and set the tone, not follow it. You’re not like a thermostat that adjusts to your surroundings, you bring the heat, especially when it counts."],
+      "blue-sub street": ["Mood Multiplier", "You match their vibe—and raise it.", "“Tell me what you like, and I’ll show you how much I’m listening.” – Anonymous", "You’re tuned in and turned on by the energy around you. You shift roles naturally—never forced, always felt. Being fluid isn’t indecision—it’s intuition."]
     };
 
     const key = `${room}-${q9}`;
-    const [typeName, slogan, quote] = archetypes[key] || ["Undefined", "Let’s explore further.", ""];
+    const [typeName, slogan, quote, description] = archetypes[key] || ["Undefined", "Let’s explore further.", "", ""];
 
     archetypeText.innerHTML = `<strong>${typeName}</strong><br><em>${slogan}</em>`;
 
-    const matches = {
-      "Devoted Darling": ["Tender Protector", "Hottie Next Door", "Promiscuous Plaything"],
-      "Mood Multiplier": ["Hottie Next Door", "Tender Protector", "Bedroom Adventurer"],
-      "Hottie Next Door": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
-      "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
-      "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
-      "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "The Provoker"],
-      "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "The Punish Me"],
-      "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Obedient Pet"],
-      "Obedient Pet": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
-      "The Punish Me": ["The Provoker", "Dungeon Master", "Bedroom Adventurer"],
-      "The Provoker": ["The Punish Me", "Obedient Pet", "Generous Giver"],
-      "Dungeon Master": ["Obedient Pet", "The Punish Me", "Promiscuous Plaything"]
-    };
-
-    if (matches[typeName]) {
-      const [m1, m2, wild] = matches[typeName];
-      compatibilityText.innerHTML = `
-        <strong>Top 3 Compatibility Matches:</strong><br>
-        1. ${m1}<br>
-        2. ${m2}<br>
-        3. Wildcard Match: ${wild}
-      `;
-    }
-
     if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
-      sugarText.innerHTML = `🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
-      to gain entry to our Speakeasy:<br><strong>Sugar Daddy’s</strong>`;
+      sugarText.innerHTML = `🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>to gain entry to our Speakeasy:<br><strong>Sugar Daddy’s</strong>`;
     }
 
     if (
@@ -179,9 +132,19 @@
       `;
     }
 
+    compatibilityText.innerHTML = `
+      <strong>Top 3 Compatibility Matches:</strong><br>
+      1. Obedient Pet<br>
+      2. The Punish Me<br>
+      3. Wildcard Match: Promiscuous Plaything
+    `;
+
     function showTypeDetails() {
       typeDetails.style.display = "block";
-      typeDetails.innerHTML = `<br><strong>Description:</strong><br>${quote}`;
+      typeDetails.innerHTML = `
+        <br><strong>Quote:</strong><br>${quote}<br><br>
+        <strong>Description:</strong><br>${description}
+      `;
     }
   </script>
 </body>
