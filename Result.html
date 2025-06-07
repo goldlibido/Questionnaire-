@@ -77,7 +77,7 @@
   <div class="section" id="inviteText"></div>
   <div class="section" id="sugarText"></div>
   <div class="section" id="compatibilityText"></div>
-  <div><button onclick="showTypeDetails()">Learn About Your Type</button></div>
+  <div><button onclick="showTypeDetails()">Learn more about your type</button></div>
   <div id="typeDetails"></div>
 
   <script>
@@ -112,27 +112,27 @@
     }
 
     const archetypes = {
-      "blue-control": ["Type 4: Tender Protector", "Your calm is commanding.", "“The strongest love is the love that can demonstrate its fragility.” – Paulo Coelho"],
-      "blue-partner control": ["Type 1: Devoted Darling", "Obedience isn’t weakness. It’s devotion.", "“Love is composed of a single soul inhabiting two bodies.” – Aristotle"],
-      "blue-switch": ["Type 2: Mood Multiplier", "You match their vibe—and raise it.", "“Tell me what you like, and I’ll show you how much I’m listening.” – Anonymous"],
-      "blue-dom street": ["Type 3: Hottie Next Door", "You bring the heat when it counts.", "“I like being in control of how I feel and who I share that with.” – SZA"],
-      "blue-sub street": ["Type 2: Mood Multiplier", "You match their vibe—and raise it.", "“Tell me what you like, and I’ll show you how much I’m listening.” – Anonymous"],
+      "blue-control": ["Type 4: Tender Protector", "Your calm is commanding.", "The strongest love is the love that can demonstrate its fragility. – Paulo Coelho", "You’re not loud—you’re grounded. You lead through presence, not pressure. People follow you not because you demand it, but because they trust you’ll catch them."],
+      "blue-partner control": ["Type 1: Devoted Darling", "Obedience isn’t weakness. It’s devotion.", "Love is composed of a single soul inhabiting two bodies. – Aristotle", "You’re not looking to impress. You’re looking to belong. Loyalty is your kink, and closeness is your turn-on. When trust is earned, you open wide."],
+      "blue-switch": ["Type 2: Mood Multiplier", "You match their vibe—and raise it.", "Tell me what you like, and I’ll show you how much I’m listening. – Anonymous", "You’re tuned in and turned on by the energy around you. You shift roles naturally—never forced, always felt. Being fluid isn’t indecision—it’s intuition."],
+      "blue-dom street": ["Type 3: Hottie Next Door", "You bring the heat when it counts.", "I like being in control of how I feel and who I share that with. – SZA", "Most of the time, you like to take charge and set the tone, not follow it. You’re not like a thermostat that adjusts to your surroundings, you bring the heat."],
+      "blue-sub street": ["Type 2: Mood Multiplier", "You match their vibe—and raise it.", "Tell me what you like, and I’ll show you how much I’m listening. – Anonymous", "You’re tuned in and turned on by the energy around you. You shift roles naturally—never forced, always felt. Being fluid isn’t indecision—it’s intuition."],
 
-      "green-control": ["Type 8: Charmer in Charge", "You don’t just take control. You make them want you to.", "“If you can make them laugh, you can make them do anything.” – Marilyn Monroe"],
-      "green-partner control": ["Type 5: Promiscuous Plaything", "Curious. Craving. Ready.", "“Sex is part of nature. I go along with nature.” – Marilyn Monroe"],
-      "green-switch": ["Type 6: Generous Giver", "If it feels good, it goes both ways.", "“Sex is an emotion in motion.” – Mae West"],
-      "green-dom street": ["Type 7: Bedroom Adventurer", "Curiosity leads. Desire follows.", "“It is not by obeying the rules that we come to know pleasure, but by breaking them.” – Anaïs Nin"],
-      "green-sub street": ["Type 6: Generous Giver", "If it feels good, it goes both ways.", "“Sex is an emotion in motion.” – Mae West"],
+      "green-control": ["Type 8: Charmer in Charge", "You don’t just take control. You make them want you to.", "If you can make them laugh, you can make them do anything. – Marilyn Monroe", "You’re magnetic. You don’t demand authority—you attract it. You lead by being unforgettable, and people follow because they want to."],
+      "green-partner control": ["Type 5: Promiscuous Plaything", "Curious. Craving. Ready.", "Sex is part of nature. I go along with nature. – Marilyn Monroe", "You crave sensation—and freedom. You like to play, and being desired turns you on just as much as giving in. You’re not afraid to explore… just don’t waste your time."],
+      "green-switch": ["Type 6: Generous Giver", "If it feels good, it goes both ways.", "Sex is an emotion in motion. – Mae West", "You’re here to connect—and you do it by giving. You can take the lead or melt into someone else’s hands. What matters is mutual want."],
+      "green-dom street": ["Type 7: Bedroom Adventurer", "Curiosity leads. Desire follows.", "It is not by obeying the rules that we come to know pleasure, but by breaking them. – Anaïs Nin", "You like to test what’s possible. You’re not reckless—you’re awake. When the vibe’s right, you flip the switch—and sometimes flip the script."],
+      "green-sub street": ["Type 6: Generous Giver", "If it feels good, it goes both ways.", "Sex is an emotion in motion. – Mae West", "You’re here to connect—and you do it by giving. You can take the lead or melt into someone else’s hands. What matters is mutual want."],
 
-      "red-control": ["Type 12: Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "“Power is the ultimate aphrodisiac.” – Henry Kissinger"],
-      "red-partner control": ["Type 9: Obedient Pet", "Obedience is pleasure.", "“True strength lies in submission.” – Henry Miller"],
-      "red-switch": ["Type 10: The Punish Me", "What you call defiance, I call foreplay.", "“Sometimes I want to be punished… because it means you’re paying attention.” – Anonymous"],
-      "red-dom street": ["Type 11: The Provoker", "You press buttons—on purpose.", "“I don’t do subtle. I do powerful.” – Madonna"],
-      "red-sub street": ["Type 10: The Punish Me", "What you call defiance, I call foreplay.", "“Sometimes I want to be punished… because it means you’re paying attention.” – Anonymous"]
+      "red-control": ["Type 12: Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "Power is the ultimate aphrodisiac. – Henry Kissinger", "This isn’t pretend. This is your nature. You take control because you know you can deliver. Pain, pleasure, surrender—it all starts with your command."],
+      "red-partner control": ["Type 9: Obedient Pet", "Obedience is pleasure.", "True strength lies in submission. – Henry Miller", "You don’t want to just submit—you want to be claimed and dominated. Structure turns you on, rules excite you, and being trained is a privilege."],
+      "red-switch": ["Type 10: The Punish Me", "What you call defiance, I call foreplay.", "Sometimes I want to be punished… because it means you’re paying attention. – Anonymous", "You like to push buttons—but not randomly. You crave someone who pushes back. Beneath the attitude is desire for depth… and someone strong enough to handle both."],
+      "red-dom street": ["Type 11: The Provoker", "You press buttons—on purpose.", "I don’t do subtle. I do powerful. – Madonna", "You set the tone—and it’s usually electric. You initiate. You play bold. You don’t need permission to flip the dynamic, you are the dynamic."],
+      "red-sub street": ["Type 10: The Punish Me", "What you call defiance, I call foreplay.", "Sometimes I want to be punished… because it means you’re paying attention. – Anonymous", "You like to push buttons—but not randomly. You crave someone who pushes back. Beneath the attitude is desire for depth… and someone strong enough to handle both."]
     };
 
     const key = `${room}-${q9}`;
-    const [typeName, slogan, quote] = archetypes[key] || ["Unknown", "Let’s explore further.", ""];
+    const [typeName, slogan, quote, description] = archetypes[key] || ["Unknown", "", "", ""];
 
     archetypeText.innerHTML = `<strong>${typeName}</strong><br><em>${slogan}</em>`;
 
@@ -161,13 +161,11 @@
       `;
     }
 
-    // Sugar Daddy's invite
     if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
       sugarText.innerHTML = `🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
       to gain entry to our Speakeasy:<br><strong>Sugar Daddy’s</strong>`;
     }
 
-    // Audition invite
     if (
       q4 === "yes" || q4 === "little" ||
       q6 === "flaunt" || q6 === "partner shine"
@@ -183,7 +181,10 @@
 
     function showTypeDetails() {
       typeDetails.style.display = "block";
-      typeDetails.innerHTML = `<br><strong>Quote:</strong><br>${quote}`;
+      typeDetails.innerHTML = `
+        <br><strong>Quote:</strong><br>${quote}<br><br>
+        <strong>Description:</strong><br>${description}
+      `;
     }
   </script>
 </body>
