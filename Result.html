@@ -5,70 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Result</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      color: white;
-      text-align: center;
-      padding: 50px 20px;
-    }
-
-    .title {
-      font-size: 2.6rem;
-      font-weight: bold;
-      font-style: italic;
-      line-height: 1.2;
-      margin-bottom: 25px;
-    }
-
-    .subtitle {
-      font-size: 1.2rem;
-      font-weight: 400;
-      margin-bottom: 30px;
-    }
-
-    .bonus {
-      font-size: 1.1rem;
-      margin-top: 20px;
-      line-height: 1.5;
-    }
-
-    .red {
-      background-color: #950606;
-      text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
-    }
-
-    .green {
-      background-color: #06954E;
-      text-shadow: 0 0 5px #88e788, 0 0 10px #88e788;
-    }
-
-    .blue {
-      background-color: #064D95;
-      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body id="resultBody">
   <div class="title" id="resultText">Meet your type<br>in the<br>ROOM!</div>
-  <div class="subtitle">
-    Audition for our reality dating show by participating in our speed-dating game, <strong id="pickupLine">The Pickup Line!</strong>
+  <div class="subtitle" id="typeLabel"></div>
+
+  <div class="audition" id="auditionText" style="display: none;">
+    🎬 You qualify for an audition in our reality dating show: <strong>The Pickup Line!</strong>
   </div>
+
   <div class="bonus" id="bonusText" style="display: none;">
-    Visit our chocolate shop and use the password: <strong id="sweetSpot">Sweet Spot!</strong><br>
-    to gain entry to our speakeasy:<br>
-    <strong id="sugarDaddys">Sugar Daddy’s</strong>
+    🍫 You've been invited to our speakeasy!<br>
+    Use the password <strong>Sweet Spot</strong> at:<br>
+    <strong>Sugar Daddy’s</strong>
   </div>
+
+  <div class="type-info" id="typeDetails"></div>
+  <div class="type-info" id="matches"></div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const room = params.get("room");
-    const sugar = params.get("sugar");
+    const answers = {};
+    for (let i = 1; i <= 10; i++) {
+      answers[`q${i}`] = params.get(`q${i}`);
+    }
+
+    // ROOM LOGIC (Q3 is main determinant)
+    let room = "blue";
+    if (answers.q3 === "bdsm") room = "red";
+    else if (answers.q3 === "toys") room = "green";
+    else if (answers.q3 === "whipped") room = "blue";
 
     const resultText = document.getElementById("resultText");
     const resultBody = document.getElementById("resultBody");
-    const bonusText = document.getElementById("bonusText");
+    const typeLabel = document.getElementById("typeLabel");
 
     if (room === "red") {
       resultText.innerHTML = "Meet your type<br>in our<br>RED ROOM!";
@@ -76,14 +47,91 @@
     } else if (room === "green") {
       resultText.innerHTML = "Meet your type<br>in our<br>GREEN ROOM!";
       resultBody.classList.add("green");
-    } else if (room === "blue") {
+    } else {
       resultText.innerHTML = "Meet your type<br>in our<br>BLUE ROOM!";
       resultBody.classList.add("blue");
     }
 
-    if (sugar === "true") {
-      bonusText.style.display = "block";
+    // AUDITION LOGIC (Q4 + Q6)
+    if (
+      ["yes", "little"].includes(answers.q4) &&
+      ["flaunt", "partner shine"].includes(answers.q6)
+    ) {
+      document.getElementById("auditionText").style.display = "block";
     }
+
+    // SUGAR DADDY'S SPEAKEASY LOGIC (Q5)
+    if (["yes", "maybe", "iam"].includes(answers.q5)) {
+      document.getElementById("bonusText").style.display = "block";
+    }
+
+    // ARCHETYPE LOGIC
+    const typeMap = {
+      blue: {
+        control: "Tender Protector",
+        "partner control": "Devoted Darling",
+        switch: "Mood Multiplier",
+        "dom street": "Hottie Next Door",
+        "sub street": "Hottie Next Door"
+      },
+      green: {
+        control: "Charmer in Charge",
+        "partner control": "Promiscuous Plaything",
+        switch: "Generous Giver",
+        "dom street": "Bedroom Adventurer",
+        "sub street": "Bedroom Adventurer"
+      },
+      red: {
+        control: "Dungeon Master",
+        "partner control": "Obedient Pet",
+        switch: "The Punish Me",
+        "dom street": "The Provoker",
+        "sub street": "The Provoker"
+      }
+    };
+
+    const typeDescriptions = {
+      "Devoted Darling": "Loyal, loving, and deeply connected.",
+      "Mood Multiplier": "Adapts to any vibe and enhances it.",
+      "Hottie Next Door": "Charming, steady, but spicy when needed.",
+      "Tender Protector": "Strong, safe, and confidently dominant.",
+      "Promiscuous Plaything": "Playful, open, and deliciously curious.",
+      "Generous Giver": "Tuned into your needs and gives generously.",
+      "Bedroom Adventurer": "Explores pleasure boldly and intuitively.",
+      "Charmer in Charge": "Takes the lead with playful charisma.",
+      "Obedient Pet": "Gets pleasure from surrender and structure.",
+      "The Punish Me": "Pushes limits to tease and connect.",
+      "The Provoker": "Bold, daring, and deeply charged.",
+      "Dungeon Master": "Powerful, commanding, and in control.",
+      "Mystery Lover": "You're one of a kind... let's explore."
+    };
+
+    const compatibilityMap = {
+      "Devoted Darling": ["Tender Protector", "Charmer in Charge", "The Punish Me"],
+      "Mood Multiplier": ["Generous Giver", "The Provoker", "Obedient Pet"],
+      "Hottie Next Door": ["Bedroom Adventurer", "Dungeon Master", "Devoted Darling"],
+      "Tender Protector": ["Devoted Darling", "Obedient Pet", "Mood Multiplier"],
+      "Promiscuous Plaything": ["Generous Giver", "Mood Multiplier", "Dungeon Master"],
+      "Generous Giver": ["Charmer in Charge", "Hottie Next Door", "The Punish Me"],
+      "Bedroom Adventurer": ["Mood Multiplier", "The Provoker", "Charmer in Charge"],
+      "Charmer in Charge": ["Generous Giver", "Devoted Darling", "Bedroom Adventurer"],
+      "Obedient Pet": ["Dungeon Master", "Tender Protector", "Mood Multiplier"],
+      "The Punish Me": ["Tender Protector", "Charmer in Charge", "Promiscuous Plaything"],
+      "The Provoker": ["Mood Multiplier", "Bedroom Adventurer", "The Punish Me"],
+      "Dungeon Master": ["Obedient Pet", "Promiscuous Plaything", "Devoted Darling"]
+    };
+
+    const userType = typeMap[room][answers.q9] || "Mystery Lover";
+    const matches = compatibilityMap[userType] || ["Unknown", "Unknown", "Unknown"];
+
+    typeLabel.innerHTML = `<strong>Your Archetype:</strong> ${userType}`;
+    document.getElementById("typeDetails").innerHTML = typeDescriptions[userType];
+    document.getElementById("matches").innerHTML = `
+      <br><strong>Your Top Compatibility Matches:</strong><br>
+      ❤️ ${matches[0]}<br>
+      💞 ${matches[1]}<br>
+      🎲 Wildcard: ${matches[2]}
+    `;
   </script>
 </body>
 </html>
