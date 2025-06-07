@@ -29,8 +29,10 @@
     }
 
     .section {
-      margin: 20px auto;
+      margin: 25px auto;
       max-width: 700px;
+      font-size: 1.05rem;
+      line-height: 1.6;
     }
 
     .red {
@@ -47,10 +49,15 @@
       background-color: #064D95;
       text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
     }
+
+    strong {
+      display: block;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body id="resultBody">
-  <div class="title" id="roomTitle">Your Room:</div>
+  <div class="title" id="roomTitle">Meet your type in the ROOM</div>
   <div class="subtitle" id="archetypeText">Your Archetype</div>
 
   <div class="section" id="inviteText"></div>
@@ -77,35 +84,31 @@
     if (q3 === "whipped") {
       room = "blue";
       resultBody.classList.add("blue");
-      roomTitle.innerText = "You're in the BLUE ROOM";
+      roomTitle.innerText = "Meet your type in the\nBLUE ROOM";
     } else if (q3 === "toys") {
       room = "green";
       resultBody.classList.add("green");
-      roomTitle.innerText = "You're in the GREEN ROOM";
+      roomTitle.innerText = "Meet your type in the\nGREEN ROOM";
     } else if (q3 === "bdsm") {
       room = "red";
       resultBody.classList.add("red");
-      roomTitle.innerText = "You're in the RED ROOM";
+      roomTitle.innerText = "Meet your type in the\nRED ROOM";
     }
 
     // Archetype logic
-    let type = "";
     const archetypes = {
-      // Blue Room
       "blue-control": ["Type 4: Tender Protector", "Your calm is commanding."],
       "blue-partner control": ["Type 1: Devoted Darling", "Obedience isn’t weakness. It’s devotion."],
       "blue-switch": ["Type 2: Mood Multiplier", "You match their vibe—and raise it."],
       "blue-dom street": ["Type 3: Hottie Next Door", "You bring the heat when it counts."],
       "blue-sub street": ["Type 2: Mood Multiplier", "You match their vibe—and raise it."],
 
-      // Green Room
       "green-control": ["Type 8: Charmer in Charge", "You don’t just take control. You make them want you to."],
       "green-partner control": ["Type 5: Promiscuous Plaything", "Curious. Craving. Ready."],
       "green-switch": ["Type 6: Generous Giver", "If it feels good, it goes both ways."],
       "green-dom street": ["Type 7: Bedroom Adventurer", "Curiosity leads. Desire follows."],
       "green-sub street": ["Type 6: Generous Giver", "If it feels good, it goes both ways."],
 
-      // Red Room
       "red-control": ["Type 12: Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it."],
       "red-partner control": ["Type 9: Obedient Pet", "Obedience is pleasure."],
       "red-switch": ["Type 10: The Punish Me", "What you call defiance, I call foreplay."],
@@ -114,23 +117,23 @@
     };
 
     const key = `${room}-${q9}`;
-    const [typeName, slogan] = archetypes[key] || ["Unknown", "Let's explore further."];
+    const [typeName, slogan] = archetypes[key] || ["Unknown", "Let’s explore further."];
+
     archetypeText.innerHTML = `<strong>${typeName}</strong><br><em>${slogan}</em>`;
 
-    // Compatibility logic
     const matches = {
-      "Type 1: Devoted Darling": ["Type 4: Tender Protector", "Type 3: Hottie Next Door", "Wildcard: Type 8"],
-      "Type 2: Mood Multiplier": ["Type 3: Hottie Next Door", "Type 4: Tender Protector", "Wildcard: Type 7"],
-      "Type 3: Hottie Next Door": ["Type 2: Mood Multiplier", "Type 1: Devoted Darling", "Wildcard: Type 6"],
-      "Type 4: Tender Protector": ["Type 1: Devoted Darling", "Type 2: Mood Multiplier", "Wildcard: Type 5"],
-      "Type 5: Promiscuous Plaything": ["Type 8: Charmer in Charge", "Type 7: Bedroom Adventurer", "Wildcard: Type 12"],
-      "Type 6: Generous Giver": ["Type 7: Bedroom Adventurer", "Type 8: Charmer in Charge", "Wildcard: Type 11"],
-      "Type 7: Bedroom Adventurer": ["Type 6: Generous Giver", "Type 5: Promiscuous Plaything", "Wildcard: Type 10"],
-      "Type 8: Charmer in Charge": ["Type 5: Promiscuous Plaything", "Type 6: Generous Giver", "Wildcard: Type 9"],
-      "Type 9: Obedient Pet": ["Type 12: Dungeon Master", "Type 11: The Provoker", "Wildcard: Type 8"],
-      "Type 10: The Punish Me": ["Type 11: The Provoker", "Type 12: Dungeon Master", "Wildcard: Type 7"],
-      "Type 11: The Provoker": ["Type 10: The Punish Me", "Type 9: Obedient Pet", "Wildcard: Type 6"],
-      "Type 12: Dungeon Master": ["Type 9: Obedient Pet", "Type 10: The Punish Me", "Wildcard: Type 5"]
+      "Type 1: Devoted Darling": ["Type 4: Tender Protector", "Type 3: Hottie Next Door", "Type 8: Devoted Darling"],
+      "Type 2: Mood Multiplier": ["Type 3: Hottie Next Door", "Type 4: Tender Protector", "Type 7: Bedroom Adventurer"],
+      "Type 3: Hottie Next Door": ["Type 2: Mood Multiplier", "Type 1: Devoted Darling", "Type 6: Generous Giver"],
+      "Type 4: Tender Protector": ["Type 1: Devoted Darling", "Type 2: Mood Multiplier", "Type 5: Promiscuous Plaything"],
+      "Type 5: Promiscuous Plaything": ["Type 8: Charmer in Charge", "Type 7: Bedroom Adventurer", "Type 12: Dungeon Master"],
+      "Type 6: Generous Giver": ["Type 7: Bedroom Adventurer", "Type 8: Charmer in Charge", "Type 11: The Provoker"],
+      "Type 7: Bedroom Adventurer": ["Type 6: Generous Giver", "Type 5: Promiscuous Plaything", "Type 10: The Punish Me"],
+      "Type 8: Charmer in Charge": ["Type 5: Promiscuous Plaything", "Type 6: Generous Giver", "Type 9: Obedient Pet"],
+      "Type 9: Obedient Pet": ["Type 12: Dungeon Master", "Type 11: The Provoker", "Type 8: Charmer in Charge"],
+      "Type 10: The Punish Me": ["Type 11: The Provoker", "Type 12: Dungeon Master", "Type 7: Bedroom Adventurer"],
+      "Type 11: The Provoker": ["Type 10: The Punish Me", "Type 9: Obedient Pet", "Type 6: Generous Giver"],
+      "Type 12: Dungeon Master": ["Type 9: Obedient Pet", "Type 10: The Punish Me", "Type 5: Promiscuous Plaything"]
     };
 
     if (matches[typeName]) {
@@ -139,13 +142,14 @@
         <strong>Top Compatibility Matches:</strong><br>
         1. ${match1}<br>
         2. ${match2}<br>
-        <strong>${wildcard}</strong>
+        3. Wildcard Match: ${wildcard}
       `;
     }
 
     // Sugar Daddy’s Invite
     if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
-      sugarText.innerHTML = `🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>to gain entry to our Speakeasy:<br><strong>Sugar Daddy’s</strong>`;
+      sugarText.innerHTML = `🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
+      to gain entry to our Speakeasy:<br><strong>Sugar Daddy’s</strong>`;
     }
 
     // Audition Invite
@@ -153,8 +157,11 @@
       q4 === "yes" || q4 === "little" ||
       q6 === "flaunt" || q6 === "partner shine"
     ) {
-      inviteText.innerHTML = `🎬 You’re invited to audition for our reality dating show!<br>
-      Participate in the speed dating game <strong>The Pickup Line</strong> to audition.<br>Once you’re in, you won’t want to pull out.`;
+      inviteText.innerHTML = `
+        🎬 You’re invited to audition for our <br>reality dating show!<br>
+        Participate in the speed dating game:<br><strong>The Pickup Line</strong> to audition.<br>
+        Once you’re in, you won’t want to pull out.
+      `;
     }
   </script>
 </body>
