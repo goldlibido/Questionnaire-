@@ -20,32 +20,18 @@
       line-height: 1.2;
       margin-bottom: 25px;
     }
-    .subtitle, .bonus, .audition, .type-info, .matches {
-      font-size: 1.1rem;
-      margin-top: 20px;
-      line-height: 1.5;
-    }
-    .red {
-      background-color: #950606;
-      text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
-    }
-    .green {
-      background-color: #06954E;
-      text-shadow: 0 0 5px #88e788, 0 0 10px #88e788;
-    }
-    .blue {
-      background-color: #064D95;
-      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
-    }
+    .red { background-color: #950606; text-shadow: 0 0 5px #ff4d4d; }
+    .green { background-color: #06954E; text-shadow: 0 0 5px #88e788; }
+    .blue { background-color: #064D95; text-shadow: 0 0 5px #57b9ff; }
+    .section { margin-top: 20px; font-size: 1.1rem; line-height: 1.6; }
   </style>
 </head>
 <body id="resultBody">
-  <div class="title" id="resultText">Meet your type<br>in the<br>ROOM!</div>
-  <div class="subtitle" id="typeLabel"></div>
-  <div class="bonus" id="bonusText" style="display:none;"></div>
-  <div class="audition" id="auditionText" style="display:none;"></div>
-  <div class="type-info" id="typeDetails"></div>
-  <div class="matches" id="matches"></div>
+  <div class="title" id="resultTitle"></div>
+  <div class="section" id="archetypeInfo"></div>
+  <div class="section" id="sugarInvite" style="display:none;"></div>
+  <div class="section" id="auditionInvite" style="display:none;"></div>
+  <div class="section" id="compatibilityMatches"></div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -54,41 +40,21 @@
       answers[`q${i}`] = params.get(`q${i}`);
     }
 
-    // ROOM (Q3 is final authority)
+    const resultBody = document.getElementById("resultBody");
+    const resultTitle = document.getElementById("resultTitle");
+    const archetypeInfo = document.getElementById("archetypeInfo");
+    const sugarInvite = document.getElementById("sugarInvite");
+    const auditionInvite = document.getElementById("auditionInvite");
+    const compatibilityMatches = document.getElementById("compatibilityMatches");
+
+    // Determine Room from Q3
     let room = "blue";
     if (answers.q3 === "bdsm") room = "red";
     else if (answers.q3 === "toys") room = "green";
-    else if (answers.q3 === "whipped") room = "blue";
-
-    const resultText = document.getElementById("resultText");
-    const resultBody = document.getElementById("resultBody");
-    const typeLabel = document.getElementById("typeLabel");
-
     resultBody.classList.add(room);
-    resultText.innerHTML = `Meet your type<br>in our<br>${room.toUpperCase()} ROOM!`;
+    resultTitle.innerHTML = `Welcome to the <strong>${room.toUpperCase()} ROOM</strong>`;
 
-    // Sugar Daddy’s Invite
-    if (["yes", "iam"].includes(answers.q5)) {
-      document.getElementById("bonusText").style.display = "block";
-      document.getElementById("bonusText").innerHTML =
-        `🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
-         to gain entry to our speakeasy:<br>
-         <strong>Sugar Daddy’s</strong>`;
-    }
-
-    // Audition Invite
-    if (
-      ["yes", "little"].includes(answers.q4) &&
-      ["flaunt", "partner shine"].includes(answers.q6)
-    ) {
-      document.getElementById("auditionText").style.display = "block";
-      document.getElementById("auditionText").innerHTML =
-        `🎬 You’re invited to audition for our reality dating show!<br>
-         Participate in the speed dating game <strong>The Pickup Line</strong> to audition.<br>
-         Once you’re in, you won’t want to pull out.`;
-    }
-
-    // Archetype and Compatibility
+    // Archetype Logic (Q9 + Room)
     const typeMap = {
       blue: {
         control: "Tender Protector",
@@ -113,21 +79,6 @@
       }
     };
 
-    const typeDescriptions = {
-      "Devoted Darling": "Loyal, loving, and deeply connected.",
-      "Mood Multiplier": "Adapts to any vibe and enhances it.",
-      "Hottie Next Door": "Charming, steady, but spicy when needed.",
-      "Tender Protector": "Strong, safe, and confidently dominant.",
-      "Promiscuous Plaything": "Playful, open, and deliciously curious.",
-      "Generous Giver": "Tuned into your needs and gives generously.",
-      "Bedroom Adventurer": "Explores pleasure boldly and intuitively.",
-      "Charmer in Charge": "Takes the lead with playful charisma.",
-      "Obedient Pet": "Gets pleasure from surrender and structure.",
-      "The Punish Me": "Pushes limits to tease and connect.",
-      "The Provoker": "Bold, daring, and deeply charged.",
-      "Dungeon Master": "Powerful, commanding, and in control."
-    };
-
     const compatibilityMap = {
       "Dungeon Master": ["Obedient Pet", "The Punish Me", "Promiscuous Plaything"],
       "The Provoker": ["The Punish Me", "Obedient Pet", "Generous Giver"],
@@ -143,17 +94,36 @@
       "Devoted Darling": ["Tender Protector", "Hottie Next Door", "Charmer in Charge"]
     };
 
-    const userType = typeMap[room][answers.q9];
-    const matches = compatibilityMap[userType];
+    const type = typeMap[room][answers.q9];
+    archetypeInfo.innerHTML = `<strong>Your Archetype:</strong> ${type}`;
 
-    typeLabel.innerHTML = `<strong>Your Archetype:</strong> ${userType}`;
-    document.getElementById("typeDetails").innerHTML = typeDescriptions[userType];
-    document.getElementById("matches").innerHTML = `
-      <strong>Your Top Compatibility Matches:</strong><br>
-      ❤️ ${matches[0]}<br>
-      💞 ${matches[1]}<br>
-      🎲 Wildcard: ${matches[2]}
+    const [match1, match2, wildcard] = compatibilityMap[type];
+    compatibilityMatches.innerHTML = `
+      <strong>Your Matches:</strong><br>
+      ❤️ ${match1}<br>
+      💞 ${match2}<br>
+      🎲 Wildcard: ${wildcard}
     `;
+
+    // Sugar Daddy’s Speakeasy Invite
+    if (["yes", "iam"].includes(answers.q5)) {
+      sugarInvite.style.display = "block";
+      sugarInvite.innerHTML = `
+        🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
+        to gain entry to our speakeasy: <strong>Sugar Daddy’s</strong>
+      `;
+    }
+
+    // Audition Invite
+    if (["yes", "little"].includes(answers.q4) &&
+        ["flaunt", "partner shine"].includes(answers.q6)) {
+      auditionInvite.style.display = "block";
+      auditionInvite.innerHTML = `
+        🎬 You’re invited to audition for our reality dating show!<br>
+        Participate in the speed dating game <strong>The Pickup Line</strong> to audition.<br>
+        Once you’re in, you won’t want to pull out.
+      `;
+    }
   </script>
 </body>
 </html>
