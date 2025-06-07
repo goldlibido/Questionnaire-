@@ -31,7 +31,7 @@
     .section {
       margin: 25px auto;
       max-width: 700px;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       line-height: 1.6;
     }
 
@@ -50,9 +50,23 @@
       text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
     }
 
-    strong {
-      display: block;
-      margin-top: 10px;
+    button {
+      margin-top: 20px;
+      padding: 10px 18px;
+      font-weight: bold;
+      font-size: 1rem;
+      border: none;
+      background-color: white;
+      color: #222;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #typeDetails {
+      margin-top: 20px;
+      font-style: italic;
+      font-size: 1rem;
+      display: none;
     }
   </style>
 </head>
@@ -63,6 +77,8 @@
   <div class="section" id="inviteText"></div>
   <div class="section" id="sugarText"></div>
   <div class="section" id="compatibilityText"></div>
+  <div><button onclick="showTypeDetails()">Learn About Your Type</button></div>
+  <div id="typeDetails"></div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -78,8 +94,8 @@
     const inviteText = document.getElementById("inviteText");
     const sugarText = document.getElementById("sugarText");
     const compatibilityText = document.getElementById("compatibilityText");
+    const typeDetails = document.getElementById("typeDetails");
 
-    // Room (Q3 dominates)
     let room = "";
     if (q3 === "whipped") {
       room = "blue";
@@ -95,73 +111,79 @@
       roomTitle.innerText = "Meet your type in the\nRED ROOM";
     }
 
-    // Archetype logic
     const archetypes = {
-      "blue-control": ["Type 4: Tender Protector", "Your calm is commanding."],
-      "blue-partner control": ["Type 1: Devoted Darling", "Obedience isn’t weakness. It’s devotion."],
-      "blue-switch": ["Type 2: Mood Multiplier", "You match their vibe—and raise it."],
-      "blue-dom street": ["Type 3: Hottie Next Door", "You bring the heat when it counts."],
-      "blue-sub street": ["Type 2: Mood Multiplier", "You match their vibe—and raise it."],
+      "blue-control": ["Type 4: Tender Protector", "Your calm is commanding.", "“The strongest love is the love that can demonstrate its fragility.” – Paulo Coelho"],
+      "blue-partner control": ["Type 1: Devoted Darling", "Obedience isn’t weakness. It’s devotion.", "“Love is composed of a single soul inhabiting two bodies.” – Aristotle"],
+      "blue-switch": ["Type 2: Mood Multiplier", "You match their vibe—and raise it.", "“Tell me what you like, and I’ll show you how much I’m listening.” – Anonymous"],
+      "blue-dom street": ["Type 3: Hottie Next Door", "You bring the heat when it counts.", "“I like being in control of how I feel and who I share that with.” – SZA"],
+      "blue-sub street": ["Type 2: Mood Multiplier", "You match their vibe—and raise it.", "“Tell me what you like, and I’ll show you how much I’m listening.” – Anonymous"],
 
-      "green-control": ["Type 8: Charmer in Charge", "You don’t just take control. You make them want you to."],
-      "green-partner control": ["Type 5: Promiscuous Plaything", "Curious. Craving. Ready."],
-      "green-switch": ["Type 6: Generous Giver", "If it feels good, it goes both ways."],
-      "green-dom street": ["Type 7: Bedroom Adventurer", "Curiosity leads. Desire follows."],
-      "green-sub street": ["Type 6: Generous Giver", "If it feels good, it goes both ways."],
+      "green-control": ["Type 8: Charmer in Charge", "You don’t just take control. You make them want you to.", "“If you can make them laugh, you can make them do anything.” – Marilyn Monroe"],
+      "green-partner control": ["Type 5: Promiscuous Plaything", "Curious. Craving. Ready.", "“Sex is part of nature. I go along with nature.” – Marilyn Monroe"],
+      "green-switch": ["Type 6: Generous Giver", "If it feels good, it goes both ways.", "“Sex is an emotion in motion.” – Mae West"],
+      "green-dom street": ["Type 7: Bedroom Adventurer", "Curiosity leads. Desire follows.", "“It is not by obeying the rules that we come to know pleasure, but by breaking them.” – Anaïs Nin"],
+      "green-sub street": ["Type 6: Generous Giver", "If it feels good, it goes both ways.", "“Sex is an emotion in motion.” – Mae West"],
 
-      "red-control": ["Type 12: Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it."],
-      "red-partner control": ["Type 9: Obedient Pet", "Obedience is pleasure."],
-      "red-switch": ["Type 10: The Punish Me", "What you call defiance, I call foreplay."],
-      "red-dom street": ["Type 11: The Provoker", "You press buttons—on purpose."],
-      "red-sub street": ["Type 10: The Punish Me", "What you call defiance, I call foreplay."]
+      "red-control": ["Type 12: Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "“Power is the ultimate aphrodisiac.” – Henry Kissinger"],
+      "red-partner control": ["Type 9: Obedient Pet", "Obedience is pleasure.", "“True strength lies in submission.” – Henry Miller"],
+      "red-switch": ["Type 10: The Punish Me", "What you call defiance, I call foreplay.", "“Sometimes I want to be punished… because it means you’re paying attention.” – Anonymous"],
+      "red-dom street": ["Type 11: The Provoker", "You press buttons—on purpose.", "“I don’t do subtle. I do powerful.” – Madonna"],
+      "red-sub street": ["Type 10: The Punish Me", "What you call defiance, I call foreplay.", "“Sometimes I want to be punished… because it means you’re paying attention.” – Anonymous"]
     };
 
     const key = `${room}-${q9}`;
-    const [typeName, slogan] = archetypes[key] || ["Unknown", "Let’s explore further."];
+    const [typeName, slogan, quote] = archetypes[key] || ["Unknown", "Let’s explore further.", ""];
 
     archetypeText.innerHTML = `<strong>${typeName}</strong><br><em>${slogan}</em>`;
 
     const matches = {
-      "Type 1: Devoted Darling": ["Type 4: Tender Protector", "Type 3: Hottie Next Door", "Type 8: Devoted Darling"],
-      "Type 2: Mood Multiplier": ["Type 3: Hottie Next Door", "Type 4: Tender Protector", "Type 7: Bedroom Adventurer"],
-      "Type 3: Hottie Next Door": ["Type 2: Mood Multiplier", "Type 1: Devoted Darling", "Type 6: Generous Giver"],
-      "Type 4: Tender Protector": ["Type 1: Devoted Darling", "Type 2: Mood Multiplier", "Type 5: Promiscuous Plaything"],
-      "Type 5: Promiscuous Plaything": ["Type 8: Charmer in Charge", "Type 7: Bedroom Adventurer", "Type 12: Dungeon Master"],
-      "Type 6: Generous Giver": ["Type 7: Bedroom Adventurer", "Type 8: Charmer in Charge", "Type 11: The Provoker"],
-      "Type 7: Bedroom Adventurer": ["Type 6: Generous Giver", "Type 5: Promiscuous Plaything", "Type 10: The Punish Me"],
-      "Type 8: Charmer in Charge": ["Type 5: Promiscuous Plaything", "Type 6: Generous Giver", "Type 9: Obedient Pet"],
-      "Type 9: Obedient Pet": ["Type 12: Dungeon Master", "Type 11: The Provoker", "Type 8: Charmer in Charge"],
-      "Type 10: The Punish Me": ["Type 11: The Provoker", "Type 12: Dungeon Master", "Type 7: Bedroom Adventurer"],
-      "Type 11: The Provoker": ["Type 10: The Punish Me", "Type 9: Obedient Pet", "Type 6: Generous Giver"],
-      "Type 12: Dungeon Master": ["Type 9: Obedient Pet", "Type 10: The Punish Me", "Type 5: Promiscuous Plaything"]
+      "Type 1: Devoted Darling": ["Type 4: Tender Protector", "Type 3: Hottie Next Door", "Promiscuous Plaything or Type 5"],
+      "Type 2: Mood Multiplier": ["Type 3: Hottie Next Door", "Type 4: Tender Protector", "Bedroom Adventurer or Type 7"],
+      "Type 3: Hottie Next Door": ["Type 2: Mood Multiplier", "Type 1: Devoted Darling", "Generous Giver or Type 6"],
+      "Type 4: Tender Protector": ["Type 1: Devoted Darling", "Type 2: Mood Multiplier", "Promiscuous Plaything or Type 5"],
+      "Type 5: Promiscuous Plaything": ["Type 8: Charmer in Charge", "Type 7: Bedroom Adventurer", "Dungeon Master or Type 12"],
+      "Type 6: Generous Giver": ["Type 7: Bedroom Adventurer", "Type 8: Charmer in Charge", "The Provoker or Type 11"],
+      "Type 7: Bedroom Adventurer": ["Type 6: Generous Giver", "Type 5: Promiscuous Plaything", "The Punish Me or Type 10"],
+      "Type 8: Charmer in Charge": ["Type 5: Promiscuous Plaything", "Type 6: Generous Giver", "Obedient Pet or Type 9"],
+      "Type 9: Obedient Pet": ["Dungeon Master or Type 12", "The Provoker or Type 11", "Charmer in Charge or Type 8"],
+      "Type 10: The Punish Me": ["The Provoker or Type 11", "Dungeon Master or Type 12", "Bedroom Adventurer or Type 7"],
+      "Type 11: The Provoker": ["The Punish Me or Type 10", "Obedient Pet or Type 9", "Generous Giver or Type 6"],
+      "Type 12: Dungeon Master": ["Obedient Pet or Type 9", "The Punish Me or Type 10", "Promiscuous Plaything or Type 5"]
     };
 
     if (matches[typeName]) {
-      const [match1, match2, wildcard] = matches[typeName];
+      const [m1, m2, wild] = matches[typeName];
       compatibilityText.innerHTML = `
-        <strong>Top Compatibility Matches:</strong><br>
-        1. ${match1}<br>
-        2. ${match2}<br>
-        3. Wildcard Match: ${wildcard}
+        <strong>Top 3 Compatibility Matches:</strong><br>
+        1. ${m1}<br>
+        2. ${m2}<br>
+        3. Wildcard Match: ${wild}
       `;
     }
 
-    // Sugar Daddy’s Invite
+    // Sugar Daddy's invite
     if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
       sugarText.innerHTML = `🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
       to gain entry to our Speakeasy:<br><strong>Sugar Daddy’s</strong>`;
     }
 
-    // Audition Invite
+    // Audition invite
     if (
       q4 === "yes" || q4 === "little" ||
       q6 === "flaunt" || q6 === "partner shine"
     ) {
       inviteText.innerHTML = `
-        🎬 You’re invited to audition for our <br>reality dating show!<br>
-        To audition, participate in the speed dating game:<br><strong>The Pickup Line</strong> <br>
+        🎬 You’re invited to audition for our <br>
+        reality dating show!<br>
+        To audition, play our speed dating game:<br>
+        <strong>The Pickup Line!</strong><br>
         Once you’re in, you won’t want to pull out.
       `;
+    }
+
+    function showTypeDetails() {
+      typeDetails.style.display = "block";
+      typeDetails.innerHTML = `<br><strong>Quote:</strong><br>${quote}`;
     }
   </script>
 </body>
