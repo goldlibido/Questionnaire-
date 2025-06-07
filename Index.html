@@ -25,10 +25,6 @@
       </div>
 
       <form id="quizForm">
-        <!-- QUESTIONS START HERE -->
-
-        <!-- Q1–Q10 already included in your version -->
-
         <div class="question">
           <p>1. Do you prefer to make the first move or get approached?</p>
           <label><input type="radio" name="q1" value="first"> I want to make the first move</label>
@@ -43,14 +39,14 @@
         </div>
 
         <div class="question">
-          <p>3. Which vibe turns you on the most</p>
+          <p>3. Which vibe turns you on the most?</p>
           <label><input type="radio" name="q3" value="whipped"> Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, playing with whipped cream</label>
           <label><input type="radio" name="q3" value="toys"> One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, experimenting with new sex toys</label>
           <label><input type="radio" name="q3" value="bdsm"> Power exchange, rough sex, spanking, BDSM, naughty mind games, filthy dirty talk</label>
         </div>
 
         <div class="question">
-          <p>4. Are you comfortable with PDA?</p>
+          <p>4. Are you comfortable with PDA (public displays of affection)?</p>
           <label><input type="radio" name="q4" value="yes"> Yes</label>
           <label><input type="radio" name="q4" value="little"> Only a little</label>
           <label><input type="radio" name="q4" value="no"> No</label>
@@ -60,7 +56,8 @@
           <p>5. Are you looking for a sugar daddy/mama?</p>
           <label><input type="radio" name="q5" value="yes"> Yes</label>
           <label><input type="radio" name="q5" value="no"> No thank you</label>
-          <label><input type="radio" name="q5" value="iam"> Are you kidding? I am the sugar daddy/momma!</label>
+          <label><input type="radio" name="q5" value="maybe"> If it came along I wouldn’t mind</label>
+          <label><input type="radio" name="q5" value="iam"> Are you kidding? I am the sugar daddy/mama!</label>
         </div>
 
         <div class="question">
@@ -110,50 +107,24 @@
     </div>
   </div>
 
-  <!-- JavaScript to pass q4 and q6 values -->
   <script>
     document.getElementById("quizForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
-      const q4 = document.querySelector('input[name="q4"]:checked')?.value;
-      const q6 = document.querySelector('input[name="q6"]:checked')?.value;
-
+      const totalQuestions = 10;
       const params = new URLSearchParams();
-      if (q4) params.set("q4", q4);
-      if (q6) params.set("q6", q6);
+
+      for (let i = 1; i <= totalQuestions; i++) {
+        const answer = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!answer) {
+          alert("Complete all 10 questions to see your results!");
+          return;
+        }
+        params.set(`q${i}`, answer.value);
+      }
 
       window.location.href = `result.html?${params.toString()}`;
     });
   </script>
 </body>
 </html>
-<script>
-  document.getElementById("quizForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const totalQuestions = 10;
-    for (let i = 1; i <= totalQuestions; i++) {
-      if (!document.querySelector(`input[name="q${i}"]:checked`)) {
-        alert("Complete questionnaire to see results!");
-        return;
-      }
-    }
-
-    const q3 = document.querySelector('input[name="q3"]:checked').value;
-    const q5 = document.querySelector('input[name="q5"]:checked').value;
-
-    let room = "";
-    if (q3 === "whipped") {
-      room = "blue";
-    } else if (q3 === "toys") {
-      room = "green";
-    } else if (q3 === "bdsm") {
-      room = "red";
-    }
-
-    const sugar = (q5 === "yes" || q5 === "iam") ? "true" : "false";
-
-    // Ensure the result.html URL includes both room and sugar parameters
-    window.location.href = `result.html?room=${room}&sugar=${sugar}`;
-  });
-</script>
