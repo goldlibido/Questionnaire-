@@ -47,39 +47,49 @@
     const auditionInvite = document.getElementById("auditionInvite");
     const compatibilityMatches = document.getElementById("compatibilityMatches");
 
-    // Determine Room from Q3
-    let room = "blue";
-    if (answers.q3 === "bdsm") room = "red";
-    else if (answers.q3 === "toys") room = "green";
+    // Room = determined ONLY by Q3
+    let room;
+    switch (answers.q3) {
+      case "whipped": room = "blue"; break;
+      case "toys": room = "green"; break;
+      case "bdsm": room = "red"; break;
+      default: room = "blue";
+    }
     resultBody.classList.add(room);
     resultTitle.innerHTML = `Welcome to the <strong>${room.toUpperCase()} ROOM</strong>`;
 
-    // Archetype Logic (Q9 + Room)
-    const typeMap = {
+    // Archetype logic: combine Q9 with room
+    const archetypes = {
       blue: {
-        control: "Tender Protector",
+        "control": "Tender Protector",
         "partner control": "Devoted Darling",
-        switch: "Mood Multiplier",
+        "switch": "Mood Multiplier",
         "dom street": "Hottie Next Door",
         "sub street": "Hottie Next Door"
       },
       green: {
-        control: "Charmer in Charge",
+        "control": "Charmer in Charge",
         "partner control": "Promiscuous Plaything",
-        switch: "Generous Giver",
+        "switch": "Generous Giver",
         "dom street": "Bedroom Adventurer",
         "sub street": "Bedroom Adventurer"
       },
       red: {
-        control: "Dungeon Master",
+        "control": "Dungeon Master",
         "partner control": "Obedient Pet",
-        switch: "The Punish Me",
+        "switch": "The Punish Me",
         "dom street": "The Provoker",
         "sub street": "The Provoker"
       }
     };
 
-    const compatibilityMap = {
+    const q9 = answers.q9?.trim();
+    const archetype = archetypes[room][q9] || "Mood Multiplier"; // fallback
+
+    archetypeInfo.innerHTML = `<strong>Your Archetype:</strong> ${archetype}`;
+
+    // Compatibility
+    const compatibility = {
       "Dungeon Master": ["Obedient Pet", "The Punish Me", "Promiscuous Plaything"],
       "The Provoker": ["The Punish Me", "Obedient Pet", "Generous Giver"],
       "The Punish Me": ["The Provoker", "Dungeon Master", "Bedroom Adventurer"],
@@ -94,10 +104,7 @@
       "Devoted Darling": ["Tender Protector", "Hottie Next Door", "Charmer in Charge"]
     };
 
-    const type = typeMap[room][answers.q9];
-    archetypeInfo.innerHTML = `<strong>Your Archetype:</strong> ${type}`;
-
-    const [match1, match2, wildcard] = compatibilityMap[type];
+    const [match1, match2, wildcard] = compatibility[archetype] || [];
     compatibilityMatches.innerHTML = `
       <strong>Your Matches:</strong><br>
       ❤️ ${match1}<br>
@@ -105,7 +112,7 @@
       🎲 Wildcard: ${wildcard}
     `;
 
-    // Sugar Daddy’s Speakeasy Invite
+    // Sugar Daddy’s Speakeasy Invite — Q5
     if (["yes", "iam"].includes(answers.q5)) {
       sugarInvite.style.display = "block";
       sugarInvite.innerHTML = `
@@ -114,9 +121,11 @@
       `;
     }
 
-    // Audition Invite
-    if (["yes", "little"].includes(answers.q4) &&
-        ["flaunt", "partner shine"].includes(answers.q6)) {
+    // Audition Invite — Q4 + Q6
+    if (
+      ["yes", "little"].includes(answers.q4) &&
+      ["flaunt", "partner shine"].includes(answers.q6)
+    ) {
       auditionInvite.style.display = "block";
       auditionInvite.innerHTML = `
         🎬 You’re invited to audition for our reality dating show!<br>
