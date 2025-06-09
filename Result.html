@@ -134,7 +134,11 @@
     const key = `${room}-${q9}`;
     const [typeName, slogan, quote, description] = archetypes[key] || ["Unknown", "", "", ""];
 
-    archetypeText.innerHTML = `<div style="margin-bottom: 10px;"><strong>Your Sexual Profile:</strong></div><strong>${typeName}</strong><br><em>${slogan}</em>`;
+    archetypeText.innerHTML = `
+  <div><strong>Your Sexual Profile:</strong></div><br>
+  <div style="text-decoration: underline;">${typeName}</div>
+  <br><em>${slogan}</em>
+`;
 
     const matches = {
       "Devoted Darling": ["Tender Protector", "Hottie Next Door", "Promiscuous Plaything"],
