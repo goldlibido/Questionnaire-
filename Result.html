@@ -135,9 +135,15 @@
     const [typeName, slogan, quote, description] = archetypes[key] || ["Unknown", "", "", ""];
 
     archetypeText.innerHTML = `
-  <div><strong>Your Sexual Profile:</strong></div><br>
-  <div style="text-decoration: underline;">${typeName}</div>
-  <br><em>${slogan}</em>
+  <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
+    Your Sexual Profile:
+  </div>
+  <div style="font-weight: bold; text-shadow: 0 0 5px white, 0 0 10px white; margin-bottom: 2px;">
+    ${typeName}
+  </div>
+  <div style="font-style: italic; margin-top: 0;">
+    ${slogan}
+  </div>
 `;
 
     const matches = {
