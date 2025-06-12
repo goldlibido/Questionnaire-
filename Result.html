@@ -115,7 +115,7 @@
       "blue-control": ["Tender Protector", "Your calm is commanding.", "The strongest love is the love that can demonstrate its fragility. – Paulo Coelho", "You’re not loud—you’re grounded. You lead through presence, not pressure. People follow you not because you demand it, but because they trust you’ll catch them."],
       "blue-partner control": ["Devoted Darling", "Obedience isn’t weakness. It’s devotion.", "Love is composed of a single soul inhabiting two bodies. – Aristotle", "You’re not looking to impress. You’re looking to belong. Loyalty is your kink, and closeness is your turn-on. When trust is earned, you open wide."],
       "blue-switch": ["Mood Multiplier", "You match their vibe—and raise it.", "Tell me what you like, and I’ll show you how much I’m listening. – Anonymous", "You’re tuned in and turned on by the energy around you. You shift roles naturally—never forced, always felt. Being fluid isn’t indecision—it’s intuition."],
-      "blue-dom street": ["Hottie Next Door", "You bring the heat when it counts.", "I like being in control of how I feel and who I share that with. – SZA", "Most of the time, you like to take charge and set the tone, not follow it. You’re not like a thermostat that adjusts to your surroundings, you bring the heat."],
+      "blue-dom street": ["Heatwave", "You bring the heat when it counts.", "I like being in control of how I feel and who I share that with. – SZA", "Most of the time, you like to take charge and set the tone, not follow it. You’re not like a thermostat that adjusts to your surroundings, you bring the heat."],
       "blue-sub street": ["Mood Multiplier", "You match their vibe—and raise it.", "Tell me what you like, and I’ll show you how much I’m listening. – Anonymous", "You’re tuned in and turned on by the energy around you. You shift roles naturally—never forced, always felt. Being fluid isn’t indecision—it’s intuition."],
 
       "green-control": ["Charmer in Charge", "You don’t just take control. You make them want you to.", "If you can make them laugh, you can make them do anything. – Marilyn Monroe", "You’re magnetic. You don’t demand authority—you attract it. You lead by being unforgettable, and people follow because they want to."],
@@ -125,7 +125,7 @@
       "green-sub street": ["Generous Giver", "If it feels good, it goes both ways.", "Sex is an emotion in motion. – Mae West", "You’re here to connect—and you do it by giving. You can take the lead or melt into someone else’s hands. What matters is mutual want."],
 
       "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "Power is the ultimate aphrodisiac. – Henry Kissinger", "This isn’t pretend. This is your nature. You take control because you know you can deliver. Pain, pleasure, surrender—it all starts with your command."],
-      "red-partner control": ["Willing Submissive", "Obedience is pleasure.", "True strength lies in submission. – Henry Miller", "You don’t want to just submit—you want to be claimed and dominated. Structure turns you on, rules excite you, and being trained is a privilege."],
+      "red-partner control": ["Claimed & Trained", "Obedience is pleasure.", "True strength lies in submission. – Henry Miller", "You don’t want to just submit—you want to be claimed and dominated. Structure turns you on, rules excite you, and being trained is a privilege."],
       "red-switch": ["The Punish Me", "What you call defiance, I call foreplay.", "Sometimes I want to be punished… because it means you’re paying attention. – Anonymous", "You like to push buttons—but not randomly. You crave someone who pushes back. Beneath the attitude is desire for depth… and someone strong enough to handle both."],
       "red-dom street": ["The Provoker", "You press buttons—on purpose.", "I don’t do subtle. I do powerful. – Madonna", "You set the tone—and it’s usually electric. You initiate. You play bold. You don’t need permission to flip the dynamic, you are the dynamic."],
       "red-sub street": ["The Punish Me", "What you call defiance, I call foreplay.", "Sometimes I want to be punished… because it means you’re paying attention. – Anonymous", "You like to push buttons—but not randomly. You crave someone who pushes back. Beneath the attitude is desire for depth… and someone strong enough to handle both."]
@@ -147,18 +147,18 @@
 `;
 
     const matches = {
-      "Devoted Darling": ["Tender Protector", "Hottie Next Door", "Promiscuous Plaything"],
-      "Mood Multiplier": ["Hottie Next Door", "Tender Protector", "Bedroom Adventurer"],
-      "Hottie Next Door": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
+      "Devoted Darling": ["Tender Protector", "Heatwave", "Promiscuous Plaything"],
+      "Mood Multiplier": ["Heatwave", "Tender Protector", "Bedroom Adventurer"],
+      "Heatwave": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
       "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
       "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
       "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "The Provoker"],
       "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "The Punish Me"],
-      "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Willing Submissive"],
-      "Willing Submissive": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
+      "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed and Trained"],
+      "Claimed and Trained": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
       "The Punish Me": ["The Provoker", "Dungeon Master", "Bedroom Adventurer"],
-      "The Provoker": ["The Punish Me", "Willing Submissive", "Generous Giver"],
-      "Dungeon Master": ["Willing Submissive", "The Punish Me", "Promiscuous Plaything"]
+      "The Provoker": ["The Punish Me", "Claimed and Trained", "Generous Giver"],
+      "Dungeon Master": ["Claimed and Trained", "The Punish Me", "Promiscuous Plaything"]
     };
 
     if (matches[typeName]) {
