@@ -163,6 +163,37 @@ if (typeName !== "Unknown" && (q8 === "eggplant" || q8 === "cat")) {
   imageHTML = imageEl.outerHTML;
 }
 
+let imageHTML = "";
+
+if (typeName !== "Unknown" && (q8 === "eggplant" || q8 === "cat")) {
+  const safeName = typeName.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+  const genderSuffix = q8 === "eggplant" ? "male" : "female";
+  const baseFileName = `images/${safeName}_${genderSuffix}`;
+  const extensions = [".jpg", ".JPG", ".png", ".PNG"];
+  const imageEl = document.createElement("img");
+
+  function tryNextExtension(index = 0) {
+    if (index >= extensions.length) return;
+    const attempt = `${baseFileName}${extensions[index]}`;
+    imageEl.src = attempt;
+    imageEl.onerror = () => tryNextExtension(index + 1);
+  }
+
+  tryNextExtension();
+
+  imageEl.alt = `${typeName} Image`;
+  imageEl.style = `
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+    margin: 15px 0;
+    border: 4px solid gold;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  `;
+
+  imageHTML = imageEl.outerHTML;
+}
+
 archetypeText.innerHTML = `
   <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
     Your Sexual Profile:
