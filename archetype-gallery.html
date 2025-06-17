@@ -4,63 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sexual Profiles</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:ital,wght@1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
-      background-color: #950606;
-      color: white;
-    }
-
-    .border-wrapper {
-      padding: 5px 15px 15px;
       background: linear-gradient(to right, #06954E, #064D95);
-    }
-
-    .logo-wrapper {
-      text-align: center;
-      padding-top: 20px;
-    }
-
-    .logo-img {
-      max-width: 125px;
-      height: auto;
+      padding: 5px 15px 15px;
     }
 
     .container {
+      background-color: #950606;
       padding: 20px;
       border-radius: 25px;
       max-width: 700px;
       margin: auto;
     }
 
-    .section {
-      padding-top: 40px;
-      padding-bottom: 40px;
+    .green-room .container { background-color: #06954E; }
+    .blue-room .container { background-color: #064D95; }
+
+    .logo {
+      display: block;
+      margin: 20px auto 0;
+      width: 180px;
     }
 
-    .red-room {
-      background-color: #950606;
-    }
-
-    .green-room {
-      background-color: #06954E;
-    }
-
-    .blue-room {
-      background-color: #064D95;
-    }
-
-    .title {
-      font-family: 'Poppins', sans-serif;
-      font-style: italic;
-      font-size: 2.6rem;
-      color: white;
+    .page-title {
       text-align: center;
-      text-shadow: 0 0 8px #ff00ff, 0 0 12px #ff00ff;
-      line-height: 1.1;
-      margin-bottom: 10px;
+    }
+
+    .page-title h1 {
+      font-size: 2.8rem;
+      font-style: italic;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 0 10px #FF89D6;
+      margin: 10px 0 30px;
     }
 
     .find-type-btn {
@@ -104,13 +84,13 @@
 
     .image-pair {
       display: flex;
-      height: auto;
-      aspect-ratio: 2 / 1;
+      height: 240px;
+      position: relative;
     }
 
     .image-pair img {
       width: 50%;
-      height: auto;
+      height: 100%;
       object-fit: cover;
       display: block;
     }
@@ -118,6 +98,7 @@
     .divider {
       width: 4px;
       background-color: gold;
+      height: 100%;
     }
 
     .slogan {
@@ -145,27 +126,26 @@
 </head>
 <body>
 
-<div class="border-wrapper">
-  <div class="logo-wrapper">
-    <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo-img" />
-  </div>
+<!-- LOGO AND TITLE -->
+<img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+<div class="page-title">
+  <h1>Sexual Profiles</h1>
 </div>
 
 <!-- RED ROOM -->
-<div class="section red-room">
+<div class="red-room">
   <div class="container">
-    <div class="title">Sexual Profiles</div>
     <div class="find-type-btn red-btn">
       <a href="index.html">Find Your Type</a>
     </div>
 
-    <!-- Red Archetypes -->
+    <!-- Archetypes -->
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/dungeon_master_female.jpg">
+          <img src="images/dungeon_master_female.jpg" alt="Dungeon Master - Female">
           <div class="divider"></div>
-          <img src="images/dungeon_master_male.jpg">
+          <img src="images/dungeon_master_male.jpg" alt="Dungeon Master - Male">
         </div>
       </div>
       <h3><a href="dungeon-master.html">Dungeon Master</a></h3>
@@ -175,21 +155,21 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/claimed__trained_female.jpg">
+          <img src="images/claimed__trained_female.jpg" alt="Claimed & Trained - Female">
           <div class="divider"></div>
-          <img src="images/claimed__trained_male.jpg">
+          <img src="images/claimed__trained_male.jpg" alt="Claimed & Trained - Male">
         </div>
       </div>
       <h3><a href="claimed-and-trained.html">Claimed & Trained</a></h3>
-      <p class="slogan">The deeper you give in the more pleasure you'll feel.</p>
+      <p class="slogan">The deeper you give in, the more pleasure you'll feel.</p>
     </div>
 
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/the_provoker_female.jpg">
+          <img src="images/the_provoker_female.jpg" alt="The Provoker - Female">
           <div class="divider"></div>
-          <img src="images/the_provoker_male.jpg">
+          <img src="images/the_provoker_male.jpg" alt="The Provoker - Male">
         </div>
       </div>
       <h3><a href="the-provoker.html">The Provoker</a></h3>
@@ -199,9 +179,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/the_punish_me_female.jpg">
+          <img src="images/the_punish_me_female.jpg" alt="The Punish Me - Female">
           <div class="divider"></div>
-          <img src="images/the_punish_me_male.jpg">
+          <img src="images/the_punish_me_male.jpg" alt="The Punish Me - Male">
         </div>
       </div>
       <h3><a href="the-punish-me.html">The Punish Me</a></h3>
@@ -211,19 +191,18 @@
 </div>
 
 <!-- GREEN ROOM -->
-<div class="section green-room">
+<div class="green-room">
   <div class="container">
     <div class="find-type-btn green-btn">
       <a href="index.html">Find Your Type</a>
     </div>
 
-    <!-- Green Archetypes -->
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/charmer_in_charge_female.jpg">
+          <img src="images/charmer_in_charge_female.jpg" alt="Charmer in Charge - Female">
           <div class="divider"></div>
-          <img src="images/charmer_in_charge_male.jpg">
+          <img src="images/charmer_in_charge_male.jpg" alt="Charmer in Charge - Male">
         </div>
       </div>
       <h3><a href="charmer-in-charge.html">Charmer in Charge</a></h3>
@@ -233,9 +212,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/promiscuous_plaything_female.jpg">
+          <img src="images/promiscuous_plaything_female.jpg" alt="Promiscuous Plaything - Female">
           <div class="divider"></div>
-          <img src="images/promiscuous_plaything_male.jpg">
+          <img src="images/promiscuous_plaything_male.jpg" alt="Promiscuous Plaything - Male">
         </div>
       </div>
       <h3><a href="promiscuous-plaything.html">Promiscuous Plaything</a></h3>
@@ -245,9 +224,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/bedroom_adventurer_female.jpg">
+          <img src="images/bedroom_adventurer_female.jpg" alt="Bedroom Adventurer - Female">
           <div class="divider"></div>
-          <img src="images/bedroom_adventurer_male.jpg">
+          <img src="images/bedroom_adventurer_male.jpg" alt="Bedroom Adventurer - Male">
         </div>
       </div>
       <h3><a href="bedroom-adventurer.html">Bedroom Adventurer</a></h3>
@@ -257,9 +236,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/generous_giver_female.jpg">
+          <img src="images/generous_giver_female.jpg" alt="Generous Giver - Female">
           <div class="divider"></div>
-          <img src="images/generous_giver_male.jpg">
+          <img src="images/generous_giver_male.jpg" alt="Generous Giver - Male">
         </div>
       </div>
       <h3><a href="generous-giver.html">Generous Giver</a></h3>
@@ -269,19 +248,18 @@
 </div>
 
 <!-- BLUE ROOM -->
-<div class="section blue-room">
+<div class="blue-room">
   <div class="container">
     <div class="find-type-btn blue-btn">
       <a href="index.html">Find Your Type</a>
     </div>
 
-    <!-- Blue Archetypes -->
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/tender_protector_female.jpg">
+          <img src="images/tender_protector_female.jpg" alt="Tender Protector - Female">
           <div class="divider"></div>
-          <img src="images/tender_protector_male.jpg">
+          <img src="images/tender_protector_male.jpg" alt="Tender Protector - Male">
         </div>
       </div>
       <h3><a href="tender-protector.html">Tender Protector</a></h3>
@@ -291,9 +269,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/devoted_darling_female.jpg">
+          <img src="images/devoted_darling_female.jpg" alt="Devoted Darling - Female">
           <div class="divider"></div>
-          <img src="images/devoted_darling_male.jpg">
+          <img src="images/devoted_darling_male.jpg" alt="Devoted Darling - Male">
         </div>
       </div>
       <h3><a href="devoted-darling.html">Devoted Darling</a></h3>
@@ -303,9 +281,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/heatwave_female.jpg">
+          <img src="images/heatwave_female.jpg" alt="Heatwave - Female">
           <div class="divider"></div>
-          <img src="images/heatwave_male.jpg">
+          <img src="images/heatwave_male.jpg" alt="Heatwave - Male">
         </div>
       </div>
       <h3><a href="heatwave.html">Heatwave</a></h3>
@@ -315,9 +293,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/mood_multiplier_female.jpg">
+          <img src="images/mood_multiplier_female.jpg" alt="Mood Multiplier - Female">
           <div class="divider"></div>
-          <img src="images/mood_multiplier_male.jpg">
+          <img src="images/mood_multiplier_male.jpg" alt="Mood Multiplier - Male">
         </div>
       </div>
       <h3><a href="mood-multiplier.html">Mood Multiplier</a></h3>
