@@ -9,34 +9,16 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: black;
-    }
-
-    .border-wrapper {
-      padding: 5px 15px 15px;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      background: linear-gradient(to right, #06954E, #064D95);
-      background-origin: border-box;
-      background-clip: padding-box, border-box;
-    }
-
-    .green-room .border-wrapper {
-      background: linear-gradient(to right, #950606, #064D95);
-    }
-
-    .blue-room .border-wrapper {
-      background: linear-gradient(to right, #950606, #06954E);
+      background-color: black;
     }
 
     .logo-wrapper {
       padding-top: 20px;
       padding-bottom: 20px;
+      text-align: center;
     }
 
     .logo-img {
-      display: block;
-      margin: 0 auto;
       max-width: 125px;
       height: auto;
     }
@@ -51,6 +33,33 @@
       line-height: 1.1;
       margin-bottom: 10px;
     }
+
+    .border-wrapper {
+      padding: 5px 15px 15px;
+    }
+
+    .red-room .border-wrapper {
+      background: linear-gradient(to right, #06954E, #064D95);
+    }
+
+    .green-room .border-wrapper {
+      background: linear-gradient(to right, #950606, #064D95);
+    }
+
+    .blue-room .border-wrapper {
+      background: linear-gradient(to right, #950606, #06954E);
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 25px;
+    }
+
+    .red-room .container { background-color: #950606; }
+    .green-room .container { background-color: #06954E; }
+    .blue-room .container { background-color: #064D95; }
 
     .find-type-btn {
       text-align: center;
@@ -77,16 +86,6 @@
     .green-btn a { background-color: #06954E; }
     .red-btn a { background-color: #950606; }
 
-    .container {
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
-    }
-
-    .red-room { background-color: #950606; }
-    .green-room { background-color: #06954E; }
-    .blue-room { background-color: #064D95; }
-
     .archetype-card {
       margin: 40px auto;
       text-align: center;
@@ -103,13 +102,14 @@
 
     .image-pair {
       display: flex;
+      justify-content: center;
       height: auto;
-      aspect-ratio: 2 / 1;
+      position: relative;
     }
 
     .image-pair img {
       width: 50%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
     }
 
@@ -143,7 +143,7 @@
 </head>
 <body>
 
-<!-- RED ROOM FIRST -->
+<!-- RED ROOM -->
 <div class="red-room">
   <div class="border-wrapper">
     <div class="logo-wrapper">
@@ -151,7 +151,6 @@
     </div>
     <div class="title">Sexual Profiles</div>
     <div class="container">
-
       <div class="find-type-btn red-btn">
         <a href="index.html">Find Your Type</a>
       </div>
@@ -203,6 +202,10 @@
         <h3><a href="the-punish-me.html">The Punish Me</a></h3>
         <p class="slogan">What you call defiance, I call foreplay.</p>
       </div>
+
+      <div class="find-type-btn red-btn">
+        <a href="index.html">Find Your Type</a>
+      </div>
     </div>
   </div>
 </div>
@@ -211,7 +214,6 @@
 <div class="green-room">
   <div class="border-wrapper">
     <div class="container">
-
       <div class="find-type-btn green-btn">
         <a href="index.html">Find Your Type</a>
       </div>
@@ -271,7 +273,6 @@
 <div class="blue-room">
   <div class="border-wrapper">
     <div class="container">
-
       <div class="find-type-btn blue-btn">
         <a href="index.html">Find Your Type</a>
       </div>
@@ -324,6 +325,9 @@
         <p class="slogan">You match their vibe—and raise it.</p>
       </div>
 
+      <div class="find-type-btn blue-btn">
+        <a href="index.html">Find Your Type</a>
+      </div>
     </div>
   </div>
 </div>
