@@ -11,10 +11,18 @@
       font-family: 'Montserrat', sans-serif;
     }
 
+    /* Top border gradient */
     .border-wrapper {
-      padding: 15px;
-      border-radius: 0 0 25px 25px;
       background: linear-gradient(to right, #06954E, #064D95);
+      padding: 20px 0 0;
+      border-top-left-radius: 25px;
+      border-top-right-radius: 25px;
+    }
+
+    .border-inner {
+      max-width: 900px;
+      margin: auto;
+      padding: 0 15px;
     }
 
     .logo {
@@ -23,9 +31,7 @@
       width: 125px;
     }
 
-    .title-container {
-      background-color: #950606;
-      padding: 40px 20px 20px;
+    .page-title {
       text-align: center;
     }
 
@@ -35,12 +41,12 @@
       font-weight: 700;
       color: white;
       text-shadow: 0 0 8px #ff00ff, 0 0 12px #ff00ff;
-      margin: 10px 0 20px;
+      margin: 10px 0 10px;
     }
 
     .find-type-btn {
       text-align: center;
-      margin-bottom: 40px;
+      margin: 20px 0 40px;
     }
 
     .find-type-btn a {
@@ -59,13 +65,17 @@
       transform: scale(1.05);
     }
 
-    .red-btn a { background-color: #950606; }
-    .green-btn a { background-color: #06954E; }
     .blue-btn a { background-color: #064D95; }
+    .green-btn a { background-color: #06954E; }
+    .red-btn a { background-color: #950606; }
 
-    .red-room { background-color: #950606; padding: 40px 20px; }
-    .green-room { background-color: #06954E; padding: 40px 20px; }
-    .blue-room { background-color: #064D95; padding: 40px 20px; }
+    .room-section {
+      padding: 40px 20px;
+    }
+
+    .blue-room { background-color: #064D95; }
+    .green-room { background-color: #06954E; }
+    .red-room { background-color: #950606; }
 
     .archetype-card {
       margin: 40px auto;
@@ -74,19 +84,12 @@
     }
 
     .image-container {
-      border: 4px solid #FFD700;
+      border: 4px solid #BEA066;
       border-radius: 12px;
       overflow: hidden;
       display: inline-block;
       width: 100%;
       margin-bottom: 16px;
-      pointer-events: none;
-      user-select: none;
-    }
-
-    .image-container a {
-      pointer-events: auto;
-      display: block;
     }
 
     .image-pair {
@@ -99,11 +102,16 @@
       object-fit: cover;
       display: block;
       pointer-events: none;
+      user-select: none;
+    }
+
+    .image-pair img[draggable] {
+      -webkit-user-drag: none;
     }
 
     .divider {
       width: 4px;
-      background-color: #FFD700;
+      background-color: #BEA066;
     }
 
     .slogan {
@@ -119,7 +127,7 @@
     }
 
     h3 a {
-      color: #FFD700;
+      color: #BEA066;
       text-decoration: none;
       font-size: 1.4rem;
     }
@@ -131,200 +139,211 @@
 </head>
 <body>
 
-<!-- Border Wrapper + Logo + Title -->
 <div class="border-wrapper">
-  <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
-</div>
-
-<div class="title-container">
-  <div class="page-title">
-    <h1>Sexual Profiles</h1>
-  </div>
-  <div class="find-type-btn red-btn">
-    <a href="index.html">Find Your Type</a>
+  <div class="border-inner">
+    <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+    <div class="page-title">
+      <h1>Sexual Profiles</h1>
+    </div>
+    <div class="find-type-btn red-btn">
+      <a href="index.html">Find Your Type</a>
+    </div>
   </div>
 </div>
 
 <!-- RED ROOM -->
-<div class="red-room">
+<div class="red-room room-section">
+
+  <!-- Claimed & Trained -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="claimed-and-trained.html">
+    <a href="claimed-and-trained.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/claimed__trained_female.jpg" alt="Claimed & Trained - Female">
+          <img src="images/claimed__trained_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/claimed__trained_male.jpg" alt="Claimed & Trained - Male">
+          <img src="images/claimed__trained_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="claimed-and-trained.html">Claimed & Trained</a></h3>
     <p class="slogan">The deeper you give in the more pleasure you'll feel.</p>
   </div>
 
+  <!-- The Punish Me -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="the-punish-me.html">
+    <a href="the-punish-me.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/the_punish_me_female.jpg" alt="The Punish Me - Female">
+          <img src="images/the_punish_me_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/the_punish_me_male.jpg" alt="The Punish Me - Male">
+          <img src="images/the_punish_me_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="the-punish-me.html">The Punish Me</a></h3>
     <p class="slogan">What you call defiance, I call foreplay.</p>
   </div>
 
+  <!-- The Provoker -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="the-provoker.html">
+    <a href="the-provoker.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/the_provoker_female.jpg" alt="The Provoker - Female">
+          <img src="images/the_provoker_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/the_provoker_male.jpg" alt="The Provoker - Male">
+          <img src="images/the_provoker_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="the-provoker.html">The Provoker</a></h3>
     <p class="slogan">You press buttons—on purpose.</p>
   </div>
 
+  <!-- Dungeon Master -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="dungeon-master.html">
+    <a href="dungeon-master.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/dungeon_master_female.jpg" alt="Dungeon Master - Female">
+          <img src="images/dungeon_master_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/dungeon_master_male.jpg" alt="Dungeon Master - Male">
+          <img src="images/dungeon_master_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="dungeon-master.html">Dungeon Master</a></h3>
     <p class="slogan">You’re not just having a fantasy. You’re the one in charge of it.</p>
   </div>
 </div>
 
 <!-- GREEN ROOM -->
-<div class="green-room">
+<div class="green-room room-section">
   <div class="find-type-btn green-btn">
     <a href="index.html">Find Your Type</a>
   </div>
 
+  <!-- Generous Giver -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="generous-giver.html">
+    <a href="generous-giver.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/generous_giver_female.jpg" alt="Generous Giver - Female">
+          <img src="images/generous_giver_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/generous_giver_male.jpg" alt="Generous Giver - Male">
+          <img src="images/generous_giver_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="generous-giver.html">Generous Giver</a></h3>
     <p class="slogan">You have so much to give, you just need someone to give it to.</p>
   </div>
 
+  <!-- Bedroom Adventurer -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="bedroom-adventurer.html">
+    <a href="bedroom-adventurer.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/bedroom_adventurer_female.jpg" alt="Bedroom Adventurer - Female">
+          <img src="images/bedroom_adventurer_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/bedroom_adventurer_male.jpg" alt="Bedroom Adventurer - Male">
+          <img src="images/bedroom_adventurer_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="bedroom-adventurer.html">Bedroom Adventurer</a></h3>
     <p class="slogan">I'm up for anything and down to get dirty.</p>
   </div>
 
+  <!-- Promiscuous Plaything -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="promiscuous-plaything.html">
+    <a href="promiscuous-plaything.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/promiscuous_plaything_female.jpg" alt="Promiscuous Plaything - Female">
+          <img src="images/promiscuous_plaything_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/promiscuous_plaything_male.jpg" alt="Promiscuous Plaything - Male">
+          <img src="images/promiscuous_plaything_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="promiscuous-plaything.html">Promiscuous Plaything</a></h3>
     <p class="slogan">Are you ready for a wild ride!</p>
   </div>
 
+  <!-- Charmer in Charge -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="charmer-in-charge.html">
+    <a href="charmer-in-charge.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/charmer_in_charge_female.jpg" alt="Charmer in Charge - Female">
+          <img src="images/charmer_in_charge_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/charmer_in_charge_male.jpg" alt="Charmer in Charge - Male">
+          <img src="images/charmer_in_charge_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="charmer-in-charge.html">Charmer in Charge</a></h3>
     <p class="slogan">You don’t just take control. You make them beg for it.</p>
   </div>
 </div>
 
 <!-- BLUE ROOM -->
-<div class="blue-room">
+<div class="blue-room room-section">
   <div class="find-type-btn blue-btn">
     <a href="index.html">Find Your Type</a>
   </div>
 
+  <!-- Devoted Darling -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="devoted-darling.html">
+    <a href="devoted-darling.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/devoted_darling_female.jpg" alt="Devoted Darling - Female">
+          <img src="images/devoted_darling_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/devoted_darling_male.jpg" alt="Devoted Darling - Male">
+          <img src="images/devoted_darling_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="devoted-darling.html">Devoted Darling</a></h3>
     <p class="slogan">Nothing is as kinky as loyalty.</p>
   </div>
 
+  <!-- Tender Protector -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="tender-protector.html">
+    <a href="tender-protector.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/tender_protector_female.jpg" alt="Tender Protector - Female">
+          <img src="images/tender_protector_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/tender_protector_male.jpg" alt="Tender Protector - Male">
+          <img src="images/tender_protector_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="tender-protector.html">Tender Protector</a></h3>
     <p class="slogan">You lead with gravity, not volume.</p>
   </div>
 
+  <!-- Mood Multiplier -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="mood-multiplier.html">
+    <a href="mood-multiplier.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/mood_multiplier_female.jpg" alt="Mood Multiplier - Female">
+          <img src="images/mood_multiplier_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/mood_multiplier_male.jpg" alt="Mood Multiplier - Male">
+          <img src="images/mood_multiplier_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="mood-multiplier.html">Mood Multiplier</a></h3>
     <p class="slogan">You match their vibe—and raise it.</p>
   </div>
 
+  <!-- Heatwave -->
   <div class="archetype-card">
-    <div class="image-container">
-      <a href="heatwave.html">
+    <a href="heatwave.html">
+      <div class="image-container">
         <div class="image-pair">
-          <img src="images/heatwave_female.jpg" alt="Heatwave - Female">
+          <img src="images/heatwave_female.jpg" draggable="false" oncontextmenu="return false;">
           <div class="divider"></div>
-          <img src="images/heatwave_male.jpg" alt="Heatwave - Male">
+          <img src="images/heatwave_male.jpg" draggable="false" oncontextmenu="return false;">
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
     <h3><a href="heatwave.html">Heatwave</a></h3>
     <p class="slogan">There's no need to change who you are, because people will adjust to you.</p>
   </div>
