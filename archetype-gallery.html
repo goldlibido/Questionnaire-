@@ -3,26 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Archetype Gallery</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <title>Sexual Profiles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
+      background-color: black;
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto 20px;
+      width: 200px;
     }
 
     .page-title {
       text-align: center;
-      padding-top: 40px;
     }
 
     .page-title h1 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 3.2rem;
+      font-size: 3rem;
+      font-style: italic;
       font-weight: 700;
       color: white;
-      text-shadow: 0 0 8px gold, 0 0 12px gold;
-      margin-bottom: 10px;
+      text-shadow: 0 0 10px #72c7ff;
+      margin-bottom: 20px;
     }
 
     .find-type-btn {
@@ -46,36 +52,39 @@
       transform: scale(1.05);
     }
 
-    .blue-room-bg {
-      background-color: #064D95;
-      padding: 40px 0;
+    .blue-btn a { background-color: #064D95; }
+    .green-btn a { background-color: #06954E; }
+    .red-btn a { background-color: #950606; }
+
+    .border-wrapper-blue {
+      background: linear-gradient(to right, #06954E, #950606);
+      padding: 5px 15px 15px;
     }
 
-    .green-room-bg {
-      background-color: #06954E;
-      padding: 40px 0;
+    .border-wrapper-green {
+      background: linear-gradient(to right, #064D95, #950606);
+      padding: 5px 15px 15px;
     }
 
-    .red-room-bg {
-      background-color: #950606;
-      padding: 40px 0;
+    .border-wrapper-red {
+      background: linear-gradient(to right, #064D95, #06954E);
+      padding: 5px 15px 15px;
     }
 
-    .blue-room-btn a {
-      background-color: #064D95;
+    .container {
+      background-color: inherit;
+      padding: 20px;
+      border-radius: 25px;
+      max-width: 700px;
+      margin: auto;
     }
 
-    .green-room-btn a {
-      background-color: #06954E;
-    }
-
-    .red-room-btn a {
-      background-color: #950606;
-    }
+    .blue-room .container { background-color: #064D95; }
+    .green-room .container { background-color: #06954E; }
+    .red-room .container { background-color: #950606; }
 
     .archetype-card {
       margin: 40px auto;
-      max-width: 800px;
       text-align: center;
     }
 
@@ -85,13 +94,12 @@
       overflow: hidden;
       display: inline-block;
       width: 100%;
-      max-width: 700px;
       margin-bottom: 16px;
     }
 
     .image-pair {
       display: flex;
-      height: 320px;
+      height: 260px;
       position: relative;
     }
 
@@ -133,16 +141,19 @@
 </head>
 <body>
 
-  <!-- BLUE ROOM -->
-  <section class="blue-room-bg">
+<!-- BLUE ROOM -->
+<div class="border-wrapper-blue blue-room">
+  <div class="container">
+    <img src="images/logo.png" alt="Le Libido Logo" class="logo" />
     <div class="page-title">
       <h1>Sexual Profiles</h1>
     </div>
-
-    <div class="find-type-btn blue-room-btn">
-      <a href="index.html">🔍 Find Your Type</a>
+    <div class="find-type-btn blue-btn">
+      <a href="index.html">Find Your Type</a>
     </div>
 
+    <!-- Blue Room Archetypes -->
+    <!-- Repeat this block for each archetype -->
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
@@ -190,12 +201,14 @@
       <h3><a href="mood-multiplier.html">Mood Multiplier</a></h3>
       <p class="slogan">You match their vibe—and raise it.</p>
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- GREEN ROOM -->
-  <section class="green-room-bg">
-    <div class="find-type-btn green-room-btn">
-      <a href="index.html">🔍 Find Your Type</a>
+<!-- GREEN ROOM -->
+<div class="border-wrapper-green green-room">
+  <div class="container">
+    <div class="find-type-btn green-btn">
+      <a href="index.html">Find Your Type</a>
     </div>
 
     <div class="archetype-card">
@@ -245,12 +258,14 @@
       <h3><a href="generous-giver.html">Generous Giver</a></h3>
       <p class="slogan">You have so much to give, you just need someone to give it to.</p>
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- RED ROOM -->
-  <section class="red-room-bg">
-    <div class="find-type-btn red-room-btn">
-      <a href="index.html">🔍 Find Your Type</a>
+<!-- RED ROOM -->
+<div class="border-wrapper-red red-room">
+  <div class="container">
+    <div class="find-type-btn red-btn">
+      <a href="index.html">Find Your Type</a>
     </div>
 
     <div class="archetype-card">
@@ -301,10 +316,11 @@
       <p class="slogan">What you call defiance, I call foreplay.</p>
     </div>
 
-    <div class="find-type-btn red-room-btn">
-      <a href="index.html">🔍 Find Your Type</a>
+    <div class="find-type-btn red-btn">
+      <a href="index.html">Find Your Type</a>
     </div>
-  </section>
+  </div>
+</div>
 
 </body>
 </html>
