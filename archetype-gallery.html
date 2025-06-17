@@ -55,34 +55,31 @@
     .green-btn a { background-color: #06954E; }
     .red-btn a { background-color: #950606; }
 
-    .border-wrapper-blue,
-    .border-wrapper-green,
-    .border-wrapper-red {
-      padding: 5px 15px 0;
-    }
-
     .border-wrapper-blue {
       background: linear-gradient(to right, #06954E, #950606);
+      padding: 5px 15px 0;
     }
 
     .border-wrapper-green {
       background: linear-gradient(to right, #064D95, #950606);
+      padding: 0 15px;
     }
 
     .border-wrapper-red {
       background: linear-gradient(to right, #064D95, #06954E);
+      padding: 0 15px 15px;
     }
 
-    .room-container {
+    .container {
       padding: 20px;
       border-radius: 25px;
       max-width: 700px;
-      margin: 0 auto;
+      margin: auto;
     }
 
-    .blue-room .room-container { background-color: #064D95; }
-    .green-room .room-container { background-color: #06954E; }
-    .red-room .room-container { background-color: #950606; }
+    .blue-room { background-color: #064D95; }
+    .green-room { background-color: #06954E; }
+    .red-room { background-color: #950606; }
 
     .archetype-card {
       margin: 40px auto;
@@ -144,8 +141,10 @@
 
 <!-- BLUE ROOM -->
 <div class="border-wrapper-blue">
-  <img src="images/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
-  <div class="room-container blue-room">
+  <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+</div>
+<div class="blue-room">
+  <div class="container">
     <div class="page-title">
       <h1>Sexual Profiles</h1>
     </div>
@@ -153,13 +152,13 @@
       <a href="index.html">Find Your Type</a>
     </div>
 
-    <!-- Repeat for each blue archetype -->
+    <!-- Blue Room Archetypes -->
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/tender_protector_female.jpg" alt="Tender Protector - Female">
+          <img src="images/tender_protector_female.jpg">
           <div class="divider"></div>
-          <img src="images/tender_protector_male.jpg" alt="Tender Protector - Male">
+          <img src="images/tender_protector_male.jpg">
         </div>
       </div>
       <h3><a href="tender-protector.html">Tender Protector</a></h3>
@@ -169,9 +168,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/devoted_darling_female.jpg" alt="Devoted Darling - Female">
+          <img src="images/devoted_darling_female.jpg">
           <div class="divider"></div>
-          <img src="images/devoted_darling_male.jpg" alt="Devoted Darling - Male">
+          <img src="images/devoted_darling_male.jpg">
         </div>
       </div>
       <h3><a href="devoted-darling.html">Devoted Darling</a></h3>
@@ -181,9 +180,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/heatwave_female.jpg" alt="Heatwave - Female">
+          <img src="images/heatwave_female.jpg">
           <div class="divider"></div>
-          <img src="images/heatwave_male.jpg" alt="Heatwave - Male">
+          <img src="images/heatwave_male.jpg">
         </div>
       </div>
       <h3><a href="heatwave.html">Heatwave</a></h3>
@@ -193,9 +192,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/mood_multiplier_female.jpg" alt="Mood Multiplier - Female">
+          <img src="images/mood_multiplier_female.jpg">
           <div class="divider"></div>
-          <img src="images/mood_multiplier_male.jpg" alt="Mood Multiplier - Male">
+          <img src="images/mood_multiplier_male.jpg">
         </div>
       </div>
       <h3><a href="mood-multiplier.html">Mood Multiplier</a></h3>
@@ -205,8 +204,9 @@
 </div>
 
 <!-- GREEN ROOM -->
-<div class="border-wrapper-green">
-  <div class="room-container green-room">
+<div class="border-wrapper-green"></div>
+<div class="green-room">
+  <div class="container">
     <div class="find-type-btn green-btn">
       <a href="index.html">Find Your Type</a>
     </div>
@@ -214,9 +214,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/charmer_in_charge_female.jpg" alt="Charmer in Charge - Female">
+          <img src="images/charmer_in_charge_female.jpg">
           <div class="divider"></div>
-          <img src="images/charmer_in_charge_male.jpg" alt="Charmer in Charge - Male">
+          <img src="images/charmer_in_charge_male.jpg">
         </div>
       </div>
       <h3><a href="charmer-in-charge.html">Charmer in Charge</a></h3>
@@ -226,9 +226,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/promiscuous_plaything_female.jpg" alt="Promiscuous Plaything - Female">
+          <img src="images/promiscuous_plaything_female.jpg">
           <div class="divider"></div>
-          <img src="images/promiscuous_plaything_male.jpg" alt="Promiscuous Plaything - Male">
+          <img src="images/promiscuous_plaything_male.jpg">
         </div>
       </div>
       <h3><a href="promiscuous-plaything.html">Promiscuous Plaything</a></h3>
@@ -238,9 +238,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/bedroom_adventurer_female.jpg" alt="Bedroom Adventurer - Female">
+          <img src="images/bedroom_adventurer_female.jpg">
           <div class="divider"></div>
-          <img src="images/bedroom_adventurer_male.jpg" alt="Bedroom Adventurer - Male">
+          <img src="images/bedroom_adventurer_male.jpg">
         </div>
       </div>
       <h3><a href="bedroom-adventurer.html">Bedroom Adventurer</a></h3>
@@ -250,9 +250,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/generous_giver_female.jpg" alt="Generous Giver - Female">
+          <img src="images/generous_giver_female.jpg">
           <div class="divider"></div>
-          <img src="images/generous_giver_male.jpg" alt="Generous Giver - Male">
+          <img src="images/generous_giver_male.jpg">
         </div>
       </div>
       <h3><a href="generous-giver.html">Generous Giver</a></h3>
@@ -262,8 +262,9 @@
 </div>
 
 <!-- RED ROOM -->
-<div class="border-wrapper-red">
-  <div class="room-container red-room">
+<div class="border-wrapper-red"></div>
+<div class="red-room">
+  <div class="container">
     <div class="find-type-btn red-btn">
       <a href="index.html">Find Your Type</a>
     </div>
@@ -271,9 +272,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/dungeon_master_female.jpg" alt="Dungeon Master - Female">
+          <img src="images/dungeon_master_female.jpg">
           <div class="divider"></div>
-          <img src="images/dungeon_master_male.jpg" alt="Dungeon Master - Male">
+          <img src="images/dungeon_master_male.jpg">
         </div>
       </div>
       <h3><a href="dungeon-master.html">Dungeon Master</a></h3>
@@ -283,9 +284,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/claimed__trained_female.jpg" alt="Claimed & Trained - Female">
+          <img src="images/claimed__trained_female.jpg">
           <div class="divider"></div>
-          <img src="images/claimed__trained_male.jpg" alt="Claimed & Trained - Male">
+          <img src="images/claimed__trained_male.jpg">
         </div>
       </div>
       <h3><a href="claimed-and-trained.html">Claimed & Trained</a></h3>
@@ -295,9 +296,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/the_provoker_female.jpg" alt="The Provoker - Female">
+          <img src="images/the_provoker_female.jpg">
           <div class="divider"></div>
-          <img src="images/the_provoker_male.jpg" alt="The Provoker - Male">
+          <img src="images/the_provoker_male.jpg">
         </div>
       </div>
       <h3><a href="the-provoker.html">The Provoker</a></h3>
@@ -307,9 +308,9 @@
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
-          <img src="images/the_punish_me_female.jpg" alt="The Punish Me - Female">
+          <img src="images/the_punish_me_female.jpg">
           <div class="divider"></div>
-          <img src="images/the_punish_me_male.jpg" alt="The Punish Me - Male">
+          <img src="images/the_punish_me_male.jpg">
         </div>
       </div>
       <h3><a href="the-punish-me.html">The Punish Me</a></h3>
