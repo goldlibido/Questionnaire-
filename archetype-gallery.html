@@ -4,17 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sexual Profiles</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: black;
     }
 
     .border-wrapper {
       padding: 5px 15px 15px;
-      background: linear-gradient(to right, #06954E, #064D95); /* red section */
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      background: linear-gradient(to right, #06954E, #064D95);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
     }
 
     .green-room .border-wrapper {
@@ -25,39 +29,27 @@
       background: linear-gradient(to right, #950606, #06954E);
     }
 
-    .room-section {
-      padding: 0;
+    .logo-wrapper {
+      padding-top: 20px;
+      padding-bottom: 20px;
     }
 
-    .container {
-      max-width: 740px;
-      margin: auto;
-      padding: 20px;
-      background-color: inherit;
-      border-radius: 25px;
-    }
-
-    .red-room .container { background-color: #950606; }
-    .green-room .container { background-color: #06954E; }
-    .blue-room .container { background-color: #064D95; }
-
-    .logo {
+    .logo-img {
       display: block;
-      margin: 0 auto 10px;
-      width: 200px;
+      margin: 0 auto;
+      max-width: 125px;
+      height: auto;
     }
 
-    .page-title {
-      text-align: center;
-    }
-
-    .page-title h1 {
-      font-size: 3rem;
+    .title {
+      font-family: 'Poppins', sans-serif;
       font-style: italic;
-      font-weight: 700;
+      font-size: 2.6rem;
       color: white;
-      text-shadow: 0 0 10px #ff72ff;
-      margin: 10px 0 30px;
+      text-align: center;
+      text-shadow: 0 0 8px #ff00ff, 0 0 12px #ff00ff;
+      line-height: 1.1;
+      margin-bottom: 10px;
     }
 
     .find-type-btn {
@@ -85,6 +77,16 @@
     .green-btn a { background-color: #06954E; }
     .red-btn a { background-color: #950606; }
 
+    .container {
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .red-room { background-color: #950606; }
+    .green-room { background-color: #06954E; }
+    .blue-room { background-color: #064D95; }
+
     .archetype-card {
       margin: 40px auto;
       text-align: center;
@@ -102,11 +104,11 @@
     .image-pair {
       display: flex;
       height: auto;
+      aspect-ratio: 2 / 1;
     }
 
     .image-pair img {
       width: 50%;
-      height: auto;
       object-fit: cover;
       display: block;
     }
@@ -142,19 +144,18 @@
 <body>
 
 <!-- RED ROOM FIRST -->
-<div class="room-section red-room">
+<div class="red-room">
   <div class="border-wrapper">
-    <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+    <div class="logo-wrapper">
+      <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo-img" />
+    </div>
+    <div class="title">Sexual Profiles</div>
     <div class="container">
-      <div class="page-title">
-        <h1>Sexual Profiles</h1>
-      </div>
 
       <div class="find-type-btn red-btn">
         <a href="index.html">Find Your Type</a>
       </div>
 
-      <!-- Red Archetypes -->
       <div class="archetype-card">
         <div class="image-container">
           <div class="image-pair">
@@ -207,14 +208,14 @@
 </div>
 
 <!-- GREEN ROOM -->
-<div class="room-section green-room">
+<div class="green-room">
   <div class="border-wrapper">
     <div class="container">
+
       <div class="find-type-btn green-btn">
         <a href="index.html">Find Your Type</a>
       </div>
 
-      <!-- Green Archetypes -->
       <div class="archetype-card">
         <div class="image-container">
           <div class="image-pair">
@@ -267,14 +268,14 @@
 </div>
 
 <!-- BLUE ROOM -->
-<div class="room-section blue-room">
+<div class="blue-room">
   <div class="border-wrapper">
     <div class="container">
+
       <div class="find-type-btn blue-btn">
         <a href="index.html">Find Your Type</a>
       </div>
 
-      <!-- Blue Archetypes -->
       <div class="archetype-card">
         <div class="image-container">
           <div class="image-pair">
@@ -323,9 +324,6 @@
         <p class="slogan">You match their vibe—and raise it.</p>
       </div>
 
-      <div class="find-type-btn blue-btn">
-        <a href="index.html">Find Your Type</a>
-      </div>
     </div>
   </div>
 </div>
