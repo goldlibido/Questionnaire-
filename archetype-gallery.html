@@ -9,22 +9,20 @@
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
-      color: white;
-      background-color: #000;
     }
 
     .page-title {
       text-align: center;
-      margin-top: 40px;
+      padding-top: 40px;
     }
 
     .page-title h1 {
       font-family: 'Montserrat', sans-serif;
-      font-size: 3rem;
+      font-size: 3.2rem;
       font-weight: 700;
-      color: gold;
+      color: white;
+      text-shadow: 0 0 8px gold, 0 0 12px gold;
       margin-bottom: 10px;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     }
 
     .find-type-btn {
@@ -33,15 +31,15 @@
     }
 
     .find-type-btn a {
-      background-color: gold;
-      color: black;
       padding: 12px 26px;
       font-size: 1.1rem;
       font-weight: bold;
       border-radius: 10px;
       text-decoration: none;
-      box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+      border: 2px solid white;
       transition: background-color 0.3s ease, transform 0.2s ease;
+      color: white;
+      display: inline-block;
     }
 
     .find-type-btn a:hover {
@@ -63,6 +61,18 @@
       padding: 40px 0;
     }
 
+    .blue-room-btn a {
+      background-color: #064D95;
+    }
+
+    .green-room-btn a {
+      background-color: #06954E;
+    }
+
+    .red-room-btn a {
+      background-color: #950606;
+    }
+
     .archetype-card {
       margin: 40px auto;
       max-width: 800px;
@@ -75,13 +85,14 @@
       overflow: hidden;
       display: inline-block;
       width: 100%;
-      max-width: 800px;
+      max-width: 700px;
       margin-bottom: 16px;
     }
 
     .image-pair {
       display: flex;
-      height: 360px;
+      height: 320px;
+      position: relative;
     }
 
     .image-pair img {
@@ -102,6 +113,7 @@
       margin-top: 10px;
       font-size: 1rem;
       line-height: 1.4;
+      color: white;
     }
 
     h3 {
@@ -121,16 +133,16 @@
 </head>
 <body>
 
-  <div class="page-title">
-    <h1>Sexual Profiles</h1>
-  </div>
-
-  <div class="find-type-btn">
-    <a href="index.html">🔍 Find Your Type</a>
-  </div>
-
   <!-- BLUE ROOM -->
   <section class="blue-room-bg">
+    <div class="page-title">
+      <h1>Sexual Profiles</h1>
+    </div>
+
+    <div class="find-type-btn blue-room-btn">
+      <a href="index.html">🔍 Find Your Type</a>
+    </div>
+
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
@@ -182,6 +194,10 @@
 
   <!-- GREEN ROOM -->
   <section class="green-room-bg">
+    <div class="find-type-btn green-room-btn">
+      <a href="index.html">🔍 Find Your Type</a>
+    </div>
+
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
@@ -233,6 +249,10 @@
 
   <!-- RED ROOM -->
   <section class="red-room-bg">
+    <div class="find-type-btn red-room-btn">
+      <a href="index.html">🔍 Find Your Type</a>
+    </div>
+
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
@@ -280,11 +300,11 @@
       <h3><a href="the-punish-me.html">The Punish Me</a></h3>
       <p class="slogan">What you call defiance, I call foreplay.</p>
     </div>
-  </section>
 
-  <div class="find-type-btn">
-    <a href="index.html">🔍 Find Your Type</a>
-  </div>
+    <div class="find-type-btn red-room-btn">
+      <a href="index.html">🔍 Find Your Type</a>
+    </div>
+  </section>
 
 </body>
 </html>
