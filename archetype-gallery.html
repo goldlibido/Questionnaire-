@@ -55,32 +55,34 @@
     .green-btn a { background-color: #06954E; }
     .red-btn a { background-color: #950606; }
 
+    .border-wrapper-blue,
+    .border-wrapper-green,
+    .border-wrapper-red {
+      padding: 5px 15px 0;
+    }
+
     .border-wrapper-blue {
       background: linear-gradient(to right, #06954E, #950606);
-      padding: 5px 15px 15px;
     }
 
     .border-wrapper-green {
       background: linear-gradient(to right, #064D95, #950606);
-      padding: 5px 15px 15px;
     }
 
     .border-wrapper-red {
       background: linear-gradient(to right, #064D95, #06954E);
-      padding: 5px 15px 15px;
     }
 
-    .container {
-      background-color: inherit;
+    .room-container {
       padding: 20px;
       border-radius: 25px;
       max-width: 700px;
-      margin: auto;
+      margin: 0 auto;
     }
 
-    .blue-room .container { background-color: #064D95; }
-    .green-room .container { background-color: #06954E; }
-    .red-room .container { background-color: #950606; }
+    .blue-room .room-container { background-color: #064D95; }
+    .green-room .room-container { background-color: #06954E; }
+    .red-room .room-container { background-color: #950606; }
 
     .archetype-card {
       margin: 40px auto;
@@ -141,9 +143,9 @@
 <body>
 
 <!-- BLUE ROOM -->
-<div class="border-wrapper-blue blue-room">
+<div class="border-wrapper-blue">
   <img src="images/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
-  <div class="container">
+  <div class="room-container blue-room">
     <div class="page-title">
       <h1>Sexual Profiles</h1>
     </div>
@@ -151,6 +153,7 @@
       <a href="index.html">Find Your Type</a>
     </div>
 
+    <!-- Repeat for each blue archetype -->
     <div class="archetype-card">
       <div class="image-container">
         <div class="image-pair">
@@ -202,8 +205,8 @@
 </div>
 
 <!-- GREEN ROOM -->
-<div class="border-wrapper-green green-room">
-  <div class="container">
+<div class="border-wrapper-green">
+  <div class="room-container green-room">
     <div class="find-type-btn green-btn">
       <a href="index.html">Find Your Type</a>
     </div>
@@ -259,8 +262,8 @@
 </div>
 
 <!-- RED ROOM -->
-<div class="border-wrapper-red red-room">
-  <div class="container">
+<div class="border-wrapper-red">
+  <div class="room-container red-room">
     <div class="find-type-btn red-btn">
       <a href="index.html">Find Your Type</a>
     </div>
