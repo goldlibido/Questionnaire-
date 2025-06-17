@@ -11,13 +11,21 @@
       font-family: 'Montserrat', sans-serif;
     }
 
+    .border-wrapper {
+      padding: 15px;
+      border-radius: 0 0 25px 25px;
+      background: linear-gradient(to right, #06954E, #064D95);
+    }
+
     .logo {
       display: block;
-      margin: 20px auto 10px;
+      margin: 0 auto 10px;
       width: 125px;
     }
 
-    .page-title {
+    .title-container {
+      background-color: #950606;
+      padding: 40px 20px 20px;
       text-align: center;
     }
 
@@ -27,12 +35,12 @@
       font-weight: 700;
       color: white;
       text-shadow: 0 0 8px #ff00ff, 0 0 12px #ff00ff;
-      margin: 10px 0 5px;
+      margin: 10px 0 20px;
     }
 
     .find-type-btn {
       text-align: center;
-      margin: 20px 0 40px;
+      margin-bottom: 40px;
     }
 
     .find-type-btn a {
@@ -55,33 +63,9 @@
     .green-btn a { background-color: #06954E; }
     .blue-btn a { background-color: #064D95; }
 
-    .room-section {
-      padding: 40px 20px;
-    }
-
-    .red-room { background-color: #950606; }
-    .green-room { background-color: #06954E; }
-    .blue-room { background-color: #064D95; }
-
-    .border-wrapper {
-      padding: 5px 15px 15px;
-      border-left: 10px solid;
-      border-right: 10px solid;
-      border-top: 10px solid;
-      border-radius: 20px 20px 0 0;
-    }
-
-    .red-room .border-wrapper {
-      border-image: linear-gradient(to right, #06954E, #064D95) 1;
-    }
-
-    .green-room .border-wrapper {
-      border-image: linear-gradient(to right, #064D95, #950606) 1;
-    }
-
-    .blue-room .border-wrapper {
-      border-image: linear-gradient(to right, #950606, #06954E) 1;
-    }
+    .red-room { background-color: #950606; padding: 40px 20px; }
+    .green-room { background-color: #06954E; padding: 40px 20px; }
+    .blue-room { background-color: #064D95; padding: 40px 20px; }
 
     .archetype-card {
       margin: 40px auto;
@@ -96,7 +80,13 @@
       display: inline-block;
       width: 100%;
       margin-bottom: 16px;
+      pointer-events: none;
       user-select: none;
+    }
+
+    .image-container a {
+      pointer-events: auto;
+      display: block;
     }
 
     .image-pair {
@@ -137,214 +127,206 @@
     h3 a:hover {
       text-decoration: underline;
     }
-
-    .section {
-      margin: 0;
-    }
   </style>
 </head>
 <body>
 
-<!-- RED SECTION -->
-<div class="red-room section">
-  <div class="border-wrapper">
-    <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
-    <div class="page-title">
-      <h1>Sexual Profiles</h1>
-    </div>
-    <div class="find-type-btn red-btn">
-      <a href="index.html">Find Your Type</a>
-    </div>
+<!-- Border Wrapper + Logo + Title -->
+<div class="border-wrapper">
+  <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+</div>
 
-    <!-- Red Archetypes -->
-    <!-- submissive → role switch → mood switch → dominant -->
-    <div class="archetype-card">
+<div class="title-container">
+  <div class="page-title">
+    <h1>Sexual Profiles</h1>
+  </div>
+  <div class="find-type-btn red-btn">
+    <a href="index.html">Find Your Type</a>
+  </div>
+</div>
+
+<!-- RED ROOM -->
+<div class="red-room">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="claimed-and-trained.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/claimed__trained_female.jpg">
-            <div class="divider"></div>
-            <img src="images/claimed__trained_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/claimed__trained_female.jpg" alt="Claimed & Trained - Female">
+          <div class="divider"></div>
+          <img src="images/claimed__trained_male.jpg" alt="Claimed & Trained - Male">
         </div>
       </a>
-      <h3><a href="claimed-and-trained.html">Claimed & Trained</a></h3>
-      <p class="slogan">The deeper you give in the more pleasure you'll feel.</p>
     </div>
+    <h3><a href="claimed-and-trained.html">Claimed & Trained</a></h3>
+    <p class="slogan">The deeper you give in the more pleasure you'll feel.</p>
+  </div>
 
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="the-punish-me.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/the_punish_me_female.jpg">
-            <div class="divider"></div>
-            <img src="images/the_punish_me_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/the_punish_me_female.jpg" alt="The Punish Me - Female">
+          <div class="divider"></div>
+          <img src="images/the_punish_me_male.jpg" alt="The Punish Me - Male">
         </div>
       </a>
-      <h3><a href="the-punish-me.html">The Punish Me</a></h3>
-      <p class="slogan">What you call defiance, I call foreplay.</p>
     </div>
+    <h3><a href="the-punish-me.html">The Punish Me</a></h3>
+    <p class="slogan">What you call defiance, I call foreplay.</p>
+  </div>
 
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="the-provoker.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/the_provoker_female.jpg">
-            <div class="divider"></div>
-            <img src="images/the_provoker_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/the_provoker_female.jpg" alt="The Provoker - Female">
+          <div class="divider"></div>
+          <img src="images/the_provoker_male.jpg" alt="The Provoker - Male">
         </div>
       </a>
-      <h3><a href="the-provoker.html">The Provoker</a></h3>
-      <p class="slogan">You press buttons—on purpose.</p>
     </div>
+    <h3><a href="the-provoker.html">The Provoker</a></h3>
+    <p class="slogan">You press buttons—on purpose.</p>
+  </div>
 
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="dungeon-master.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/dungeon_master_female.jpg">
-            <div class="divider"></div>
-            <img src="images/dungeon_master_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/dungeon_master_female.jpg" alt="Dungeon Master - Female">
+          <div class="divider"></div>
+          <img src="images/dungeon_master_male.jpg" alt="Dungeon Master - Male">
         </div>
       </a>
-      <h3><a href="dungeon-master.html">Dungeon Master</a></h3>
-      <p class="slogan">You’re not just having a fantasy. You’re the one in charge of it.</p>
     </div>
+    <h3><a href="dungeon-master.html">Dungeon Master</a></h3>
+    <p class="slogan">You’re not just having a fantasy. You’re the one in charge of it.</p>
   </div>
 </div>
 
-<!-- GREEN SECTION -->
-<div class="green-room section">
-  <div class="border-wrapper">
-    <div class="find-type-btn green-btn">
-      <a href="index.html">Find Your Type</a>
-    </div>
+<!-- GREEN ROOM -->
+<div class="green-room">
+  <div class="find-type-btn green-btn">
+    <a href="index.html">Find Your Type</a>
+  </div>
 
-    <!-- Green Archetypes -->
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="generous-giver.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/generous_giver_female.jpg">
-            <div class="divider"></div>
-            <img src="images/generous_giver_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/generous_giver_female.jpg" alt="Generous Giver - Female">
+          <div class="divider"></div>
+          <img src="images/generous_giver_male.jpg" alt="Generous Giver - Male">
         </div>
       </a>
-      <h3><a href="generous-giver.html">Generous Giver</a></h3>
-      <p class="slogan">You have so much to give, you just need someone to give it to.</p>
     </div>
+    <h3><a href="generous-giver.html">Generous Giver</a></h3>
+    <p class="slogan">You have so much to give, you just need someone to give it to.</p>
+  </div>
 
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="bedroom-adventurer.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/bedroom_adventurer_female.jpg">
-            <div class="divider"></div>
-            <img src="images/bedroom_adventurer_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/bedroom_adventurer_female.jpg" alt="Bedroom Adventurer - Female">
+          <div class="divider"></div>
+          <img src="images/bedroom_adventurer_male.jpg" alt="Bedroom Adventurer - Male">
         </div>
       </a>
-      <h3><a href="bedroom-adventurer.html">Bedroom Adventurer</a></h3>
-      <p class="slogan">I'm up for anything and down to get dirty.</p>
     </div>
+    <h3><a href="bedroom-adventurer.html">Bedroom Adventurer</a></h3>
+    <p class="slogan">I'm up for anything and down to get dirty.</p>
+  </div>
 
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="promiscuous-plaything.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/promiscuous_plaything_female.jpg">
-            <div class="divider"></div>
-            <img src="images/promiscuous_plaything_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/promiscuous_plaything_female.jpg" alt="Promiscuous Plaything - Female">
+          <div class="divider"></div>
+          <img src="images/promiscuous_plaything_male.jpg" alt="Promiscuous Plaything - Male">
         </div>
       </a>
-      <h3><a href="promiscuous-plaything.html">Promiscuous Plaything</a></h3>
-      <p class="slogan">Are you ready for a wild ride!</p>
     </div>
+    <h3><a href="promiscuous-plaything.html">Promiscuous Plaything</a></h3>
+    <p class="slogan">Are you ready for a wild ride!</p>
+  </div>
 
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="charmer-in-charge.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/charmer_in_charge_female.jpg">
-            <div class="divider"></div>
-            <img src="images/charmer_in_charge_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/charmer_in_charge_female.jpg" alt="Charmer in Charge - Female">
+          <div class="divider"></div>
+          <img src="images/charmer_in_charge_male.jpg" alt="Charmer in Charge - Male">
         </div>
       </a>
-      <h3><a href="charmer-in-charge.html">Charmer in Charge</a></h3>
-      <p class="slogan">You don’t just take control. You make them beg for it.</p>
     </div>
+    <h3><a href="charmer-in-charge.html">Charmer in Charge</a></h3>
+    <p class="slogan">You don’t just take control. You make them beg for it.</p>
   </div>
 </div>
 
-<!-- BLUE SECTION -->
-<div class="blue-room section">
-  <div class="border-wrapper">
-    <div class="find-type-btn blue-btn">
-      <a href="index.html">Find Your Type</a>
-    </div>
+<!-- BLUE ROOM -->
+<div class="blue-room">
+  <div class="find-type-btn blue-btn">
+    <a href="index.html">Find Your Type</a>
+  </div>
 
-    <!-- Blue Archetypes -->
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="devoted-darling.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/devoted_darling_female.jpg">
-            <div class="divider"></div>
-            <img src="images/devoted_darling_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/devoted_darling_female.jpg" alt="Devoted Darling - Female">
+          <div class="divider"></div>
+          <img src="images/devoted_darling_male.jpg" alt="Devoted Darling - Male">
         </div>
       </a>
-      <h3><a href="devoted-darling.html">Devoted Darling</a></h3>
-      <p class="slogan">Nothing is as kinky as loyalty.</p>
     </div>
+    <h3><a href="devoted-darling.html">Devoted Darling</a></h3>
+    <p class="slogan">Nothing is as kinky as loyalty.</p>
+  </div>
 
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="tender-protector.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/tender_protector_female.jpg">
-            <div class="divider"></div>
-            <img src="images/tender_protector_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/tender_protector_female.jpg" alt="Tender Protector - Female">
+          <div class="divider"></div>
+          <img src="images/tender_protector_male.jpg" alt="Tender Protector - Male">
         </div>
       </a>
-      <h3><a href="tender-protector.html">Tender Protector</a></h3>
-      <p class="slogan">You lead with gravity, not volume.</p>
     </div>
+    <h3><a href="tender-protector.html">Tender Protector</a></h3>
+    <p class="slogan">You lead with gravity, not volume.</p>
+  </div>
 
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="mood-multiplier.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/mood_multiplier_female.jpg">
-            <div class="divider"></div>
-            <img src="images/mood_multiplier_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/mood_multiplier_female.jpg" alt="Mood Multiplier - Female">
+          <div class="divider"></div>
+          <img src="images/mood_multiplier_male.jpg" alt="Mood Multiplier - Male">
         </div>
       </a>
-      <h3><a href="mood-multiplier.html">Mood Multiplier</a></h3>
-      <p class="slogan">You match their vibe—and raise it.</p>
     </div>
+    <h3><a href="mood-multiplier.html">Mood Multiplier</a></h3>
+    <p class="slogan">You match their vibe—and raise it.</p>
+  </div>
 
-    <div class="archetype-card">
+  <div class="archetype-card">
+    <div class="image-container">
       <a href="heatwave.html">
-        <div class="image-container">
-          <div class="image-pair">
-            <img src="images/heatwave_female.jpg">
-            <div class="divider"></div>
-            <img src="images/heatwave_male.jpg">
-          </div>
+        <div class="image-pair">
+          <img src="images/heatwave_female.jpg" alt="Heatwave - Female">
+          <div class="divider"></div>
+          <img src="images/heatwave_male.jpg" alt="Heatwave - Male">
         </div>
       </a>
-      <h3><a href="heatwave.html">Heatwave</a></h3>
-      <p class="slogan">There's no need to change who you are, because people will adjust to you.</p>
     </div>
+    <h3><a href="heatwave.html">Heatwave</a></h3>
+    <p class="slogan">There's no need to change who you are, because people will adjust to you.</p>
   </div>
 </div>
 
