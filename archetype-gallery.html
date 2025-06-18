@@ -11,10 +11,10 @@
       font-family: 'Montserrat', sans-serif;
     }
 
-    .border-wrapper {
-      padding: 5px 15px 0px;
-      background: linear-gradient(to right, #06954E, #064D95); /* red room default */
-    }
+  <!-- TOP GRADIENT & LOGO -->
+<div class="border-wrapper" style="padding-top: 5px;">
+  <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo-img" />
+</div>
 
     .green-room .border-wrapper {
       background: linear-gradient(to right, #064D95, #950606);
@@ -24,11 +24,23 @@
       background: linear-gradient(to right, #950606, #06954E);
     }
 
+<body>
+  <div class="gradient-frame">
+    <!-- your entire page content goes here -->
+  </div>
+</body>
+
+    .gradient-frame {
+  padding: 5px 15px 0;
+  background: linear-gradient(to bottom right, #06954E, #064D95, #950606);
+  border-radius: 25px;
+}
+    
     .container {
       padding: 20px;
       border-radius: 25px;
       max-width: 700px;
-      margin: auto;0
+      margin: 0 auto;
     }
 
     .red-room .container {
