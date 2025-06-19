@@ -73,13 +73,13 @@
 <body id="resultBody">
   <div class="title" id="roomTitle">Meet your type in the ROOM</div>
   <div class="subtitle" id="archetypeText">Your Archetype</div>
-
-  <div class="section" id="inviteText"></div>
-  <div class="section" id="sugarText"></div>
   <div class="section" id="compatibilityText"></div>
+  <div class="section" id="sugarText"></div>
+  <div class="section" id="inviteText"></div>
   <div><button onclick="showTypeDetails()">More about you</button></div>
   <div id="typeDetails"></div>
 
+  <!-- ✅ Script Starts -->
   <script>
     const params = new URLSearchParams(window.location.search);
     const q3 = params.get("q3");
@@ -87,7 +87,7 @@
     const q5 = params.get("q5");
     const q6 = params.get("q6");
     const q9 = params.get("q9");
-    const q8 = params.get("q8"); // gender (🍆 or 🐈)
+    const q8 = params.get("q8");
 
     const roomTitle = document.getElementById("roomTitle");
     const resultBody = document.getElementById("resultBody");
@@ -113,55 +113,54 @@
     }
 
     const archetypes = {
-      "blue-control": ["Tender Protector", "You lead with gravity, not volume.", "The strongest love is the love that can demonstrate its fragility. – Paulo Coelho", "You lead with grace, grounding those around you. You’re the kind of partner others surrender to not out of fear, but trust. You’re not just in charge, you’re responsible. When you lead, people feel held, not handled. In dominance psychology, this is called secure authority, you don’t control people, you create space for them to feel free."],
-      "blue-partner control": ["Devoted Darling", "Nothing is as kinky as loyalty.", "Love is composed of a single soul inhabiting two bodies. – Aristotle", "You don’t perform devotion, you embody it. For you, intimacy is about trust, not control. Once someone proves they’re worthy, you don’t just give affection, you give access. Your submission isn’t passive; it’s sacred. Psychologists call this “secure surrender,” where emotional safety becomes the ultimate turn-on."],
-      "blue-depends mood": ["Heatwave", "There's no need to change who you are, because people will adjust to you.", "“Maybe people think I look sexy because I feel sexy… If you’re comfortable with yourself, then it’s sexy.” - Scarlett Johansson", "You don’t just walk into a room, you tilt its emotional climate. You know what you want and how to get it, without ever needing to say it out loud. Psychology calls this “initiating desire” because you’re the one who ignites the spark. Whether you lead or tease, you’re always in tune with your own power."],
-      "blue-depends partner": ["Mood Multiplier", "You match their vibe—and raise it.", "I don’t adapt to people. I evolve with them. – Anonymous", "You don’t lead or follow, you co-create. Your sexual style is responsive, intuitive, and emotionally intelligent. Like a mirror that amplifies light, you reflect and enhance what others bring. This is a classic example of responsive desire, you don’t act until you feel something real. And when you do, you bring it hard."],
-
-      "green-control": ["Charmer in Charge", "You don’t just take control. You make them beg for it.", "Power isn’t taken. It’s given—willingly. – Toni Morrison", "You don’t dominate with force, you dominate with allure. You lead with confidence and draw people in with magnetic energy. You’re the person they don’t want to disobey, not out of fear, but fascination. Dominance researchers call this persuasive power, it’s less about pushing and more about pull."],
-      "green-partner control": ["Promiscuous Plaything", "Are you ready for a wild ride!", "Sex is part of nature. I go along with nature. – Marilyn Monroe", "You’re here for the spark, the chase, the shiver that runs down your spine when someone wants you. You crave sensation and emotional thrill, but only when it feels real. Psychologists call this “exploratory submission,” where openness fuels arousal. You’re not just a plaything, you’re the prize."],
-      "green-depends mood": ["Bedroom Adventurer", "I'm up for anything and down to get down and dirty.", "It is not by obeying the rules that we come to know pleasure, but by breaking them. – Anaïs Nin", "You crave novelty. You like to stir things up and test the edges. You’re turned on by the idea that anything could happen and you might be the one to make it happen. Research shows that eroticism thrives on psychological novelty. You’re not looking to disrupt, you’re looking to discover."],
-      "green-depends partner": ["Generous Giver", "You have so much to give, you just need someone to give it to.", "Pleasure is the measure of connection. – Esther Perel", "You feel most alive when you’re tuning into someone else. Giving isn’t a performance, it’s a connection ritual. Whether you’re leading or letting go, your goal is reciprocity. This is a textbook case of mutual responsive intimacy, a flexible erotic role based on emotional availability, not control."],
-
-      "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "Power is the ultimate aphrodisiac. – Henry Kissinger", "You don’t play a dominant. You are one. Control isn’t a tool, it’s your second language. You lead with clarity and expectation. Others surrender to you not because they must, but because they want to. Kink researchers define this as total power exchange, you don’t need permission to take control. You already have it."],
-      "red-partner control": ["Claimed & Trained", "The deeper you give in the more pleasure you'll feel.", "The harder the mindfucking the better. - Anonymous", "You don’t want to just submit, you want to surrender completely. You want to be dominated by someone you can't resist. Commands don’t restrict you; they turn you on. Submission, for you, is an erotic identity, not a mere role. Psychologists call this identity-congruent kink, when obedience isn’t just hot, it feels like home."],
-      "red-depends mood": ["The Provoker", "You press buttons—on purpose.", "Power is not given to you. You have to take it. – Beyoncé Knowles", "You poke, provoke, and press all the right buttons. It's effortless for you to flip the switch and flip the room. You don't get swayed by other emotions, you set the mood. In power-exchange theory, you’re a dominant-leaning switch, meaning you aren't reactive, you take the initiative. People don’t play games with you unless they're playing your game."],
-      "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay.", "Punish me right, and I’ll beg for more. – Anonymous", "You test limits, not to break them, but to find out who’s strong enough to handle your full intensity. You thrive on dynamic power play. Research in kink psychology shows that bratting is often a form of intimacy-seeking resistance, you push to see who can truly push back. Your defiance is a dare. You're looking for someone who's strong enough to handle your intensity and put you back in your place."]
+      "blue-control": ["Tender Protector", "You lead with gravity, not volume.", "The strongest love is the love that can demonstrate its fragility. – Paulo Coelho", "You lead with grace, grounding those around you..."],
+      "blue-partner control": ["Devoted Darling", "Nothing is as kinky as loyalty.", "Love is composed of a single soul inhabiting two bodies. – Aristotle", "You don’t perform devotion, you embody it..."],
+      "blue-depends mood": ["Heatwave", "There's no need to change who you are...", "“Maybe people think I look sexy because I feel sexy…” – Scarlett Johansson", "You don’t just walk into a room, you tilt its emotional climate..."],
+      "blue-depends partner": ["Mood Multiplier", "You match their vibe—and raise it.", "I don’t adapt to people. I evolve with them. – Anonymous", "You don’t lead or follow, you co-create..."],
+      "green-control": ["Charmer in Charge", "You don’t just take control. You make them beg for it.", "Power isn’t taken. It’s given—willingly. – Toni Morrison", "You don’t dominate with force, you dominate with allure..."],
+      "green-partner control": ["Promiscuous Plaything", "Are you ready for a wild ride!", "Sex is part of nature. I go along with nature. – Marilyn Monroe", "You’re here for the spark..."],
+      "green-depends mood": ["Bedroom Adventurer", "I'm up for anything and down to get down and dirty.", "It is not by obeying the rules that we come to know pleasure, but by breaking them. – Anaïs Nin", "You crave novelty..."],
+      "green-depends partner": ["Generous Giver", "You have so much to give, you just need someone to give it to.", "Pleasure is the measure of connection. – Esther Perel", "You feel most alive when you’re tuning into someone else..."],
+      "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "Power is the ultimate aphrodisiac. – Henry Kissinger", "You don’t play a dominant. You are one..."],
+      "red-partner control": ["Claimed & Trained", "The deeper you give in the more pleasure you'll feel.", "The harder the mindfucking the better. – Anonymous", "You don’t want to just submit, you want to surrender completely..."],
+      "red-depends mood": ["The Provoker", "You press buttons—on purpose.", "Power is not given to you. You have to take it. – Beyoncé Knowles", "You poke, provoke, and press all the right buttons..."],
+      "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay.", "Punish me right, and I’ll beg for more. – Anonymous", "You test limits, not to break them, but to find out who’s strong enough..."]
     };
 
     const key = `${room}-${q9}`;
     const [typeName, slogan, quote, description] = archetypes[key] || ["Unknown", "", "", ""];
 
-let imageHTML = "";
+    let safeName = typeName.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+    if (typeName === "Claimed & Trained") safeName = "claimed__trained";
 
-if (typeName !== "Unknown" && (q8 === "eggplant" || q8 === "cat")) {
-  const safeName = typeName.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
-  const genderSuffix = q8 === "eggplant" ? "male" : "female";
-  const imagePath = `images/${safeName}_${genderSuffix}.jpg`; // use .jpg only
+    let imageHTML = "";
+    if (typeName !== "Unknown" && (q8 === "eggplant" || q8 === "cat")) {
+      const genderSuffix = q8 === "eggplant" ? "male" : "female";
+      const imagePath = `images/${safeName}_${genderSuffix}.jpg`;
+      imageHTML = `
+        <img src="${imagePath}" alt="${typeName} Image" style="
+          max-width: 100%;
+          height: auto;
+          border-radius: 16px;
+          margin: 15px 0;
+          border: 4px solid gold;
+          box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+        ">
+      `;
+    }
 
-  imageHTML = `
-    <img src="${imagePath}" alt="${typeName} Image" style="
-      max-width: 100%;
-      height: auto;
-      border-radius: 16px;
-      margin: 15px 0;
-      border: 4px solid gold;
-      box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-    ">
-  `;
-}
-archetypeText.innerHTML = `
-  <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
-    Your Sexual Profile:
-  </div>
-  <div style="font-weight: bold; font-size: 1.4rem; margin-bottom: 2px;">
-    ${typeName}
-  </div>
-  ${imageHTML}
-  <div style="font-style: italic; margin-top: 10px;">
-    ${slogan}
-  </div>
-`;
+    archetypeText.innerHTML = `
+      <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
+        Your Sexual Profile:
+      </div>
+      <div style="font-weight: bold; font-size: 1.4rem; margin-bottom: 2px;">
+        ${typeName}
+      </div>
+      ${imageHTML}
+      <div style="font-style: italic; margin-top: 10px;">
+        ${slogan}
+      </div>
+    `;
 
     const matches = {
       "Devoted Darling": ["Tender Protector", "Heatwave", "Promiscuous Plaything"],
@@ -171,11 +170,11 @@ archetypeText.innerHTML = `
       "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
       "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "The Provoker"],
       "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "The Punish Me"],
-      "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed and Trained"],
-      "Claimed and Trained": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
+      "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed & Trained"],
+      "Claimed & Trained": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
       "The Punish Me": ["The Provoker", "Dungeon Master", "Bedroom Adventurer"],
-      "The Provoker": ["The Punish Me", "Claimed and Trained", "Generous Giver"],
-      "Dungeon Master": ["Claimed and Trained", "The Punish Me", "Promiscuous Plaything"]
+      "The Provoker": ["The Punish Me", "Claimed & Trained", "Generous Giver"],
+      "Dungeon Master": ["Claimed & Trained", "The Punish Me", "Promiscuous Plaything"]
     };
 
     if (matches[typeName]) {
