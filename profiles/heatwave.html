@@ -4,123 +4,115 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Heatwave</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700&family=Poppins:ital,wght@1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
+      margin: 0;
+      padding: 0 20px 40px;
       font-family: 'Montserrat', sans-serif;
-      background-color: #064D95;
-      color: #B3DCFF;
+      background-color: #064D95; /* Blue Room */
+      color: white;
       text-align: center;
-      padding: 20px;
     }
 
     .logo-img {
       display: block;
-      margin: 0 auto 10px;
-      max-width: 125px;
+      margin: 20px auto 10px;
+      max-width: 120px;
     }
 
-    h1 {
-      font-size: 2.4rem;
-      font-style: italic;
-      font-family: 'Poppins', sans-serif;
-      color: #B3DCFF;
-      text-shadow: 0 0 6px #00ccff;
-      margin-bottom: 8px;
+    .archetype-title {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin: 8px 0;
     }
 
     .slogan {
-      font-size: 1.1rem;
       font-style: italic;
+      font-size: 1.1rem;
       margin-bottom: 20px;
-      color: #ffffff;
     }
 
     .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       border: 4px solid gold;
       border-radius: 12px;
       overflow: hidden;
-      display: inline-block;
       width: 100%;
       max-width: 700px;
-      margin: 20px auto;
+      margin: 0 auto 20px;
     }
 
-    .image-pair {
-      display: flex;
-      width: 100%;
-    }
-
-    .image-pair img {
-      width: 100%;
+    .image-container img {
+      width: 50%;
       height: auto;
       display: block;
       object-fit: contain;
+      -webkit-user-drag: none;
+      pointer-events: none;
     }
 
     .divider {
       width: 4px;
       background-color: gold;
+      height: 100%;
     }
 
     .quote {
       font-style: italic;
-      font-size: 1.1rem;
-      color: white;
-      margin-top: 10px;
-      margin-bottom: 20px;
+      font-size: 1rem;
+      margin: 20px auto 10px;
+      max-width: 600px;
     }
 
     .description {
-      font-size: 1rem;
-      max-width: 700px;
-      margin: 0 auto 30px;
+      font-size: 1.05rem;
       line-height: 1.6;
-      color: white;
+      max-width: 700px;
+      margin: 0 auto;
     }
 
-    .back-button {
+    .view-all-button {
       display: inline-block;
-      margin-top: 20px;
-      padding: 10px 24px;
-      font-family: 'Poppins', sans-serif;
-      font-size: 1rem;
-      font-style: italic;
+      margin-top: 30px;
+      padding: 12px 28px;
+      border: 2px solid white;
       color: white;
       background-color: transparent;
-      border: 2px solid white;
-      border-radius: 25px;
+      font-style: italic;
+      font-size: 1rem;
       text-decoration: none;
+      border-radius: 25px;
       transition: background-color 0.3s, color 0.3s;
     }
 
-    .back-button:hover {
+    .view-all-button:hover {
       background-color: white;
-      color: black;
+      color: #064D95;
     }
   </style>
 </head>
-
 <body>
-  <img src="../golden-le-libido-logo.png" alt="Le Libido Logo" class="logo-img">
-  <h1>Heatwave</h1>
+  <img src="/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo-img" />
+  <h1 class="archetype-title">Heatwave</h1>
   <p class="slogan">There's no need to change who you are, because people will adjust to you.</p>
 
   <div class="image-container">
-    <div class="image-pair">
-      <img src="../images/heatwave_female.JPG" alt="Heatwave - Female">
-      <div class="divider"></div>
-      <img src="../images/heatwave_male.JPG" alt="Heatwave - Male">
-    </div>
+    <img src="/images/heatwave_female.JPG" alt="Heatwave - Female">
+    <div class="divider"></div>
+    <img src="/images/heatwave_male.JPG" alt="Heatwave - Male">
   </div>
 
   <p class="quote">"I don’t just bring the heat. I *am* the temperature."</p>
 
-  <div class="description">
-    Some people adapt to their surroundings. You make your surroundings adapt to you. The Heatwave archetype exudes sensual intensity without needing to say a word. You magnetize others with your raw authenticity—unapologetically yourself, no edits or disclaimers. Your energy burns through small talk, leaving only the realest desires exposed. Others might try to play it cool, but they’re already sweating. You don’t chase—because everyone’s already chasing you.
-  </div>
+  <p class="description">
+    Some people adapt to their surroundings. You make your surroundings adapt to you. The Heatwave archetype exudes sensual intensity without needing to say a word.
+    You magnetize others with your raw authenticity—unapologetically yourself, no edits or disclaimers. Your energy burns through small talk, leaving only the realest
+    desires exposed. Others might try to play it cool, but they’re already sweating. You don’t chase—because everyone’s already chasing you.
+  </p>
 
-  <a href="../archetype-gallery.html" class="back-button">View All Sexual Profiles</a>
+  <a href="/archetype-gallery.html" class="view-all-button">View All Sexual Profiles</a>
 </body>
 </html>
