@@ -7,59 +7,56 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700&family=Poppins:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Montserrat', sans-serif; }
-
-    .blue-room {
+    body {
+      font-family: 'Montserrat', sans-serif;
       background-color: #064D95;
-      color: white;
-      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
+      color: #B3DCFF;
+      text-align: center;
+      padding: 20px;
     }
 
     .logo-img {
       display: block;
-      margin: 0 auto;
+      margin: 0 auto 10px;
       max-width: 125px;
-      height: auto;
-      padding-top: 10px;
-      padding-bottom: 10px;
     }
 
-    .title {
-      text-align: center;
-      font-size: 2.5rem;
+    h1 {
+      font-size: 2.4rem;
       font-style: italic;
       font-family: 'Poppins', sans-serif;
-      margin: 0 auto 10px;
+      color: #B3DCFF;
+      text-shadow: 0 0 6px #00ccff;
+      margin-bottom: 8px;
     }
 
     .slogan {
-      text-align: center;
-      font-style: italic;
       font-size: 1.1rem;
+      font-style: italic;
       margin-bottom: 20px;
+      color: #ffffff;
     }
 
     .image-container {
       border: 4px solid gold;
       border-radius: 12px;
       overflow: hidden;
-      display: flex;
+      display: inline-block;
       width: 100%;
       max-width: 700px;
-      margin: 0 auto 20px;
+      margin: 20px auto;
     }
 
-    .image-half {
-      width: 50%;
+    .image-pair {
+      display: flex;
+      width: 100%;
     }
 
-    .image-half img {
+    .image-pair img {
       width: 100%;
       height: auto;
       display: block;
       object-fit: contain;
-      -webkit-user-drag: none;
-      pointer-events: none;
     }
 
     .divider {
@@ -67,23 +64,26 @@
       background-color: gold;
     }
 
-    .quote, .description {
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 20px;
-      font-size: 1rem;
-      line-height: 1.5;
-      padding: 0 15px;
-    }
-
     .quote {
       font-style: italic;
+      font-size: 1.1rem;
+      color: white;
+      margin-top: 10px;
+      margin-bottom: 20px;
     }
 
-    .view-all-button {
-      display: block;
-      margin: 30px auto;
-      padding: 12px 28px;
+    .description {
+      font-size: 1rem;
+      max-width: 700px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+      color: white;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 24px;
       font-family: 'Poppins', sans-serif;
       font-size: 1rem;
       font-style: italic;
@@ -91,39 +91,36 @@
       background-color: transparent;
       border: 2px solid white;
       border-radius: 25px;
-      text-align: center;
       text-decoration: none;
-      width: fit-content;
       transition: background-color 0.3s, color 0.3s;
     }
 
-    .view-all-button:hover {
+    .back-button:hover {
       background-color: white;
       color: black;
     }
   </style>
 </head>
-<body class="blue-room">
-  <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo-img" />
-  <h1 class="title">Heatwave</h1>
+
+<body>
+  <img src="../golden-le-libido-logo.png" alt="Le Libido Logo" class="logo-img">
+  <h1>Heatwave</h1>
   <p class="slogan">There's no need to change who you are, because people will adjust to you.</p>
 
   <div class="image-container">
-    <div class="image-half">
-      <img src="images/heatwave_female.jpg" alt="Heatwave - Female">
-    </div>
-    <div class="divider"></div>
-    <div class="image-half">
-      <img src="images/heatwave_male.jpg" alt="Heatwave - Male">
+    <div class="image-pair">
+      <img src="../images/heatwave_female.JPG" alt="Heatwave - Female">
+      <div class="divider"></div>
+      <img src="../images/heatwave_male.JPG" alt="Heatwave - Male">
     </div>
   </div>
 
-  <div class="quote">“Maybe people think I look sexy because I feel sexy…” – Scarlett Johansson</div>
+  <p class="quote">"I don’t just bring the heat. I *am* the temperature."</p>
 
   <div class="description">
-    You don’t just walk into a room, you tilt its emotional climate. Your sex appeal isn’t something you put on, it’s something that radiates from within. Whether you’re cool and teasing or hot and commanding, your erotic power lies in your natural mood—and your partner’s desire to bask in it.
+    Some people adapt to their surroundings. You make your surroundings adapt to you. The Heatwave archetype exudes sensual intensity without needing to say a word. You magnetize others with your raw authenticity—unapologetically yourself, no edits or disclaimers. Your energy burns through small talk, leaving only the realest desires exposed. Others might try to play it cool, but they’re already sweating. You don’t chase—because everyone’s already chasing you.
   </div>
 
-  <a href="archetype-gallery.html" class="view-all-button">View All Sexual Profiles</a>
+  <a href="../archetype-gallery.html" class="back-button">View All Sexual Profiles</a>
 </body>
 </html>
