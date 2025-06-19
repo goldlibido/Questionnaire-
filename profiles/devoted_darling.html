@@ -6,103 +6,113 @@
   <title>Devoted Darling</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      background-color: #064D95;
-      color: white;
+      margin: 0;
+      padding: 0 20px 40px;
       font-family: 'Montserrat', sans-serif;
+      background-color: #064D95; /* Blue Room */
+      color: white;
       text-align: center;
-      padding: 20px;
-      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
     }
 
-    .logo {
-      max-width: 120px;
-      margin: 20px auto 10px;
+    .logo-img {
       display: block;
+      margin: 20px auto 10px;
+      max-width: 120px;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+    .archetype-title {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin: 8px 0;
     }
 
     .slogan {
       font-style: italic;
-      font-size: 1.2rem;
-      margin-bottom: 30px;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
     }
 
     .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       border: 4px solid gold;
       border-radius: 12px;
       overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
       width: 100%;
       max-width: 700px;
-      margin: 0 auto 30px auto;
+      margin: 0 auto 20px;
     }
 
-    .image-half {
-      flex: 1;
-    }
-
-    .image-half img {
+    .image-container img {
+      width: 50%;
+      height: auto;
       display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      -webkit-user-drag: none;
       pointer-events: none;
-      user-select: none;
     }
 
     .divider {
       width: 4px;
       background-color: gold;
+      height: 100%;
     }
 
     .quote {
       font-style: italic;
-      margin: 25px auto 10px;
-      max-width: 600px;
       font-size: 1rem;
+      margin: 20px auto 10px;
+      max-width: 600px;
     }
 
     .description {
-      max-width: 700px;
-      margin: 20px auto;
+      font-size: 1.05rem;
       line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .view-all-button {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 28px;
+      border: 2px solid white;
+      color: white;
+      background-color: transparent;
+      font-style: italic;
       font-size: 1rem;
+      text-decoration: none;
+      border-radius: 25px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .view-all-button:hover {
+      background-color: white;
+      color: #064D95;
     }
   </style>
 </head>
 <body>
-  <img src="/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
-
-  <h1>Devoted Darling</h1>
-  <div class="slogan">Nothing is as kinky as loyalty.</div>
+  <img src="/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo-img" />
+  <h1 class="archetype-title">Devoted Darling</h1>
+  <p class="slogan">Nothing is as kinky as loyalty.</p>
 
   <div class="image-container">
-    <div class="image-half">
-      <img src="/images/devoted_darling_female.jpg" alt="Devoted Darling - Female">
-    </div>
+    <img src="/images/devoted_darling_female.jpg" alt="Devoted Darling - Female">
     <div class="divider"></div>
-    <div class="image-half">
-      <img src="/images/devoted_darling_male.jpg" alt="Devoted Darling - Male">
-    </div>
+    <img src="/images/devoted_darling_male.jpg" alt="Devoted Darling - Male">
   </div>
 
-  <div class="quote">“Love is composed of a single soul inhabiting two bodies.” – Aristotle</div>
+  <p class="quote">“Love is composed of a single soul inhabiting two bodies.” – Aristotle</p>
 
-  <div class="description">
-    You don’t perform devotion — you embody it. For you, intimacy is about trust, not control. Once someone proves they’re worthy, you don’t just give affection, you give access. Your submission isn’t passive; it’s sacred. Psychologists call this “secure surrender,” where emotional safety becomes the ultimate turn-on.
-  </div>
+  <p class="description">
+    You don’t perform devotion, you embody it. You show up, you stay present, and you make others feel safe to surrender.
+    In your world, trust isn’t given—it’s earned—and once someone has it, they’re never the same. You thrive on depth, consistency, and knowing
+    that your partner feels claimed and cared for. You may look soft on the outside, but your love has backbone. Your devotion is a power move—and people feel it.
+  </p>
+
+  <a href="/archetype-gallery.html" class="view-all-button">View All Sexual Profiles</a>
 </body>
 </html>
