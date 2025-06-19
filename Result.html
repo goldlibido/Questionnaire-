@@ -50,16 +50,18 @@
       text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
     }
 
-    button {
-      margin-top: 20px;
+    #moreButton {
+      display: inline-block;
       padding: 10px 18px;
+      border: 2px solid white;
+      color: white;
+      background-color: transparent;
+      border-radius: 8px;
+      font-style: italic;
       font-weight: bold;
       font-size: 1rem;
-      border: none;
-      background-color: white;
-      color: #222;
-      border-radius: 8px;
-      cursor: pointer;
+      text-decoration: none;
+      margin-top: 20px;
     }
 
     #typeDetails {
@@ -76,7 +78,10 @@
   <div class="section" id="compatibilityText"></div>
   <div class="section" id="sugarText"></div>
   <div class="section" id="inviteText"></div>
-  <div><button onclick="showTypeDetails()">More about you</button></div>
+
+  <!-- ✅ Updated link-style button -->
+  <div><a id="moreButton" href="#">More about you</a></div>
+
   <div id="typeDetails"></div>
 
   <script>
@@ -132,11 +137,13 @@
     let safeName = typeName.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
     if (typeName === "Claimed & Trained") safeName = "claimed__trained";
 
+    const profileSlug = safeName.replace(/__/g, "-");
+    document.getElementById("moreButton").href = `/profiles/${profileSlug}.html`;
+
     let imageHTML = "";
     if (typeName !== "Unknown" && (q8 === "eggplant" || q8 === "cat")) {
       const genderSuffix = q8 === "eggplant" ? "male" : "female";
       const imagePath = `images/${safeName}_${genderSuffix}.jpg`;
-      const profileSlug = safeName.replace(/__/g, "-");
 
       imageHTML = `
         <a href="/profiles/${profileSlug}.html" style="display: inline-block;" title="View full profile">
