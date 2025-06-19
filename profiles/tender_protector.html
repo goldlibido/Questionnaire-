@@ -6,13 +6,18 @@
   <title>Tender Protector</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #064D95; /* Blue room */
+      background-color: #064D95;
       color: white;
       font-family: 'Montserrat', sans-serif;
-      margin: 0;
-      padding: 20px;
       text-align: center;
+      padding: 20px;
       text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
     }
 
@@ -34,31 +39,28 @@
     }
 
     .image-container {
-      display: inline-block;
       border: 4px solid gold;
       border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 30px;
-      max-width: 700px;
-      width: 100%;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-    }
-
-    .image-pair {
       display: flex;
-      flex-direction: row;
+      justify-content: center;
+      align-items: stretch;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto 30px auto;
     }
 
-    .image-pair img {
+    .image-half {
+      flex: 1;
+    }
+
+    .image-half img {
+      display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
       object-fit: cover;
       pointer-events: none;
       user-select: none;
-    }
-
-    .half {
-      width: 50%;
     }
 
     .divider {
@@ -88,14 +90,12 @@
   <div class="slogan">You lead with gravity, not volume.</div>
 
   <div class="image-container">
-    <div class="image-pair">
-      <div class="half">
-        <img src="/images/tender_protector_female.jpg" alt="Tender Protector - Female">
-      </div>
-      <div class="divider"></div>
-      <div class="half">
-        <img src="/images/tender_protector_male.jpg" alt="Tender Protector - Male">
-      </div>
+    <div class="image-half">
+      <img src="/images/tender_protector_female.jpg" alt="Tender Protector - Female">
+    </div>
+    <div class="divider"></div>
+    <div class="image-half">
+      <img src="/images/tender_protector_male.jpg" alt="Tender Protector - Male">
     </div>
   </div>
 
