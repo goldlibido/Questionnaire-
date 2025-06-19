@@ -136,16 +136,19 @@
     if (typeName !== "Unknown" && (q8 === "eggplant" || q8 === "cat")) {
       const genderSuffix = q8 === "eggplant" ? "male" : "female";
       const imagePath = `images/${safeName}_${genderSuffix}.jpg`;
+      const profileSlug = safeName.replace(/__/g, "-");
 
       imageHTML = `
-        <img src="${imagePath}" alt="${typeName} Image" style="
-          max-width: 100%;
-          height: auto;
-          border-radius: 16px;
-          margin: 15px 0;
-          border: 4px solid gold;
-          box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-        ">
+        <a href="/profiles/${profileSlug}.html" style="display: inline-block;" title="View full profile">
+          <img src="${imagePath}" alt="${typeName} Image" style="
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            margin: 15px 0;
+            border: 4px solid gold;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+          ">
+        </a>
       `;
     }
 
