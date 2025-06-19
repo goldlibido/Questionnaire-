@@ -70,6 +70,13 @@
       font-size: 1rem;
       display: none;
     }
+
+    a.profile-link {
+      color: white;
+      text-decoration: underline;
+      font-weight: bold;
+      font-size: 1.7rem;
+    }
   </style>
 </head>
 <body id="resultBody">
@@ -78,10 +85,9 @@
   <div class="section" id="compatibilityText"></div>
   <div class="section" id="sugarText"></div>
   <div class="section" id="inviteText"></div>
-
-  <!-- ✅ Updated link-style button -->
-  <div><a id="moreButton" href="#">More about you</a></div>
-
+  <div>
+    <a id="moreButton" href="#">More about you</a>
+  </div>
   <div id="typeDetails"></div>
 
   <script>
@@ -99,7 +105,6 @@
     const inviteText = document.getElementById("inviteText");
     const sugarText = document.getElementById("sugarText");
     const compatibilityText = document.getElementById("compatibilityText");
-    const typeDetails = document.getElementById("typeDetails");
 
     let room = "";
     if (q3 === "whipped") {
@@ -117,28 +122,26 @@
     }
 
     const archetypes = {
-      "blue-control": ["Tender Protector", "You lead with gravity, not volume.", "The strongest love is the love that can demonstrate its fragility. – Paulo Coelho", "You lead with grace, grounding those around you..."],
-      "blue-partner control": ["Devoted Darling", "Nothing is as kinky as loyalty.", "Love is composed of a single soul inhabiting two bodies. – Aristotle", "You don’t perform devotion, you embody it..."],
-      "blue-depends mood": ["Heatwave", "There's no need to change who you are...", "“Maybe people think I look sexy because I feel sexy…” – Scarlett Johansson", "You don’t just walk into a room, you tilt its emotional climate..."],
-      "blue-depends partner": ["Mood Multiplier", "You match their vibe—and raise it.", "I don’t adapt to people. I evolve with them. – Anonymous", "You don’t lead or follow, you co-create..."],
-      "green-control": ["Charmer in Charge", "You don’t just take control. You make them beg for it.", "Power isn’t taken. It’s given—willingly. – Toni Morrison", "You don’t dominate with force, you dominate with allure..."],
-      "green-partner control": ["Promiscuous Plaything", "Are you ready for a wild ride!", "Sex is part of nature. I go along with nature. – Marilyn Monroe", "You’re here for the spark..."],
-      "green-depends mood": ["Bedroom Adventurer", "I'm up for anything and down to get down and dirty.", "It is not by obeying the rules that we come to know pleasure, but by breaking them. – Anaïs Nin", "You crave novelty..."],
-      "green-depends partner": ["Generous Giver", "You have so much to give, you just need someone to give it to.", "Pleasure is the measure of connection. – Esther Perel", "You feel most alive when you’re tuning into someone else..."],
-      "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "Power is the ultimate aphrodisiac. – Henry Kissinger", "You don’t play a dominant. You are one..."],
-      "red-partner control": ["Claimed & Trained", "The deeper you give in the more pleasure you'll feel.", "The harder the mindfucking the better. – Anonymous", "You don’t want to just submit, you want to surrender completely..."],
-      "red-depends mood": ["The Provoker", "You press buttons—on purpose.", "Power is not given to you. You have to take it. – Beyoncé Knowles", "You poke, provoke, and press all the right buttons..."],
-      "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay.", "Punish me right, and I’ll beg for more. – Anonymous", "You test limits, not to break them, but to find out who’s strong enough..."]
+      "blue-control": ["Tender Protector", "You lead with gravity, not volume."],
+      "blue-partner control": ["Devoted Darling", "Nothing is as kinky as loyalty."],
+      "blue-depends mood": ["Heatwave", "There's no need to change who you are..."],
+      "blue-depends partner": ["Mood Multiplier", "You match their vibe—and raise it."],
+      "green-control": ["Charmer in Charge", "You don’t just take control. You make them beg for it."],
+      "green-partner control": ["Promiscuous Plaything", "Are you ready for a wild ride!"],
+      "green-depends mood": ["Bedroom Adventurer", "I'm up for anything and down to get down and dirty."],
+      "green-depends partner": ["Generous Giver", "You have so much to give, you just need someone to give it to."],
+      "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it."],
+      "red-partner control": ["Claimed & Trained", "The deeper you give in the more pleasure you'll feel."],
+      "red-depends mood": ["The Provoker", "You press buttons—on purpose."],
+      "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay."]
     };
 
     const key = `${room}-${q9}`;
-    const [typeName, slogan, quote, description] = archetypes[key] || ["Unknown", "", "", ""];
+    const [typeName, slogan] = archetypes[key] || ["Unknown", ""];
 
     let safeName = typeName.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
     if (typeName === "Claimed & Trained") safeName = "claimed__trained";
-
     const profileSlug = safeName.replace(/__/g, "-");
-    document.getElementById("moreButton").href = `/profiles/${profileSlug}.html`;
 
     let imageHTML = "";
     if (typeName !== "Unknown" && (q8 === "eggplant" || q8 === "cat")) {
@@ -146,7 +149,7 @@
       const imagePath = `images/${safeName}_${genderSuffix}.jpg`;
 
       imageHTML = `
-        <a href="/profiles/${profileSlug}.html" style="display: inline-block;" title="View full profile">
+        <a href="/profiles/${profileSlug}.html">
           <img src="${imagePath}" alt="${typeName} Image" style="
             max-width: 100%;
             height: auto;
@@ -154,6 +157,8 @@
             margin: 15px 0;
             border: 4px solid gold;
             box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+            pointer-events: none;
+            user-select: none;
           ">
         </a>
       `;
@@ -163,8 +168,8 @@
       <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
         Your Sexual Profile:
       </div>
-      <div style="font-weight: bold; font-size: 1.7rem; margin-bottom: 8px;">
-        ${typeName}
+      <div style="margin-bottom: 8px;">
+        <a href="/profiles/${profileSlug}.html" class="profile-link">${typeName}</a>
       </div>
       <div style="font-style: italic; margin-bottom: 12px;">
         ${slogan}
@@ -182,7 +187,7 @@
       "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "The Punish Me"],
       "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed & Trained"],
       "Claimed & Trained": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
-      "The Punish Me": ["The Provoker", "Dungeon Master", "Bedroom Adventurer"],
+      "The Punish Me": ["The Provoker", "Claimed & Trained", "Bedroom Adventurer"],
       "The Provoker": ["The Punish Me", "Claimed & Trained", "Generous Giver"],
       "Dungeon Master": ["Claimed & Trained", "The Punish Me", "Promiscuous Plaything"]
     };
@@ -199,13 +204,10 @@
 
     if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
       sugarText.innerHTML = `🍫 Visit our chocolate shop and use the password: <strong>Sweet Spot!</strong><br>
-      to gain entry to our Speakeasy:<br><strong>Sugar Daddy’s</strong>`;
+        to gain entry to our Speakeasy:<br><strong>Sugar Daddy’s</strong>`;
     }
 
-    if (
-      q4 === "yes" || q4 === "little" ||
-      q6 === "flaunt" || q6 === "partner shine"
-    ) {
+    if (q4 === "yes" || q4 === "little" || q6 === "flaunt" || q6 === "partner shine") {
       inviteText.innerHTML = `
         🎬 You’re invited to audition for our <br>
         reality dating show!<br>
@@ -215,13 +217,7 @@
       `;
     }
 
-    function showTypeDetails() {
-      typeDetails.style.display = "block";
-      typeDetails.innerHTML = `
-        <br><strong>Quote:</strong><br>${quote}<br><br>
-        <strong>Description:</strong><br>${description}
-      `;
-    }
+    document.getElementById("moreButton").href = `/profiles/${profileSlug}.html`;
   </script>
 </body>
 </html>
