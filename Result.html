@@ -80,7 +80,6 @@
     }
 
     img.no-save {
-      pointer-events: none;
       user-select: none;
     }
   </style>
@@ -163,7 +162,7 @@
         ${slogan}
       </div>
       <a href="${profilePath}">
-        <img src="${imagePath}" alt="${typeName}" class="no-save" style="
+        <img src="${imagePath}" alt="${typeName}" class="no-save" oncontextmenu="return false" style="
           max-width: 100%;
           height: auto;
           border-radius: 16px;
