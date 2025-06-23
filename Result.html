@@ -93,129 +93,127 @@
   <div><button id="moreAboutBtn">More about you</button></div>
   <div id="typeDetails"></div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const q3 = params.get("q3");
-    const q4 = params.get("q4");
-    const q5 = params.get("q5");
-    const q6 = params.get("q6");
-    const q9 = params.get("q9");
-    const q8 = params.get("q8");
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const q3 = params.get("q3");
+  const q4 = params.get("q4");
+  const q5 = params.get("q5");
+  const q6 = params.get("q6");
+  const q9 = params.get("q9");
+  const q8 = params.get("q8");
 
-    const roomTitle = document.getElementById("roomTitle");
-    const resultBody = document.getElementById("resultBody");
-    const archetypeText = document.getElementById("archetypeText");
-    const inviteText = document.getElementById("inviteText");
-    const sugarText = document.getElementById("sugarText");
-    const compatibilityText = document.getElementById("compatibilityText");
-    const typeDetails = document.getElementById("typeDetails");
-    const moreAboutBtn = document.getElementById("moreAboutBtn");
+  const roomTitle = document.getElementById("roomTitle");
+  const resultBody = document.getElementById("resultBody");
+  const archetypeText = document.getElementById("archetypeText");
+  const inviteText = document.getElementById("inviteText");
+  const sugarText = document.getElementById("sugarText");
+  const compatibilityText = document.getElementById("compatibilityText");
+  const typeDetails = document.getElementById("typeDetails");
+  const moreAboutBtn = document.getElementById("moreAboutBtn");
 
-    let room = "";
-    if (q3 === "whipped") {
-      room = "blue";
-      resultBody.classList.add("blue");
-      roomTitle.innerText = "Meet your type in the\nBLUE ROOM";
-    } else if (q3 === "toys") {
-      room = "green";
-      resultBody.classList.add("green");
-      roomTitle.innerText = "Meet your type in the\nGREEN ROOM";
-    } else if (q3 === "bdsm") {
-      room = "red";
-      resultBody.classList.add("red");
-      roomTitle.innerText = "Meet your type in the\nRED ROOM";
-    }
+  let room = "";
+  if (q3 === "whipped") {
+    room = "blue";
+    resultBody.classList.add("blue");
+    roomTitle.innerText = "Meet your type in the\nBLUE ROOM";
+  } else if (q3 === "toys") {
+    room = "green";
+    resultBody.classList.add("green");
+    roomTitle.innerText = "Meet your type in the\nGREEN ROOM";
+  } else if (q3 === "bdsm") {
+    room = "red";
+    resultBody.classList.add("red");
+    roomTitle.innerText = "Meet your type in the\nRED ROOM";
+  }
 
-    const archetypes = {
-      "blue-control": ["Tender Protector", "You lead with gravity, not volume.", "The strongest love is the love that can demonstrate its fragility. – Paulo Coelho", "You lead with grace, grounding those around you..."],
-      "blue-partner control": ["Devoted Darling", "Nothing is as kinky as loyalty.", "Love is composed of a single soul inhabiting two bodies. – Aristotle", "You don’t perform devotion, you embody it..."],
-      "blue-depends mood": ["Heatwave", "There's no need to change who you are...", "“Maybe people think I look sexy because I feel sexy…” – Scarlett Johansson", "You don’t just walk into a room, you tilt its emotional climate..."],
-      "blue-depends partner": ["Mood Multiplier", "You match their vibe—and raise it.", "I don’t adapt to people. I evolve with them. – Anonymous", "You don’t lead or follow, you co-create..."],
-      "green-control": ["Charmer in Charge", "You don’t just take control. You make them beg for it.", "Power isn’t taken. It’s given—willingly. – Toni Morrison", "You don’t dominate with force, you dominate with allure..."],
-      "green-partner control": ["Promiscuous Plaything", "Are you ready for a wild ride!", "Sex is part of nature. I go along with nature. – Marilyn Monroe", "You’re here for the spark..."],
-      "green-depends mood": ["Bedroom Adventurer", "I'm up for anything and down to get down and dirty.", "It is not by obeying the rules that we come to know pleasure, but by breaking them. – Anaïs Nin", "You crave novelty..."],
-      "green-depends partner": ["Generous Giver", "You have so much to give, you just need someone to give it to.", "Pleasure is the measure of connection. – Esther Perel", "You feel most alive when you’re tuning into someone else..."],
-      "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "Power is the ultimate aphrodisiac. – Henry Kissinger", "You don’t play a dominant. You are one..."],
-      "red-partner control": ["Claimed & Trained", "The deeper you give in the more pleasure you'll feel.", "The harder the mindfucking the better. – Anonymous", "You don’t want to just submit, you want to surrender completely..."],
-      "red-depends mood": ["The Provoker", "You press buttons—on purpose.", "Power is not given to you. You have to take it. – Beyoncé Knowles", "You poke, provoke, and press all the right buttons..."],
-      "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay.", "Punish me right, and I’ll beg for more. – Anonymous", "You test limits, not to break them, but to find out who’s strong enough..."]
-    };
+  const archetypes = {
+    "blue-control": ["Tender Protector", "You lead with gravity, not volume.", "The strongest love is the love that can demonstrate its fragility. – Paulo Coelho", "You lead with grace, grounding those around you...", "tender_protector"],
+    "blue-partner control": ["Devoted Darling", "Nothing is as kinky as loyalty.", "Love is composed of a single soul inhabiting two bodies. – Aristotle", "You don’t perform devotion, you embody it...", "devoted_darling"],
+    "blue-depends mood": ["Heatwave", "There's no need to change who you are...", "“Maybe people think I look sexy because I feel sexy…” – Scarlett Johansson", "You don’t just walk into a room, you tilt its emotional climate...", "heatwave"],
+    "blue-depends partner": ["Mood Multiplier", "You match their vibe—and raise it.", "I don’t adapt to people. I evolve with them. – Anonymous", "You don’t lead or follow, you co-create...", "mood_multiplier"],
+    "green-control": ["Charmer in Charge", "You don’t just take control. You make them beg for it.", "Power isn’t taken. It’s given—willingly. – Toni Morrison", "You don’t dominate with force, you dominate with allure...", "charmer_in_charge"],
+    "green-partner control": ["Promiscuous Plaything", "Are you ready for a wild ride!", "Sex is part of nature. I go along with nature. – Marilyn Monroe", "You’re here for the spark...", "promiscuous_plaything"],
+    "green-depends mood": ["Bedroom Adventurer", "I'm up for anything and down to get down and dirty.", "It is not by obeying the rules that we come to know pleasure, but by breaking them. – Anaïs Nin", "You crave novelty...", "bedroom_adventurer"],
+    "green-depends partner": ["Generous Giver", "You have so much to give, you just need someone to give it to.", "Pleasure is the measure of connection. – Esther Perel", "You feel most alive when you’re tuning into someone else...", "generous_giver"],
+    "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "Power is the ultimate aphrodisiac. – Henry Kissinger", "You don’t play a dominant. You are one...", "dungeon_master"],
+    "red-partner control": ["Claimed & Trained", "The deeper you give in the more pleasure you'll feel.", "The harder the mindfucking the better. – Anonymous", "You don’t want to just submit, you want to surrender completely...", "claimed__trained"],
+    "red-depends mood": ["The Provoker", "You press buttons—on purpose.", "Power is not given to you. You have to take it. – Beyoncé Knowles", "You poke, provoke, and press all the right buttons...", "the_provoker"],
+    "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay.", "Punish me right, and I’ll beg for more. – Anonymous", "You test limits, not to break them, but to find out who’s strong enough...", "the_punish_me"]
+  };
 
-    const key = `${room}-${q9}`;
-    const [typeName, slogan, quote, description] = archetypes[key] || ["Unknown", "", "", ""];
+  const key = `${room}-${q9}`;
+  const [typeName, slogan, quote, description, explicitSafeName] = archetypes[key] || ["Unknown", "", "", "", "unknown"];
 
-    let safeName = typeName.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
-    if (typeName === "Claimed & Trained") safeName = "claimed__trained";
+  const safeName = explicitSafeName;
+  const genderSuffix = q8 === "eggplant" ? "male" : "female";
+  const imagePath = `images/${safeName}_${genderSuffix}.jpg`;
+  const profilePath = `profiles/${safeName}.html`;
 
-    const genderSuffix = q8 === "eggplant" ? "male" : "female";
-    const imagePath = `images/${safeName}_${genderSuffix}.jpg`;
-    const profilePath = `profiles/${safeName}.html`;
+  archetypeText.innerHTML = `
+    <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
+      Your Sexual Profile:
+    </div>
+    <div style="font-weight: bold; font-size: 1.7rem; margin-bottom: 8px;">
+      <a href="${profilePath}" class="no-underline">${typeName}</a>
+    </div>
+    <div style="font-style: italic; margin-bottom: 12px;">
+      ${slogan}
+    </div>
+    <a href="${profilePath}">
+      <img src="${imagePath}" alt="${typeName}" class="no-save" oncontextmenu="return false" style="
+        max-width: 100%;
+        height: auto;
+        border-radius: 16px;
+        margin: 15px 0;
+        border: 4px solid gold;
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+      ">
+    </a>
+  `;
 
-    archetypeText.innerHTML = `
-      <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
-        Your Sexual Profile:
-      </div>
-      <div style="font-weight: bold; font-size: 1.7rem; margin-bottom: 8px;">
-        <a href="${profilePath}" class="no-underline">${typeName}</a>
-      </div>
-      <div style="font-style: italic; margin-bottom: 12px;">
-        ${slogan}
-      </div>
-      <a href="${profilePath}">
-        <img src="${imagePath}" alt="${typeName}" class="no-save" oncontextmenu="return false" style="
-          max-width: 100%;
-          height: auto;
-          border-radius: 16px;
-          margin: 15px 0;
-          border: 4px solid gold;
-          box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-        ">
-      </a>
+  const matches = {
+    "Devoted Darling": ["Tender Protector", "Heatwave", "Promiscuous Plaything"],
+    "Mood Multiplier": ["Heatwave", "Tender Protector", "Bedroom Adventurer"],
+    "Heatwave": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
+    "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
+    "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
+    "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "The Provoker"],
+    "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "The Punish Me"],
+    "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed & Trained"],
+    "Claimed & Trained": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
+    "The Punish Me": ["The Provoker", "Claimed & Trained", "Bedroom Adventurer"],
+    "The Provoker": ["The Punish Me", "Claimed & Trained", "Generous Giver"],
+    "Dungeon Master": ["Claimed & Trained", "The Punish Me", "Promiscuous Plaything"]
+  };
+
+  if (matches[typeName]) {
+    const [m1, m2, wild] = matches[typeName];
+    compatibilityText.innerHTML = `
+      <strong>Top 3 Compatibility Matches:</strong><br>
+      1. ${m1}<br>
+      2. ${m2}<br>
+      3. Wildcard Match: ${wild}
     `;
+  }
 
-    const matches = {
-      "Devoted Darling": ["Tender Protector", "Heatwave", "Promiscuous Plaything"],
-      "Mood Multiplier": ["Heatwave", "Tender Protector", "Bedroom Adventurer"],
-      "Heatwave": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
-      "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
-      "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
-      "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "The Provoker"],
-      "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "The Punish Me"],
-      "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed & Trained"],
-      "Claimed & Trained": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
-      "The Punish Me": ["The Provoker", "Claimed & Trained", "Bedroom Adventurer"],
-      "The Provoker": ["The Punish Me", "Claimed & Trained", "Generous Giver"],
-      "Dungeon Master": ["Claimed & Trained", "The Punish Me", "Promiscuous Plaything"]
-    };
+  if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
+    sugarText.innerHTML = `🍫 Visit our chocolate shop and enter our speakeasy <strong>Sugar Daddy’s</strong><br>
+    with the password: <strong>Sweet Spot</strong>`;
+  }
 
-    if (matches[typeName]) {
-      const [m1, m2, wild] = matches[typeName];
-      compatibilityText.innerHTML = `
-        <strong>Top 3 Compatibility Matches:</strong><br>
-        1. ${m1}<br>
-        2. ${m2}<br>
-        3. Wildcard Match: ${wild}
-      `;
-    }
+  if (
+    q4 === "yes" || q4 === "little" ||
+    q6 === "flaunt" || q6 === "partner shine"
+  ) {
+    inviteText.innerHTML = `
+      🎬 You’ve been selected to audition for our dating show.<br>
+      Go play <strong>The Pickup Line</strong>! Once you’re in, you won’t want to pull out.
+    `;
+  }
 
-    if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
-      sugarText.innerHTML = `🍫 Visit our chocolate shop and enter our speakeasy <strong>Sugar Daddy’s</strong><br>
-      with the password: <strong>Sweet Spot</strong>`;
-    }
-
-    if (
-      q4 === "yes" || q4 === "little" ||
-      q6 === "flaunt" || q6 === "partner shine"
-    ) {
-      inviteText.innerHTML = `
-        🎬 You’ve been selected to audition for our dating show.<br>
-        Go play <strong>The Pickup Line</strong>! Once you’re in, you won’t want to pull out.
-      `;
-    }
-
-    moreAboutBtn.addEventListener("click", () => {
-      window.location.href = profilePath;
-    });
-  </script>
+  moreAboutBtn.addEventListener("click", () => {
+    window.location.href = profilePath;
+  });
+</script>
 </body>
 </html>
