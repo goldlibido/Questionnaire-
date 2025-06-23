@@ -147,7 +147,7 @@
 
   const genderSuffix = q8 === "eggplant" ? "male" : "female";
   const imagePath = `images/${imageSafeName}_${genderSuffix}.jpg`;
-  const profilePath = `profiles/${linkSafeName}.html`;
+  const profilePath = `/profiles/${linkSafeName}.html`;  // ← works across all archetypes
 
   archetypeText.innerHTML = `
     <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
