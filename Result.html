@@ -127,27 +127,27 @@
   }
 
   const archetypes = {
-    "blue-control": ["Tender Protector", "You lead with gravity, not volume.", "The strongest love is the love that can demonstrate its fragility. – Paulo Coelho", "You lead with grace, grounding those around you...", "tender_protector"],
-    "blue-partner control": ["Devoted Darling", "Nothing is as kinky as loyalty.", "Love is composed of a single soul inhabiting two bodies. – Aristotle", "You don’t perform devotion, you embody it...", "devoted_darling"],
-    "blue-depends mood": ["Heatwave", "There's no need to change who you are...", "“Maybe people think I look sexy because I feel sexy…” – Scarlett Johansson", "You don’t just walk into a room, you tilt its emotional climate...", "heatwave"],
-    "blue-depends partner": ["Mood Multiplier", "You match their vibe—and raise it.", "I don’t adapt to people. I evolve with them. – Anonymous", "You don’t lead or follow, you co-create...", "mood_multiplier"],
-    "green-control": ["Charmer in Charge", "You don’t just take control. You make them beg for it.", "Power isn’t taken. It’s given—willingly. – Toni Morrison", "You don’t dominate with force, you dominate with allure...", "charmer_in_charge"],
-    "green-partner control": ["Promiscuous Plaything", "Are you ready for a wild ride!", "Sex is part of nature. I go along with nature. – Marilyn Monroe", "You’re here for the spark...", "promiscuous_plaything"],
-    "green-depends mood": ["Bedroom Adventurer", "I'm up for anything and down to get down and dirty.", "It is not by obeying the rules that we come to know pleasure, but by breaking them. – Anaïs Nin", "You crave novelty...", "bedroom_adventurer"],
-    "green-depends partner": ["Generous Giver", "You have so much to give, you just need someone to give it to.", "Pleasure is the measure of connection. – Esther Perel", "You feel most alive when you’re tuning into someone else...", "generous_giver"],
-    "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "Power is the ultimate aphrodisiac. – Henry Kissinger", "You don’t play a dominant. You are one...", "dungeon_master"],
-    "red-partner control": ["Claimed & Trained", "The deeper you give in the more pleasure you'll feel.", "The harder the mindfucking the better. – Anonymous", "You don’t want to just submit, you want to surrender completely...", "claimed__trained"],
-    "red-depends mood": ["The Provoker", "You press buttons—on purpose.", "Power is not given to you. You have to take it. – Beyoncé Knowles", "You poke, provoke, and press all the right buttons...", "the_provoker"],
-    "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay.", "Punish me right, and I’ll beg for more. – Anonymous", "You test limits, not to break them, but to find out who’s strong enough...", "the_punish_me"]
+    "blue-control": ["Tender Protector", "You lead with gravity, not volume.", "The strongest love is the love that can demonstrate its fragility. – Paulo Coelho", "You lead with grace, grounding those around you...", "tender_protector", "tender_protector"],
+    "blue-partner control": ["Devoted Darling", "Nothing is as kinky as loyalty.", "Love is composed of a single soul inhabiting two bodies. – Aristotle", "You don’t perform devotion, you embody it...", "devoted_darling", "devoted_darling"],
+    "blue-depends mood": ["Heatwave", "There's no need to change who you are...", "Maybe people think I look sexy because I feel sexy… – Scarlett Johansson", "You don’t just walk into a room, you tilt its emotional climate...", "heatwave", "heatwave"],
+    "blue-depends partner": ["Mood Multiplier", "You match their vibe—and raise it.", "I don’t adapt to people. I evolve with them. – Anonymous", "You don’t lead or follow, you co-create...", "mood_multiplier", "mood_multiplier"],
+    "green-control": ["Charmer in Charge", "You don’t just take control. You make them beg for it.", "Power isn’t taken. It’s given—willingly. – Toni Morrison", "You don’t dominate with force, you dominate with allure...", "charmer_in_charge", "charmer_in_charge"],
+    "green-partner control": ["Promiscuous Plaything", "Are you ready for a wild ride!", "Sex is part of nature. I go along with nature. – Marilyn Monroe", "You’re here for the spark...", "promiscuous_plaything", "promiscuous_plaything"],
+    "green-depends mood": ["Bedroom Adventurer", "I'm up for anything and down to get down and dirty.", "It is not by obeying the rules that we come to know pleasure, but by breaking them. – Anaïs Nin", "You crave novelty...", "bedroom_adventurer", "bedroom_adventurer"],
+    "green-depends partner": ["Generous Giver", "You have so much to give, you just need someone to give it to.", "Pleasure is the measure of connection. – Esther Perel", "You feel most alive when you’re tuning into someone else...", "generous_giver", "generous_giver"],
+    "red-control": ["Dungeon Master", "You’re not just having a fantasy. You’re the one in charge of it.", "Power is the ultimate aphrodisiac. – Henry Kissinger", "You don’t play a dominant. You are one...", "dungeon_master", "dungeon_master"],
+    "red-partner control": ["Claimed & Trained", "The deeper you give in the more pleasure you'll feel.", "The harder the mindfucking the better. – Anonymous", "You don’t want to just submit, you want to surrender completely...", "claimed__trained", "claimed_and_trained"],
+    "red-depends mood": ["The Provoker", "You press buttons—on purpose.", "Power is not given to you. You have to take it. – Beyoncé Knowles", "You poke, provoke, and press all the right buttons...", "the_provoker", "the_provoker"],
+    "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay.", "Punish me right, and I’ll beg for more. – Anonymous", "You test limits, not to break them, but to find out who’s strong enough...", "the_punish_me", "the_punish_me"]
   };
 
   const key = `${room}-${q9}`;
-  const [typeName, slogan, quote, description, explicitSafeName] = archetypes[key] || ["Unknown", "", "", "", "unknown"];
+  const [typeName, slogan, quote, description, imageSafeName, linkSafeName] =
+    archetypes[key] || ["Unknown", "", "", "", "unknown", "unknown"];
 
-  const safeName = explicitSafeName;
   const genderSuffix = q8 === "eggplant" ? "male" : "female";
-  const imagePath = `images/${safeName}_${genderSuffix}.jpg`;
-  const profilePath = `profiles/${safeName}.html`;
+  const imagePath = `images/${imageSafeName}_${genderSuffix}.jpg`;
+  const profilePath = `profiles/${linkSafeName}.html`;
 
   archetypeText.innerHTML = `
     <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
