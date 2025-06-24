@@ -2,67 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Tender Protector – Erotic Blueprint</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+
   <style>
+    :root {
+      --blue: #064D95;
+      --gold: #e1bf78;
+      --offWhite: #e6e6e6;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
     body {
-      background-color: #064D95;
+      background-color: var(--blue);
+      color: var(--offWhite);
       font-family: 'Montserrat', sans-serif;
-      color: white;
-      margin: 0;
-      padding: 2rem;
-      border: 8px solid #FFD700;
-      box-shadow: 0 0 20px #FFD700;
+      line-height: 1.55;
+      border: 8px solid var(--gold);
+      box-shadow: 0 0 10px var(--gold);
     }
-    h1 {
-      color: white;
-      text-align: center;
-      font-size: 2.5rem;
-      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
-      margin-top: 10px;
+
+    .wrapper {
+      padding: 2rem 1.1rem 3rem;
     }
-    h2 {
-      font-size: 1.8rem;
-      margin-top: 2rem;
-      color: #FFD700;
-      font-style: italic;
-      border-bottom: 2px solid #FFD700;
-      padding-bottom: 0.3rem;
-    }
-    .slogan {
-      font-style: italic;
-      text-align: center;
-      font-size: 1.2rem;
-      margin-top: -1rem;
-      margin-bottom: 1rem;
-      color: #ccc;
-    }
-    .quote {
-      font-style: italic;
-      text-align: center;
-      color: #aaa;
-      margin-bottom: 2rem;
-    }
+
     .logo {
-      max-width: 120px;
-      margin: 20px auto 10px;
       display: block;
+      max-width: 120px;
+      margin: 0.5rem auto 1.3rem;
+      filter: drop-shadow(0 0 4px var(--gold));
     }
+
+    h1 {
+      font-size: 2.7rem;
+      font-weight: 700;
+      font-style: italic;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
+      margin: 0.2rem 0 0.8rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-style: italic;
+      color: var(--gold);
+      margin: 2.4rem 0 0.6rem;
+      text-shadow: 0 0 4px var(--gold);
+    }
+
+    .slogan, .quote {
+      font-style: italic;
+      text-align: center;
+      color: #d2d2d2;
+      margin: 0.2rem 0 1.6rem;
+    }
+
+    .quote {
+      margin-top: -0.4rem;
+    }
+
     .image-container {
-      border: 4px solid #FFD700;
+      border: 4px solid var(--gold);
       border-radius: 12px;
       overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: stretch;
       width: 100%;
-      max-width: 700px;
-      margin: 0 auto 30px auto;
+      max-width: 680px;
+      margin: 0 auto 2.2rem;
+      box-shadow: 0 0 7px var(--gold);
     }
+
     .image-half {
       flex: 1;
     }
+
     .image-half img {
       display: block;
       width: 100%;
@@ -71,61 +91,71 @@
       pointer-events: none;
       user-select: none;
     }
+
     .divider {
       width: 4px;
-      background-color: #FFD700;
+      background-color: var(--gold);
     }
-    p {
-      line-height: 1.6;
+
+    ul {
+      padding-left: 1.25rem;
+      margin: 0.6rem 0;
+    }
+
+    li {
+      margin-bottom: 0.45rem;
+    }
+
+    .sub {
+      margin-left: 0.8rem;
+      font-style: italic;
+      color: #c7c7c7;
+    }
+
+    .story p {
+      margin: 0 0 1.1rem;
     }
   </style>
 </head>
-<body>
-  <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo">
-  <h1>Tender Protector</h1>
-  <p class="slogan">You lead with gravity, not volume.</p>
-  <p class="quote">“The deepest pleasure doesn’t come from control. It comes from being trusted with it.” – Anonymous</p>
-  <div class="image-container">
-    <div class="image-half">
-      <img src="/images/tender_protector_female.jpg" alt="Tender Protector Female">
-    </div>
-    <div class="divider"></div>
-    <div class="image-half">
-      <img src="/images/tender_protector_male.jpg" alt="Tender Protector Male">
-    </div>
-  </div>
-    <div class="content-section">
-    <h2>Description</h2>
-    <p>You lead with grace, grounding those around you. You’re the kind of partner others surrender to not out of fear, but trust. You’re not just in charge, you’re responsible. When you lead, people feel held, not handled. In dominance psychology, this is called secure authority—you don’t control people, you create space for them to feel free.</p>
-  </div>
 
-  <div class="content-section">
+<body>
+  <div class="wrapper">
+    <img src="/assets/le-libido-logo.svg" alt="Le Libido Logo" class="logo" />
+    <h1><strong><em>Tender Protector</em></strong></h1>
+    <p class="slogan">You lead with gravity, not volume.</p>
+    <p class="quote">“The deepest pleasure doesn’t come from control. It comes from being trusted with it.” – Anonymous</p>
+
+    <div class="image-container">
+      <div class="image-half"><img src="/images/tender_protector_female.jpg" alt="Tender Protector Female" /></div>
+      <div class="divider"></div>
+      <div class="image-half"><img src="/images/tender_protector_male.jpg" alt="Tender Protector Male" /></div>
+    </div>
+
+    <h2>Description</h2>
+    <p>You lead with grace, grounding those around you. You’re the kind of partner others surrender to not out of fear, but trust. You’re not just in charge, you’re responsible. When you lead, people feel held, not handled. In dominance psychology, this is called <em>secure authority</em>; you don’t control people, you create space for them to feel free.</p>
+
     <h2>Power Dynamic Arc</h2>
-    <p><strong>Relationship Trajectory:</strong></p>
+    <p><strong>Relationship Trajectory:</strong> Tender Protectors are stable dominants. Their leadership is grounded in emotional attunement rather than ego. They are least likely to initiate polarity shifts unless it’s to recalibrate for the sake of their partner’s well-being.</p>
     <ul>
       <li>Dominant stays dominant → 📈 Stable upward trend</li>
-      <li>Healthy, long-term dynamic. Emotional security and trust deepen over time.</li>
+      <li class="sub">Healthy, long-term dynamic. Emotional security and trust deepen over time.</li>
       <li>Submissive partner becomes dominant → 📉 Steep drop</li>
-      <li>Tender Protector becomes emotionally destabilized. Role confusion sets in.</li>
+      <li class="sub">Tender Protector becomes emotionally destabilized. Role confusion sets in.</li>
       <li>Tender Protector temporarily softens (but remains dominant) → 📊 Gentle correction</li>
-      <li>Creates space for intimacy while maintaining control.</li>
+      <li class="sub">Creates space for intimacy while maintaining control.</li>
       <li>Tender Protector becomes submissive → 🚨 Crash</li>
-      <li>Total polarity collapse. Loss of self-identity. Relationship likely to fail.</li>
+      <li class="sub">Total polarity collapse. Loss of self-identity. Relationship likely to fail.</li>
     </ul>
-    <p><strong>Ideal Dynamic:</strong><br>
-    A gentle but firm dominance paired with a devoted or emotionally attuned submissive creates the most secure and satisfying connection. Think “earned trust” rather than strict control.</p>
-  </div>
+    <p><strong>Ideal Dynamic:</strong> A gentle but firm dominance paired with a devoted or emotionally attuned submissive creates the most secure and satisfying connection. Think “earned trust” rather than strict control.</p>
 
-  <div class="content-section">
     <h2>Origins of Desire</h2>
     <ul>
       <li><strong>Evolutionary Biological Theory:</strong> Their desire to protect is tied to deep-rooted evolutionary traits. They’re wired to safeguard those they care for.</li>
       <li><strong>Self-Esteem Theory:</strong> They gain sexual confidence through being trusted. The more they are relied on, the more potent they feel.</li>
-      <li><strong>Imprintation Theory:</strong> Early arousal may have been tied to moments of comforting or rescuing—cementing a lifelong erotic association with care.</li>
-      <li><strong>Blank Slate Theory:</strong> Many were taught to “be strong” or “keep it together,” so arousal becomes tied to leading gently and being needed.</li>
+      <li><strong>Imprintation Theory:</strong> Early arousal may have been linked to moments of comforting or rescuing, cementing a lifelong erotic association with care.</li>
+      <li><strong>Blank Slate Theory:</strong> Many were taught to “be strong.” Arousal becomes tied to leading gently and being needed.</li>
     </ul>
-  </div>
-    <div class="content-section">
+
     <h2>Turn-On Vocabulary</h2>
     <ul>
       <li>“I feel so safe with you.”</li>
@@ -139,9 +169,7 @@
       <li>“Thank you for looking out for me.”</li>
       <li>“I’m all yours.”</li>
     </ul>
-  </div>
 
-  <div class="content-section">
     <h2>Conflict Pattern</h2>
     <p><strong>Tendencies During Conflict:</strong></p>
     <ul>
@@ -150,82 +178,87 @@
       <li>Feels hurt when their care isn’t appreciated</li>
       <li>May withdraw if they feel unappreciated</li>
     </ul>
-    <p><strong>Triggers:</strong></p>
+        <p><strong>Triggers:</strong></p>
     <ul>
       <li>Being perceived as controlling</li>
       <li>Their care being misinterpreted as manipulation</li>
       <li>Partner acting recklessly or making decisions without them</li>
     </ul>
+
     <p><strong>Resolution Style:</strong></p>
     <ul>
       <li>Needs open appreciation and verbal reassurance</li>
       <li>Responds best to “I know you were trying to protect me” rather than defensiveness</li>
       <li>Calms down quickly once their intentions are validated</li>
     </ul>
+
     <p><strong>Growth Edge:</strong></p>
     <ul>
       <li>Learning to express their own needs instead of only prioritizing others’</li>
       <li>Asking rather than assuming what the partner needs</li>
     </ul>
-  </div>
 
-  <div class="content-section">
     <h2>Erotic Edge & Drop</h2>
-    <p><strong>Erotic Edge:</strong><br>
-    They create emotional safewords. What others crave is how deeply attuned they are—how they can command while still being gentle, read their partner’s breath, and provide security even while being intense. Their superpower is empathic dominance.</p>
-    <p><strong>Erotic Drop (Dealbreaker):</strong><br>
-    Being disrespected, mocked, or treated like they’re weak for being emotionally available. They shut down instantly if their care is mistaken for weakness or control.</p>
-  </div>
-    <div class="content-section">
+    <p><strong>Erotic Edge:</strong> They create emotional safewords. What others crave is how deeply attuned they are — how they can command while still being gentle, read their partner’s breath, and provide security even while being intense. Their superpower is empathic dominance.</p>
+    <p><strong>Erotic Drop (Dealbreaker):</strong> Being disrespected, mocked, or treated like they’re weak for being emotionally available. They shut down instantly if their care is mistaken for weakness or control.</p>
+
     <h2>Erotic Short Story</h2>
-    <p>You close the door behind you, locking it with a soft click. The sound settles into the quiet like a promise.</p>
-    <p>They’re already standing there, near the center of the room. Waiting.</p>
-    <p>Their eyes lift to meet yours, wide and uncertain, but not afraid. There’s something else underneath the nerves. A quiet tension. Desire, yes. But also relief. Like they’ve been holding something in all day and now, finally, they don’t have to anymore.</p>
-    <p>You don’t rush. You take your time hanging your coat, rolling your sleeves. The air shifts with each movement you make, deliberate and calm. Your presence takes up space without force, and you know they can feel it.</p>
-    <p>When you walk toward them, their breath changes. You hear it catch. They stay rooted where they are, but their hands fidget at their sides. You stop just inches from them, close enough for the heat of your body to wrap around theirs.</p>
-    <p>You lift their chin with your fingers, slow and certain, until their eyes are on yours again.</p>
-    <p>“You want to take your clothes off, don’t you.”</p>
-    <p>It isn’t a question. It’s something you already know. You just want them to say it.</p>
-    <p>They hesitate, but not for long. You feel the weight of that pause. Not because they’re unsure, but because this moment matters to them. Because you matter to them.</p>
-    <p>Then they nod.</p>
-    <p>And start to undress.</p>
-    <p>You don’t help. You don’t touch. You step back a little, give them room, and let them move at their own pace. It’s important that they feel your attention. You want them to feel every second of it, the way your gaze rests heavy on them, without judgment or rush, just heat and quiet ownership.</p>
-    <p>They unbutton slowly. Their chest rises with each breath, trying to control the tremble in their hands. You notice everything. You always do.</p>
-    <p>You sit back in the chair nearby, legs spread slightly, hands resting on your thighs. Watching. Grounded.</p>
-    <p>They pause once, halfway undressed. You tilt your head just slightly, not pushing, just inviting. They take a breath and keep going.</p>
-    <p>By the time they’re bare, their skin is flushed, eyes lowered, breath uneven. You don’t speak right away. You want them to sit in the feeling of being seen. The way your eyes run over their body isn’t greedy. It’s reverent.</p>
-    <p>“Lie down,” you say.</p>
-    <p>They move to the bed without question. They don’t ask where or how. They just do it. That kind of obedience doesn’t come from submission alone. It comes from trust. It comes from knowing they’re safe with you. That you’ll hold the reins, and never pull harder than they can handle.</p>
-    <p>You stand. Walk slowly. Let them hear the sound of your footsteps crossing the room. When you reach the edge of the bed, you crawl over them, not with hunger, but with weight. With presence. Your hands brace beside their shoulders. Your mouth hovers over theirs. So close. But not touching.</p>
-    <p>Their lips part just slightly. You can feel the warmth of their breath against your mouth. You lower yourself, chest against chest, hips against hips, letting them feel all of you, clothed still, but unmistakably there. Pressed into them. Controlling the space. Setting the pace.</p>
-    <p>“You’ve been waiting for this all day, haven’t you,” you murmur.</p>
-    <p>They nod, almost imperceptibly.</p>
-    <p>“I could see it in your eyes. The way you needed someone to take over. The way you needed to feel held.”</p>
-    <p>Their throat moves as they swallow. You feel the tension beneath their skin. The kind that only lets go when someone else is finally in control.</p>
-    <p>Your hand slides down their side, fingers dragging lightly across warm skin. Their body arches into your touch without thinking. Their hips shift beneath you, eager, needy, already chasing friction. But you don’t give them what they want.</p>
-    <p>Not yet.</p>
-    <p>You lean in, brush your lips along their jaw, and whisper, “Good. Because tonight you’re mine. Completely. And I’m going to take my time showing you exactly what that means.”</p>
-    <p>You kiss them once, slow, deep enough to make their body go soft underneath you. You kiss like you have all night. Like the world can wait.</p>
-    <p>Then you start to undress. Still on top of them, your weight holding them in place. You let them feel every movement, the way the tension shifts as more of your skin meets theirs.</p>
-    <p>When you’re finally bare, you settle your body over them again. Skin to skin now. Their eyes close, lips parting in a quiet gasp.</p>
-    <p>Your hand cups their jaw. You guide their face toward you and kiss them again, deeper this time. You let your weight rest into the kiss, let your hand slide lower, over their chest, their ribs, down between their thighs.</p>
-    <p>They’re already desperate for more. Already flushed. You don’t need to check. You feel it in their breath. In the way their thighs press together.</p>
-    <p>Your fingers move slowly, spreading warmth with every stroke. You’re not rushing to get them off. You’re teaching their body something. Showing them what it means to be handled. To be cared for. To be devoured gently, completely, and without apology.</p>
-    <p>They start to shake a little. You murmur praise into their neck, soft affirmations between kisses.</p>
-    <p>You tell them what a good job they’re doing. How much you love watching them fall apart for you. How safe they are. How hot they are like this.</p>
-    <p>You feel them build under your touch. Their hips rock up. Their hands grip the sheets, or your arms, or your back. They moan, quiet but desperate, and you meet every sound with calm control.</p>
-    <p>When they come, they come hard. Their body curls under yours, and you hold them through it, never letting them drift. Never leaving space for doubt or shame to slip in.</p>
-    <p>You stay close. You kiss their shoulder. You stroke their hair. You let the afterglow stretch long.</p>
-    <p>Later, you pull the blanket up over them and wrap yourself around their back. Your chest against their spine, your hand still resting on their hip. You press your lips to the back of their neck.</p>
-    <p>“Still with me?” you ask.</p>
-    <p>They hum. You feel them smile. You don’t need more than that.</p>
-    <p>They came undone for you. Trusted you to take them apart and put them back together without breaking anything that matters.</p>
-    <p>And you did.</p>
-    <p>That’s what you do best. Not just take control. Not just lead.</p>
-    <p>You protect.</p>
-    <p>Even when you’re making them moan. Even when you’re causing them to squirm in ecstasy. Even when they’re at their most exposed.</p>
-    <p>Especially then.</p>
-    <p>Because that’s when it matters most.</p>
+    <div class="story">
+      <p>You close the door behind you, locking it with a soft click. The sound settles into the quiet like a promise.</p>
+      <p>They’re already standing there, near the center of the room. Waiting.</p>
+      <p>Their eyes lift to meet yours, wide and uncertain, but not afraid. There’s something else underneath the nerves. A quiet tension. Desire, yes. But also relief. Like they’ve been holding something in all day and now, finally, they don’t have to anymore.</p>
+      <p>You don’t rush. You take your time hanging your coat, rolling your sleeves. The air shifts with each movement you make, deliberate and calm. Your presence takes up space without force, and you know they can feel it.</p>
+      <p>When you walk toward them, their breath changes. You hear it catch. They stay rooted where they are, but their hands fidget at their sides. You stop just inches from them, close enough for the heat of your body to wrap around theirs.</p>
+      <p>You lift their chin with your fingers, slow and certain, until their eyes are on yours again.</p>
+      <p>“You want to take your clothes off, don’t you.”</p>
+      <p>It isn’t a question. It’s something you already know. You just want them to say it.</p>
+      <p>They hesitate, but not for long. You feel the weight of that pause. Not because they’re unsure, but because this moment matters to them. Because you matter to them.</p>
+      <p>Then they nod.</p>
+      <p>And start to undress.</p>
+      <p>You don’t help. You don’t touch. You step back a little, give them room, and let them move at their own pace. It’s important that they feel your attention. You want them to feel every second of it, the way your gaze rests heavy on them, without judgment or rush, just heat and quiet ownership.</p>
+      <p>They unbutton slowly. Their chest rises with each breath, trying to control the tremble in their hands. You notice everything. You always do.</p>
+      <p>You sit back in the chair nearby, legs spread slightly, hands resting on your thighs. Watching. Grounded.</p>
+      <p>They pause once, halfway undressed. You tilt your head just slightly, not pushing, just inviting. They take a breath and keep going.</p>
+      <p>By the time they’re bare, their skin is flushed, eyes lowered, breath uneven. You don’t speak right away. You want them to sit in the feeling of being seen. The way your eyes run over their body isn’t greedy. It’s reverent.</p>
+      <p>“Lie down,” you say.</p>
+      <p>They move to the bed without question. They don’t ask where or how. They just do it. That kind of obedience doesn’t come from submission alone. It comes from trust. It comes from knowing they’re safe with you. That you’ll hold the reins, and never pull harder than they can handle.</p>
+      <p>You stand. Walk slowly. Let them hear the sound of your footsteps crossing the room. When you reach the edge of the bed, you crawl over them, not with hunger, but with weight. With presence. Your hands brace beside their shoulders. Your mouth hovers over theirs. So close. But not touching.</p>
+      <p>Their lips part just slightly. You can feel the warmth of their breath against your mouth. You lower yourself, chest against chest, hips against hips, letting them feel all of you, clothed still, but unmistakably there. Pressed into them. Controlling the space. Setting the pace.</p>
+      <p>“You’ve been waiting for this all day, haven’t you,” you murmur.</p>
+      <p>They nod, almost imperceptibly.</p>
+      <p>“I could see it in your eyes. The way you needed someone to take over. The way you needed to feel held.”</p>
+      <p>Their throat moves as they swallow. You feel the tension beneath their skin. The kind that only lets go when someone else is finally in control.</p>
+      <p>Your hand slides down their side, fingers dragging lightly across warm skin. Their body arches into your touch without thinking. Their hips shift beneath you, eager, needy, already chasing friction. But you don’t give them what they want.</p>
+      <p>Not yet.</p>
+      <p>You lean in, brush your lips along their jaw, and whisper, “Good. Because tonight you’re mine. Completely. And I’m going to take my time showing you exactly what that means.”</p>
+      <p>You kiss them once, slow, deep enough to make their body go soft underneath you. You kiss like you have all night. Like the world can wait.</p>
+      <p>Then you start to undress. Still on top of them, your weight holding them in place. You let them feel every movement, the way the tension shifts as more of your skin meets theirs.</p>
+      <p>When you’re finally bare, you settle your body over them again. Skin to skin now. Their eyes close, lips parting in a quiet gasp.</p>
+      <p>Your hand cups their jaw. You guide their face toward you and kiss them again, deeper this time. You let your weight rest into the kiss, let your hand slide lower, over their chest, their ribs, down between their thighs.</p>
+      <p>They’re already desperate for more. Already flushed. You don’t need to check. You feel it in their breath. In the way their thighs press together.</p>
+      <p>Your fingers move slowly, spreading warmth with every stroke. You’re not rushing to get them off. You’re teaching their body something. Showing them what it means to be handled. To be cared for. To be devoured gently, completely, and without apology.</p>
+      <p>They start to shake a little. You murmur praise into their neck, soft affirmations between kisses.</p>
+      <p>You tell them what a good job they’re doing.</p>
+      <p>How much you love watching them fall apart for you.</p>
+      <p>How safe they are.</p>
+      <p>How hot they are like this.</p>
+      <p>You feel them build under your touch. Their hips rock up. Their hands grip the sheets, or your arms, or your back. They moan, quiet but desperate, and you meet every sound with calm control.</p>
+      <p>When they come, they come hard. Their body curls under yours, and you hold them through it, never letting them drift. Never leaving space for doubt or shame to slip in.</p>
+      <p>You stay close. You kiss their shoulder. You stroke their hair. You let the afterglow stretch long.</p>
+      <p>Later, you pull the blanket up over them and wrap yourself around their back. Your chest against their spine, your hand still resting on their hip. You press your lips to the back of their neck.</p>
+      <p>“Still with me?” you ask.</p>
+      <p>They hum. You feel them smile. You don’t need more than that.</p>
+      <p>They came undone for you. Trusted you to take them apart and put them back together without breaking anything that matters.</p>
+      <p>And you did.</p>
+      <p>That’s what you do best.</p>
+      <p>Not just take control. Not just lead.</p>
+      <p>You protect.</p>
+      <p>Even when you’re making them moan.<br/>
+      Even when you’re causing them to squirm in ecstasy.<br/>
+      Even when they’re at their most exposed.</p>
+      <p><strong>Especially then.</strong></p>
+      <p>Because that’s when it matters most.</p>
+    </div>
   </div>
 </body>
 </html>
