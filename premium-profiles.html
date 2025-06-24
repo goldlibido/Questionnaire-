@@ -59,79 +59,150 @@
     }
 
     ul {
-      padding-left: 20px;
-      margin: 20px 0;
+      padding-left: 20px;<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Premium Packages</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #1a1a1a;
+      color: white;
     }
 
-    ul li {
-      margin-bottom: 10px;
+    h1 {
+      text-align: center;
+      font-style: italic;
+      font-size: 2.8rem;
+      margin-top: 40px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    p.subheading {
+      text-align: center;
+      font-size: 1.1rem;
+      max-width: 720px;
+      margin: 0 auto 50px;
+    }
+
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 0 20px 60px;
+    }
+
+    .card {
+      background-color: #1a1a1a;
+      border: 3px solid transparent;
+      border-radius: 14px;
+      padding: 30px 25px;
+      width: 300px;
+      box-sizing: border-box;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      border-image: linear-gradient(to right, #06954E, #064D95, #950606) 1;
+    }
+
+    .card h2 {
+      font-style: italic;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
     }
 
     .price {
-      font-size: 1.4rem;
-      font-weight: bold;
-      margin-top: auto;
+      font-size: 1.8rem;
+      margin: 10px 0 20px;
     }
 
-    @media (max-width: 900px) {
+    .button {
+      background-color: white;
+      color: black;
+      font-weight: bold;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 25px;
+      font-size: 1rem;
+    }
+
+    .card ul {
+      list-style-type: '✓ ';
+      text-align: left;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .card ul li {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 960px) {
       .card-container {
         flex-direction: column;
         align-items: center;
       }
 
-      .gradient-border {
+      .card {
         width: 100%;
-        max-width: 500px;
+        max-width: 360px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Reveal the Psychology Behind Your Pleasure</h1>
-    <p class="subheading">Get an in-depth look at your sexual profile, including what turns you on, who you’re drawn to, and why. Pick the package that fits best for you.</p>
+  <h1>Reveal the Psychology Behind Your Pleasure</h1>
+  <p class="subheading">Get an in-depth look at your sexual profile, including what turns you on, who you’re drawn to, and why. Pick the package that fits best for you.</p>
 
-    <div class="card-container">
-      <div class="gradient-border">
-        <h2>Your Erotic Blueprint</h2>
-        <ul>
-          <li>Full deep-dive profile of your erotic archetype</li>
-          <li>Erotic short story tailored to your sexual profile</li>
-          <li>Turn-ons, desires, and romantic behavior decoded</li>
-          <li>Relationship strategies based on your style</li>
-        </ul>
-        <p class="price">$9</p>
-      </div>
+  <div class="card-container">
+    <div class="card">
+      <h2>Your Erotic Blueprint</h2>
+      <p class="price">$9</p>
+      <button class="button">Continue</button>
+      <ul>
+        <li>Full deep-dive profile of your erotic archetype</li>
+        <li>Erotic short story tailored to your sexual profile</li>
+        <li>Turn-ons, desires, and romantic behavior decoded</li>
+        <li>Relationship strategies based on your style</li>
+      </ul>
+    </div>
 
-      <div class="gradient-border">
-        <h2>Compatibility Package</h2>
-        <ul>
-          <li>Everything from the Erotic Blueprint package</li>
-          <li>Top 3 compatibility matches revealed</li>
-          <li>Each match includes:
-            <ul>
-              <li>Full deep-dive breakdown</li>
-              <li>Erotic short story for each type</li>
-              <li>Turn-on language & power dynamics</li>
-            </ul>
-          </li>
-        </ul>
-        <p class="price">$27</p>
-      </div>
+    <div class="card">
+      <h2>Compatibility Package</h2>
+      <p class="price">$27</p>
+      <button class="button">Continue</button>
+      <ul>
+        <li>Everything from the Erotic Blueprint package</li>
+        <li>Erotic blueprints of your Top 3 compatibility matches including:</li>
+        <li>Full deep-dive breakdown</li>
+        <li>Erotic short story for each type</li>
+        <li>Turn-ons, power dynamics, & more</li>
+      </ul>
+    </div>
 
-      <div class="gradient-border">
-        <h2>The Forbidden Library</h2>
-        <ul>
-          <li>Access to all 12 erotic archetypes</li>
-          <li>All deep-dive psychological & sexual profiles</li>
-          <li>All 12 premium erotic short stories</li>
-          <li>Compare turn-ons, polarity arcs, conflict patterns</li>
-        </ul>
-        <p class="price">$39</p>
-      </div>
+    <div class="card">
+      <h2>The Forbidden Library</h2>
+      <p class="price">$39</p>
+      <button class="button">Continue</button>
+      <ul>
+        <li>Access to all 12 erotic blueprints</li>
+        <li>Deep-dive of all sexual profiles</li>
+        <li>All 12 premium erotic short stories</li>
+        <li>Compare turn-ons, power dynamics, conflict patterns, & more</li>
+      </ul>
     </div>
   </div>
-</body>
-</html>
 </body>
 </html>
