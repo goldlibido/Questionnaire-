@@ -6,6 +6,14 @@
   <title>Your Erotic Blueprint</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    body {<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Erotic Blueprint</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
     body {
       margin: 0;
       padding: 0;
@@ -15,7 +23,7 @@
     }
 
     .border-wrapper {
-      padding: 20px;
+      padding: 20px 0; /* removed horizontal padding */
       border: 6px solid;
       border-image: linear-gradient(to right, #950606, #064D95, #06954E) 1;
       min-height: 100vh;
@@ -44,18 +52,19 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 30px;
-      padding-bottom: 60px;
+      padding: 0 0 60px 0; /* no side padding */
+      margin: 0;
     }
 
     .card {
       background-color: #1a1a1a;
-      border: 3px solid;
-      border-image: linear-gradient(to right, #950606, #064D95, #06954E) 1;
+      border: 3px solid gold;
       border-radius: 14px;
-      width: 260px;
+      width: 250px;
       text-align: center;
       overflow: hidden;
       transition: transform 0.3s;
+      margin: 0;
     }
 
     .card:hover {
@@ -65,9 +74,9 @@
     .card img {
       width: 100%;
       height: 320px;
-      object-fit: contain;
+      object-fit: cover;
       display: block;
-      background-color: #1a1a1a;
+      border-bottom: 3px solid gold;
     }
 
     .card h3 {
