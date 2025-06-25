@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Premium Packages</title>
+  <title>The Forbidden Library</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -19,6 +19,7 @@
       border: 5px solid;
       border-image: linear-gradient(to right, #950606, #064D95, #06954E) 1;
       min-height: 100vh;
+      box-sizing: border-box;
     }
 
     h1 {
@@ -39,9 +40,7 @@
 
     .card-container {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 30px;
       padding-bottom: 60px;
     }
 
@@ -50,19 +49,15 @@
       border: 3px solid transparent;
       border-radius: 14px;
       padding: 30px 25px;
-      width: 300px;
+      width: 320px;
       box-sizing: border-box;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
       border-image: linear-gradient(to right, #06954E, #064D95, #950606) 1;
     }
 
     .card h2 {
       font-style: italic;
-      font-size: 1.5rem;
+      font-size: 1.7rem;
       margin-bottom: 15px;
       text-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
     }
@@ -80,11 +75,9 @@
       font-size: 1.1rem;
       padding: 14px 26px;
       border: none;
-      border-radius: 8px;
+      border-radius: 25px;
       cursor: pointer;
       margin-bottom: 25px;
-      text-decoration: none;
-      display: inline-block;
       transition: background-color 0.3s;
     }
 
@@ -103,61 +96,28 @@
       margin-bottom: 10px;
       line-height: 1.5;
     }
-
-    @media (max-width: 960px) {
-      .card-container {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .card {
-        width: 100%;
-        max-width: 360px;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="border-wrapper">
-    <h1>Reveal the Psychology Behind Your Pleasure</h1>
+    <h1>The Forbidden Library</h1>
     <p class="subheading">
-      Get an in-depth look at your sexual profile, including what turns you on, who you’re drawn to, and why. Pick the package that fits best for you.
+      Unlock all 12 seductive profiles, including personalized erotic stories, psychological insights, turn-ons, and compatibility guides. No guesswork. Just everything.
     </p>
 
     <div class="card-container">
       <div class="card">
-        <h2>Your Erotic Blueprint</h2>
-        <p class="price">$9</p>
-        <a href="https://buy.stripe.com/test_4gM7sNgENaYp9o0a3KfUQ00" class="button">Continue</a>
-        <ul>
-          <li>Full deep-dive profile of your erotic archetype</li>
-          <li>Erotic short story tailored to your sexual profile</li>
-          <li>Turn-ons, desires, and romantic behavior decoded</li>
-          <li>Relationship strategies based on your style</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h2>Compatibility Package</h2>
-        <p class="price">$27</p>
-        <a href="https://buy.stripe.com/test_8x2bJ388heaBeIk5NufUQ01" class="button">Continue</a>
-        <ul>
-          <li>Everything from the Erotic Blueprint package</li>
-          <li>Erotic blueprints of your Top 3 compatibility matches including:</li>
-          <li>Erotic short story for each type</li>
-          <li>Turn-ons, power dynamics, & full deep-dive breakdown</li>
-        </ul>
-      </div>
-
-      <div class="card">
         <h2>The Forbidden Library</h2>
-        <p class="price">$39</p>
-        <a href="https://buy.stripe.com/test_3cI4gB88hgiJ8jWdfWfUQ02" class="button">Continue</a>
+        <p class="price">$29</p>
+        <a href="https://buy.stripe.com/test_3cI4gB88hgiJ8jWdfWfUQ02">
+          <button class="button">Unlock the Full Library</button>
+        </a>
         <ul>
           <li>Access to all 12 erotic blueprints</li>
-          <li>Deep-dive of all sexual profiles</li>
-          <li>All 12 premium erotic short stories</li>
-          <li>Compare turn-ons, power dynamics, conflict patterns, & more</li>
+          <li>Premium psychological breakdowns of each archetype</li>
+          <li>All 12 exclusive erotic short stories</li>
+          <li>Turn-on vocabulary, conflict patterns & power dynamics</li>
+          <li>Compare compatibility across every archetype</li>
         </ul>
       </div>
     </div>
