@@ -92,9 +92,3 @@ label {
 .logo-img {
 max-width: 125px; height: auto;
 
-/* === DESKTOP IMPROVEMENTS (1024px and up) === */
-@media (min-width: 1024px) {
-  body {
-    background-color: limegreen !important;
-  }
-}
