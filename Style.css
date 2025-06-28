@@ -91,3 +91,40 @@ label {
 
 .logo-img {
 max-width: 125px; height: auto;
+
+/* === DESKTOP FIXES ONLY (1024px and up) === */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1000px;
+    padding: 40px 60px;
+  }
+
+  body {
+    padding: 40px;
+    font-size: 18px;
+  }
+
+  .title {
+    font-size: 3rem;
+  }
+
+  .subtitle {
+    font-size: 1.3rem;
+  }
+
+  .question {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .question p {
+    width: 40%;
+  }
+
+  label {
+    width: 55%;
+    font-size: 1rem;
+  }
+}
