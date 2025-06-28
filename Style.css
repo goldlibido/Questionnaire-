@@ -92,7 +92,7 @@ label {
 .logo-img {
 max-width: 125px; height: auto;
 
-/* === DESKTOP FIXES ONLY (1024px and up) === */
+/* === DESKTOP IMPROVEMENTS (1024px and up) === */
 @media (min-width: 1024px) {
   body {
     font-size: 18px;
@@ -137,5 +137,14 @@ max-width: 125px; height: auto;
 
   .logo-img {
     max-width: 150px;
+  }
+
+  .border-wrapper {
+    padding: 40px 60px;
+  }
+
+  .premium-card {
+    max-width: 600px;
+    margin: 0 auto;
   }
 }
