@@ -73,3 +73,21 @@
     color: #c7c7c7;
   }
 }
+@media (min-width: 1024px) {
+  /* LOGO — make it huge and centered */
+  .logo {
+    max-width: 320px !important;
+    margin-top: 120px !important;
+    margin-bottom: 80px !important;
+    display: block !important;
+  }
+
+  /* H1 TITLE — like a magazine masthead */
+  h1 {
+    font-size: 7.2rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 60px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+  }
+}
