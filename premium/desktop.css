@@ -91,3 +91,21 @@
     text-align: center !important;
   }
 }
+.image-container {
+  max-width: 1200px !important;
+  height: 520px;
+  margin-bottom: 100px !important;
+}
+
+.image-half {
+  flex: 1;
+  height: 100%;
+}
+
+.image-half img {
+  height: 100% !important;
+  width: 100% !important;
+  object-fit: cover;
+  display: block;
+  border: none;
+}
