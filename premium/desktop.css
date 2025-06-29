@@ -1,35 +1,44 @@
 @media (min-width: 1024px) {
+  /* Layout and base font */
   body {
     padding: 160px;
     font-size: 28px;
   }
 
+  /* LOGO */
   .logo {
-    max-width: 240px;
-    margin: 80px auto 60px;
+    max-width: 260px !important;
+    margin: 100px auto 80px !important;
+    display: block;
   }
 
+  /* MAIN TITLE */
   h1 {
-    font-size: 7rem;
+    font-size: 6.8rem !important;
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 50px !important;
+    line-height: 1.2;
   }
 
+  /* SLOGAN */
   .slogan {
-    font-size: 2.8rem;
-    margin-top: 50px;
+    font-size: 2.4rem !important;
+    margin-top: 50px !important;
     text-align: center;
+    line-height: 1.6;
   }
 
+  /* QUOTE */
   .quote {
-    font-size: 2.2rem;
-    margin-bottom: 80px;
+    font-size: 2rem !important;
+    margin-bottom: 70px !important;
     text-align: center;
-    line-height: 1.7;
+    line-height: 1.6;
   }
 
+  /* IMAGE BLOCK */
   .image-container {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto 80px auto;
   }
 
@@ -38,26 +47,28 @@
     object-fit: cover;
   }
 
+  /* SECTION TITLES */
   h2 {
-    font-size: 3rem;
-    margin-top: 100px;
+    font-size: 3rem !important;
+    margin-top: 100px !important;
     color: #e1bf78;
   }
 
+  /* PARAGRAPH & LIST TEXT */
   p {
-    font-size: 1.9rem;
+    font-size: 1.9rem !important;
     line-height: 2.4;
     margin-bottom: 40px;
   }
 
   ul {
     margin-left: 60px;
-    font-size: 1.8rem;
+    font-size: 1.8rem !important;
     line-height: 2.3;
   }
 
   .sub {
-    font-size: 1.7rem;
+    font-size: 1.6rem !important;
     margin-left: 3rem;
     color: #c7c7c7;
   }
