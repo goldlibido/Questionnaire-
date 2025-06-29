@@ -108,36 +108,37 @@ max-width: 125px; height: auto;
     font-size: 4.6rem;
     line-height: 1.15;
     text-shadow: 0 0 14px #ff00ff, 0 0 22px #ff00ff;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .subtitle {
     font-size: 1.9rem;
     line-height: 1.9;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
   }
 
   .question {
-    margin-bottom: 50px;
+    margin-bottom: 60px;
   }
 
   .question p {
-    font-size: 1.7rem;
-    line-height: 1.5;
-    margin-bottom: 20px;
+    font-size: 1.8rem;
+    line-height: 1.6;
+    margin-bottom: 18px;
   }
 
   label {
-    font-size: 1.4rem;
-    line-height: 1.6;
+    font-size: 1.5rem;
+    line-height: 1.8;
     margin-left: 30px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     display: block;
   }
 
   .submit-btn {
     font-size: 1.6rem;
     padding: 20px 40px;
+    margin-top: 40px;
   }
 
   .logo-img {
