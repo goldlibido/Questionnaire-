@@ -1,5 +1,5 @@
 @media (min-width: 1024px) {
-  /* Overall Layout */
+  /* Layout */
   body {
     padding: 160px;
     font-size: 28px;
@@ -38,16 +38,19 @@
     line-height: 1.6;
   }
 
-  /* Image Container and Sizing */
+  /* Image Container */
   .image-container {
-    max-width: 1400px;
-    margin: 0 auto 120px auto;
-    display: flex;
-    align-items: center;
+    max-width: 1400px !important;
+    margin: 0 auto 120px auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
   }
 
   .image-half {
-    width: 50%;
+    width: 50% !important;
+    padding: 0 !important;
   }
 
   .image-half img {
@@ -55,37 +58,37 @@
     height: auto !important;
     object-fit: contain !important;
     object-position: center !important;
-    display: block;
+    display: block !important;
   }
 
   .divider {
-    width: 4px;
-    background-color: #e1bf78;
+    width: 4px !important;
+    background-color: #e1bf78 !important;
   }
 
-  /* Section Headings */
+  /* Section Titles */
   h2 {
     font-size: 3rem !important;
     margin-top: 100px !important;
-    color: #e1bf78;
+    color: #e1bf78 !important;
   }
 
-  /* Paragraph and List Text */
+  /* Paragraphs and Lists */
   p {
     font-size: 1.9rem !important;
-    line-height: 2.4;
-    margin-bottom: 40px;
+    line-height: 2.4 !important;
+    margin-bottom: 40px !important;
   }
 
   ul {
-    margin-left: 60px;
+    margin-left: 60px !important;
     font-size: 1.8rem !important;
-    line-height: 2.3;
+    line-height: 2.3 !important;
   }
 
   .sub {
     font-size: 1.6rem !important;
-    margin-left: 3rem;
-    color: #c7c7c7;
+    margin-left: 3rem !important;
+    color: #c7c7c7 !important;
   }
 }
