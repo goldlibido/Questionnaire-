@@ -5,19 +5,21 @@
     font-size: 28px;
   }
 
-  /* LOGO */
+  /* LOGO — make it huge and centered */
   .logo {
-    max-width: 260px !important;
-    margin: 100px auto 80px !important;
-    display: block;
+    max-width: 320px !important;
+    margin-top: 120px !important;
+    margin-bottom: 80px !important;
+    display: block !important;
   }
 
-  /* MAIN TITLE */
+  /* MAIN TITLE — like a magazine masthead */
   h1 {
-    font-size: 6.8rem !important;
-    text-align: center;
-    margin-bottom: 50px !important;
-    line-height: 1.2;
+    font-size: 7.2rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 60px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
   }
 
   /* SLOGAN */
@@ -36,15 +38,31 @@
     line-height: 1.6;
   }
 
-  /* IMAGE BLOCK */
+  /* IMAGE CONTAINER */
   .image-container {
-    max-width: 1100px;
-    margin: 0 auto 80px auto;
+    max-width: 1200px;
+    margin: 0 auto 100px auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+  }
+
+  .image-half {
+    width: 50%;
   }
 
   .image-half img {
-    height: 100%;
-    object-fit: cover;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+  }
+
+  .divider {
+    width: 4px;
+    background-color: #e1bf78;
   }
 
   /* SECTION TITLES */
@@ -71,50 +89,5 @@
     font-size: 1.6rem !important;
     margin-left: 3rem;
     color: #c7c7c7;
-  }
-}
-@media (min-width: 1024px) {
-  /* LOGO — make it huge and centered */
-  .logo {
-    max-width: 320px !important;
-    margin-top: 120px !important;
-    margin-bottom: 80px !important;
-    display: block !important;
-  }
-
-  /* H1 TITLE — like a magazine masthead */
-  h1 {
-    font-size: 7.2rem !important;
-    line-height: 1.1 !important;
-    margin-bottom: 60px !important;
-    font-weight: 700 !important;
-    text-align: center !important;
-  }
-}
-@media (min-width: 1024px) {
-  .image-container {
-    max-width: 1200px;
-    margin: 0 auto 100px auto;
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    aspect-ratio: 2 / 1;
-  }
-
-  .image-half {
-    flex: 1;
-  }
-
-  .image-half img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;  /* ✅ Show full image */
-    object-position: center;
-    display: block;
-  }
-
-  .divider {
-    width: 4px;
-    background-color: #e1bf78;
   }
 }
