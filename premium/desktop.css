@@ -38,14 +38,12 @@
     line-height: 1.6;
   }
 
-  /* Image Container */
+  /* Image Container and Sizing */
   .image-container {
-    max-width: 1200px;
-    margin: 0 auto 100px auto;
+    max-width: 1400px;
+    margin: 0 auto 120px auto;
     display: flex;
-    flex-direction: row;
     align-items: center;
-    gap: 0;
   }
 
   .image-half {
