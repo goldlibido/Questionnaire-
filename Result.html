@@ -88,8 +88,19 @@
     }
 
     img.no-save {
-      user-select: none;
-    }
+  user-select: none;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  border: 4px solid gold;
+  border-radius: 16px;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
 
     .archetype-name {
   font-weight: bold;
@@ -153,17 +164,6 @@ img.no-save {
     font-size: 1.6rem;
     margin-top: 16px;
   }
-
- img.no-save {
-  max-width: 400px;
-  width: 100%;
-  height: auto;
-  border: 4px solid gold;
-  border-radius: 20px;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
-  margin: 30px auto;
-  display: block;
-}
 
   .premium-cta {
     font-size: 1.8rem;
@@ -260,7 +260,7 @@ const profilePath = `/premium/erotic-blueprint_${linkSafeName}.html`;
 </div>
   <div class="slogan">${slogan}</div>
   <a href="${profilePath}">
-    <img src="${imagePath}" alt="${typeName}" class="no-save" oncontextmenu="return false" style="
+<img src="${imagePath}" alt="${typeName}" class="no-save" oncontextmenu="return false">      
       max-width: 400px;
       width: 100%;
       height: auto;
