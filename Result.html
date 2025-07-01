@@ -3,222 +3,433 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Your Results</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <title>Sexual Profiles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,700&family=Poppins:ital,wght@1,700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      color: white;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+    html {
+  background-color: #064D95;
+}
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Montserrat', sans-serif; }
+
+    .blue-room {
+  background-color: #064D95;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+    .green-room { background-color: #06954E; }
+    .red-room { background-color: #950606; }
+
+    .logo-img {
+      display: block;
+      margin: 0 auto;
+      max-width: 125px;
+      height: auto;
+      padding-top: 0px;
+      padding-bottom: 10px;
+    }
+
+    .page-title {
       text-align: center;
-      padding: 50px 20px;
+      margin: 6px 0;
     }
 
-    .title {
+    .title-line {
+      height: 1px;
+      background-color: white;
+      width: 100%;
+      max-width: 700px;
+      margin: 6px auto;
+    }
+
+    .page-title h1 {
       font-size: 2.6rem;
-      font-weight: bold;
       font-style: italic;
-      line-height: 1.2;
-      margin-bottom: 25px;
-    }
-
-    .subtitle {
-      font-size: 1.2rem;
-      font-weight: 400;
-      margin-bottom: 30px;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      text-shadow: 0 0 8px #00ccff, 0 0 12px #00ccff;
+      margin: 10px 0;
     }
 
     .section {
-      margin: 25px auto;
+      padding: 30px 20px 10px 20px;
+    }
+
+    .container {
       max-width: 700px;
-      font-size: 1.1rem;
-      line-height: 1.6;
+      margin: 0 auto;
     }
 
-    .red {
-      background-color: #950606;
-      text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
+    .archetype-card {
+      margin-bottom: 50px;
+      text-align: center;
     }
 
-    .green {
-      background-color: #06954E;
-      text-shadow: 0 0 5px #88e788, 0 0 10px #88e788;
+    .image-container {
+      border: 4px solid gold;
+      border-radius: 12px;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 16px;
     }
 
-    .blue {
-      background-color: #064D95;
-      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
+    .image-pair {
+      display: flex;
+      width: 100%;
     }
 
-    .archetype-name {
-      font-weight: bold;
-      font-size: 2rem;
-      margin-bottom: 12px;
+    .image-pair a {
+      width: 50%;
+    }
+
+    .image-pair img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      -webkit-user-drag: none;
+    }
+
+    .divider {
+      width: 4px;
+      background-color: gold;
     }
 
     .slogan {
       font-style: italic;
-      font-size: 1.2rem;
-      margin-bottom: 14px;
-    }
-
-    .profile-caption {
-      font-style: italic;
-      font-size: 1rem;
       margin-top: 10px;
+      font-size: 1rem;
+      line-height: 1.4;
       color: white;
-      opacity: 0.85;
     }
 
-    a.no-underline {
-      color: white;
+    h3 {
+      margin: 8px 0 4px;
+    }
+
+    h3 a {
+      color: gold;
       text-decoration: none;
+      font-size: 1.4rem;
     }
 
-    img.no-save {
-      user-select: none;
+    h3 a:hover {
+      text-decoration: underline;
+    }
+
+    .find-type-button {
       display: block;
-      margin: 30px auto;
-      max-width: 400px;
-      width: 100%;
-      height: auto;
-      border: 4px solid gold;
-      border-radius: 16px;
-      box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+      margin: 30px auto 10px;
+      padding: 12px 28px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: white;
+      background-color: transparent;
+      border: 2px solid white;
+      border-radius: 25px;
+      text-align: center;
+      text-decoration: none;
+      width: fit-content;
+      transition: background-color 0.3s, color 0.3s;
     }
 
-    @media (min-width: 1024px) {
-      .title {
-        font-size: 6rem;
-        margin-bottom: 40px;
-      }
-
-      .subtitle {
-        font-size: 2.4rem;
-        margin-bottom: 40px;
-      }
-
-      .archetype-name {
-        font-size: 3.2rem;
-        margin-bottom: 20px;
-      }
-
-      .slogan {
-        font-size: 2rem;
-        margin-bottom: 20px;
-      }
-
-      .profile-caption {
-        font-size: 1.6rem;
-        margin-top: 16px;
-      }
-
-      .section {
-        font-size: 1.8rem;
-        line-height: 1.8;
-        max-width: 1000px;
-        margin: 40px auto;
-      }
+    .find-type-button:hover {
+      background-color: white;
+      color: black;
     }
+@media (min-width: 1024px) {
+  body {
+    padding: 0;
+    font-size: 22px;
+  }
+
+  .logo-img {
+    max-width: 300px;
+    margin-top: 80px;
+    margin-bottom: 60px;
+  }
+
+  .page-title h1 {
+    font-size: 7.2rem;
+    line-height: 1.1;
+    margin-bottom: 50px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .title-line {
+    max-width: 1000px;
+    margin: 12px auto;
+  }
+
+  .section {
+    padding: 80px 0 40px;
+  }
+
+  .container {
+    max-width: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .image-container {
+    max-width: none;
+    width: 100%;
+    margin: 0 auto 80px auto;
+    border: none;
+    display: flex;
+    justify-content: center;
+  }
+
+  .image-pair {
+    display: flex;
+    width: 100%;
+    max-width: 1800px;
+  }
+
+  .image-pair a {
+    width: 50%;
+  }
+
+  .image-pair img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .divider {
+    width: 6px;
+    background-color: gold;
+  }
+
+  .archetype-card {
+    margin-bottom: 100px;
+  }
+
+  h3 a {
+    font-size: 3rem;
+    text-align: center;
+    display: block;
+    margin-top: 20px;
+  }
+
+  .slogan {
+    font-size: 2.4rem;
+    line-height: 1.6;
+    margin-top: 20px;
+    text-align: center;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .find-type-button {
+    font-size: 1.8rem;
+    padding: 18px 50px;
+    border-width: 3px;
+    margin-top: 60px;
+  }
+}
+
+  .section {
+    padding: 80px 40px 40px;
+  }
+}
   </style>
 </head>
-<body id="resultBody">
-  <div class="title" id="roomTitle">Meet your type in the ROOM</div>
-  <div class="subtitle" id="archetypeText">Your Archetype</div>
-  <div class="section" id="compatibilityText"></div>
-  <div class="section" id="sugarText"></div>
-  <div class="section" id="inviteText"></div>
-  <div id="typeDetails"></div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const q3 = params.get("q3");
-    const q4 = params.get("q4");
-    const q5 = params.get("q5");
-    const q6 = params.get("q6");
-    const q9 = params.get("q9");
-    const q8 = params.get("q8");
-
-    const roomTitle = document.getElementById("roomTitle");
-    const resultBody = document.getElementById("resultBody");
-    const archetypeText = document.getElementById("archetypeText");
-    const inviteText = document.getElementById("inviteText");
-    const sugarText = document.getElementById("sugarText");
-    const compatibilityText = document.getElementById("compatibilityText");
-
-    let room = "";
-    if (q3 === "whipped") {
-      room = "blue";
-      resultBody.classList.add("blue");
-      roomTitle.innerText = "Meet your type in the\nBLUE ROOM";
-    } else if (q3 === "toys") {
-      room = "green";
-      resultBody.classList.add("green");
-      roomTitle.innerText = "Meet your type in the\nGREEN ROOM";
-    } else if (q3 === "bdsm") {
-      room = "red";
-      resultBody.classList.add("red");
-      roomTitle.innerText = "Meet your type in the\nRED ROOM";
-    }
-
-    const archetypes = {
-      "red-depends mood": ["The Provoker", "You press buttons—on purpose.", "the_provoker", "provoker"],
-      "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay.", "the_punish_me", "punish_me"],
-      // Include other archetypes here...
-    };
-
-    const key = `${room}-${q9}`;
-    const [typeName, slogan, imageSafeName, linkSafeName] =
-      archetypes[key] || ["Unknown", "", "unknown", "unknown"];
-
-    const genderSuffix = q8 === "eggplant" ? "male" : "female";
-    const imagePath = `images/${imageSafeName}_${genderSuffix}.jpg`;
-    const profilePath = `/premium/erotic-blueprint_${linkSafeName}.html`;
-
-    archetypeText.innerHTML = `
-      <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
-        Your Sexual Profile:
+<body>
+  <div class="blue-room">
+    <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo-img" />
+    <div class="title-line"></div>
+    <div class="page-title">
+      <h1>Sexual Profiles</h1>
+    </div>
+    <div class="title-line"></div>
+    <div class="section container">
+    <!-- Tender Protector -->
+    <div class="archetype-card">
+      <div class="image-container">
+        <div class="image-pair">
+          <a href="premium/erotic-blueprint_tender_protector.html"><img src="images/tender_protector_female.jpg" alt="Tender Protector - Female"></a>
+          <div class="divider"></div>
+          <a href="premium/erotic-blueprint_tender_protector.html"><img src="images/tender_protector_male.jpg" alt="Tender Protector - Male"></a>
+        </div>
       </div>
-      <div class="archetype-name">
-        <a href="${profilePath}" class="no-underline">${typeName}</a>
+      <h3><a href="premium/erotic-blueprint_tender_protector.html">Tender Protector</a></h3>
+      <p class="slogan">You lead with gravity, not volume.</p>
+    </div>
+
+    <!-- Devoted Darling -->
+    <div class="archetype-card">
+      <div class="image-container">
+        <div class="image-pair">
+          <a href="premium/erotic-blueprint_devoted_darling.html"><img src="images/devoted_darling_female.jpg" alt="Devoted Darling - Female"></a>
+          <div class="divider"></div>
+          <a href="premium/erotic-blueprint_devoted_darling.html"><img src="images/devoted_darling_male.jpg" alt="Devoted Darling - Male"></a>
+        </div>
       </div>
-      <div class="slogan">${slogan}</div>
-      <a href="${profilePath}">
-        <img src="${imagePath}" alt="${typeName}" class="no-save" oncontextmenu="return false" />
-      </a>
-      <div class="profile-caption">
-        <a href="${profilePath}" class="no-underline" style="color: gold; font-weight: bold; text-decoration: underline;">
-          Click here to reveal your full sexual profile
-        </a>
+      <h3><a href="premium/erotic-blueprint_devoted_darling.html">Devoted Darling</a></h3>
+      <p class="slogan">Nothing is as kinky as loyalty.</p>
+    </div>
+
+    <!-- Heatwave -->
+    <div class="archetype-card">
+      <div class="image-container">
+        <div class="image-pair">
+          <a href="premium/erotic-blueprint_heatwave.html"><img src="images/heatwave_female.jpg" alt="Heatwave - Female"></a>
+          <div class="divider"></div>
+          <a href="premium/erotic-blueprint_heatwave.html"><img src="images/heatwave_male.jpg" alt="Heatwave - Male"></a>
+        </div>
       </div>
-    `;
+      <h3><a href="premium/erotic-blueprint_heatwave.html">Heatwave</a></h3>
+      <p class="slogan">There's no need to change who you are, because people will adjust to you.</p>
+    </div>
 
-    const matches = {
-      "The Provoker": ["The Punish Me", "Claimed & Trained", "Generous Giver"],
-      "The Punish Me": ["The Provoker", "Claimed & Trained", "Bedroom Adventurer"]
-    };
+    <!-- Mood Multiplier -->
+    <div class="archetype-card">
+      <div class="image-container">
+        <div class="image-pair">
+          <a href="premium/erotic-blueprint_mood_multiplier.html"><img src="images/mood_multiplier_female.jpg" alt="Mood Multiplier - Female"></a>
+          <div class="divider"></div>
+          <a href="premium/erotic-blueprint_mood_multiplier.html"><img src="images/mood_multiplier_male.jpg" alt="Mood Multiplier - Male"></a>
+        </div>
+      </div>
+      <h3><a href="premium/erotic-blueprint_mood_multiplier.html">Mood Multiplier</a></h3>
+      <p class="slogan">You match their vibe and raise it.</p>
+    </div>
+<a href="index.html" class="find-type-button">Find Your Type</a>
+  </div>
+    <!-- GREEN ROOM -->
+  <div class="green-room">
+    <div class="section container">
 
-    if (matches[typeName]) {
-      const [m1, m2, wild] = matches[typeName];
-      compatibilityText.innerHTML = `
-        <strong>Top 3 Compatibility Matches:</strong><br>
-        1. ${m1}<br>
-        2. ${m2}<br>
-        3. Wildcard Match: ${wild}
-      `;
-    }
+      <!-- Generous Giver -->
+      <div class="archetype-card">
+        <div class="image-container">
+          <div class="image-pair">
+            <a href="premium/erotic-blueprint_generous_giver.html"><img src="images/generous_giver_female.jpg" alt="Generous Giver - Female"></a>
+            <div class="divider"></div>
+            <a href="premium/erotic-blueprint_generous_giver.html"><img src="images/generous_giver_male.jpg" alt="Generous Giver - Male"></a>
+          </div>
+        </div>
+        <h3><a href="premium/erotic-blueprint_generous_giver.html">Generous Giver</a></h3>
+        <p class="slogan">You have so much to give, you just need someone to give it to.</p>
+      </div>
 
-    if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
-      sugarText.innerHTML = `🍫 Visit our chocolate shop and enter our speakeasy <strong>Sugar Daddy’s</strong><br>
-        with the password: <strong>Sweet Spot</strong>`;
-    }
+      <!-- Promiscuous Plaything -->
+      <div class="archetype-card">
+        <div class="image-container">
+          <div class="image-pair">
+            <a href="premium/erotic-blueprint_promiscuous_plaything.html"><img src="images/promiscuous_plaything_female.jpg" alt="Promiscuous Plaything - Female"></a>
+            <div class="divider"></div>
+            <a href="premium/erotic-blueprint_promiscuous_plaything.html"><img src="images/promiscuous_plaything_male.jpg" alt="Promiscuous Plaything - Male"></a>
+          </div>
+        </div>
+        <h3><a href="premium/erotic-blueprint_promiscuous_plaything.html">Promiscuous Plaything</a></h3>
+        <p class="slogan">Get ready for a wild ride!</p>
+      </div>
 
-    if (q4 === "yes" || q4 === "little" || q6 === "flaunt" || q6 === "partner shine") {
-      inviteText.innerHTML = `
-        🎬 You’ve been selected to audition for our dating show.<br>
-        Go play <strong>The Pickup Line</strong>! Once you’re in, you won’t want to pull out.
-      `;
-    }
-  </script>
-</body>
+      <!-- Bedroom Adventurer -->
+      <div class="archetype-card">
+        <div class="image-container">
+          <div class="image-pair">
+            <a href="premium/erotic-blueprint_bedroom_adventurer.html"><img src="images/bedroom_adventurer_female.jpg" alt="Bedroom Adventurer - Female"></a>
+            <div class="divider"></div>
+            <a href="premium/erotic-blueprint_bedroom_adventurer.html"><img src="images/bedroom_adventurer_male.jpg" alt="Bedroom Adventurer - Male"></a>
+          </div>
+        </div>
+        <h3><a href="premium/erotic-blueprint_bedroom_adventurer.html">Bedroom Adventurer</a></h3>
+        <p class="slogan">I'm up for anything and like to get down and dirty.</p>
+      </div>
+
+      <!-- Charmer in Charge -->
+      <div class="archetype-card">
+        <div class="image-container">
+          <div class="image-pair">
+            <a href="premium/erotic-blueprint_charmer_in_charge.html"><img src="images/charmer_in_charge_female.jpg" alt="Charmer in Charge - Female"></a>
+            <div class="divider"></div>
+            <a href="premium/erotic-blueprint_charmer_in_charge.html"><img src="images/charmer_in_charge_male.jpg" alt="Charmer in Charge - Male"></a>
+          </div>
+        </div>
+        <h3><a href="premium/erotic-blueprint_charmer_in_charge.html">Charmer in Charge</a></h3>
+        <p class="slogan">You don’t just take control. You make them beg for it.</p>
+      </div>
+<a href="index.html" class="find-type-button">Find Your Type</a>  
+    </div>
+  </div>
+    <!-- RED ROOM -->
+  <div class="red-room">
+    <div class="section container">
+
+      <!-- Claimed & Trained -->
+      <div class="archetype-card">
+        <div class="image-container">
+          <div class="image-pair">
+            <a href="premium/erotic-blueprint_claimed_and_trained.html"><img src="images/claimed__trained_female.jpg" alt="Claimed & Trained - Female"></a>
+            <div class="divider"></div>
+            <a href="premium/erotic-blueprint_claimed_and_trained.html"><img src="images/claimed__trained_male.jpg" alt="Claimed & Trained - Male"></a>
+          </div>
+        </div>
+        <h3><a href="premium/erotic-blueprint_claimed_and_trained.html">Claimed & Trained</a></h3>
+        <p class="slogan">The deeper you give in the more pleasure you'll feel.</p>
+      </div>
+
+      <!-- The Punish Me -->
+      <div class="archetype-card">
+        <div class="image-container">
+          <div class="image-pair">
+            <a href="premium/erotic-blueprint_punish_me.html"><img src="images/the_punish_me_female.jpg" alt="The Punish Me - Female"></a>
+            <div class="divider"></div>
+            <a href="premium/erotic-blueprint_punish_me.html"><img src="images/the_punish_me_male.jpg" alt="The Punish Me - Male"></a>
+          </div>
+        </div>
+        <h3><a href="premium/erotic-blueprint_punish_me.html">The Punish Me</a></h3>
+        <p class="slogan">What you call defiance, I call foreplay.</p>
+      </div>
+
+      <!-- The Provoker -->
+      <div class="archetype-card">
+        <div class="image-container">
+          <div class="image-pair">
+            <a href="premium/erotic-blueprint_provoker.html"><img src="images/the_provoker_female.jpg" alt="The Provoker - Female"></a>
+            <div class="divider"></div>
+            <a href="premium/erotic-blueprint_provoker.html"><img src="images/the_provoker_male.jpg" alt="The Provoker - Male"></a>
+          </div>
+        </div>
+        <h3><a href="premium/erotic-blueprint_provoker.html">The Provoker</a></h3>
+        <p class="slogan">You press buttons...on purpose.</p>
+      </div>
+
+      <!-- Dungeon Master -->
+      <div class="archetype-card">
+        <div class="image-container">
+          <div class="image-pair">
+            <a href="premium/erotic-blueprint_dungeon_master.html"><img src="images/dungeon_master_female.jpg" alt="Dungeon Master - Female"></a>
+            <div class="divider"></div>
+            <a href="premium/erotic-blueprint_dungeon_master.html"><img src="images/dungeon_master_male.jpg" alt="Dungeon Master - Male"></a>
+          </div>
+        </div>
+        <h3><a href="premium/erotic-blueprint_dungeon_master.html">Dungeon Master</a></h3>
+        <p class="slogan">You’re not just having a fantasy. You’re the one in charge of it.</p>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 20px auto 20px;">
+  <a href="index.html" class="find-type-button">Find Your Type</a>
+</div>
+    </div>
+  </div>
+  </body>
 </html>
