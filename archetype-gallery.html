@@ -172,25 +172,32 @@ html, body {
     margin: 12px auto;
   }
 
-  .image-container {
-    max-width: 1400px;
-    margin: 0 auto 80px auto;
-  }
+ .image-container {
+  max-width: none;
+  width: 100%;
+  margin: 0 auto 80px auto;
+  display: flex;
+  justify-content: center;
+}
 
-  .image-pair img {
-    object-fit: cover;
-    height: auto;
-    max-height: none;
-    width: 100%;
-  }
+.image-pair {
+  display: flex;
+  width: 100%;
+  max-width: 1600px;
+  gap: 0;
+}
 
-  .image-pair {
-    gap: 0;
-  }
+.image-pair a {
+  width: 50%;
+}
 
-  .image-pair a {
-    width: 50%;
-  }
+.image-pair img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  max-height: none;
+}
 
   .divider {
     width: 6px;
