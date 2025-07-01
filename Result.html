@@ -149,14 +149,6 @@
     margin-top: 16px;
   }
 
-  button,
-  #moreAboutBtn {
-    font-size: 1.5rem;
-    padding: 16px 36px;
-    border-width: 3px;
-    margin-top: 40px;
-  }
-
  img.no-save {
   max-width: 400px;
   width: 100%;
@@ -184,24 +176,6 @@
   <div class="section" id="compatibilityText"></div>
   <div class="section" id="sugarText"></div>
   <div class="section" id="inviteText"></div>
-  <div>
-  <a id="moreAboutBtn" href="/premium/erotic-blueprint_${linkSafeName}.html" style="
-    display: inline-block;
-    margin-top: 40px;
-    padding: 16px 36px;
-    font-weight: bold;
-    font-size: 1.5rem;
-    border: 3px solid white;
-    background-color: transparent;
-    color: white;
-    font-style: italic;
-    border-radius: 10px;
-    cursor: pointer;
-    text-decoration: none;
-  ">
-    Your Full Sexual Profile
-  </a>
-</div>
   <div id="typeDetails"></div>
 
   <script>
@@ -220,7 +194,6 @@
     const sugarText = document.getElementById("sugarText");
     const compatibilityText = document.getElementById("compatibilityText");
     const typeDetails = document.getElementById("typeDetails");
-    const moreAboutBtn = document.getElementById("moreAboutBtn");
 
     let room = "";
     if (q3 === "whipped") {
@@ -258,8 +231,7 @@
 
     const genderSuffix = q8 === "eggplant" ? "male" : "female";
     const imagePath = `images/${imageSafeName}_${genderSuffix}.jpg`;
-    const profilePath = `/profiles/${linkSafeName}.html`;
-
+const profilePath = `/premium/erotic-blueprint_${linkSafeName}.html`;
     archetypeText.innerHTML = `
   <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
     Your Sexual Profile:
