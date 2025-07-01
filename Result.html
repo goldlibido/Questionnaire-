@@ -91,6 +91,31 @@
       user-select: none;
     }
 
+    .archetype-name {
+  font-weight: bold;
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 1024px) {
+  .archetype-name {
+    font-size: 3.2rem;
+    margin-bottom: 20px;
+  }
+}
+    
+    .slogan {
+  font-style: italic;
+  font-size: 1.2rem;
+  margin-bottom: 14px;
+}
+
+@media (min-width: 1024px) {
+  .slogan {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+}
     @media (min-width: 1024px) {
   body {
     padding: 80px 40px;
@@ -222,10 +247,10 @@
   <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
     Your Sexual Profile:
   </div>
-  <div style="font-weight: bold; font-size: 2.8rem; margin-bottom: 8px;">
-    <a href="${profilePath}" class="no-underline">${typeName}</a>
-  </div>
-  <div style="font-style: italic; font-size: 2rem; margin-bottom: 12px;">
+<div class="archetype-name">
+  <a href="${profilePath}" class="no-underline">${typeName}</a>
+</div>
+ <div class="slogan">${slogan}</div>
     ${slogan}
   </div>
   <a href="${profilePath}">
