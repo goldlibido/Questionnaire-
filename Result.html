@@ -50,14 +50,6 @@
       text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
     }
 
-    .profile-caption {
-      font-style: italic;
-      font-size: 1rem;
-      margin-top: 10px;
-      color: white;
-      opacity: 0.85;
-    }
-
     .archetype-name {
       font-weight: bold;
       font-size: 2rem;
@@ -70,15 +62,23 @@
       margin-bottom: 14px;
     }
 
-    .image-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 30px;
-      margin-bottom: 30px;
+    .profile-caption {
+      font-style: italic;
+      font-size: 1rem;
+      margin-top: 10px;
+      color: white;
+      opacity: 0.85;
+    }
+
+    a.no-underline {
+      color: white;
+      text-decoration: none;
     }
 
     img.no-save {
       user-select: none;
+      display: block;
+      margin: 30px auto;
       max-width: 400px;
       width: 100%;
       height: auto;
@@ -87,22 +87,7 @@
       box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
     }
 
-    a.no-underline {
-      color: white;
-      text-decoration: none;
-    }
-
     @media (min-width: 1024px) {
-      .archetype-name {
-        font-size: 3.2rem;
-        margin-bottom: 20px;
-      }
-
-      .slogan {
-        font-size: 2rem;
-        margin-bottom: 20px;
-      }
-
       .title {
         font-size: 6rem;
         margin-bottom: 40px;
@@ -113,16 +98,26 @@
         margin-bottom: 40px;
       }
 
-      .section {
-        font-size: 1.8rem;
-        line-height: 1.8;
-        max-width: 1000px;
-        margin: 40px auto;
+      .archetype-name {
+        font-size: 3.2rem;
+        margin-bottom: 20px;
+      }
+
+      .slogan {
+        font-size: 2rem;
+        margin-bottom: 20px;
       }
 
       .profile-caption {
         font-size: 1.6rem;
         margin-top: 16px;
+      }
+
+      .section {
+        font-size: 1.8rem;
+        line-height: 1.8;
+        max-width: 1000px;
+        margin: 40px auto;
       }
     }
   </style>
@@ -167,13 +162,14 @@
     }
 
     const archetypes = {
-      "blue-depends mood": ["Heatwave", "There's no need to change who you are...", "", "", "heatwave", "heatwave"],
-      // (Insert other archetypes here)
+      "red-depends mood": ["The Provoker", "You press buttons—on purpose.", "the_provoker", "provoker"],
+      "red-depends partner": ["The Punish Me", "What you call defiance, I call foreplay.", "the_punish_me", "punish_me"],
+      // Include other archetypes here...
     };
 
     const key = `${room}-${q9}`;
-    const [typeName, slogan, , , imageSafeName, linkSafeName] =
-      archetypes[key] || ["Unknown", "", "", "", "unknown", "unknown"];
+    const [typeName, slogan, imageSafeName, linkSafeName] =
+      archetypes[key] || ["Unknown", "", "unknown", "unknown"];
 
     const genderSuffix = q8 === "eggplant" ? "male" : "female";
     const imagePath = `images/${imageSafeName}_${genderSuffix}.jpg`;
@@ -187,11 +183,9 @@
         <a href="${profilePath}" class="no-underline">${typeName}</a>
       </div>
       <div class="slogan">${slogan}</div>
-      <div class="image-container">
-        <a href="${profilePath}">
-          <img src="${imagePath}" alt="${typeName}" class="no-save" oncontextmenu="return false">
-        </a>
-      </div>
+      <a href="${profilePath}">
+        <img src="${imagePath}" alt="${typeName}" class="no-save" oncontextmenu="return false" />
+      </a>
       <div class="profile-caption">
         <a href="${profilePath}" class="no-underline" style="color: gold; font-weight: bold; text-decoration: underline;">
           Click here to reveal your full sexual profile
@@ -200,7 +194,8 @@
     `;
 
     const matches = {
-      "Heatwave": ["Mood Multiplier", "Devoted Darling", "Generous Giver"]
+      "The Provoker": ["The Punish Me", "Claimed & Trained", "Generous Giver"],
+      "The Punish Me": ["The Provoker", "Claimed & Trained", "Bedroom Adventurer"]
     };
 
     if (matches[typeName]) {
@@ -215,7 +210,7 @@
 
     if (q5 === "yes" || q5 === "maybe" || q5 === "iam") {
       sugarText.innerHTML = `🍫 Visit our chocolate shop and enter our speakeasy <strong>Sugar Daddy’s</strong><br>
-      with the password: <strong>Sweet Spot</strong>`;
+        with the password: <strong>Sweet Spot</strong>`;
     }
 
     if (q4 === "yes" || q4 === "little" || q6 === "flaunt" || q6 === "partner shine") {
