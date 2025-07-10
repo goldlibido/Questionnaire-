@@ -15,73 +15,26 @@
       padding: 50px 20px;
       border: 8px solid #e1bf78;
       box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
     }
-
-    img.logo {
-      max-width: 120px;
-      margin-bottom: 30px;
-    }
+    img.logo { max-width: 120px; margin-bottom: 30px; }
 
     h1 {
-      margin-bottom: 10px;
-    }
-
-    .heating-text {
+      font-size: 2.4rem;
+      margin: 10px auto 5px;
       position: relative;
       display: inline-block;
-      color: #e1bf78;
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 2.4rem;
-      animation: warmGlow 3s ease-in-out infinite;
+      z-index: 2;
+      animation: pulse 3s ease-in-out infinite;
+      background: linear-gradient(90deg, #e1bf78, #e1bf78);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-
-    @keyframes warmGlow {
-      0%, 100% {
-        color: #e1bf78;
-        transform: scale(1);
-      }
-      50% {
-        color: #ff4d4d;
-        transform: scale(1.06);
-      }
-    }
-
-    .smoke {
-      position: absolute;
-      bottom: 100%;
-      width: 20px;
-      height: 60px;
-      background: rgba(255,255,255,0.15);
-      opacity: 0;
-      animation: riseSmoke 4s infinite ease-in-out;
-      border-radius: 50%;
-    }
-
-    .wisp1 { left: 15%; animation-delay: 0s; }
-    .wisp2 { left: 50%; animation-delay: 1s; }
-    .wisp3 { left: 80%; animation-delay: 2s; }
-
-    @keyframes riseSmoke {
-      0% {
-        transform: translateY(0px) scaleX(1);
-        opacity: 0.2;
-      }
-      50% {
-        transform: translateY(-30px) scaleX(1.2);
-        opacity: 0.4;
-      }
-      100% {
-        transform: translateY(-60px) scaleX(1.4);
-        opacity: 0;
-      }
-    }
-
     .tagline {
       font-size: 1.1rem;
-      font-style: italic;
-      color: white;
       margin-bottom: 40px;
+      color: #ccc;
     }
 
     .button-container {
@@ -89,9 +42,8 @@
       flex-direction: column;
       gap: 20px;
       max-width: 400px;
-      margin: 0 auto 40px auto;
+      margin: 0 auto 40px;
     }
-
     .signin-btn {
       padding: 14px 28px;
       font-size: 1.1rem;
@@ -103,29 +55,52 @@
       cursor: pointer;
       text-decoration: none;
     }
-
-    .signin-btn:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
+    .signin-btn:hover { background-color: rgba(255,255,255,0.1); }
 
     .legal-box {
       font-size: 0.85rem;
       color: #ccc;
       opacity: 0.8;
       max-width: 600px;
-      margin: 30px auto 0 auto;
+      margin: 30px auto 0;
       line-height: 1.5;
     }
-
     footer {
       font-size: 0.8rem;
       color: #999;
       margin-top: 40px;
     }
+    footer a { color: #e1bf78; text-decoration: underline; }
 
-    footer a {
-      color: #e1bf78;
-      text-decoration: underline;
+    /* Smoke wisps */
+    .smoke {
+      position: absolute;
+      bottom: 120px;
+      left: 50%;
+      width: 150px;
+      height: 200px;
+      background: url('images/smoke-wisp.png') center bottom no-repeat;
+      background-size: contain;
+      opacity: 0;
+      animation: riseSmoke 5s linear infinite, driftSmoke 4s ease-in-out infinite;
+      z-index: 1;
+    }
+    .smoke:nth-child(2) { left: 40%; animation-delay: 1s; }
+    .smoke:nth-child(3) { left: 60%; animation-delay: 2s; }
+
+    /* Animations */
+    @keyframes pulse {
+      0%,100% { filter: brightness(1); }
+      50% { filter: brightness(1.3); }
+    }
+    @keyframes riseSmoke {
+      0% { transform: translateY(0) scale(0.8); opacity: 0.5; }
+      80% { opacity: 0.1; }
+      100% { transform: translateY(-200px) scale(1.2); opacity: 0; }
+    }
+    @keyframes driftSmoke {
+      0%,100% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
     }
 
     @media (min-width: 768px) {
@@ -137,34 +112,27 @@
   </style>
 </head>
 <body>
-  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+  <div class="smoke"></div>
+  <div class="smoke"></div>
+  <div class="smoke"></div>
 
-  <h1>
-    <span style="font-weight: 400; font-size: 1.3rem; display: block;">The dating app that gets</span>
-    <span class="heating-text">
-      TURNED ON WHEN YOU GO OUT
-      <span class="smoke wisp1"></span>
-      <span class="smoke wisp2"></span>
-      <span class="smoke wisp3"></span>
-    </span>
-  </h1>
+  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png"
+       alt="Le Libido Logo" class="logo" />
 
+  <h1>TURNED ON WHEN YOU GO OUT</h1>
   <div class="tagline">Find someone that's also ready to meet in real life.</div>
 
   <div class="button-container">
-    <a href="profile-verified.html" class="signin-btn">Verified Sign-In</a>
-    <a href="profile-anonymous.html" class="signin-btn">Anonymous Sign-In</a>
+    <a href="profile-verified.html" class="signin-btn">Verified Sign‑In</a>
+    <a href="profile-anonymous.html" class="signin-btn">Anonymous Sign‑In</a>
   </div>
 
   <div class="legal-box">
-    By continuing, you confirm you are 18+ and agree to use Le Libido responsibly. 
-    We log IPs, device IDs, and timestamps to detect abuse. 
-    Verified sign-ins require multi-factor authentication. 
-    All meetups are voluntary and at your own risk. Le Libido is not responsible for user behavior or in-person outcomes.
+    By continuing, you confirm you are 18+ and agree to use Le Libido responsibly. We log IPs, device IDs & timestamps. Verified sign‑in requires multi‑factor authentication. All meet‑ups are voluntary and at your own risk.
   </div>
 
   <footer>
-    © 2025 Le Libido. All rights reserved. |
+    © 2025 Le Libido. All rights reserved. |
     <a href="/legal.html">Legal Policy</a>
   </footer>
 </body>
