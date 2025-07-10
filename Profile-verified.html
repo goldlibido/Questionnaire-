@@ -3,278 +3,305 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verified Profile</title>
+  <title>Verified Profile – Le Libido</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background-color: #064D95; /* Replace dynamically with #950606 or #06954E as needed */
-      color: white;
       padding: 40px 20px;
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+      background-color: #064D95;
+      transition: background-color 0.3s ease-in-out;
     }
 
     .verified-banner {
       background-color: #e1bf78;
-      color: black;
-      text-align: center;
-      padding: 4px 0;
-      font-size: 0.8rem;
+      color: #0d0d0d;
+      font-size: 0.7rem;
       font-weight: bold;
+      padding: 4px 10px;
+      text-align: center;
+      text-transform: uppercase;
       letter-spacing: 1px;
     }
 
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     .logo {
-      max-width: 100px;
+      max-width: 140px;
+      margin: 20px auto 10px auto;
       display: block;
-      margin: 20px auto 30px;
     }
 
     .progress-container {
-      display: flex;
-      justify-content: center;
-      margin: 30px 0;
-    }
-
-    .progress-circle {
-      width: 80px;
-      height: 80px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      background: conic-gradient(#e1bf78 0% 33%, rgba(255,255,255,0.1) 33% 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.2rem;
-      color: #fff;
+      border: 4px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      margin-right: 10px;
     }
 
-    .section {
-      max-width: 700px;
-      margin: 20px auto;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      padding-bottom: 20px;
+    .progress-fill {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%);
+      background: #e1bf78;
+      border-radius: 50%;
+      transform: rotate(120deg);
+    }
+
+    .progress-label {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .section-title {
+      margin-top: 30px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 6px;
+    }
+
+    .field {
+      margin: 20px 0;
+      text-align: left;
     }
 
     label {
-      display: block;
-      margin: 10px 0 6px;
       font-weight: 600;
+      display: block;
+      margin-bottom: 5px;
     }
 
     input[type="text"],
-    input[type="number"],
-    input[type="email"],
     input[type="tel"],
-    input[type="file"],
+    input[type="email"],
     select {
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid #fff;
       width: 100%;
-      color: white;
+      padding: 10px 14px;
       font-size: 1rem;
-      padding: 8px 0;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      color: white;
       outline: none;
     }
 
-    .photo-preview {
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .photo-grid {
       display: flex;
       gap: 10px;
-      margin-top: 10px;
+      margin-bottom: 20px;
     }
 
-    .photo-preview img {
+    .photo-box {
       width: 60px;
       height: 60px;
-      object-fit: cover;
+      background-color: rgba(255, 255, 255, 0.1);
       border-radius: 6px;
-      border: 1px solid #e1bf78;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      cursor: pointer;
     }
 
-    .blueprint-link {
+    .gold-link {
       color: #e1bf78;
       font-weight: bold;
       text-decoration: underline;
-      display: block;
-      margin-top: 20px;
+      cursor: pointer;
     }
 
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 0.8rem;
-      color: #ccc;
+    .save-button {
+      margin-top: 30px;
+      padding: 14px 28px;
+      background: transparent;
+      color: #e1bf78;
+      font-weight: bold;
+      border: 2px solid #e1bf78;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    @media (min-width: 768px) {
+      .field {
+        max-width: 400px;
+      }
+
+      .photo-grid {
+        max-width: 360px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="verified-banner">VERIFIED MODE</div>
-  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo">
+<div class="verified-banner">Verified Mode</div>
+<div class="top-row">
+  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" class="logo" />
   <div class="progress-container">
-    <div class="progress-circle">33%</div>
+    <div class="progress-fill"></div>
+    <div class="progress-label">33%</div>
   </div>
-    <form>
-    <div class="section">
-      <label for="profile-photo">Profile Photo (required)</label>
-      <input type="file" id="profile-photo" accept="image/*" required>
-      <label for="extra-photos">More Photos (optional, max 5)</label>
-      <input type="file" id="extra-photos" accept="image/*" multiple>
-      <div class="photo-preview" id="photoPreview"></div>
-      <label for="instagram">Instagram (optional)</label>
-      <input type="text" id="instagram" placeholder="@yourhandle">
-    </div>
+</div>
+<div class="section-title">Photos</div>
+<div class="photo-grid">
+  <div class="photo-box">+</div>
+  <div class="photo-box">+</div>
+  <div class="photo-box">+</div>
+  <div class="photo-box">+</div>
+  <div class="photo-box">+</div>
+</div>
+<div class="field">
+  <label>Link to Instagram (optional)</label>
+  <input type="text" placeholder="https://instagram.com/yourhandle" />
+</div>
 
-    <div class="section">
-      <label for="legal-name">Legal Name</label>
-      <input type="text" id="legal-name" placeholder="Your full name">
-      <label for="age">Age</label>
-      <input type="number" id="age" placeholder="Age">
-      <label for="height">Height</label>
-      <input type="text" id="height" placeholder="e.g. 5'9">
-      <label for="orientation">Sexual Orientation</label>
-      <input type="text" id="orientation" placeholder="e.g. bisexual, straight, etc.">
-    </div>
+<div class="section-title">Personal Info</div>
+<div class="field">
+  <label>Legal Name</label>
+  <input type="text" placeholder="Your full name" />
+</div>
+<div class="field">
+  <label>Phone Number</label>
+  <input type="tel" placeholder="(123) 456-7890" />
+</div>
+<div class="field">
+  <label>Email</label>
+  <input type="email" placeholder="you@example.com" />
+</div>
+<div class="field">
+  <label>Age</label>
+  <select>
+    <option>18</option>
+    <option selected>21</option>
+    <option>22</option>
+    <option>23</option>
+    <option>24</option>
+    <option>25</option>
+    <option>30+</option>
+  </select>
+</div>
+<div class="field">
+  <label>Height</label>
+  <select>
+    <option>5’5”</option>
+    <option selected>5’9”</option>
+    <option>6’0”</option>
+    <option>6’2”</option>
+  </select>
+</div>
+<div class="field">
+  <label>Sexual Orientation</label>
+  <select>
+    <option selected>Straight</option>
+    <option>Bisexual</option>
+    <option>Homosexual</option>
+    <option>Pansexual</option>
+  </select>
+</div>
+<div class="section-title">Preferences</div>
+<div class="field">
+  <label>Enjoys</label>
+  <select>
+    <option selected>Passionate sex, massage, pillow talk, cuddling</option>
+    <option>One-night stands, striptease, porn, toys</option>
+    <option>BDSM, spanking, mind games, dirty talk</option>
+  </select>
+</div>
+<div class="field">
+  <label>Role</label>
+  <select>
+    <option>Dom</option>
+    <option>Sub</option>
+    <option selected>Switch</option>
+  </select>
+</div>
+<div class="field">
+  <label>Naughty-to-Nice</label>
+  <select>
+    <option selected>Frisky</option>
+    <option>Vanilla</option>
+    <option>Kinky</option>
+  </select>
+</div>
+<div class="field">
+  <label>Looking For</label>
+  <select>
+    <option selected>Love</option>
+    <option>Good Time</option>
+  </select>
+</div>
+<div class="field">
+  <label>Open to Sugar Daddy/Mama Dynamic</label>
+  <select>
+    <option selected>Yes</option>
+    <option>No</option>
+  </select>
+</div>
+<div class="field">
+  <label>Dirty Talk Style</label>
+  <select>
+    <option selected>Praise</option>
+    <option>Playful Teasing</option>
+    <option>Degradation</option>
+    <option>Filthy</option>
+  </select>
+</div>
+<div class="field">
+  <label>Threesome Openness</label>
+  <select>
+    <option>Nope</option>
+    <option selected>Maybe</option>
+    <option>Yeah</option>
+    <option>Hell yeah</option>
+  </select>
+</div>
 
-    <div class="section">
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" placeholder="(XXX) XXX-XXXX">
-      <label for="email">Email</label>
-      <input type="email" id="email" placeholder="you@example.com">
-    </div>
+<div class="field">
+  <label>Sexual Archetype</label>
+  <a href="/premium/" class="gold-link">View Full Blueprint</a>
+</div>
 
-    <div class="section">
-      <label>Interaction Preference</label>
-      <select>
-        <option>Prefers to approach</option>
-        <option>Prefers to be approached</option>
-      </select>
+<button class="save-button">Save Profile</button>
+<script>
+  const archetype = "Tender Protector"; // Replace this dynamically
+  const bg = {
+    "Devoted Darling": "#064D95",
+    "Mood Multiplier": "#064D95",
+    "Tender Protector": "#064D95",
+    "Heatwave": "#064D95",
+    "Promiscuous Plaything": "#06954E",
+    "Generous Giver": "#06954E",
+    "Bedroom Adventurer": "#06954E",
+    "Charmer in Charge": "#06954E",
+    "Claimed & Trained": "#950606",
+    "Punish Me": "#950606",
+    "Provoker": "#950606",
+    "Dungeon Master": "#950606"
+  };
+  document.body.style.backgroundColor = bg[archetype] || "#0d0d0d";
+</script>
 
-      <label>Active Status</label>
-      <select>
-        <option>Connected now</option>
-        <option>Last online 5 min ago</option>
-        <option>Last online 1 hour ago</option>
-      </select>
-
-      <label>Distance</label>
-      <input type="text" placeholder="e.g. 2 miles away">
-    </div>
-
-    <div class="section">
-      <label>Role</label>
-      <select>
-        <option>Dominant</option>
-        <option>Submissive</option>
-        <option>Switch</option>
-      </select>
-
-      <label>Naughty-to-Nice Spectrum</label>
-      <select>
-        <option>Vanilla</option>
-        <option>Frisky</option>
-        <option>Kinky</option>
-      </select>
-
-      <label>Sexual Archetype</label>
-      <input type="text" value="Mood Multiplier" readonly>
-      <a href="/premium/erotic-blueprint_mood_multiplier.html" class="blueprint-link">View Full Blueprint</a>
-    </div>
-        <div class="section">
-      <label>Enjoys (from Q3)</label>
-      <textarea placeholder="Passionate sex, sensual massage, pillow talk..."></textarea>
-
-      <label>Likes this during foreplay (from Q1)</label>
-      <select>
-        <option>Being adored</option>
-        <option>Being obeyed</option>
-        <option>Being put in their place</option>
-        <option>Having their ego stroked</option>
-      </select>
-
-      <label>Looking for</label>
-      <select>
-        <option>Love / Long-Term</option>
-        <option>Good Time / Short-Term</option>
-      </select>
-
-      <label>Open to Sugar Dynamic</label>
-      <select>
-        <option>Yes</option>
-        <option>No</option>
-      </select>
-
-      <label>Dirty Talk Style (from Q10)</label>
-      <select>
-        <option>Praise</option>
-        <option>Playful Teasing</option>
-        <option>Degradation</option>
-        <option>Filthy</option>
-        <option>Private (I plead the fifth)</option>
-      </select>
-
-      <label>Threesome Openness</label>
-      <select>
-        <option>No</option>
-        <option>Maybe, depends on vibe</option>
-        <option>Yes, could be fun</option>
-        <option>Absolutely, the more the merrier</option>
-      </select>
-
-      <label>Check-In History</label>
-      <textarea placeholder="e.g. Dante's Bar, Wythe Rooftop, Artwalk DTLA"></textarea>
-    </div>
-
-    <div class="section">
-      <label>Allow Messages From</label>
-      <select>
-        <option>Verified Only</option>
-        <option>Both Verified & Anonymous</option>
-        <option>Anonymous Only</option>
-      </select>
-
-      <label>Show My Profile To</label>
-      <select>
-        <option>Verified Only</option>
-        <option>All Users</option>
-        <option>Anonymous Only</option>
-      </select>
-    </div>
-
-    <div class="section">
-      <button type="submit">Save Profile</button>
-    </div>
-  </form>
-
-  <footer>
-    <p style="font-size: 0.8rem; color: white; opacity: 0.7; margin-top: 40px;">
-      © 2025 Le Libido. All rights reserved. |
-      <a href="/legal.html" style="color: #e1bf78; text-decoration: underline;">Legal Policy</a>
-    </p>
-  </footer>
-
-  <script>
-    // Basic image preview
-    const photoInput = document.getElementById("extra-photos");
-    const preview = document.getElementById("photoPreview");
-
-    photoInput.addEventListener("change", () => {
-      preview.innerHTML = "";
-      Array.from(photoInput.files).slice(0, 5).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          img.style.width = "80px";
-          img.style.height = "80px";
-          img.style.objectFit = "cover";
-          img.style.margin = "5px";
-          img.style.borderRadius = "8px";
-          preview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-  </script>
+<footer style="margin-top: 60px; text-align: center; font-size: 0.8rem; color: #999;">
+  © 2025 Le Libido. All rights reserved. |
+  <a href="/legal.html" style="color: #e1bf78; text-decoration: underline;">Legal Policy</a>
+</footer>
 </body>
 </html>
