@@ -3,140 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Le Libido – Verified Profile</title>
+  <title>Verified Profile</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      background-color: #0d0d0d;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #064D95; /* Replace dynamically with #950606 or #06954E as needed */
       color: white;
-      font-family: 'Montserrat', sans-serif;
       padding: 40px 20px;
-      border: 8px solid #e1bf78;
-      box-sizing: border-box;
     }
 
-    img.logo {
-      max-width: 120px;
-      display: block;
-      margin: 0 auto 30px auto;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 2.4rem;
-      color: #e1bf78;
-      margin-bottom: 20px;
-    }
-
-    .form-container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    label {
-      display: block;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-    }
-
-    input[disabled], select[disabled] {
-      background-color: #333;
-      color: #aaa;
-    }
-
-    .submit-btn {
-      display: block;
-      margin: 40px auto 0 auto;
-      padding: 14px 28px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border: 2px solid #e1bf78;
-      color: #0d0d0d;
+    .verified-banner {
       background-color: #e1bf78;
-      border-radius: 10px;
-      cursor: pointer;
+      color: black;
+      text-align: center;
+      padding: 4px 0;
+      font-size: 0.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
     }
 
-    .submit-btn:hover {
-      background-color: #f1d58e;
+    .logo {
+      max-width: 100px;
+      display: block;
+      margin: 20px auto 30px;
+    }
+
+    .progress-container {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
     }
 
     .progress-circle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
-      border: 4px solid #e1bf78;
+      background: conic-gradient(#e1bf78 0% 33%, rgba(255,255,255,0.1) 33% 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 0.9rem;
-      background: rgba(255, 255, 255, 0.05);
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    .section {
+      max-width: 700px;
+      margin: 20px auto;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="file"],
+    select {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #fff;
+      width: 100%;
+      color: white;
+      font-size: 1rem;
+      padding: 8px 0;
+      outline: none;
+    }
+
+    .photo-preview {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .photo-preview img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #e1bf78;
+    }
+
+    .blueprint-link {
+      color: #e1bf78;
+      font-weight: bold;
+      text-decoration: underline;
+      display: block;
+      margin-top: 20px;
     }
 
     footer {
       text-align: center;
+      margin-top: 40px;
       font-size: 0.8rem;
-      color: #999;
-      margin-top: 60px;
-    }
-
-    footer a {
-      color: #e1bf78;
-      text-decoration: underline;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-
-  <div class="progress-circle">75%</div>
-
-  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
-
-  <h1>Verified Mode</h1>
-
-  <div class="form-container">
+  <div class="verified-banner">VERIFIED MODE</div>
+  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo">
+  <div class="progress-container">
+    <div class="progress-circle">33%</div>
+  </div>
     <form>
-      <label for="name">Legal Name</label>
-      <input type="text" id="name" name="name" required>
+    <div class="section">
+      <label for="profile-photo">Profile Photo (required)</label>
+      <input type="file" id="profile-photo" accept="image/*" required>
+      <label for="extra-photos">More Photos (optional, max 5)</label>
+      <input type="file" id="extra-photos" accept="image/*" multiple>
+      <div class="photo-preview" id="photoPreview"></div>
+      <label for="instagram">Instagram (optional)</label>
+      <input type="text" id="instagram" placeholder="@yourhandle">
+    </div>
 
+    <div class="section">
+      <label for="legal-name">Legal Name</label>
+      <input type="text" id="legal-name" placeholder="Your full name">
       <label for="age">Age</label>
-      <input type="number" id="age" name="age" required>
-
+      <input type="number" id="age" placeholder="Age">
       <label for="height">Height</label>
-      <input type="text" id="height" name="height" required>
-
+      <input type="text" id="height" placeholder="e.g. 5'9">
       <label for="orientation">Sexual Orientation</label>
-      <select id="orientation" name="orientation" required>
-        <option value="">Select...</option>
-        <option>Heterosexual</option>
-        <option>Homosexual</option>
-        <option>Bisexual</option>
-        <option>Pansexual</option>
-        <option>Queer</option>
-        <option>Other</option>
-      </select>
+      <input type="text" id="orientation" placeholder="e.g. bisexual, straight, etc.">
+    </div>
 
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" required>
-
+    <div class="section">
       <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" name="phone" required>
+      <input type="tel" id="phone" placeholder="(XXX) XXX-XXXX">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="you@example.com">
+    </div>
 
+    <div class="section">
       <label>Interaction Preference</label>
       <select>
         <option>Prefers to approach</option>
@@ -144,11 +151,17 @@
       </select>
 
       <label>Active Status</label>
-      <input type="text" value="Connected now" disabled>
+      <select>
+        <option>Connected now</option>
+        <option>Last online 5 min ago</option>
+        <option>Last online 1 hour ago</option>
+      </select>
 
       <label>Distance</label>
-      <input type="text" value="0.4 miles away" disabled>
+      <input type="text" placeholder="e.g. 2 miles away">
+    </div>
 
+    <div class="section">
       <label>Role</label>
       <select>
         <option>Dominant</option>
@@ -164,59 +177,104 @@
       </select>
 
       <label>Sexual Archetype</label>
-      <input type="text" value="Mood Multiplier" disabled>
-      <a href="/premium/erotic-blueprint_mood_multiplier.html" target="_blank">View Full Blueprint</a>
+      <input type="text" value="Mood Multiplier" readonly>
+      <a href="/premium/erotic-blueprint_mood_multiplier.html" class="blueprint-link">View Full Blueprint</a>
+    </div>
+        <div class="section">
+      <label>Enjoys (from Q3)</label>
+      <textarea placeholder="Passionate sex, sensual massage, pillow talk..."></textarea>
 
-      <label>Enjoys</label>
-      <input type="text" value="Giving/receiving lap dances, being adored" disabled>
-
-      <label>Looking For</label>
+      <label>Likes this during foreplay (from Q1)</label>
       <select>
-        <option>Love</option>
-        <option>A good time</option>
-        <option>Let it evolve</option>
+        <option>Being adored</option>
+        <option>Being obeyed</option>
+        <option>Being put in their place</option>
+        <option>Having their ego stroked</option>
       </select>
 
-      <label>Open to Sugar Daddy/Mama Dynamic?</label>
-      <input type="text" value="Yes" disabled>
+      <label>Looking for</label>
+      <select>
+        <option>Love / Long-Term</option>
+        <option>Good Time / Short-Term</option>
+      </select>
 
-      <label>Dirty Talk Style</label>
-      <input type="text" value="Praise" disabled>
+      <label>Open to Sugar Dynamic</label>
+      <select>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+
+      <label>Dirty Talk Style (from Q10)</label>
+      <select>
+        <option>Praise</option>
+        <option>Playful Teasing</option>
+        <option>Degradation</option>
+        <option>Filthy</option>
+        <option>Private (I plead the fifth)</option>
+      </select>
 
       <label>Threesome Openness</label>
       <select>
-        <option>Not open</option>
-        <option>Curious</option>
-        <option>Definitely</option>
+        <option>No</option>
+        <option>Maybe, depends on vibe</option>
+        <option>Yes, could be fun</option>
+        <option>Absolutely, the more the merrier</option>
       </select>
 
-      <label>Check-in History</label>
-      <textarea rows="3" placeholder="e.g. The Jane Rooftop, Soho House, Lucien..."></textarea>
+      <label>Check-In History</label>
+      <textarea placeholder="e.g. Dante's Bar, Wythe Rooftop, Artwalk DTLA"></textarea>
+    </div>
 
-      <label>Reputation Score</label>
-      <input type="text" value="Coming soon..." disabled>
-
-      <label>Visibility Settings</label>
+    <div class="section">
+      <label>Allow Messages From</label>
       <select>
-        <option>Show to: Verified Only</option>
-        <option>Show to: Verified + Anonymous</option>
-        <option>Show to: Anonymous Only</option>
+        <option>Verified Only</option>
+        <option>Both Verified & Anonymous</option>
+        <option>Anonymous Only</option>
       </select>
 
-      <label>Messaging Settings</label>
+      <label>Show My Profile To</label>
       <select>
-        <option>Messages from: Verified Only</option>
-        <option>Messages from: Verified + Anonymous</option>
-        <option>Messages from: Anonymous Only</option>
+        <option>Verified Only</option>
+        <option>All Users</option>
+        <option>Anonymous Only</option>
       </select>
+    </div>
 
-      <button type="submit" class="submit-btn">Save Profile</button>
-    </form>
-  </div>
+    <div class="section">
+      <button type="submit">Save Profile</button>
+    </div>
+  </form>
 
   <footer>
-    © 2025 Le Libido. All rights reserved. |
-    <a href="/legal.html">Legal Policy</a>
+    <p style="font-size: 0.8rem; color: white; opacity: 0.7; margin-top: 40px;">
+      © 2025 Le Libido. All rights reserved. |
+      <a href="/legal.html" style="color: #e1bf78; text-decoration: underline;">Legal Policy</a>
+    </p>
   </footer>
+
+  <script>
+    // Basic image preview
+    const photoInput = document.getElementById("extra-photos");
+    const preview = document.getElementById("photoPreview");
+
+    photoInput.addEventListener("change", () => {
+      preview.innerHTML = "";
+      Array.from(photoInput.files).slice(0, 5).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.style.width = "80px";
+          img.style.height = "80px";
+          img.style.objectFit = "cover";
+          img.style.margin = "5px";
+          img.style.borderRadius = "8px";
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
 </body>
 </html>
