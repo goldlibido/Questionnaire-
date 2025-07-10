@@ -12,6 +12,7 @@
       color: white;
       text-align: center;
       padding: 50px 20px;
+      background-color: #000;
     }
 
     .title {
@@ -20,11 +21,11 @@
       font-style: italic;
       line-height: 1.2;
       margin-bottom: 25px;
-      color: #e1bf78;
     }
 
     .subtitle {
       font-size: 1.2rem;
+      font-weight: 400;
       margin-bottom: 30px;
     }
 
@@ -35,394 +36,133 @@
       line-height: 1.6;
     }
 
-    .red { background-color: #950606; }
-    .green { background-color: #06954E; }
-    .blue { background-color: #064D95; }
+    .red {
+      background-color: #950606;
+      text-shadow: 0 0 5px #ff4d4d, 0 0 10px #ff4d4d;
+    }
+
+    .green {
+      background-color: #06954E;
+      text-shadow: 0 0 5px #88e788, 0 0 10px #88e788;
+    }
+
+    .blue {
+      background-color: #064D95;
+      text-shadow: 0 0 5px #57b9ff, 0 0 10px #57b9ff;
+    }
 
     button {
-      margin: 14px 8px;
-      padding: 10px 20px;
-      font-size: 1rem;
+      margin: 12px;
+      padding: 12px 22px;
       font-weight: bold;
-      font-style: italic;
-      color: white;
-      background: transparent;
+      font-size: 1rem;
       border: 2px solid #e1bf78;
+      background-color: transparent;
+      color: #e1bf78;
+      font-style: italic;
       border-radius: 10px;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(225, 191, 120, 0.1);
+    }
+
+    #typeDetails {
+      margin-top: 20px;
+      font-style: italic;
+      font-size: 1rem;
+      display: none;
     }
 
     .archetype-name {
       font-weight: bold;
-      font-size: 2.2rem;
+      font-size: 2rem;
       margin-bottom: 12px;
+      color: #e1bf78;
     }
 
     img.no-save {
       user-select: none;
       display: block;
       margin: 0 auto 30px auto;
-      max-width: 400px;
-      border: 4px solid gold;
+      max-width: 320px;
+      width: 100%;
+      height: auto;
+      border: 4px solid #e1bf78;
       border-radius: 16px;
-      box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-    }
-
-    .slogan {
-      font-style: italic;
-      font-size: 1.2rem;
-      margin-bottom: 16px;
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
     }
 
     .profile-caption a {
+      color: #e1bf78;
       font-weight: bold;
-      color: gold;
       text-decoration: underline;
     }
 
+    .compat-links a {
+      color: #e1bf78;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 30px;
+    }
+
+    .btn-left { text-align: left; }
+    .btn-right { text-align: right; }
+
     @media (min-width: 1024px) {
-      .title { font-size: 6rem; }
-      .subtitle { font-size: 2.4rem; }
-      .archetype-name { font-size: 3.2rem; }
-      .section { font-size: 1.8rem; max-width: 1000px; }
-      .slogan { font-size: 2rem; }
+      .archetype-name {
+        font-size: 3.2rem;
+      }
+
+      body {
+        padding: 80px 40px;
+        font-size: 22px;
+      }
+
+      .section {
+        font-size: 1.8rem;
+        max-width: 1000px;
+      }
+
+      .profile-caption {
+        font-size: 1.4rem;
+        margin-top: 16px;
+      }
+
+      button {
+        font-size: 1.4rem;
+        padding: 16px 30px;
+      }
     }
   </style>
 </head>
 <body id="resultBody">
-  <div class="title" id="roomTitle">Meet your type in the <span style="color: #e1bf78;">ROOM</span></div>
+  <div class="title" id="roomTitle">Meet your type</div>
   <div class="subtitle" id="archetypeText">Your Archetype</div>
-  <div class="section" id="compatibilityText"></div>
+  <div class="section" id="compatibilityText" class="compat-links"></div>
 
-  <div class="section" id="ctaButtons">
-    <a href="/anonymous-signin.html"><button>Anonymous Sign-In</button></a>
-    <a href="/verified-signin.html"><button>Verified Sign-In</button></a>
-    <button onclick="copyShareURL()">Share Result</button>
+  <div class="profile-caption">
+    <a id="profileLink" href="#">Click here to reveal your full sexual profile</a>
   </div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const answers = {};
-    for (let i = 1; i <= 10; i++) {
-      answers[`q${i}`] = params.get(`q${i}`) || "";
-    }
+  <div style="margin: 20px;">
+    <button onclick="copyShareURL()">Share Your Result</button>
+  </div>
 
-    const gender = answers.q8 === "cat" ? "female" : "male";
-    const scores = {
-      "Devoted Darling": 0, "Mood Multiplier": 0, "Tender Protector": 0, "Heatwave": 0,
-      "Promiscuous Plaything": 0, "Generous Giver": 0, "Bedroom Adventurer": 0, "Charmer in Charge": 0,
-      "Dungeon Master": 0, "Claimed & Trained": 0, "Punish Me": 0, "Provoker": 0
-    };
-
-    // Q1 Scoring
-    if (answers.q1 === "1a") {
-      scores["Devoted Darling"] += 3;
-      scores["Generous Giver"] += 2;
-      scores["Tender Protector"] += 2;
-      scores["Mood Multiplier"] += 1;
-    }
-    if (answers.q1 === "1b") {
-      scores["Dungeon Master"] += 3;
-      scores["Charmer in Charge"] += 2;
-      scores["Bedroom Adventurer"] += 1;
-    }
-    if (answers.q1 === "1c") {
-      scores["Punish Me"] += 3;
-      scores["Provoker"] += 2;
-      scores["Claimed & Trained"] += 1;
-    }
-    if (answers.q1 === "1d") {
-      scores["Promiscuous Plaything"] += 3;
-      scores["Mood Multiplier"] += 2;
-      scores["Heatwave"] += 1;
-    }
-
-    // Q2 scoring...
-        // Q2 Scoring
-    if (answers.q2 === "2a") {
-      scores["Devoted Darling"] += 3;
-    }
-    if (answers.q2 === "2b") {
-      scores["Claimed & Trained"] += 3;
-      scores["Promiscuous Plaything"] += 2;
-      scores["Punish Me"] += 1;
-    }
-    if (answers.q2 === "2c") {
-      scores["Dungeon Master"] += 3;
-      scores["Charmer in Charge"] += 2;
-      scores["Tender Protector"] += 1;
-    }
-    if (answers.q2 === "2d") {
-      scores["Heatwave"] += 3;
-      scores["Provoker"] += 2;
-      scores["Generous Giver"] += 1;
-    }
-    if (answers.q2 === "2e") {
-      scores["Promiscuous Plaything"] += 3;
-      scores["Generous Giver"] += 2;
-      scores["Mood Multiplier"] += 1;
-    }
-    if (answers.q2 === "2f") {
-      scores["Charmer in Charge"] += 3;
-      scores["Bedroom Adventurer"] += 2;
-      scores["Dungeon Master"] += 1;
-    }
-    if (answers.q2 === "2g") {
-      scores["Promiscuous Plaything"] += 3;
-      scores["Generous Giver"] += 2;
-      scores["Punish Me"] += 1;
-    }
-
-    // Q3 scoring (room anchor)
-    if (answers.q3 === "3a") {
-      scores["Devoted Darling"] += 5;
-      scores["Mood Multiplier"] += 5;
-      scores["Tender Protector"] += 5;
-      scores["Generous Giver"] += 5;
-      scores["Heatwave"] += 5;
-    }
-    if (answers.q3 === "3b") {
-      scores["Promiscuous Plaything"] += 5;
-      scores["Bedroom Adventurer"] += 5;
-      scores["Charmer in Charge"] += 5;
-      scores["Mood Multiplier"] += 5;
-      scores["Generous Giver"] += 5;
-    }
-    if (answers.q3 === "3c") {
-      scores["Dungeon Master"] += 5;
-      scores["Claimed & Trained"] += 5;
-      scores["Punish Me"] += 5;
-      scores["Provoker"] += 5;
-    }
-
-    // Q4
-    if (answers.q4 === "4a") {
-      scores["Devoted Darling"] += 3;
-      scores["Mood Multiplier"] += 2;
-      scores["Generous Giver"] += 1;
-      scores["Tender Protector"] += 1;
-    }
-    if (answers.q4 === "4b") {
-      scores["Punish Me"] += 3;
-      scores["Bedroom Adventurer"] += 2;
-      scores["Charmer in Charge"] += 1;
-      scores["Heatwave"] += 1;
-    }
-    if (answers.q4 === "4c") {
-      scores["Dungeon Master"] += 3;
-      scores["Provoker"] += 2;
-      scores["Charmer in Charge"] += 1;
-    }
-    if (answers.q4 === "4d") {
-      scores["Dungeon Master"] += 3;
-      scores["Charmer in Charge"] += 2;
-      scores["Tender Protector"] += 1;
-    }
-    if (answers.q4 === "4e") {
-      scores["Mood Multiplier"] += 2;
-      scores["Claimed & Trained"] += 2;
-      scores["Provoker"] += 2;
-      scores["Heatwave"] += 2;
-      scores["Generous Giver"] += 1;
-      scores["Promiscuous Plaything"] += 1;
-    }
-
-    // Q5
-    if (answers.q5 === "5a") {
-      scores["Promiscuous Plaything"] += 3;
-      scores["Punish Me"] += 1;
-    }
-    if (answers.q5 === "5b") {
-      scores["Bedroom Adventurer"] += 3;
-      scores["Generous Giver"] += 2;
-    }
-    if (answers.q5 === "5c") {
-      scores["Devoted Darling"] += 3;
-      scores["Tender Protector"] += 3;
-      scores["Mood Multiplier"] += 3;
-      scores["Heatwave"] += 3;
-    }
-    if (answers.q5 === "5d") {
-      scores["Dungeon Master"] += 3;
-      scores["Charmer in Charge"] += 2;
-      scores["Provoker"] += 1;
-      scores["Bedroom Adventurer"] += 1;
-    }
-
-    // Q6
-    if (answers.q6 === "6a") {
-      scores["Mood Multiplier"] += 3;
-      scores["Bedroom Adventurer"] += 2;
-      scores["Promiscuous Plaything"] += 1;
-    }
-    if (answers.q6 === "6b") {
-      scores["Provoker"] += 3;
-      scores["Punish Me"] += 2;
-      scores["Dungeon Master"] += 2;
-      scores["Charmer in Charge"] += 1;
-    }
-    if (answers.q6 === "6c") {
-      scores["Devoted Darling"] += 3;
-      scores["Tender Protector"] += 2;
-      scores["Generous Giver"] += 1;
-      scores["Mood Multiplier"] += 1;
-    }
-    if (answers.q6 === "6d") {
-      scores["Charmer in Charge"] += 3;
-      scores["Promiscuous Plaything"] += 2;
-      scores["Bedroom Adventurer"] += 2;
-      scores["Claimed & Trained"] += 1;
-      scores["Dungeon Master"] += 1;
-    }
-
-    // Q7
-    if (answers.q7 === "7a") {
-      scores["Devoted Darling"] += 3;
-      scores["Tender Protector"] += 2;
-      scores["Dungeon Master"] += 1;
-    }
-    if (answers.q7 === "7b") {
-      scores["Mood Multiplier"] += 3;
-      scores["Generous Giver"] += 2;
-      scores["Heatwave"] += 1;
-    }
-    if (answers.q7 === "7c") {
-      scores["Bedroom Adventurer"] += 3;
-      scores["Promiscuous Plaything"] += 2;
-      scores["Charmer in Charge"] += 1;
-    }
-    if (answers.q7 === "7d") {
-      scores["Provoker"] += 3;
-      scores["Punish Me"] += 2;
-      scores["Bedroom Adventurer"] += 1;
-    }
-
-    // Q9
-    if (answers.q9 === "9a") {
-      scores["Dungeon Master"] += 5;
-      scores["Charmer in Charge"] += 5;
-      scores["Tender Protector"] += 5;
-    }
-    if (answers.q9 === "9b") {
-      scores["Claimed & Trained"] += 5;
-      scores["Devoted Darling"] += 5;
-      scores["Promiscuous Plaything"] += 5;
-    }
-    if (answers.q9 === "9c") {
-      scores["Provoker"] += 5;
-      scores["Bedroom Adventurer"] += 5;
-      scores["Generous Giver"] += 5;
-    }
-    if (answers.q9 === "9d") {
-      scores["Mood Multiplier"] += 5;
-      scores["Generous Giver"] += 5;
-      scores["Punish Me"] += 5;
-    }
-
-    // Q10
-    if (answers.q10 === "10a") {
-      scores["Devoted Darling"] += 3;
-      scores["Mood Multiplier"] += 3;
-      scores["Tender Protector"] += 3;
-      scores["Generous Giver"] += 3;
-      scores["Heatwave"] += 3;
-    }
-    if (answers.q10 === "10b") {
-      scores["Charmer in Charge"] += 3;
-      scores["Promiscuous Plaything"] += 2;
-      scores["Tender Protector"] += 2;
-      scores["Heatwave"] += 2;
-      scores["Generous Giver"] += 1;
-    }
-    if (answers.q10 === "10c") {
-      scores["Claimed & Trained"] += 3;
-      scores["Promiscuous Plaything"] += 3;
-      scores["Punish Me"] += 2;
-    }
-    if (answers.q10 === "10d") {
-      scores["Dungeon Master"] += 3;
-      scores["Claimed & Trained"] += 3;
-      scores["Punish Me"] += 3;
-      scores["Provoker"] += 3;
-    }
-    if (answers.q10 === "10e") {
-      scores["Devoted Darling"] += 4;
-      scores["Mood Multiplier"] += 4;
-      scores["Tender Protector"] += 4;
-      scores["Generous Giver"] += 4;
-      scores["Heatwave"] += 4;
-    }
-
-    const topType = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
-    const roomColor = {
-      "Devoted Darling": "blue", "Mood Multiplier": "blue", "Tender Protector": "blue", "Heatwave": "blue",
-      "Promiscuous Plaything": "green", "Generous Giver": "green", "Bedroom Adventurer": "green", "Charmer in Charge": "green",
-      "Dungeon Master": "red", "Claimed & Trained": "red", "Punish Me": "red", "Provoker": "red"
-    }[topType];
-
-    document.body.classList.add(roomColor);
-        const imageSafeName = topType.toLowerCase().replace(/[\s&]+/g, "_");
-    const imagePath = `images/${imageSafeName}_${gender}.jpg`;
-    const profilePath = `/premium/erotic-blueprint_${imageSafeName}.html`;
-
-    const roomTitleMap = {
-      blue: "Meet your type in the <span style='color:#e1bf78;'>BLUE ROOM</span>",
-      green: "Meet your type in the <span style='color:#e1bf78;'>GREEN ROOM</span>",
-      red: "Meet your type in the <span style='color:#e1bf78;'>RED ROOM</span>"
-    };
-    document.getElementById("roomTitle").innerHTML = roomTitleMap[roomColor];
-
-    document.getElementById("archetypeText").innerHTML = `
-      <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
-        Your Sexual Profile:
-      </div>
-      <div class="archetype-name">
-        <a href="${profilePath}" class="no-underline">${topType}</a>
-      </div>
-      <a href="${profilePath}">
-        <img src="${imagePath}" alt="${topType}" class="no-save" oncontextmenu="return false">
-      </a>
-      <div class="profile-caption">
-        <a href="${profilePath}" class="no-underline">Click here to reveal your full sexual profile</a>
-      </div>
-    `;
-
-    const compatibility = {
-      "Devoted Darling": ["Tender Protector", "Heatwave", "Promiscuous Plaything"],
-      "Mood Multiplier": ["Heatwave", "Tender Protector", "Bedroom Adventurer"],
-      "Heatwave": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
-      "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
-      "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
-      "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "Provoker"],
-      "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "Punish Me"],
-      "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed & Trained"],
-      "Claimed & Trained": ["Dungeon Master", "Provoker", "Charmer in Charge"],
-      "Punish Me": ["Provoker", "Claimed & Trained", "Bedroom Adventurer"],
-      "Provoker": ["Punish Me", "Claimed & Trained", "Generous Giver"],
-      "Dungeon Master": ["Claimed & Trained", "Punish Me", "Promiscuous Plaything"]
-    };
-
-    const matches = compatibility[topType];
-    if (matches) {
-      document.getElementById("compatibilityText").innerHTML = `
-        <strong>Top 3 Compatibility Matches:</strong><br>
-        🥇 ${matches[0]}<br>
-        🥈 ${matches[1]}<br>
-        🥉 ${matches[2]}
-      `;
-    }
-
-    function copyShareURL() {
-      const shareURL = window.location.href;
-      navigator.clipboard.writeText(shareURL).then(() => {
-        alert("Link copied to clipboard! Share your results.");
-      });
-    }
-  </script>
+  <div class="btn-container">
+    <div class="btn-left">
+      <a href="/anonymous-signin.html"><button>Sign In Anonymously</button></a>
+    </div>
+    <div class="btn-right">
+      <a href="/verified-signin.html"><button>Verified Sign-In</button></a>
+    </div>
+  </div>
 
   <footer style="text-align: center; margin-top: 40px;">
     <p style="font-size: 0.8rem; color: white; opacity: 0.7;">
@@ -430,5 +170,67 @@
       <a href="/legal.html" style="color: gold; text-decoration: underline;">Legal Notice</a>
     </p>
   </footer>
+
+<script>
+  function escapeHTML(str) {
+    return String(str || "").replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[c]));
+  }
+
+  function copyShareURL() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      alert("Link copied to clipboard! Share away.");
+    });
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const archetype = params.get("type") || "Unknown";
+  const gender = params.get("q8") === "eggplant" ? "male" : "female";
+  const lowerSafe = archetype.toLowerCase().replace(/[\s&]+/g, "_");
+  const imgPath = `images/${lowerSafe}_${gender}.jpg`;
+  const profilePath = `/premium/erotic-blueprint_${lowerSafe}.html`;
+
+  document.querySelector(".archetype-name").textContent = archetype;
+  document.getElementById("archetypeText").innerHTML = `
+    <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
+      Your Sexual Profile:
+    </div>
+    <div class="archetype-name">${archetype}</div>
+    <img src="${imgPath}" class="no-save">
+  `;
+  document.getElementById("profileLink").href = profilePath;
+
+  const matches = {
+    "Devoted Darling": ["Tender Protector", "Heatwave", "Promiscuous Plaything"],
+    "Mood Multiplier": ["Heatwave", "Tender Protector", "Bedroom Adventurer"],
+    "Heatwave": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
+    "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
+    "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
+    "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "Provoker"],
+    "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "Punish Me"],
+    "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed & Trained"],
+    "Claimed & Trained": ["Dungeon Master", "Provoker", "Charmer in Charge"],
+    "Punish Me": ["Provoker", "Claimed & Trained", "Bedroom Adventurer"],
+    "Provoker": ["Punish Me", "Claimed & Trained", "Generous Giver"],
+    "Dungeon Master": ["Claimed & Trained", "Punish Me", "Promiscuous Plaything"]
+  };
+
+  if (matches[archetype]) {
+    const [m1, m2, m3] = matches[archetype];
+    document.getElementById("compatibilityText").innerHTML = `
+      <div class="compat-links">
+        <strong>Top 3 Compatibility Matches:</strong><br>
+        🥇 <a href="/premium/erotic-blueprint_${m1.toLowerCase().replace(/[\s&]+/g, "_")}.html">${m1}</a><br>
+        🥈 <a href="/premium/erotic-blueprint_${m2.toLowerCase().replace(/[\s&]+/g, "_")}.html">${m2}</a><br>
+        🥉 <a href="/premium/erotic-blueprint_${m3.toLowerCase().replace(/[\s&]+/g, "_")}.html">${m3}</a>
+      </div>
+    `;
+  }
+</script>
 </body>
 </html>
