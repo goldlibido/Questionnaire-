@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Le Libido Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #950606; /* red background */
+      color: white;
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    .border-wrapper {
+      border: 5px solid;
+      border-image: linear-gradient(135deg, #064D95, #06954E, #950606) 1;
+      border-radius: 20px;
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      box-shadow: 0 0 15px rgba(225, 191, 120, 0.3);
+      background: transparent;
+    }
+
+    .logo-wrapper {
+      margin-bottom: 30px;
+    }
+
+    .logo-img {
+      max-width: 120px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .title {
+      font-size: 2.6rem;
+      font-weight: bold;
+      font-style: italic;
+      color: #e1bf78;
+      line-height: 1.3;
+      margin-bottom: 30px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .scan-dalous {
+      font-weight: bold;
+      font-style: italic;
+      color: #e1bf78;
+      font-size: 1.4rem;
+    }
+
+    .question {
+      margin-bottom: 30px;
+      text-align: left;
+    }
+
+    .question p {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: #e1bf78;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    input[type="radio"] {
+      margin-right: 8px;
+    }
+
+    .submit-btn {
+      margin-top: 30px;
+      padding: 12px 26px;
+      background-color: transparent;
+      border: 2px solid #e1bf78;
+      color: #e1bf78;
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-style: italic;
+    }
+
+    .submit-btn:hover {
+      background-color: #e1bf78;
+      color: #950606;
+    }
+
+    @media (min-width: 1024px) {
+      body {
+        padding: 80px;
+      }
+
+      .logo-img {
+        max-width: 160px;
+      }
+
+      .title {
+        font-size: 4.8rem;
+        margin-bottom: 30px;
+      }
+
+      .subtitle {
+        font-size: 1.8rem;
+        margin-bottom: 50px;
+      }
+
+      .submit-btn {
+        font-size: 1.4rem;
+        padding: 14px 36px;
+      }
+
+      .question p {
+        font-size: 1.4rem;
+      }
+
+      label {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="border-wrapper">
+    <div class="logo-wrapper">
+      <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="golden-le-libido-logo" class="logo-img">
+    </div>
+    <div class="title">10 Questions<br>To Unlock<br>Your Turn-On Type</div>
+    <div class="subtitle">
+      100% private<br>
+      Gender-inclusive<br>
+      <span class="scan-dalous">SCAN-DALOUSLY accurate</span>
+    </div>
+
+    <form id="quizForm"></form>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "1. Foreplay is best when…",
+        name: "q1",
+        options: [
+          ["1a", "They adore every inch of me"],
+          ["1b", "I start bossing them around until they admit they like it"],
+          ["1c", "I test them to see if they’ll put me in my place"],
+          ["1d", "They stroke my ego and then start stroking something else"]
+        ]
+      },
+      {
+        text: "2. What would you dress up as for a sexy Halloween party?",
+        name: "q2",
+        options: [
+          ["2a", "One of us will dress up as the big spoon and the other will dress up as the little spoon"],
+          ["2b", "A horny devil"],
+          ["2c", "One of the Founding Fathers like John Hancock so you can call me daddy"],
+          ["2d", "An ass-trologer that’s ruled by Uranus. It‘s not my fault I love whore-oscopes"],
+          ["2e", "Just call me Moan-a-Lisa and paint me like I’m one of your French girls"],
+          ["2f", "Catwoman because you're gonna hear this kitty purrr"],
+          ["2g", "A school girl because I’ll take out my ruler and maybe even teach you a lesson"]
+        ]
+      },
+      {
+        text: "3. If sex had a menu, what would you order?",
+        name: "q3",
+        options: [
+          ["3a", "Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, and maybe a little whipped cream"],
+          ["3b", "One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, and an assortment of new sex toys"],
+          ["3c", "BDSM, spanking, power exchange, naughty mind games, and a side of filthy dirty talk"]
+        ]
+      },
+      {
+        text: "4. If your partner came faster than expected, you’d say…",
+        name: "q4",
+        options: [
+          ["4a", "It’s cute how you can’t control yourself when you’re with me"],
+          ["4b", "Damn I didn’t realize this was a race, congrats you won this round"],
+          ["4c", "Good. Now you’ll watch me take my time"],
+          ["4d", "Don’t worry, I’ll train you properly"],
+          ["4e", "Inner monologue: *Normally I’m the one who cums too fast… I just blame them for being too sexy*"]
+        ]
+      },
+      {
+        text: "5. Are you looking for a sugar daddy/mama?",
+        name: "q5",
+        options: [
+          ["5a", "Obviously"],
+          ["5b", "If it came along I wouldn’t mind"],
+          ["5c", "No thank you"],
+          ["5d", "Are you kidding? I am the sugar daddy/mama!"]
+        ]
+      },
+      {
+        text: "6. Sex with you feels like…",
+        name: "q6",
+        options: [
+          ["6a", "The creation of a new universe. That’s why they call it the Big Bang, right?"],
+          ["6b", "A guilty pleasure. You know it’s bad but that’s why it’s so good."],
+          ["6c", "What a Hallmark movie wishes it was."],
+          ["6d", "Once you get some head from me, I’ll be living in your head rent free."]
+        ]
+      },
+      {
+        text: "7. Would you enjoy a threesome?",
+        name: "q7",
+        options: [
+          ["7a", "Nope. My partner’s mine. Period."],
+          ["7b", "Maybe. Depends on the lighting and if anyone brought snacks"],
+          ["7c", "Yeah it’d be fun"],
+          ["7d", "Hell yeah! Why stop at 3? The more the merrier"]
+        ]
+      },
+      {
+        text: "8. Do you have a 🍆 or a 🐱?",
+        name: "q8",
+        options: [
+          ["8a", "🍆"],
+          ["8b", "🐱"]
+        ]
+      },
+      {
+        text: "9. Who do you want to wear the pants?",
+        name: "q9",
+        options: [
+          ["9a", "I wear the pants and we both prefer it that way"],
+          ["9b", "I like when my partner takes charge and then takes me"],
+          ["9c", "Depends on my mood and what I’m not wearing"],
+          ["9d", "Depends on who I’m with and how hot they are"]
+        ]
+      },
+      {
+        text: "10. When the clothes come off, what kind of dirty talk turns you on?",
+        name: "q10",
+        options: [
+          ["10a", "Praise"],
+          ["10b", "Playful teasing"],
+          ["10c", "Degradation (we don’t judge, unless you’re into that)"],
+          ["10d", "The filthier, the better"],
+          ["10e", "I plead the fifth"]
+        ]
+      }
+    ];
+
+    const form = document.getElementById("quizForm");
+
+    questions.forEach((q) => {
+      const div = document.createElement("div");
+      div.className = "question";
+
+      const p = document.createElement("p");
+      p.textContent = q.text;
+      div.appendChild(p);
+
+      q.options.forEach(([val, text]) => {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="radio" name="${q.name}" value="${val}"> ${text}`;
+        div.appendChild(label);
+      });
+
+      form.appendChild(div);
+    });
+
+    const btn = document.createElement("button");
+    btn.className = "submit-btn";
+    btn.type = "submit";
+    btn.textContent = "See My Results";
+    form.appendChild(btn);
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      const totalQuestions = questions.length;
+      const params = new URLSearchParams();
+      for (let i = 1; i <= totalQuestions; i++) {
+        const answer = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!answer) {
+          alert("Complete all 10 questions to see your results!");
+          return;
+        }
+        params.set(`q${i}`, answer.value);
+      }
+      window.location.href = `result-new.html?${params.toString()}`;
+    });
+  </script>
+</body>
+</html>
