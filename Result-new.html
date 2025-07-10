@@ -162,14 +162,10 @@
   <div class="section" style="margin-top: 30px;">
     <a href="/archetype-gallery.html">See All Sexual Profiles</a>
   </div>
-  <script>
+<script>
   function escapeHTML(str) {
     return String(str || "").replace(/[&<>"']/g, (c) => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;',
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[c]));
   }
 
@@ -178,15 +174,14 @@
   for (let i = 1; i <= 10; i++) {
     answers[`q${i}`] = params.get(`q${i}`);
   }
+  const gender = params.get("q8"); // 🍆 = male, 🐱 = female
 
-  const gender = answers.q8 === "🍆" ? "male" : "female";
-
-  // Scores object
-  const scores = {
+  // SCORING DATA STRUCTURE
+  const scoreMap = {
     "Devoted Darling": 0,
     "Mood Multiplier": 0,
-    "Heatwave": 0,
     "Tender Protector": 0,
+    "Heatwave": 0,
     "Promiscuous Plaything": 0,
     "Generous Giver": 0,
     "Bedroom Adventurer": 0,
@@ -194,11 +189,10 @@
     "Claimed & Trained": 0,
     "The Punish Me": 0,
     "The Provoker": 0,
-    "Dungeon Master": 0,
+    "Dungeon Master": 0
   };
 
-  // Mapping logic from your system
-  const logicMap = {
+  const questionWeights = {
     q1: {
       a: { "Devoted Darling": 3, "Generous Giver": 2, "Tender Protector": 2, "Mood Multiplier": 1 },
       b: { "Dungeon Master": 3, "Charmer in Charge": 2, "Bedroom Adventurer": 1 },
@@ -244,6 +238,7 @@
       c: { "Bedroom Adventurer": 3, "Promiscuous Plaything": 2, "Charmer in Charge": 1 },
       d: { "The Provoker": 3, "The Punish Me": 2, "Bedroom Adventurer": 1 }
     },
+    q8: {}, // Used separately below
     q9: {
       a: { "Dungeon Master": 5, "Charmer in Charge": 5, "Tender Protector": 5 },
       b: { "Claimed & Trained": 5, "Devoted Darling": 5, "Promiscuous Plaything": 5 },
@@ -259,82 +254,52 @@
     }
   };
 
-  const choiceMap = {
-    q1: ['a', 'b', 'c', 'd'],
-    q2: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
-    q3: ['a', 'b', 'c'],
-    q4: ['a', 'b', 'c', 'd', 'e'],
-    q5: ['a', 'b', 'c', 'd'],
-    q6: ['a', 'b', 'c', 'd'],
-    q7: ['a', 'b', 'c', 'd'],
-    q9: ['a', 'b', 'c', 'd'],
-    q10: ['a', 'b', 'c', 'd', 'e']
-  };
-
-  // Tally up scores
-  for (let q in logicMap) {
-    const userAnswer = answers[q];
-    const answerKey = userAnswer?.trim().toLowerCase();
-    if (answerKey && logicMap[q][answerKey]) {
-      for (let archetype in logicMap[q][answerKey]) {
-        scores[archetype] += logicMap[q][answerKey][archetype];
-      }
+  // TALLY THE SCORE
+  Object.entries(answers).forEach(([question, answer]) => {
+    const weights = questionWeights[question]?.[answer];
+    if (weights) {
+      Object.entries(weights).forEach(([type, value]) => {
+        scoreMap[type] += value;
+      });
     }
-  }
+  });
 
-  // Determine top result
-  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-  const [topType] = sorted[0];
+  // PICK TOP ARCHETYPE
+  const sorted = Object.entries(scoreMap).sort((a, b) => b[1] - a[1]);
+  const [winningType] = sorted[0];
 
-  const imagePath = `images/${topType.toLowerCase().replace(/\s+/g, "_")}_${gender}.jpg`;
-  const profileLink = `/premium/erotic-blueprint_${topType.toLowerCase().replace(/\s+/g, "_")}.html`;
+  // GENDERED IMAGE
+  const genderSuffix = gender === "eggplant" ? "male" : "female";
+  const safeName = winningType.toLowerCase().replace(/[\s&]+/g, "_").replace(/_+/g, "_");
+  const imagePath = `images/${safeName}_${genderSuffix}.jpg`;
+  const profilePath = `/premium/erotic-blueprint_${safeName}.html`;
 
+  // BACKGROUND
+  const resultBody = document.getElementById("resultBody");
+  const blueRoom = ["Devoted Darling", "Mood Multiplier", "Tender Protector", "Heatwave"];
+  const greenRoom = ["Promiscuous Plaything", "Generous Giver", "Bedroom Adventurer", "Charmer in Charge"];
+  const redRoom = ["Claimed & Trained", "The Punish Me", "The Provoker", "Dungeon Master"];
+  if (blueRoom.includes(winningType)) resultBody.classList.add("blue");
+  else if (greenRoom.includes(winningType)) resultBody.classList.add("green");
+  else if (redRoom.includes(winningType)) resultBody.classList.add("red");
+
+  // DISPLAY RESULT
   document.getElementById("archetypeText").innerHTML = `
-    <span class="archetype-name" style="color: #e1bf78;">${escapeHTML(topType)}</span>
-  `;
-
-  document.getElementById("sloganText").innerHTML = `
-    <a href="${profileLink}">
-      <img src="${imagePath}" class="no-save" alt="${escapeHTML(topType)}" />
+    <div style="text-decoration: underline; font-weight: normal; margin-bottom: 6px;">
+      Your Sexual Profile:
+    </div>
+    <div class="archetype-name" style="color: #e1bf78;">
+      <a href="${escapeHTML(profilePath)}" class="no-underline" style="color: #e1bf78;">${escapeHTML(winningType)}</a>
+    </div>
+    <a href="${escapeHTML(profilePath)}">
+      <img src="${escapeHTML(imagePath)}" alt="${escapeHTML(winningType)}" class="no-save" oncontextmenu="return false">
     </a>
-    <div class="profile-caption">
-      <a href="${profileLink}" class="no-underline" style="color: #e1bf78; font-weight: bold;">
+    <div class="profile-caption" style="text-shadow: none;">
+      <a href="${escapeHTML(profilePath)}" class="no-underline" style="color: #e1bf78; font-weight: bold; text-decoration: underline;">
         Click here to reveal your full sexual profile
       </a>
     </div>
   `;
-
-  const compatible = {
-    "Devoted Darling": ["Tender Protector", "Heatwave", "Promiscuous Plaything"],
-    "Mood Multiplier": ["Heatwave", "Tender Protector", "Bedroom Adventurer"],
-    "Heatwave": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
-    "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
-    "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
-    "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "The Provoker"],
-    "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "The Punish Me"],
-    "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed & Trained"],
-    "Claimed & Trained": ["Dungeon Master", "The Provoker", "Charmer in Charge"],
-    "The Punish Me": ["The Provoker", "Claimed & Trained", "Bedroom Adventurer"],
-    "The Provoker": ["The Punish Me", "Claimed & Trained", "Generous Giver"],
-    "Dungeon Master": ["Claimed & Trained", "The Punish Me", "Promiscuous Plaything"]
-  };
-
-  const matches = compatible[topType] || [];
-  document.getElementById("compatibilityMatches").innerHTML = `
-    <strong>Top Compatibility Matches:</strong><br>
-    1. <a href="/premium/erotic-blueprint_${matches[0]?.toLowerCase().replace(/\s+/g, "_")}.html">${matches[0]}</a><br>
-    2. <a href="/premium/erotic-blueprint_${matches[1]?.toLowerCase().replace(/\s+/g, "_")}.html">${matches[1]}</a><br>
-    3. <a href="/premium/erotic-blueprint_${matches[2]?.toLowerCase().replace(/\s+/g, "_")}.html">${matches[2]}</a>
-  `;
-
-  // Change background color based on type
-  const red = ["Claimed & Trained", "The Punish Me", "The Provoker", "Dungeon Master"];
-  const green = ["Promiscuous Plaything", "Generous Giver", "Bedroom Adventurer", "Charmer in Charge"];
-  const blue = ["Devoted Darling", "Mood Multiplier", "Heatwave", "Tender Protector"];
-
-  if (red.includes(topType)) document.body.style.backgroundColor = "#950606";
-  if (green.includes(topType)) document.body.style.backgroundColor = "#06954E";
-  if (blue.includes(topType)) document.body.style.backgroundColor = "#064D95";
 </script>
   <div style="margin-top: 30px;">
     <a href="/archetype-gallery.html">
