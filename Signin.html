@@ -28,23 +28,20 @@
 
     .heating-text {
       display: inline-block;
+      color: #e1bf78;
       font-weight: 700;
       text-transform: uppercase;
       font-size: 2.4rem;
-      animation: warmPulse 3s ease-in-out infinite;
-      background: linear-gradient(90deg, #e1bf78, #ff4d4d, #e1bf78);
-      background-size: 200% auto;
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      -webkit-text-fill-color: transparent;
+      animation: warmGlow 3s ease-in-out infinite;
     }
 
-    @keyframes warmPulse {
+    @keyframes warmGlow {
       0%, 100% {
+        color: #e1bf78;
         transform: scale(1);
       }
       50% {
+        color: #ff4d4d;
         transform: scale(1.06);
       }
     }
