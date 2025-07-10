@@ -188,45 +188,22 @@
   }
 
   const scoreMap = {
-    "Devoted Darling": 0,
-    "Mood Multiplier": 0,
-    "Tender Protector": 0,
-    "Heatwave": 0,
-    "Promiscuous Plaything": 0,
-    "Generous Giver": 0,
-    "Bedroom Adventurer": 0,
-    "Charmer in Charge": 0,
-    "Claimed & Trained": 0,
-    "Punish Me": 0,
-    "Provoker": 0,
-    "Dungeon Master": 0
+    "Devoted Darling": 0, "Mood Multiplier": 0, "Tender Protector": 0, "Heatwave": 0,
+    "Promiscuous Plaything": 0, "Generous Giver": 0, "Bedroom Adventurer": 0, "Charmer in Charge": 0,
+    "Claimed & Trained": 0, "Punish Me": 0, "Provoker": 0, "Dungeon Master": 0
   };
 
   const roomMap = {
-    "Devoted Darling": "blue",
-    "Mood Multiplier": "blue",
-    "Tender Protector": "blue",
-    "Heatwave": "blue",
-    "Promiscuous Plaything": "green",
-    "Generous Giver": "green",
-    "Bedroom Adventurer": "green",
-    "Charmer in Charge": "green",
-    "Claimed & Trained": "red",
-    "Punish Me": "red",
-    "Provoker": "red",
-    "Dungeon Master": "red"
+    "Devoted Darling": "blue", "Mood Multiplier": "blue", "Tender Protector": "blue", "Heatwave": "blue",
+    "Promiscuous Plaything": "green", "Generous Giver": "green", "Bedroom Adventurer": "green", "Charmer in Charge": "green",
+    "Claimed & Trained": "red", "Punish Me": "red", "Provoker": "red", "Dungeon Master": "red"
   };
 
-  const imageGenderMap = {
-    "8a": "male",
-    "8b": "female"
-  };
-
-  const topMatches = {
+  const matches = {
     "Devoted Darling": ["Tender Protector", "Heatwave", "Promiscuous Plaything"],
     "Mood Multiplier": ["Heatwave", "Tender Protector", "Bedroom Adventurer"],
-    "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
     "Heatwave": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
+    "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
     "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
     "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "Provoker"],
     "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "Punish Me"],
@@ -236,7 +213,8 @@
     "Provoker": ["Punish Me", "Claimed & Trained", "Generous Giver"],
     "Dungeon Master": ["Claimed & Trained", "Punish Me", "Promiscuous Plaything"]
   };
-    const logicWeights = {
+
+  const logicWeights = {
     q1: {
       "1a": { "Devoted Darling": 3, "Generous Giver": 2, "Tender Protector": 2, "Mood Multiplier": 1 },
       "1b": { "Dungeon Master": 3, "Charmer in Charge": 2, "Bedroom Adventurer": 1 },
@@ -296,7 +274,7 @@
       "10e": { "Devoted Darling": 3, "Mood Multiplier": 3, "Tender Protector": 3, "Heatwave": 3 }
     }
   };
-    // Calculate total score
+
   Object.entries(answers).forEach(([q, val]) => {
     if (logicWeights[q] && logicWeights[q][val]) {
       Object.entries(logicWeights[q][val]).forEach(([type, score]) => {
@@ -307,35 +285,32 @@
     }
   });
 
-  // Determine highest score archetype
   const sortedScores = Object.entries(scoreMap).sort((a, b) => b[1] - a[1]);
   const topArchetype = sortedScores[0][0];
 
-  // Handle gender image
   const gender = answers.q8;
-  const isMale = gender === "8a";
-  const genderSuffix = isMale ? "male" : "female";
+  const genderSuffix = gender === "8a" ? "male" : "female";
 
-  // Convert archetype to safe filename
-  const fileSafe = topArchetype.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/_+$/, "");
+  let fileSafe = topArchetype.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/_+$/, "");
+
+  // IMAGE FIXES
+  if (topArchetype === "Claimed & Trained") fileSafe = "claimed__trained";
+  if (topArchetype === "The Punish Me") fileSafe = "the_punish_me";
+  if (topArchetype === "The Provoker") fileSafe = "the_provoker";
+
   const imagePath = `images/${fileSafe}_${genderSuffix}.jpg`;
-  const profilePath = `/premium/erotic-blueprint_${fileSafe}.html`;
+  const profilePath = `/premium/erotic-blueprint_${fileSafe === "claimed__trained" ? "claimed_and_trained" : fileSafe}.html`;
 
-  // Assign background color
+  // Set background color
   const resultBody = document.getElementById("resultBody");
-  const blue = ["Devoted Darling", "Mood Multiplier", "Tender Protector", "Heatwave"];
-  const green = ["Promiscuous Plaything", "Generous Giver", "Bedroom Adventurer", "Charmer in Charge"];
-  const red = ["Claimed & Trained", "Punish Me", "Provoker", "Dungeon Master"];
-  if (blue.includes(topArchetype)) resultBody.classList.add("blue");
-  else if (green.includes(topArchetype)) resultBody.classList.add("green");
-  else if (red.includes(topArchetype)) resultBody.classList.add("red");
+  const roomColor = roomMap[topArchetype];
+  if (roomColor) resultBody.classList.add(roomColor);
 
-  // Render archetype result
+  // Display result
   document.getElementById("archetypeText").innerHTML = `
     <div class="archetype-name">
       <a href="${profilePath}" class="no-underline">${topArchetype}</a>
     </div>`;
-
   document.getElementById("imageContainer").innerHTML = `
     <a href="${profilePath}">
       <img src="${imagePath}" class="archetype-image" alt="${topArchetype}" oncontextmenu="return false">
@@ -343,30 +318,22 @@
     <div class="profile-caption">
       <a href="${profilePath}" class="no-underline">Click here to reveal your full sexual profile</a>
     </div>`;
-      // Compatibility matches
-  const matches = {
-    "Devoted Darling": ["Tender Protector", "Heatwave", "Promiscuous Plaything"],
-    "Mood Multiplier": ["Heatwave", "Tender Protector", "Bedroom Adventurer"],
-    "Heatwave": ["Mood Multiplier", "Devoted Darling", "Generous Giver"],
-    "Tender Protector": ["Devoted Darling", "Mood Multiplier", "Promiscuous Plaything"],
-    "Promiscuous Plaything": ["Charmer in Charge", "Bedroom Adventurer", "Dungeon Master"],
-    "Generous Giver": ["Bedroom Adventurer", "Charmer in Charge", "The Provoker"],
-    "Bedroom Adventurer": ["Generous Giver", "Promiscuous Plaything", "Punish Me"],
-    "Charmer in Charge": ["Promiscuous Plaything", "Generous Giver", "Claimed & Trained"],
-    "Claimed & Trained": ["Dungeon Master", "Provoker", "Charmer in Charge"],
-    "Punish Me": ["Provoker", "Claimed & Trained", "Bedroom Adventurer"],
-    "Provoker": ["Punish Me", "Claimed & Trained", "Generous Giver"],
-    "Dungeon Master": ["Claimed & Trained", "Punish Me", "Promiscuous Plaything"]
-  };
 
+  // Top 3 matches
   const top3 = matches[topArchetype] || [];
   const compatibilityDiv = document.getElementById("compatibilityMatches");
   if (top3.length) {
+    const formatLink = (name) => {
+      if (name === "Claimed & Trained") return "claimed_and_trained";
+      if (name === "The Punish Me") return "punish_me";
+      if (name === "The Provoker") return "provoker";
+      return name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+    };
     compatibilityDiv.innerHTML = `
       <strong>Top 3 Compatibility Matches:</strong><br>
-      1. <a href="/premium/erotic-blueprint_${top3[0].toLowerCase().replace(/[^a-z0-9]+/g, "_")}.html">${top3[0]}</a><br>
-      2. <a href="/premium/erotic-blueprint_${top3[1].toLowerCase().replace(/[^a-z0-9]+/g, "_")}.html">${top3[1]}</a><br>
-      3. <a href="/premium/erotic-blueprint_${top3[2].toLowerCase().replace(/[^a-z0-9]+/g, "_")}.html">${top3[2]}</a><br>
+      1. <a href="/premium/erotic-blueprint_${formatLink(top3[0])}.html">${top3[0]}</a><br>
+      2. <a href="/premium/erotic-blueprint_${formatLink(top3[1])}.html">${top3[1]}</a><br>
+      3. <a href="/premium/erotic-blueprint_${formatLink(top3[2])}.html">${top3[2]}</a><br>
     `;
   }
 
