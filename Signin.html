@@ -3,117 +3,121 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign In – Le Libido</title>
+  <title>Sign In — Le Libido</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
-      background-color: #1a1a1a;
-    }
-
-    .border-wrapper {
-      padding: 12px;
-      background: linear-gradient(to right, #950606, #064D95, #06954E, #064D95, #950606);
+      background-color: #0d0d0d;
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      border: 8px solid #e1bf78;
       min-height: 100vh;
       box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .container {
-      background-color: #1a1a1a;
-      color: white;
-      max-width: 600px;
-      width: 100%;
-      border-radius: 14px;
-      padding: 40px 30px;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
     }
 
     img.logo {
       max-width: 120px;
-      margin: 0 auto 30px auto;
       display: block;
+      margin: 0 auto 30px auto;
     }
 
     h1 {
       font-size: 2.4rem;
       font-weight: bold;
-      margin-bottom: 16px;
-      color: #e1bf78;
+      margin-bottom: 20px;
     }
 
-    p {
+    p.description {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .legal-box {
+      background-color: rgba(255, 255, 255, 0.08);
+      border: 1px solid #e1bf78;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 30px auto;
+      max-width: 720px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #ccc;
+    }
+
+    .button-container {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .signin-btn {
+      padding: 14px 28px;
       font-size: 1.1rem;
-      margin-bottom: 30px;
-      color: white;
-    }
-
-    button {
+      font-weight: bold;
       background-color: transparent;
       border: 2px solid #e1bf78;
       color: #e1bf78;
-      font-size: 1.1rem;
-      padding: 14px 28px;
-      margin: 10px;
       border-radius: 8px;
-      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.3s;
+      text-decoration: none;
     }
 
-    button:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+    .signin-btn:hover {
+      background-color: rgba(225, 191, 120, 0.15);
     }
 
-    .legal {
-      font-size: 0.85rem;
-      opacity: 0.7;
-      margin-top: 30px;
-      line-height: 1.5;
+    @media (min-width: 768px) {
+      .button-container {
+        flex-direction: row;
+        justify-content: center;
+      }
     }
 
-    .legal a {
+    footer {
+      margin-top: 50px;
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    footer a {
       color: #e1bf78;
       text-decoration: underline;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.8rem;
-      }
-
-      button {
-        width: 100%;
-        margin: 10px 0;
-      }
     }
   </style>
 </head>
 <body>
-  <div class="border-wrapper">
-    <div class="container">
-      <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo">
+  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+  
+  <h1>Sign In to Start Dating IRL</h1>
+  <p class="description">
+    Le Libido is where your sexual psychology meets spontaneous connection. 
+    Choose your experience below to continue. Verified accounts can meet anyone. 
+    Anonymous accounts can only meet other anonymous users.
+  </p>
 
-      <h1>Choose How You Want to Sign In</h1>
-      <p>Whether you're feeling bold or staying discreet, we've got the perfect mode for you.</p>
-
-      <a href="verified-profile.html">
-        <button>I want to be Verified</button>
-      </a>
-      <a href="anonymous-profile.html">
-        <button>I want to stay Anonymous</button>
-      </a>
-
-      <div class="legal">
-        By continuing, you acknowledge that you are over 18 and agree to our
-        <a href="/legal.html" target="_blank">Terms and Conditions</a> and <a href="/privacy.html" target="_blank">Privacy Policy</a>.
-        This platform uses device fingerprinting and IP tracking to enforce community standards and protect against misuse. All logins are timestamped and monitored for safety.
-      </div>
-    </div>
+  <div class="legal-box">
+    <strong>Legal Notice:</strong><br>
+    By continuing, you agree that you are 18+ and understand that Le Libido is not responsible for the actions of users you connect with. Always prioritize your safety, meet in public when possible, and use good judgment. All interactions are voluntary. Profiles may be moderated for community safety and authenticity.<br><br>
+    We log IP addresses, device IDs, and timestamps for both anonymous and verified users to prevent abuse. Verified mode includes multi-factor verification to reduce impersonation and fraud. Your data will never be sold.
   </div>
+
+  <div class="button-container">
+    <a href="profile-verified.html" class="signin-btn">Sign In — Verified Mode</a>
+    <a href="profile-anonymous.html" class="signin-btn">Sign In — Anonymous Mode</a>
+  </div>
+
+  <footer>
+    © 2025 Le Libido. All rights reserved. |
+    <a href="/legal.html">Full Legal Policy</a>
+  </footer>
 </body>
 </html>
