@@ -23,9 +23,7 @@
     }
 
     h1 {
-      font-size: 2.4rem;
       margin-bottom: 10px;
-      line-height: 1.3;
     }
 
     .heating-text {
@@ -35,18 +33,17 @@
       font-weight: 700;
       text-transform: uppercase;
       font-size: 2.4rem;
-      animation: heatPulse 3s ease-in-out infinite;
-      text-shadow: 0 0 6px #e1bf78, 0 0 16px #e1bf78;
+      animation: warmGlow 3s ease-in-out infinite;
     }
 
-    @keyframes heatPulse {
+    @keyframes warmGlow {
       0%, 100% {
         color: #e1bf78;
-        text-shadow: 0 0 6px #e1bf78, 0 0 16px #e1bf78;
+        transform: scale(1);
       }
       50% {
         color: #ff4d4d;
-        text-shadow: 0 0 8px #ff4d4d, 0 0 20px #ff4d4d;
+        transform: scale(1.06);
       }
     }
 
@@ -55,38 +52,27 @@
       bottom: 100%;
       width: 20px;
       height: 60px;
-      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 80%);
-      filter: blur(6px);
+      background: rgba(255,255,255,0.15);
       opacity: 0;
-      pointer-events: none;
+      animation: riseSmoke 4s infinite ease-in-out;
+      border-radius: 50%;
     }
 
-    .wisp1 {
-      left: 20%;
-      animation: smokeTrail 3s ease-in-out infinite;
-    }
+    .wisp1 { left: 15%; animation-delay: 0s; }
+    .wisp2 { left: 50%; animation-delay: 1s; }
+    .wisp3 { left: 80%; animation-delay: 2s; }
 
-    .wisp2 {
-      left: 50%;
-      animation: smokeTrail 4s ease-in-out infinite 1s;
-    }
-
-    .wisp3 {
-      left: 80%;
-      animation: smokeTrail 3.5s ease-in-out infinite 0.5s;
-    }
-
-    @keyframes smokeTrail {
+    @keyframes riseSmoke {
       0% {
-        transform: translateY(0) scale(1) rotate(0deg);
+        transform: translateY(0px) scaleX(1);
         opacity: 0.2;
       }
       50% {
-        transform: translateY(-30px) scale(1.2) rotate(5deg);
+        transform: translateY(-30px) scaleX(1.2);
         opacity: 0.4;
       }
       100% {
-        transform: translateY(-60px) scale(1.4) rotate(-5deg);
+        transform: translateY(-60px) scaleX(1.4);
         opacity: 0;
       }
     }
@@ -95,7 +81,6 @@
       font-size: 1.1rem;
       font-style: italic;
       color: white;
-      opacity: 0.85;
       margin-bottom: 40px;
     }
 
@@ -172,10 +157,10 @@
   </div>
 
   <div class="legal-box">
-    By continuing, you confirm you are 18+ and agree to use Le Libido responsibly.
-    We log IPs, device IDs, and timestamps to detect abuse. Verified sign-ins require multi-factor authentication. 
-    All meetups are voluntary and at your own risk. Le Libido is not liable for user behavior, off-site interactions, or in-person meetings. 
-    Please stay safe and trust your instincts.
+    By continuing, you confirm you are 18+ and agree to use Le Libido responsibly. 
+    We log IPs, device IDs, and timestamps to detect abuse. 
+    Verified sign-ins require multi-factor authentication. 
+    All meetups are voluntary and at your own risk. Le Libido is not responsible for user behavior or in-person outcomes.
   </div>
 
   <footer>
