@@ -27,12 +27,14 @@
     }
 
     .heating-text {
+      position: relative;
       display: inline-block;
       color: #e1bf78;
       font-weight: 700;
       text-transform: uppercase;
       font-size: 2.4rem;
       animation: warmGlow 3s ease-in-out infinite;
+      overflow: hidden;
     }
 
     @keyframes warmGlow {
@@ -44,6 +46,28 @@
         color: #ff4d4d;
         transform: scale(1.06);
       }
+    }
+
+    .heating-text::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.05) 100%
+      );
+      transform: skewX(-20deg);
+      animation: shimmer 6s infinite ease-in-out;
+    }
+
+    @keyframes shimmer {
+      0% { left: -75%; }
+      100% { left: 125%; }
     }
 
     .tagline {
