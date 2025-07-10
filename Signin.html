@@ -11,10 +11,8 @@
       font-family: 'Montserrat', sans-serif;
       background-color: #0d0d0d;
       color: white;
-      text-align: center;
       padding: 40px 20px;
       border: 8px solid #e1bf78;
-      min-height: 100vh;
       box-sizing: border-box;
     }
 
@@ -25,37 +23,57 @@
     }
 
     h1 {
-      font-size: 2.4rem;
+      font-size: 2.6rem;
       font-weight: bold;
-      margin-bottom: 20px;
+      text-align: center;
+      margin-bottom: 10px;
     }
 
-    p.description {
-      font-size: 1.2rem;
-      max-width: 700px;
-      margin: 0 auto 30px auto;
+    .tagline {
+      text-align: center;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #e1bf78;
+      margin-bottom: 40px;
+    }
+
+    .section {
+      max-width: 720px;
+      margin: 0 auto 40px auto;
+    }
+
+    .section h2 {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #e1bf78;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .section ul {
+      list-style: none;
+      padding-left: 0;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .section ul li::before {
+      content: "• ";
+      color: #e1bf78;
+    }
+
+    .section p {
+      font-size: 1rem;
       line-height: 1.6;
       opacity: 0.9;
     }
 
-    .legal-box {
-      background-color: rgba(255, 255, 255, 0.08);
-      border: 1px solid #e1bf78;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 30px auto;
-      max-width: 720px;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: #ccc;
-    }
-
     .button-container {
-      margin-top: 30px;
       display: flex;
       flex-direction: column;
       gap: 20px;
       align-items: center;
+      margin-bottom: 50px;
     }
 
     .signin-btn {
@@ -67,23 +85,29 @@
       color: #e1bf78;
       border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s;
       text-decoration: none;
+      transition: background-color 0.3s;
     }
 
     .signin-btn:hover {
       background-color: rgba(225, 191, 120, 0.15);
     }
 
-    @media (min-width: 768px) {
-      .button-container {
-        flex-direction: row;
-        justify-content: center;
-      }
+    .legal-box {
+      background-color: rgba(255, 255, 255, 0.08);
+      border: 1px solid #e1bf78;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 720px;
+      margin: 0 auto;
+      font-size: 0.9rem;
+      color: #ccc;
+      line-height: 1.5;
     }
 
     footer {
-      margin-top: 50px;
+      text-align: center;
+      margin-top: 60px;
       font-size: 0.8rem;
       color: #888;
     }
@@ -92,27 +116,82 @@
       color: #e1bf78;
       text-decoration: underline;
     }
+
+    @media (min-width: 768px) {
+      .button-container {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
   <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
-  
-  <h1>Sign In to Start Dating IRL</h1>
-  <p class="description">
-    Le Libido is where your sexual psychology meets spontaneous connection. 
-    Choose your experience below to continue. Verified accounts can meet anyone. 
-    Anonymous accounts can only meet other anonymous users.
-  </p>
 
-  <div class="legal-box">
-    <strong>Legal Notice:</strong><br>
-    By continuing, you agree that you are 18+ and understand that Le Libido is not responsible for the actions of users you connect with. Always prioritize your safety, meet in public when possible, and use good judgment. All interactions are voluntary. Profiles may be moderated for community safety and authenticity.<br><br>
-    We log IP addresses, device IDs, and timestamps for both anonymous and verified users to prevent abuse. Verified mode includes multi-factor verification to reduce impersonation and fraud. Your data will never be sold.
+  <h1>TURNED ON WHEN YOU GO OUT</h1>
+  <div class="tagline">Find someone that’s also ready to meet in real life.</div>
+
+  <div class="section">
+    <p>
+      Le Libido is the dating app that only works when you’re out in the world. 
+      You check into a real location—a bar, a café, even a neighborhood—and the app activates, 
+      showing you who else is nearby and open to making a connection right here and right now.
+    </p>
+    <p>
+      No swiping. No ghosting. Just instant IRL connection with real people, in real places, in real time.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>How it works</h2>
+    <ul>
+      <li>You check into a location to activate the app</li>
+      <li>Choose between Approach Mode or Be Approached Mode</li>
+      <li>Get notified when someone compatible is nearby</li>
+      <li>Tap a photo bubble on the map to make your move</li>
+      <li>Every match is based on real-time proximity + sexual psychology</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Why it's different</h2>
+    <p>
+      Most dating apps keep you stuck inside scrolling strangers. 
+      Le Libido is built for spontaneity and serendipity.
+    </p>
+    <ul>
+      <li>You can’t use it at home</li>
+      <li>You can’t match unless you’re checked in</li>
+      <li>You can’t fake interest or location</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Pricing</h2>
+    <p>
+      Right now, the app is <strong>completely free</strong> while we grow our early community. 
+      All features are unlocked—no paywalls, no pressure. 
+      Premium tiers will be introduced later. For now, just show up.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>Ready to meet someone in real life?</h2>
+    <p>Check in and see who’s checking you out.</p>
   </div>
 
   <div class="button-container">
-    <a href="profile-verified.html" class="signin-btn">Sign In — Verified Mode</a>
-    <a href="profile-anonymous.html" class="signin-btn">Sign In — Anonymous Mode</a>
+    <a href="profile-verified.html" class="signin-btn">Verified Sign-In</a>
+    <a href="profile-anonymous.html" class="signin-btn">Anonymous Sign-In</a>
+  </div>
+
+  <div class="legal-box">
+    <strong>Legal Notice:</strong><br>
+    By continuing, you confirm you are 18+ and agree to use Le Libido responsibly. 
+    You understand that all meetups are voluntary and at your own risk. 
+    Le Libido is not liable for the actions of users. We log IP addresses, device IDs, and timestamps 
+    to help prevent abuse. Verified accounts require multi-factor authentication. 
+    We do not sell or share your data.
   </div>
 
   <footer>
