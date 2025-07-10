@@ -299,7 +299,15 @@
   if (topArchetype === "The Provoker") fileSafe = "the_provoker";
 
   const imagePath = `images/${fileSafe}_${genderSuffix}.jpg`;
-  const profilePath = `/premium/erotic-blueprint_${fileSafe === "claimed_and_trained" ? "claimed_and_trained" : fileSafe}.html`;
+  const profilePath = `/premium/erotic-blueprint_${
+  topArchetype === "Claimed & Trained"
+    ? "claimed_and_trained"
+    : topArchetype === "The Punish Me"
+    ? "punish_me"
+    : topArchetype === "The Provoker"
+    ? "provoker"
+    : fileSafe
+}.html`;
 
   // Set background color
   const resultBody = document.getElementById("resultBody");
