@@ -6,30 +6,31 @@
   <title>Le Libido Quiz</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(
-        to bottom right,
-        #950606,
-        #064D95,
-        #06954E,
-        #064D95,
-        #950606
-      );
-      color: white;
-      text-align: center;
-      padding: 50px 20px;
+      height: 100%;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, #950606, #064D95, #06954E, #064D95, #950606);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
     }
 
     .border-wrapper {
-      border: 4px solid #e1bf78;
+      background-color: #121212; /* dark grey */
+      border: 4px solid #e1bf78; /* gold */
       border-radius: 20px;
       padding: 40px 20px;
       max-width: 900px;
-      margin: 0 auto;
-      background: transparent;
-      box-shadow: 0 0 15px rgba(225, 191, 120, 0.4);
+      width: 100%;
+      box-shadow: 0 0 18px rgba(225, 191, 120, 0.3);
+      color: white;
+      text-align: center;
     }
 
     .logo-wrapper {
@@ -103,14 +104,10 @@
 
     .submit-btn:hover {
       background-color: #e1bf78;
-      color: #950606;
+      color: #121212;
     }
 
     @media (min-width: 1024px) {
-      body {
-        padding: 80px;
-      }
-
       .logo-img {
         max-width: 160px;
       }
