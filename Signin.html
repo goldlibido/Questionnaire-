@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In – Le Libido</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #1a1a1a;
+      color: white;
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 120px;
+      display: block;
+      margin: 0 auto 30px auto;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: #e1bf78;
+      margin-bottom: 10px;
+    }
+
+    p.subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      color: #ccc;
+    }
+
+    .button-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    button {
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 16px 24px;
+      border-radius: 10px;
+      border: 2px solid #e1bf78;
+      background-color: transparent;
+      color: #e1bf78;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: rgba(255, 215, 0, 0.1);
+    }
+
+    .legal-box {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #aaa;
+      line-height: 1.6;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .continue-box {
+      margin-top: 20px;
+    }
+
+    .continue-box button {
+      background-color: #e1bf78;
+      color: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+
+  <h1>Choose Your Mode</h1>
+  <p class="subtitle">How do you want to show up today?</p>
+
+  <div class="button-wrapper" id="mode-buttons" style="display: none;">
+    <button onclick="window.location.href='verified-profile.html'">👑 Verified Mode (Recommended)</button>
+    <button onclick="window.location.href='anonymous-profile.html'">😎 Anonymous Mode</button>
+  </div>
+
+  <div class="legal-box" id="legalNotice">
+    <p>
+      By continuing, you agree that you are at least 18 years old. Le Libido is not responsible for the actions of its users.
+      Anonymous accounts can only view other anonymous users. Verified users are subject to multi-factor ID confirmation.
+    </p>
+    <p>
+      We collect IP address, timestamp, and device information for safety, moderation, and fraud prevention. By clicking continue, you accept these terms.
+    </p>
+
+    <div class="continue-box">
+      <button onclick="acceptNotice()">Continue</button>
+    </div>
+  </div>
+
+  <script>
+    function acceptNotice() {
+      document.getElementById('legalNotice').style.display = 'none';
+      document.getElementById('mode-buttons').style.display = 'flex';
+
+      // Placeholder for logging IP/device/timestamp
+      console.log("Logging: IP + Timestamp + Device ID");
+      // Add backend logging here in production
+    }
+  </script>
+
+</body>
+</html>
