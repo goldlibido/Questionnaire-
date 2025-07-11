@@ -483,33 +483,16 @@
       cursor: pointer;
     ">Save Profile</button>
   </div>
-  <script>
+<script>
   const archetype = localStorage.getItem("archetype") || "Mood Multiplier";
 
-const roomMap = {
-  "Tender Protector": "blue",
-  "Devoted Darling": "blue",
-  "Mood Multiplier": "blue",
-  "Heatwave": "blue",
-  "Promiscuous Plaything": "green",
-  "Generous Giver": "green",
-  "Bedroom Adventurer": "green",
-  "Charmer in Charge": "green",
-  "Dungeon Master": "red",
-  "Provoker": "red",
-  "Punish Me": "red",
-  "Claimed & Trained": "red"
-};
-
-// Apply correct background color
-const roomClass = roomMap[archetype];
-document.body.classList.add(roomClass);
   function formatArchetypeURL(name) {
-  if (name === "Claimed & Trained") return "claimed_and_trained";
-  if (name === "The Punish Me") return "punish_me";
-  if (name === "The Provoker") return "provoker";
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
-}
+    if (name === "Claimed & Trained") return "claimed_and_trained";
+    if (name === "The Punish Me") return "punish_me";
+    if (name === "The Provoker") return "provoker";
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+  }
+
   const roomMap = {
     "Tender Protector": "blue",
     "Devoted Darling": "blue",
@@ -525,68 +508,22 @@ document.body.classList.add(roomClass);
     "Claimed & Trained": "red"
   };
 
+  // Apply background color dynamically
   const roomClass = roomMap[archetype];
-  const archetypeSlug = formatArchetypeURL(archetype);
-const archetypeHTML = `<a href="/premium/erotic-blueprint_${archetypeSlug}.html" style="color: var(--gold); text-decoration: underline;">${archetype}</a>`;
-document.getElementById("archetypeName").innerHTML = archetypeHTML;
+  if (roomClass) document.body.classList.add(roomClass);
 
-  // Progress Wheel
+  // Set dynamic archetype link
+  const correctedSlug = formatArchetypeURL(archetype);
+  const archetypeLink = document.getElementById("archetypeLink");
+  archetypeLink.textContent = archetype;
+  archetypeLink.href = `/premium/erotic-blueprint_${correctedSlug}.html`;
+
+  // Progress wheel visuals (optional)
   function updateProgress(percent) {
-    const circle = document.getElementById('progressWheel');
-    const radius = circle.r.baseVal.value;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (percent / 100 * circumference);
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    circle.style.strokeDashoffset = offset;
-    document.getElementById('progressText').textContent = `${percent}%`;
-  }
-
-  updateProgress(33); // Initial value
-
-  // Dynamic photo upload
-  document.querySelectorAll('.photo-box').forEach(box => {
-    box.addEventListener('click', () => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = e => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(evt) {
-            box.innerHTML = `<img src="${evt.target.result}" alt="Photo">`;
-          };
-          reader.readAsDataURL(file);
-        }
-      };
-      input.click();
-    });
-  });
-
-  // Populate sliders
-  function populateSlider(id, start, end, unit = "") {
-    const select = document.getElementById(id);
-    for (let i = start; i <= end; i++) {
-      const val = unit ? `${Math.floor(i / 12)}'${i % 12}"` : `${i}`;
-      const option = document.createElement("option");
-      option.value = val;
-      option.textContent = val;
-      select.appendChild(option);
+    const circle = document.getElementById('progressCircle');
+    if (circle) {
+      circle.textContent = `${percent}%`;
     }
   }
-
-  populateSlider("age", 18, 80);
-  populateSlider("height", 48, 84, "feet"); // 4'0" to 7'0"
-
-  function saveProfile() {
-    alert("Profile saved! (This would be stored or sent via backend)");
-  }
-  const archetype = localStorage.getItem("archetype") || "Mood Multiplier";
-const archetypeSlug = archetype.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/_+$/, "");
-const correctedSlug = archetype === "Claimed & Trained" ? "claimed_and_trained" :
-                      archetype === "The Punish Me" ? "punish_me" :
-                      archetype === "The Provoker" ? "provoker" : archetypeSlug;
-
-document.getElementById("archetypeLink").textContent = archetype;
-document.getElementById("archetypeLink").href = `/premium/erotic-blueprint_${correctedSlug}.html`;
+  updateProgress(33);
 </script>
