@@ -612,33 +612,15 @@ document.addEventListener("DOMContentLoaded", function () {
       "threesome": "maybe"
     }
   };
-// Autofill from localStorage if available, otherwise use archetype defaults
-const keys = ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"];
-keys.forEach(key => {
-  const el = document.getElementById(key);
-  const val = localStorage.getItem(key);
-  if (el) {
-    if (val) {
-      el.value = val; // use quiz answer
-    } else if (autofillMap[archetype] && autofillMap[archetype][key]) {
-      el.value = autofillMap[archetype][key]; // fallback to archetype default
-    }
-  }
-});
 
-    // Add visibility toggle
-    if (el && !document.getElementById(`${key}-toggle`)) {
-      const wrapper = el.closest(".field");
-      const checkbox = document.createElement("label");
-      checkbox.id = `${key}-toggle`;
-      checkbox.innerHTML = `
-        <input type="checkbox" checked style="margin-left: 10px; margin-right: 4px;" onchange="this.closest('.field').style.opacity = this.checked ? '1' : '0.3'">
-        <span style="font-size: 0.85rem;">Make visible</span>
-      `;
-      wrapper.appendChild(checkbox);
-    }
-  });
-});
+  if (autofillMap[archetype]) {
+    const values = autofillMap[archetype];
+    const fields = ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"];
+    fields.forEach(fieldId => {
+      const el = document.getElementById(fieldId);
+      if (el) el.value = values[fieldId];
+    });
+  }
   const formatArchetypeURL = (name) => {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
   };
@@ -715,4 +697,32 @@ document.addEventListener("DOMContentLoaded", function () {
     tall.textContent = "Over 7 ft";
     heightSelect.appendChild(tall);
   }
+
+// Autofill from localStorage if available, otherwise use archetype defaults
+const keys = ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"];
+keys.forEach(key => {
+  const el = document.getElementById(key);
+  const val = localStorage.getItem(key);
+  if (el) {
+    if (val) {
+      el.value = val; // use quiz answer
+    } else if (autofillMap[archetype] && autofillMap[archetype][key]) {
+      el.value = autofillMap[archetype][key]; // fallback to archetype default
+    }
+  }
+});
+
+    // Add visibility toggle
+    if (el && !document.getElementById(`${key}-toggle`)) {
+      const wrapper = el.closest(".field");
+      const checkbox = document.createElement("label");
+      checkbox.id = `${key}-toggle`;
+      checkbox.innerHTML = `
+        <input type="checkbox" checked style="margin-left: 10px; margin-right: 4px;" onchange="this.closest('.field').style.opacity = this.checked ? '1' : '0.3'">
+        <span style="font-size: 0.85rem;">Make visible</span>
+      `;
+      wrapper.appendChild(checkbox);
+    }
+  });
+});
 </script>
