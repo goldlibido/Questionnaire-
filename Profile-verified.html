@@ -276,7 +276,7 @@
   </div>
 
   <div class="divider"></div>
-  <div class="section-label">Sexual Profile</div>
+<div class="section-label">Sexual Profile</div>
 
 <div class="field locked">
   <label>Your Sexual Archetype</label>
@@ -290,61 +290,70 @@
     → View Your Full Sexual Profile
   </a>
 </div>
-  <div class="field">
-    <label>Enjoys</label>
-    <select id="enjoys">
-      <option value="passionate">Passionate sex, massage, pillow talk, cuddling</option>
-      <option value="toys">One-night stands, role-play, toys, striptease</option>
-      <option value="bdsm">BDSM, spanking, power exchange, dirty talk</option>
-    </select>
-  </div>
 
-  <div class="field">
-    <label>Foreplay Style</label>
-    <select id="foreplay">
-      <option value="adored">Adored</option>
-      <option value="obeyed">Obeyed</option>
-      <option value="put_in_place">Put in their place</option>
-      <option value="ego_stroked">Ego-stroked</option>
-    </select>
-  </div>
+<div class="field">
+  <label>Love Language</label>
+  <select id="loveLanguage">
+    <option value="words">Words of affirmation</option>
+    <option value="touch">Physical touch</option>
+    <option value="time">Quality time</option>
+    <option value="gifts">Gifts</option>
+    <option value="acts">Acts of service</option>
+  </select>
+</div>
 
-  <div class="field">
-    <label>Looking For</label>
-    <select id="lookingFor">
-      <option value="love">Love / Long-Term</option>
-      <option value="good_time">Good Time / Casual</option>
-    </select>
-  </div>
+<div class="field">
+  <label>Turn-On Vocabulary</label>
+  <select id="turnOnVocab">
+    <option value="sweet">Sweet & affectionate</option>
+    <option value="confident">Confident & direct</option>
+    <option value="filthy">Filthy & explicit</option>
+    <option value="teasing">Playful & teasing</option>
+    <option value="commanding">Commanding & dominant</option>
+  </select>
+</div>
 
-  <div class="field">
-    <label>Open to Sugar Dynamic?</label>
-    <select id="sugarDynamic">
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
-    </select>
-  </div>
+<div class="field">
+  <label>Fantasies</label>
+  <select id="fantasies">
+    <option value="voyeurism">Being watched</option>
+    <option value="submission">Giving up control</option>
+    <option value="dominance">Taking control</option>
+    <option value="roleplay">Roleplay & costumes</option>
+    <option value="threesome">Threesome or group</option>
+    <option value="other">Something else</option>
+  </select>
+</div>
 
-  <div class="field">
-    <label>Dirty Talk Style</label>
-    <select id="dirtyTalk">
-      <option value="praise">Praise</option>
-      <option value="teasing">Playful teasing</option>
-      <option value="degradation">Degradation</option>
-      <option value="filthy">The filthier, the better</option>
-      <option value="private">I plead the fifth</option>
-    </select>
-  </div>
+<div class="field">
+  <label>Kinks</label>
+  <select id="kinks">
+    <option value="none">None</option>
+    <option value="light_bondage">Light bondage</option>
+    <option value="impact">Spanking & impact</option>
+    <option value="dirty_talk">Dirty talk</option>
+    <option value="bdsm">BDSM & power play</option>
+    <option value="voyeur">Voyeurism & exhibition</option>
+  </select>
+</div>
 
-  <div class="field">
-    <label>Threesome Openness</label>
-    <select id="threesome">
-      <option value="no">Nope</option>
-      <option value="maybe">Maybe</option>
-      <option value="yes">Yeah, it’d be fun</option>
-      <option value="hell_yes">Hell yeah! The more the merrier</option>
-    </select>
-  </div>
+<div class="field">
+  <label>Looking For</label>
+  <select id="lookingFor">
+    <option value="love">Love / Long-Term</option>
+    <option value="good_time">Good Time / Casual</option>
+    <option value="let_it_evolve">Let It Evolve</option>
+  </select>
+</div>
+
+<div class="field">
+  <label>Open to Sugar Dynamic?</label>
+  <select id="sugarDynamic">
+    <option value="yes">Yes</option>
+    <option value="maybe">Maybe</option>
+    <option value="no">No</option>
+  </select>
+</div>
 
   <div class="divider"></div>
   <div class="section-label">Lifestyle</div>
@@ -697,7 +706,18 @@ document.addEventListener("DOMContentLoaded", function () {
     tall.textContent = "Over 7 ft";
     heightSelect.appendChild(tall);
   }
-
+// Fill sugarDynamic based on quiz answer
+const sugarAnswer = JSON.parse(localStorage.getItem("quizAnswers") || "{}")?.q5;
+const sugarSelect = document.getElementById("sugarDynamic");
+if (sugarAnswer && sugarSelect) {
+  if (sugarAnswer === "5a" || sugarAnswer === "5d") {
+    sugarSelect.value = "yes";
+  } else if (sugarAnswer === "5b") {
+    sugarSelect.value = "maybe";
+  } else {
+    sugarSelect.value = "no";
+  }
+}
 // Autofill from localStorage if available, otherwise use archetype defaults
 const keys = ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"];
 keys.forEach(key => {
