@@ -3,337 +3,348 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Le Libido – Verified Profile</title>
+  <title>Verified Profile – Le Libido</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
       color: white;
-      background-color: #0d0d0d;
-      text-align: center;
-      padding: 0 20px 80px;
+      background-color: #064D95; /* Default fallback (blue room) */
+      padding: 0;
     }
-
-    /* Background colors */
-    .blue { background-color: #064D95; }
-    .green { background-color: #06954E; }
-    .red { background-color: #950606; }
 
     .top-banner {
       background-color: #e1bf78;
-      color: #0d0d0d;
+      color: #000;
+      padding: 10px 20px;
       font-weight: bold;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 20px;
     }
 
-    .top-banner .left-label {
-      font-size: 0.9rem;
-    }
-
-    .completion-wheel {
-      width: 48px;
-      height: 48px;
+    .progress-circle {
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      background: conic-gradient(#0d0d0d 0% 33%, #88888844 33% 100%);
+      border: 4px solid white;
       display: flex;
-      justify-content: center;
       align-items: center;
-      font-size: 0.85rem;
+      justify-content: center;
       font-weight: bold;
-      color: #0d0d0d;
+      font-size: 0.9rem;
+      color: white;
     }
 
     .logo {
-      max-width: 130px;
-      margin: 20px auto 30px auto;
       display: block;
+      margin: 30px auto 20px auto;
+      max-width: 140px;
     }
 
-    h2 {
-      font-size: 1.6rem;
-      margin-bottom: 30px;
-      font-weight: 700;
+    .container {
+      padding: 0 20px 40px;
+      max-width: 700px;
+      margin: 0 auto;
     }
 
-    .input-group {
-      margin: 25px auto;
-      max-width: 480px;
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
       text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: 6px;
     }
 
-    .input-group label {
+    .section label {
       display: block;
-      margin-bottom: 6px;
+      margin: 8px 0;
       font-size: 1rem;
-      font-weight: 600;
-      color: white;
+      font-weight: 500;
     }
 
-    .input-group input,
-    .input-group select {
+    input[type="text"], input[type="email"], input[type="tel"] {
       width: 100%;
-      padding: 12px;
-      font-size: 1rem;
+      padding: 10px;
+      background: transparent;
       border: none;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid white;
       color: white;
+      font-size: 1rem;
     }
 
-    .input-group input::placeholder {
-      color: #ccc;
+    select {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid white;
+      color: white;
+      font-size: 1rem;
     }
 
-    .photo-grid {
+    .photos-grid {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin: 30px auto;
-      max-width: 480px;
+      gap: 10px;
     }
 
-    .photo-slot {
-      position: relative;
+    .photo-upload {
+      background-color: rgba(255,255,255,0.1);
       width: 100px;
       height: 100px;
-      border: 2px dashed #e1bf78;
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative;
       cursor: pointer;
       overflow: hidden;
     }
 
-    .photo-slot input {
-      opacity: 0;
+    .photo-upload input {
       position: absolute;
       width: 100%;
       height: 100%;
+      opacity: 0;
       cursor: pointer;
     }
 
-    .photo-slot span {
-      z-index: 1;
+    .photo-upload::after {
+      content: "+";
+      font-size: 2rem;
       color: #e1bf78;
-      font-size: 0.75rem;
-      font-weight: 500;
+      position: absolute;
+      top: 28%;
+      left: 37%;
     }
 
-    .photo-slot.required span {
+    .required-label {
+      font-size: 0.9rem;
       color: #e1bf78;
+      margin-bottom: 10px;
+    }
+        .flex-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .checkbox-line {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .archetype-link {
+      color: #e1bf78;
+      text-decoration: underline;
       font-weight: bold;
     }
-        .section-divider {
-      height: 1px;
-      background-color: rgba(255, 255, 255, 0.15);
-      margin: 30px auto;
-      max-width: 500px;
-    }
 
-    .locked-field {
-      background-color: transparent;
+    .submit-btn {
+      background-color: #e1bf78;
+      color: #000;
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 1rem;
       border: none;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #e1bf78;
-      text-align: center;
-      margin-top: 10px;
+      cursor: pointer;
+      margin-top: 30px;
     }
 
     footer {
       font-size: 0.8rem;
       color: #ccc;
-      margin-top: 60px;
       opacity: 0.6;
-    }
-
-    a {
-      color: #e1bf78;
-      font-weight: bold;
-      text-decoration: underline;
+      text-align: center;
+      padding: 30px 10px;
     }
   </style>
 </head>
-<body class="blue" id="profileBody">
-
-  <!-- Gold Banner with Mode & Progress -->
+<body>
   <div class="top-banner">
-    <div class="left-label">Verified Mode</div>
-    <div class="completion-wheel">33%</div>
+    <span>Verified Mode</span>
+    <div class="progress-circle" id="progressCircle">33%</div>
   </div>
 
-  <!-- Logo -->
   <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
 
-  <!-- Profile Photo Upload -->
-  <h2>Upload Photos</h2>
-  <div class="photo-grid">
-    <label class="photo-slot required">
-      <span>Required</span>
-      <input type="file" accept="image/*" capture="environment" required />
-    </label>
-    <label class="photo-slot">
-      <span>+</span>
-      <input type="file" accept="image/*" capture="environment" />
-    </label>
-    <label class="photo-slot">
-      <span>+</span>
-      <input type="file" accept="image/*" capture="environment" />
-    </label>
-    <label class="photo-slot">
-      <span>+</span>
-      <input type="file" accept="image/*" capture="environment" />
-    </label>
-    <label class="photo-slot">
-      <span>+</span>
-      <input type="file" accept="image/*" capture="environment" />
-    </label>
-  </div>
+  <div class="container">
+    <form id="verifiedProfileForm">
+      <div class="section">
+        <h2>Upload Photos</h2>
+        <div class="required-label">Main Photo (Required)</div>
+        <div class="photos-grid">
+          <label class="photo-upload">
+            <input type="file" accept="image/*" capture="environment">
+          </label>
+          <label class="photo-upload">
+            <input type="file" accept="image/*">
+          </label>
+          <label class="photo-upload">
+            <input type="file" accept="image/*">
+          </label>
+          <label class="photo-upload">
+            <input type="file" accept="image/*">
+          </label>
+          <label class="photo-upload">
+            <input type="file" accept="image/*">
+          </label>
+        </div>
+        <label style="margin-top: 15px;">Link your Instagram</label>
+        <input type="text" placeholder="https://instagram.com/yourhandle" />
+      </div>
 
-  <div class="section-divider"></div>
+      <div class="section">
+        <h2>Basic Info</h2>
+        <label>Legal Name</label>
+        <input type="text" placeholder="John Doe" />
+        <label>Age</label>
+        <select>
+          <option value="">Select</option>
+          ${[...Array(83)].map((_, i) => `<option>${i + 18}</option>`).join('')}
+        </select>
+        <label>Height</label>
+        <input type="text" placeholder="e.g. 5'9" />
+        <label>Sexual Orientation</label>
+        <select>
+          <option>Straight</option>
+          <option>Bisexual</option>
+          <option>Homosexual</option>
+          <option>Pansexual</option>
+        </select>
+              </div>
 
-  <!-- Instagram -->
-  <div class="input-group">
-    <label for="instagram">Link Instagram (optional)</label>
-    <input type="url" id="instagram" placeholder="https://instagram.com/yourhandle" />
-  </div>
+      <div class="section">
+        <h2>Sexual Profile</h2>
+        <label>Archetype</label>
+        <div>
+          <a href="/premium/erotic-blueprint_tender_protector.html" class="archetype-link">Tender Protector</a>
+        </div>
+        <label>Role</label>
+        <select>
+          <option>Dom</option>
+          <option>Sub</option>
+          <option>Switch</option>
+        </select>
+        <label>Naughty-to-Nice Spectrum</label>
+        <select>
+          <option>Vanilla</option>
+          <option>Frisky</option>
+          <option>Kinky</option>
+        </select>
+        <label>Enjoys</label>
+        <select>
+          <option>Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, and maybe a little whipped cream</option>
+          <option>One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, and an assortment of new sex toys</option>
+          <option>BDSM, spanking, power exchange, naughty mind games, and a side of filthy dirty talk</option>
+        </select>
+        <label>Foreplay Turn-on</label>
+        <select>
+          <option>Being adored</option>
+          <option>Being obeyed</option>
+          <option>Being put in your place</option>
+          <option>Having your ego stroked</option>
+        </select>
+        <label>Dirty Talk Style</label>
+        <select>
+          <option>Praise</option>
+          <option>Playful teasing</option>
+          <option>Degradation</option>
+          <option>Filthy</option>
+          <option>I plead the fifth</option>
+        </select>
+        <label>Threesome Openness</label>
+        <select>
+          <option>No</option>
+          <option>Maybe, depends on the vibe</option>
+          <option>Yes</option>
+          <option>Hell yes! The more the merrier</option>
+        </select>
+        <label>Looking For</label>
+        <select>
+          <option>Love</option>
+          <option>A good time</option>
+          <option>Let it evolve</option>
+        </select>
+        <label>Open to Sugar Daddy/Mama Dynamic?</label>
+        <select>
+          <option>No</option>
+          <option>If it came along I wouldn’t mind</option>
+          <option>Yes</option>
+          <option>I am the sugar daddy/mama</option>
+        </select>
+      </div>
 
-  <div class="section-divider"></div>
+      <div class="section">
+        <h2>Lifestyle</h2>
+        <label>Do you drink alcohol?</label>
+        <select><option>Yes</option><option>No</option></select>
 
-  <!-- Age, Height, Orientation -->
-  <div class="input-group">
-    <label for="age">Age</label>
-    <select id="age">
-      <script>
-        for (let i = 18; i <= 80; i++) {
-          const selected = i === 21 ? 'selected' : '';
-          document.write(`<option value="${i}" ${selected}>${i}</option>`);
-        }
-      </script>
-    </select>
-  </div>
+        <label>Do you smoke cigarettes/vape?</label>
+        <select><option>Yes</option><option>No</option></select>
 
-  <div class="input-group">
-    <label for="height">Height</label>
-    <select id="height">
-      <option selected>5'9"</option>
-      <option>5'0"</option>
-      <option>5'3"</option>
-      <option>5'6"</option>
-      <option>5'9"</option>
-      <option>6'0"</option>
-      <option>6'3"</option>
-      <option>6'6"</option>
-    </select>
-  </div>
+        <label>Do you smoke weed?</label>
+        <select><option>Yes</option><option>No</option></select>
 
-  <div class="input-group">
-    <label for="orientation">Sexual Orientation</label>
-    <select id="orientation">
-      <option selected>Straight</option>
-      <option>Bisexual</option>
-      <option>Homosexual</option>
-      <option>Pansexual</option>
-    </select>
-  </div>
+        <label>Do you use drugs?</label>
+        <select><option>Yes</option><option>No</option></select>
+              </div>
 
-  <div class="section-divider"></div>
+      <div class="section">
+        <h2>Beliefs & Values</h2>
+        <label>Do you have children?</label>
+        <select><option>No</option><option>Yes</option></select>
 
-  <!-- Sexual Profile (locked) -->
-  <div class="input-group">
-    <label>Your Sexual Profile Archetype</label>
-    <div class="locked-field" id="lockedArchetype">Mood Multiplier</div>
-    <a href="/premium/erotic-blueprint_mood_multiplier.html">View Full Blueprint</a>
-  </div>
-    <div class="section-divider"></div>
+        <label>Do you want children in the future?</label>
+        <select><option>No</option><option>Yes</option></select>
 
-  <!-- Enjoys -->
-  <div class="input-group">
-    <label for="enjoys">Enjoys</label>
-    <select id="enjoys">
-      <option>Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, and maybe a little whipped cream.</option>
-      <option>One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, and an assortment of new sex toys</option>
-      <option>BDSM, spanking, power exchange, naughty mind games, and a side of filthy dirty talk</option>
-    </select>
-  </div>
+        <label>Job Title</label>
+        <input type="text" placeholder="Your profession" />
 
-  <div class="input-group">
-    <label for="foreplay">Likes this during foreplay</label>
-    <select id="foreplay">
-      <option>To be adored</option>
-      <option>To be obeyed</option>
-      <option>To be put in their place</option>
-      <option>To have their ego stroked</option>
-    </select>
-  </div>
+        <label>Where did you go to school?</label>
+        <input type="text" placeholder="School name" />
 
-  <div class="section-divider"></div>
+        <label>Religion</label>
+        <select>
+          <option>Atheist</option>
+          <option>Catholic</option>
+          <option>Christian</option>
+          <option>Hindu</option>
+          <option>Islam</option>
+          <option>Jewish</option>
+        </select>
 
-  <!-- Looking For -->
-  <div class="input-group">
-    <label for="lookingFor">Looking for</label>
-    <select id="lookingFor">
-      <option selected>Love / Long-term</option>
-      <option>Good time / Short-term</option>
-    </select>
-  </div>
+        <label>Only show to users with same beliefs?</label>
+        <select>
+          <option>No</option>
+          <option>Yes</option>
+        </select>
 
-  <div class="input-group">
-    <label for="sugar">Open to Sugar Daddy/Mama Dynamic</label>
-    <select id="sugar">
-      <option>Yes</option>
-      <option>No</option>
-    </select>
-  </div>
+        <label>Political Views</label>
+        <select>
+          <option>Conservative</option>
+          <option>Liberal</option>
+          <option>Moderate</option>
+          <option>Not political</option>
+          <option>Prefer not to say</option>
+        </select>
+      </div>
 
-  <div class="section-divider"></div>
-
-  <!-- Dirty Talk -->
-  <div class="input-group">
-    <label for="dirtyTalk">Dirty Talk Style</label>
-    <select id="dirtyTalk">
-      <option>Praise</option>
-      <option>Playful teasing</option>
-      <option>Degradation</option>
-      <option>The filthier, the better</option>
-      <option>I plead the fifth</option>
-    </select>
-  </div>
-
-  <!-- Threesome Openness -->
-  <div class="input-group">
-    <label for="threesome">Threesome Openness</label>
-    <select id="threesome">
-      <option>Nope. My partner’s mine. Period.</option>
-      <option>Maybe. Depends on the lighting and if anyone brought snacks</option>
-      <option>Yeah, it’d be fun</option>
-      <option>Hell yeah! Why stop at 3? The more the merrier</option>
-    </select>
+      <div class="section">
+        <button type="submit" style="margin-top: 30px;">Save Profile</button>
+      </div>
+    </form>
   </div>
 
   <footer>
     © 2025 Le Libido. All rights reserved. |
-    <a href="/legal.html">Legal Policy</a>
+    <a href="/legal.html">Legal Notice</a>
   </footer>
-
-  <script>
-    // Auto-assign background color
-    const archetype = document.getElementById("lockedArchetype").innerText.trim();
-    const body = document.getElementById("profileBody");
-
-    const blue = ["Devoted Darling", "Mood Multiplier", "Tender Protector", "Heatwave"];
-    const green = ["Promiscuous Plaything", "Generous Giver", "Bedroom Adventurer", "Charmer in Charge"];
-    const red = ["Dungeon Master", "Provoker", "Punish Me", "Claimed & Trained"];
-
-    if (blue.includes(archetype)) body.className = "blue";
-    else if (green.includes(archetype)) body.className = "green";
-    else if (red.includes(archetype)) body.className = "red";
-  </script>
 </body>
 </html>
