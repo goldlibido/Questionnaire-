@@ -484,7 +484,9 @@
     ">Save Profile</button>
   </div>
 <script>
+document.addEventListener("DOMContentLoaded", function () {
   const archetype = localStorage.getItem("archetype") || "Mood Multiplier";
+
   const autofillMap = {
     "Devoted Darling": {
       "enjoys": "passionate",
@@ -584,20 +586,12 @@
     }
   };
 
-  if (autofillMap[archetype]) {
-    const values = autofillMap[archetype];
-    const fields = ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"];
-    fields.forEach(fieldId => {
-      const el = document.getElementById(fieldId);
-      if (el) el.value = values[fieldId];
-    });
-  }
-  function formatArchetypeURL(name) {
+  const formatArchetypeURL = (name) => {
     if (name === "Claimed & Trained") return "claimed_and_trained";
     if (name === "The Punish Me") return "punish_me";
     if (name === "The Provoker") return "provoker";
     return name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
-  }
+  };
 
   const roomMap = {
     "Tender Protector": "blue",
@@ -614,22 +608,29 @@
     "Claimed & Trained": "red"
   };
 
-  // Apply background color dynamically
+  // Apply background
   const roomClass = roomMap[archetype];
   if (roomClass) document.body.classList.add(roomClass);
 
-  // Set dynamic archetype link
+  // Update archetype link
   const correctedSlug = formatArchetypeURL(archetype);
   const archetypeLink = document.getElementById("archetypeLink");
-  archetypeLink.textContent = archetype;
-  archetypeLink.href = `/premium/erotic-blueprint_${correctedSlug}.html`;
-
-  // Progress wheel visuals (optional)
-  function updateProgress(percent) {
-    const circle = document.getElementById('progressCircle');
-    if (circle) {
-      circle.textContent = `${percent}%`;
-    }
+  if (archetypeLink) {
+    archetypeLink.textContent = archetype;
+    archetypeLink.href = `/premium/erotic-blueprint_${correctedSlug}.html`;
   }
-  updateProgress(33);
+
+  // Autofill sexual profile fields
+  const values = autofillMap[archetype];
+  if (values) {
+    ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"].forEach(fieldId => {
+      const el = document.getElementById(fieldId);
+      if (el) el.value = values[fieldId];
+    });
+  }
+
+  // Progress display
+  const circle = document.getElementById('progressCircle');
+  if (circle) circle.textContent = "33%";
+});
 </script>
