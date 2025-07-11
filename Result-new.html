@@ -312,7 +312,35 @@ localStorage.setItem("quizAnswers", JSON.stringify(answers));
   const sortedScores = Object.entries(scoreMap).sort((a, b) => b[1] - a[1]);
   const topArchetype = sortedScores[0][0];
 localStorage.setItem("archetype", topArchetype);
-  const gender = answers.q8;
+ // Set personalized sexual profile traits based on actual quiz answers
+if (q3 === "3a") localStorage.setItem("enjoys", "passionate");
+if (q3 === "3b") localStorage.setItem("enjoys", "toys");
+if (q3 === "3c") localStorage.setItem("enjoys", "bdsm");
+
+if (q1 === "1a") localStorage.setItem("foreplay", "adored");
+if (q1 === "1b") localStorage.setItem("foreplay", "ego_stroked");
+if (q1 === "1c") localStorage.setItem("foreplay", "put_in_place");
+if (q1 === "1d") localStorage.setItem("foreplay", "ego_stroked");
+
+if (q10 === "10a") localStorage.setItem("dirtyTalk", "praise");
+if (q10 === "10b") localStorage.setItem("dirtyTalk", "teasing");
+if (q10 === "10c") localStorage.setItem("dirtyTalk", "degradation");
+if (q10 === "10d") localStorage.setItem("dirtyTalk", "filthy");
+if (q10 === "10e") localStorage.setItem("dirtyTalk", "private");
+
+if (q2 === "2a" || q2 === "2e") localStorage.setItem("lookingFor", "love");
+if (q2 === "2b" || q2 === "2f") localStorage.setItem("lookingFor", "let_it_evolve");
+if (q2 === "2c" || q2 === "2d") localStorage.setItem("lookingFor", "good_time");
+
+if (q5 === "5a" || q5 === "5d") localStorage.setItem("sugarDynamic", "yes");
+if (q5 === "5b") localStorage.setItem("sugarDynamic", "maybe");
+if (q5 === "5c") localStorage.setItem("sugarDynamic", "no");
+
+if (q7 === "7a") localStorage.setItem("threesome", "no");
+if (q7 === "7b") localStorage.setItem("threesome", "maybe");
+if (q7 === "7c") localStorage.setItem("threesome", "yes");
+if (q7 === "7d") localStorage.setItem("threesome", "hell_yes");
+   const gender = answers.q8;
   const genderSuffix = gender === "8a" ? "male" : "female";
 
   let fileSafe = topArchetype.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/_+$/, "");
