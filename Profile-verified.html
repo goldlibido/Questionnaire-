@@ -484,6 +484,26 @@
     ">Save Profile</button>
   </div>
   <script>
+  const archetype = localStorage.getItem("archetype") || "Mood Multiplier";
+
+const roomMap = {
+  "Tender Protector": "blue",
+  "Devoted Darling": "blue",
+  "Mood Multiplier": "blue",
+  "Heatwave": "blue",
+  "Promiscuous Plaything": "green",
+  "Generous Giver": "green",
+  "Bedroom Adventurer": "green",
+  "Charmer in Charge": "green",
+  "Dungeon Master": "red",
+  "Provoker": "red",
+  "Punish Me": "red",
+  "Claimed & Trained": "red"
+};
+
+// Apply correct background color
+const roomClass = roomMap[archetype];
+document.body.classList.add(roomClass);
   function formatArchetypeURL(name) {
   if (name === "Claimed & Trained") return "claimed_and_trained";
   if (name === "The Punish Me") return "punish_me";
