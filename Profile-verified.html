@@ -55,13 +55,13 @@
       display: block;
     }
 
-    .section-label {
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin: 30px 0 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-      padding-bottom: 6px;
-    }
+.section-label {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 30px 0 10px;
+  padding-bottom: 6px;
+  color: var(--gold);
+}
 
     .photo-grid {
       display: grid;
@@ -109,10 +109,12 @@
       font-weight: bold;
     }
 
-    .field {
-      margin: 12px 0;
-      font-size: 1rem;
-    }
+  .field {
+  margin: 12px auto;
+  font-size: 1rem;
+  max-width: 500px;
+  width: 100%;
+}
 
     .field label {
       display: block;
@@ -134,12 +136,14 @@
       appearance: none;
     }
 
-    .toggle-group {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+.toggle-group {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+}
 
     .toggle {
       flex: 1;
@@ -274,7 +278,7 @@
 
   <div class="field locked">
     <label>Your Sexual Archetype</label>
-    <div id="archetypeName" style="font-weight: bold; color: var(--gold);">Mood Multiplier</div>
+   <div id="archetypeName" style="font-weight: bold;"></div>
   </div>
 
   <div class="field">
@@ -478,7 +482,12 @@
     ">Save Profile</button>
   </div>
   <script>
-  const archetype = "Tender Protector"; // ← This should be dynamically inserted from session or URL params
+  function formatArchetypeURL(name) {
+  if (name === "Claimed & Trained") return "claimed_and_trained";
+  if (name === "The Punish Me") return "punish_me";
+  if (name === "The Provoker") return "provoker";
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+}
   const roomMap = {
     "Tender Protector": "blue",
     "Devoted Darling": "blue",
@@ -495,7 +504,9 @@
   };
 
   const roomClass = roomMap[archetype];
-  document.body.classList.add(roomClass);
+  const archetypeSlug = formatArchetypeURL(archetype);
+const archetypeHTML = `<a href="/premium/erotic-blueprint_${archetypeSlug}.html" style="color: var(--gold); text-decoration: underline;">${archetype}</a>`;
+document.getElementById("archetypeName").innerHTML = archetypeHTML;
 
   // Progress Wheel
   function updateProgress(percent) {
