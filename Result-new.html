@@ -311,7 +311,7 @@
 
   const sortedScores = Object.entries(scoreMap).sort((a, b) => b[1] - a[1]);
   const topArchetype = sortedScores[0][0];
-
+localStorage.setItem("archetype", topArchetype);
   const gender = answers.q8;
   const genderSuffix = gender === "8a" ? "male" : "female";
 
