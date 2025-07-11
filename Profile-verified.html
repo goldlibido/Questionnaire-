@@ -698,12 +698,19 @@ document.addEventListener("DOMContentLoaded", function () {
     heightSelect.appendChild(tall);
   }
 
-  // Autofill from localStorage
-  const keys = ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"];
-  keys.forEach(key => {
-    const el = document.getElementById(key);
-    const val = localStorage.getItem(key);
-    if (el && val) el.value = val;
+// Autofill from localStorage if available, otherwise use archetype defaults
+const keys = ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"];
+keys.forEach(key => {
+  const el = document.getElementById(key);
+  const val = localStorage.getItem(key);
+  if (el) {
+    if (val) {
+      el.value = val; // use quiz answer
+    } else if (autofillMap[archetype] && autofillMap[archetype][key]) {
+      el.value = autofillMap[archetype][key]; // fallback to archetype default
+    }
+  }
+});
 
     // Add visibility toggle
     if (el && !document.getElementById(`${key}-toggle`)) {
