@@ -6,302 +6,281 @@
   <title>Le Libido – Verified Profile</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --gold: #e1bf78;
-      --blue: #064D95;
-      --green: #06954E;
-      --red: #950606;
-    }
-
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
       color: white;
-      padding: 30px 20px;
-      box-sizing: border-box;
+      background-color: #0d0d0d;
+      text-align: center;
+      padding: 0 20px 80px;
     }
 
-    body.blue { background-color: var(--blue); }
-    body.green { background-color: var(--green); }
-    body.red { background-color: var(--red); }
+    /* Background colors */
+    .blue { background-color: #064D95; }
+    .green { background-color: #06954E; }
+    .red { background-color: #950606; }
 
     .top-banner {
-      background-color: var(--gold);
-      color: #000;
-      font-size: 0.75rem;
-      padding: 6px 12px;
+      background-color: #e1bf78;
+      color: #0d0d0d;
       font-weight: bold;
-      position: absolute;
-      top: 0;
-      left: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
     }
 
-    .progress-circle {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 50px;
-      height: 50px;
-    }
-
-    .progress-circle svg {
-      transform: rotate(-90deg);
-    }
-
-    .progress-circle circle {
-      fill: none;
-      stroke-width: 6;
-    }
-
-    .circle-bg {
-      stroke: rgba(255, 255, 255, 0.2);
-    }
-
-    .circle-progress {
-      stroke: var(--gold);
-      stroke-linecap: round;
-      stroke-dasharray: 157;
-      stroke-dashoffset: 105; /* ~33% complete */
-    }
-
-    .progress-text {
-      position: absolute;
-      top: 12px;
-      right: 15px;
+    .top-banner .left-label {
       font-size: 0.9rem;
+    }
+
+    .completion-wheel {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: conic-gradient(#0d0d0d 0% 33%, #88888844 33% 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.85rem;
       font-weight: bold;
-      color: white;
+      color: #0d0d0d;
     }
 
     .logo {
-      max-width: 140px;
+      max-width: 130px;
+      margin: 20px auto 30px auto;
       display: block;
-      margin: 60px auto 40px auto;
     }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
+    h2 {
+      font-size: 1.6rem;
+      margin-bottom: 30px;
       font-weight: 700;
-    }
-
-    .section-label {
-      font-size: 1rem;
-      font-weight: 700;
-      margin: 30px 0 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      padding-bottom: 6px;
-      text-align: left;
     }
 
     .input-group {
-      margin: 12px 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      margin: 25px auto;
+      max-width: 480px;
+      text-align: left;
     }
 
     .input-group label {
-      font-size: 0.9rem;
+      display: block;
       margin-bottom: 6px;
-    }
-
-    select, input[type="text"], input[type="email"], input[type="tel"] {
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(255,255,255,0.4);
-      padding: 8px 4px;
-      color: white;
-      width: 100%;
       font-size: 1rem;
-      outline: none;
+      font-weight: 600;
+      color: white;
     }
 
-    .photo-upload {
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .input-group input::placeholder {
+      color: #ccc;
+    }
+
+    .photo-grid {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 12px;
-      margin-bottom: 20px;
+      margin: 30px auto;
+      max-width: 480px;
     }
 
     .photo-slot {
+      position: relative;
       width: 100px;
       height: 100px;
-      border: 1px dashed rgba(255,255,255,0.5);
+      border: 2px dashed #e1bf78;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
-      color: rgba(255,255,255,0.4);
       cursor: pointer;
-      position: relative;
+      overflow: hidden;
     }
 
-    .photo-slot:hover {
-      background-color: rgba(255,255,255,0.1);
+    .photo-slot input {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
     }
 
     .photo-slot span {
-      position: absolute;
-      bottom: -18px;
+      z-index: 1;
+      color: #e1bf78;
       font-size: 0.75rem;
-      width: 100%;
-      text-align: center;
+      font-weight: 500;
     }
 
-    a.gold-link {
-      color: var(--gold);
+    .photo-slot.required span {
+      color: #e1bf78;
       font-weight: bold;
-      font-size: 1rem;
-      text-decoration: underline;
     }
-        .save-btn {
-      margin: 40px auto;
-      padding: 12px 24px;
-      background-color: var(--gold);
-      color: #000;
+        .section-divider {
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.15);
+      margin: 30px auto;
+      max-width: 500px;
+    }
+
+    .locked-field {
+      background-color: transparent;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: bold;
-      cursor: pointer;
+      color: #e1bf78;
+      text-align: center;
+      margin-top: 10px;
     }
 
-    .save-btn:hover {
-      background-color: #f5d78b;
+    footer {
+      font-size: 0.8rem;
+      color: #ccc;
+      margin-top: 60px;
+      opacity: 0.6;
     }
 
-    @media (min-width: 768px) {
-      .photo-upload {
-        gap: 20px;
-      }
-
-      .photo-slot {
-        width: 120px;
-        height: 120px;
-      }
+    a {
+      color: #e1bf78;
+      font-weight: bold;
+      text-decoration: underline;
     }
   </style>
 </head>
-<body class="blue"> <!-- Default background, can be changed dynamically -->
+<body class="blue" id="profileBody">
 
-  <div class="top-banner">VERIFIED MODE</div>
-
-  <div class="progress-circle">
-    <svg width="50" height="50">
-      <circle class="circle-bg" cx="25" cy="25" r="25" />
-      <circle class="circle-progress" cx="25" cy="25" r="25" />
-    </svg>
-    <div class="progress-text">33%</div>
+  <!-- Gold Banner with Mode & Progress -->
+  <div class="top-banner">
+    <div class="left-label">Verified Mode</div>
+    <div class="completion-wheel">33%</div>
   </div>
 
+  <!-- Logo -->
   <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
 
-  <h1>Your Profile</h1>
-
-  <div class="section-label">Photos</div>
-  <div class="photo-upload">
-    <div class="photo-slot" onclick="uploadPhoto(1)">＋<span>Main Photo (Required)</span></div>
-    <div class="photo-slot" onclick="uploadPhoto(2)">＋<span>Optional</span></div>
-    <div class="photo-slot" onclick="uploadPhoto(3)">＋<span>Optional</span></div>
-    <div class="photo-slot" onclick="uploadPhoto(4)">＋<span>Optional</span></div>
-    <div class="photo-slot" onclick="uploadPhoto(5)">＋<span>Optional</span></div>
+  <!-- Profile Photo Upload -->
+  <h2>Upload Photos</h2>
+  <div class="photo-grid">
+    <label class="photo-slot required">
+      <span>Required</span>
+      <input type="file" accept="image/*" capture="environment" required />
+    </label>
+    <label class="photo-slot">
+      <span>+</span>
+      <input type="file" accept="image/*" capture="environment" />
+    </label>
+    <label class="photo-slot">
+      <span>+</span>
+      <input type="file" accept="image/*" capture="environment" />
+    </label>
+    <label class="photo-slot">
+      <span>+</span>
+      <input type="file" accept="image/*" capture="environment" />
+    </label>
+    <label class="photo-slot">
+      <span>+</span>
+      <input type="file" accept="image/*" capture="environment" />
+    </label>
   </div>
 
-  <div class="section-label">Personal Info</div>
+  <div class="section-divider"></div>
+
+  <!-- Instagram -->
   <div class="input-group">
-    <label for="legalName">Legal Name</label>
-    <input type="text" id="legalName" placeholder="Full name">
+    <label for="instagram">Link Instagram (optional)</label>
+    <input type="url" id="instagram" placeholder="https://instagram.com/yourhandle" />
   </div>
+
+  <div class="section-divider"></div>
+
+  <!-- Age, Height, Orientation -->
   <div class="input-group">
     <label for="age">Age</label>
-    <select id="age"></select>
+    <select id="age">
+      <script>
+        for (let i = 18; i <= 80; i++) {
+          const selected = i === 21 ? 'selected' : '';
+          document.write(`<option value="${i}" ${selected}>${i}</option>`);
+        }
+      </script>
+    </select>
   </div>
+
   <div class="input-group">
     <label for="height">Height</label>
-    <select id="height"></select>
+    <select id="height">
+      <option selected>5'9"</option>
+      <option>5'0"</option>
+      <option>5'3"</option>
+      <option>5'6"</option>
+      <option>5'9"</option>
+      <option>6'0"</option>
+      <option>6'3"</option>
+      <option>6'6"</option>
+    </select>
   </div>
+
   <div class="input-group">
     <label for="orientation">Sexual Orientation</label>
     <select id="orientation">
-      <option>Straight</option>
+      <option selected>Straight</option>
       <option>Bisexual</option>
       <option>Homosexual</option>
       <option>Pansexual</option>
     </select>
   </div>
-  <div class="input-group">
-    <label for="phone">Phone Number</label>
-    <input type="tel" id="phone" placeholder="(xxx) xxx-xxxx">
-  </div>
-  <div class="input-group">
-    <label for="email">Email</label>
-    <input type="email" id="email" placeholder="you@email.com">
-  </div>
-  <div class="input-group">
-    <label for="instagram">Instagram (Optional)</label>
-    <input type="text" id="instagram" placeholder="@handle">
-  </div>
 
-  <div class="section-label">Preferences</div>
-  <div class="input-group">
-    <label for="interaction">Interaction Preference</label>
-    <select id="interaction">
-      <option>Prefers to Approach</option>
-      <option>Prefers to Be Approached</option>
-    </select>
-  </div>
+  <div class="section-divider"></div>
 
+  <!-- Sexual Profile (locked) -->
   <div class="input-group">
-    <label for="role">Role</label>
-    <select id="role">
-      <option>Dominant</option>
-      <option>Submissive</option>
-      <option>Switch</option>
-    </select>
+    <label>Your Sexual Profile Archetype</label>
+    <div class="locked-field" id="lockedArchetype">Mood Multiplier</div>
+    <a href="/premium/erotic-blueprint_mood_multiplier.html">View Full Blueprint</a>
   </div>
+    <div class="section-divider"></div>
 
-  <div class="input-group">
-    <label for="spectrum">Naughty-to-Nice Spectrum</label>
-    <select id="spectrum">
-      <option>Vanilla</option>
-      <option>Frisky</option>
-      <option>Kinky</option>
-    </select>
-  </div>
-    <div class="input-group">
-    <label for="archetype">Sexual Archetype</label>
-    <select id="archetype">
-      <option>Devoted Darling</option>
-      <option>Mood Multiplier</option>
-      <option>Tender Protector</option>
-      <option>Heatwave</option>
-      <option>Promiscuous Plaything</option>
-      <option>Generous Giver</option>
-      <option>Bedroom Adventurer</option>
-      <option>Charmer in Charge</option>
-      <option>Claimed & Trained</option>
-      <option>Punish Me</option>
-      <option>Provoker</option>
-      <option>Dungeon Master</option>
-    </select>
-    <a href="/premium/" class="gold-link">View Full Blueprint</a>
-  </div>
-
+  <!-- Enjoys -->
   <div class="input-group">
     <label for="enjoys">Enjoys</label>
     <select id="enjoys">
-      <option>Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, and maybe a little whipped cream</option>
+      <option>Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, and maybe a little whipped cream.</option>
       <option>One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, and an assortment of new sex toys</option>
       <option>BDSM, spanking, power exchange, naughty mind games, and a side of filthy dirty talk</option>
     </select>
   </div>
 
   <div class="input-group">
-    <label for="looking">Looking For</label>
-    <select id="looking">
-      <option>Love / Long-Term</option>
-      <option>Good Time / Short-Term</option>
+    <label for="foreplay">Likes this during foreplay</label>
+    <select id="foreplay">
+      <option>To be adored</option>
+      <option>To be obeyed</option>
+      <option>To be put in their place</option>
+      <option>To have their ego stroked</option>
+    </select>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- Looking For -->
+  <div class="input-group">
+    <label for="lookingFor">Looking for</label>
+    <select id="lookingFor">
+      <option selected>Love / Long-term</option>
+      <option>Good time / Short-term</option>
     </select>
   </div>
 
@@ -313,95 +292,48 @@
     </select>
   </div>
 
+  <div class="section-divider"></div>
+
+  <!-- Dirty Talk -->
   <div class="input-group">
     <label for="dirtyTalk">Dirty Talk Style</label>
     <select id="dirtyTalk">
       <option>Praise</option>
       <option>Playful teasing</option>
       <option>Degradation</option>
-      <option>Filthy</option>
+      <option>The filthier, the better</option>
       <option>I plead the fifth</option>
     </select>
   </div>
 
+  <!-- Threesome Openness -->
   <div class="input-group">
     <label for="threesome">Threesome Openness</label>
     <select id="threesome">
-      <option>No</option>
-      <option>Maybe</option>
-      <option>Yes</option>
-      <option>Why stop at 3?</option>
+      <option>Nope. My partner’s mine. Period.</option>
+      <option>Maybe. Depends on the lighting and if anyone brought snacks</option>
+      <option>Yeah, it’d be fun</option>
+      <option>Hell yeah! Why stop at 3? The more the merrier</option>
     </select>
   </div>
-
-  <div class="input-group">
-    <label for="checkins">Preferred Check-In Spots</label>
-    <input type="text" id="checkins" placeholder="e.g. bars, beaches, rooftops">
-  </div>
-
-  <div class="input-group">
-    <label for="messagesFrom">Allow Messages From</label>
-    <select id="messagesFrom">
-      <option>Verified Only</option>
-      <option>Verified & Anonymous</option>
-      <option>Anonymous Only</option>
-    </select>
-  </div>
-
-  <div class="input-group">
-    <label for="visibility">Visible To</label>
-    <select id="visibility">
-      <option>Verified Only</option>
-      <option>All Users</option>
-      <option>Anonymous Only</option>
-    </select>
-  </div>
-
-  <button class="save-btn">Save Profile</button>
 
   <footer>
-    <p style="font-size: 0.8rem; color: white; opacity: 0.6;">
-      © 2025 Le Libido. All rights reserved. |
-      <a href="/legal.html">Legal Policy</a>
-    </p>
+    © 2025 Le Libido. All rights reserved. |
+    <a href="/legal.html">Legal Policy</a>
   </footer>
 
   <script>
-    // Fill age + height dropdowns
-    const ageSelect = document.getElementById("age");
-    for (let i = 18; i <= 80; i++) {
-      const opt = document.createElement("option");
-      opt.value = opt.text = i;
-      if (i === 21) opt.selected = true;
-      ageSelect.appendChild(opt);
-    }
+    // Auto-assign background color
+    const archetype = document.getElementById("lockedArchetype").innerText.trim();
+    const body = document.getElementById("profileBody");
 
-    const heightSelect = document.getElementById("height");
-    const heights = ["4'10", "4'11", "5'0", "5'1", "5'2", "5'3", "5'4", "5'5", "5'6", "5'7", "5'8", "5'9", "5'10", "5'11", "6'0", "6'1", "6'2", "6'3", "6'4", "6'5"];
-    heights.forEach(h => {
-      const opt = document.createElement("option");
-      opt.value = opt.text = h;
-      if (h === "5'9") opt.selected = true;
-      heightSelect.appendChild(opt);
-    });
+    const blue = ["Devoted Darling", "Mood Multiplier", "Tender Protector", "Heatwave"];
+    const green = ["Promiscuous Plaything", "Generous Giver", "Bedroom Adventurer", "Charmer in Charge"];
+    const red = ["Dungeon Master", "Provoker", "Punish Me", "Claimed & Trained"];
 
-    // Auto-detect background from archetype
-    document.getElementById("archetype").addEventListener("change", function () {
-      const val = this.value;
-      const body = document.body;
-      body.classList.remove("blue", "green", "red");
-      const blue = ["Devoted Darling", "Mood Multiplier", "Tender Protector", "Heatwave"];
-      const green = ["Promiscuous Plaything", "Generous Giver", "Bedroom Adventurer", "Charmer in Charge"];
-      const red = ["Claimed & Trained", "Punish Me", "Provoker", "Dungeon Master"];
-      if (blue.includes(val)) body.classList.add("blue");
-      else if (green.includes(val)) body.classList.add("green");
-      else if (red.includes(val)) body.classList.add("red");
-    });
-
-    // Fake photo upload
-    function uploadPhoto(n) {
-      alert("Upload photo slot " + n);
-    }
+    if (blue.includes(archetype)) body.className = "blue";
+    else if (green.includes(archetype)) body.className = "green";
+    else if (red.includes(archetype)) body.className = "red";
   </script>
 </body>
 </html>
