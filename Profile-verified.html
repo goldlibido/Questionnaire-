@@ -10,400 +10,329 @@
       margin: 0;
       font-family: 'Montserrat', sans-serif;
       color: white;
-      padding: 0;
-      box-sizing: border-box;
+      background-color: #064D95; /* default, overridden by archetype */
+      padding: 20px;
     }
 
-    /* Room background colors */
-    .blue { background-color: #064D95; }
-    .green { background-color: #06954E; }
-    .red { background-color: #950606; }
-
-    .verified-banner {
+    .banner {
       background-color: #e1bf78;
-      color: black;
-      font-weight: bold;
-      font-size: 0.9rem;
-      padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 10px 20px;
     }
 
-    .progress-circle {
-      width: 50px;
-      height: 50px;
-      position: relative;
-    }
-
-    .progress-circle svg {
-      transform: rotate(-90deg);
-    }
-
-    .progress-circle circle.bg {
-      fill: white;
-      stroke: white;
-      stroke-width: 10;
-    }
-
-    .progress-circle circle.fg {
-      fill: none;
-      stroke: black;
-      stroke-width: 10;
-      stroke-dasharray: 157;
-      stroke-dashoffset: calc(157 - (157 * 0.33));
-    }
-
-    .progress-circle .percent-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: gold;
+    .banner span {
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      color: #000;
+    }
+
+    .progress-ring {
+      width: 40px;
+      height: 40px;
+    }
+
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 6;
+    }
+
+    .progress-ring-bg {
+      stroke: white;
+    }
+
+    .progress-ring-fill {
+      stroke: black;
+      stroke-linecap: round;
+      stroke-dasharray: 125.66;
+      stroke-dashoffset: 83.77; /* ~33% fill */
+      transform: rotate(-90deg);
+      transform-origin: center;
+    }
+
+    .progress-percent {
+      fill: #e1bf78;
+      font-size: 0.7rem;
+      text-anchor: middle;
+      dominant-baseline: middle;
     }
 
     .logo {
-      max-width: 140px;
       display: block;
-      margin: 20px auto 10px auto;
+      margin: 20px auto;
+      max-width: 140px;
     }
 
-    h2.section-title {
+    .section-title {
       color: #e1bf78;
-      text-transform: uppercase;
       font-size: 1.2rem;
-      margin: 30px 20px 10px 20px;
-      text-align: left;
+      font-weight: bold;
+      margin: 30px 0 10px;
     }
 
-    .container {
-      padding: 0 20px 60px 20px;
-      max-width: 800px;
-      margin: 0 auto;
+    .field-group {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 1rem;
+    }
+
+    ::placeholder {
+      color: #ccc;
     }
 
     .photo-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin-top: 10px;
     }
 
-    .photo-slot {
-      position: relative;
+    .photo-upload {
       width: 100%;
-      padding-top: 100%;
+      aspect-ratio: 1;
       border: 2px dashed #e1bf78;
-      border-radius: 10px;
-      overflow: hidden;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e1bf78;
+      font-size: 1.4rem;
+      position: relative;
     }
 
-    .photo-slot input[type="file"] {
+    .photo-upload input {
+      opacity: 0;
       position: absolute;
       width: 100%;
       height: 100%;
-      opacity: 0;
       cursor: pointer;
-      top: 0;
-      left: 0;
     }
 
-    .photo-slot label {
+    .photo-required {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 2rem;
-      color: #e1bf78;
-      pointer-events: none;
-    }
-
-    .photo-slot span.required {
-      position: absolute;
-      bottom: 6px;
+      top: 6px;
       left: 6px;
-      font-size: 0.7rem;
-      color: #e1bf78;
-      font-style: italic;
-    }
-        .field-group {
-      margin: 20px 0;
-      text-align: left;
-    }
-
-    .field-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    select,
-    textarea {
-      width: 100%;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid #ccc;
-      color: white;
-      font-size: 1rem;
-      padding: 6px 4px;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    select {
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,<svg fill='white' viewBox='0 0 24 24'><path d='M7 10l5 5 5-5z'/></svg>");
-      background-repeat: no-repeat;
-      background-position: right 0.5rem center;
-      background-size: 1rem;
-    }
-
-    .archetype-block {
-      margin-top: 10px;
-      font-size: 1.1rem;
-    }
-
-    .archetype-block a {
-      color: #e1bf78;
-      text-decoration: underline;
-    }
-
-    .toggle-group {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .toggle-group label {
-      flex: 1;
-      border: 1px solid #e1bf78;
-      padding: 8px;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
-
-    input[type="radio"] {
-      display: none;
-    }
-
-    input[type="radio"]:checked + label {
-      background-color: rgba(255, 255, 255, 0.1);
-      font-weight: bold;
-    }
-
-    .save-btn {
       background-color: #e1bf78;
-      color: black;
+      color: #000;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 4px;
       font-weight: bold;
-      border: none;
-      font-size: 1rem;
-      padding: 14px 28px;
-      border-radius: 12px;
-      margin: 40px auto;
-      display: block;
-      cursor: pointer;
     }
 
-    .save-btn:hover {
-      background-color: #d1a648;
-    }
-
-    @media (min-width: 768px) {
-      .field-group {
-        margin: 30px 0;
-      }
+    a.archetype-link {
+      color: white;
+      font-weight: bold;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <!-- Top Banner -->
-  <div class="top-banner">
-    <div class="left">Verified Mode</div>
-    <div class="right">
-      <svg viewBox="0 0 36 36" class="progress-ring">
-        <path class="bg" d="M18 2.0845
-            a 15.9155 15.9155 0 0 1 0 31.831
-            a 15.9155 15.9155 0 0 1 0 -31.831" />
-        <path class="bar" stroke-dasharray="33, 100" d="M18 2.0845
-            a 15.9155 15.9155 0 0 1 0 31.831
-            a 15.9155 15.9155 0 0 1 0 -31.831" />
-        <text x="18" y="20.35" class="percentage">33%</text>
-      </svg>
-    </div>
+  <div class="banner">
+    <span>VERIFIED MODE</span>
+    <svg class="progress-ring" viewBox="0 0 40 40">
+      <circle class="progress-ring-bg" cx="20" cy="20" r="20"/>
+      <circle class="progress-ring-fill" cx="20" cy="20" r="20"/>
+      <text x="20" y="23" class="progress-percent">33%</text>
+    </svg>
   </div>
 
-  <!-- Logo -->
   <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
 
-  <!-- Flirty First Impression -->
-  <div class="section-header">Flirty First Impression</div>
-  <div class="field-group">
-    <textarea rows="2" placeholder="Ex: Bet you can't guess my favorite place to be kissed..."></textarea>
-  </div>
+  <div class="section-title">Flirty First Impression</div>
+  <input type="text" placeholder="e.g. Catch me before I change my mind…" />
 
-  <!-- Upload Photos -->
-  <div class="section-header">Upload Photos</div>
+  <div class="section-title">Upload Photos</div>
   <div class="photo-grid">
-    <div class="photo-slot required" data-label="Required">
-      <input type="file" accept="image/*" capture="environment" onchange="previewImage(this)" />
-      <span class="plus">+</span>
+    <div class="photo-upload">
+      <span class="photo-required">Required</span>
+      +
+      <input type="file" accept="image/*" capture="environment" />
     </div>
-    <div class="photo-slot"><input type="file" accept="image/*" onchange="previewImage(this)" /><span class="plus">+</span></div>
-    <div class="photo-slot"><input type="file" accept="image/*" onchange="previewImage(this)" /><span class="plus">+</span></div>
-    <div class="photo-slot"><input type="file" accept="image/*" onchange="previewImage(this)" /><span class="plus">+</span></div>
-    <div class="photo-slot"><input type="file" accept="image/*" onchange="previewImage(this)" /><span class="plus">+</span></div>
-    <div class="photo-slot"><input type="file" accept="image/*" onchange="previewImage(this)" /><span class="plus">+</span></div>
+    <div class="photo-upload">+<input type="file" accept="image/*" /></div>
+    <div class="photo-upload">+<input type="file" accept="image/*" /></div>
+    <div class="photo-upload">+<input type="file" accept="image/*" /></div>
+    <div class="photo-upload">+<input type="file" accept="image/*" /></div>
+    <div class="photo-upload">+<input type="file" accept="image/*" /></div>
+  </div>
+    <div class="section-title">Link Instagram (optional)</div>
+  <input type="text" placeholder="@yourhandle" />
+
+  <div class="section-title">Basic Info</div>
+  <div class="field-group">
+    <input type="text" placeholder="First & Last Name" />
   </div>
 
-  <!-- Basic Info -->
-  <div class="section-header">Basic Info</div>
   <div class="field-group">
-    <label for="name">Legal Name</label>
-    <input type="text" id="name" placeholder="Your full name" />
-  </div>
-  <div class="field-group">
-    <label for="age">Age</label>
-    <select id="age">
-      ${[...Array(83)].map((_, i) => `<option>${i + 18}</option>`).join('')}
+    <select>
+      <option disabled selected>Select your age</option>
+      <!-- Age range: 18 to 80 -->
+      <script>
+        for (let i = 18; i <= 80; i++) {
+          document.write(`<option value="${i}">${i}</option>`);
+        }
+      </script>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="height">Height</label>
-    <select id="height">
-      <option>&lt; 5'</option>
-      ${[...Array(25)].map((_, i) => `<option>${4 + Math.floor(i / 12)}'${i % 12}"</option>`).join('')}
-      <option>7'+</option>
+    <select>
+      <option disabled selected>Select your height</option>
+      <option value="<5ft">Under 5 ft</option>
+      <option value="5'0">5'0"</option>
+      <option value="5'1">5'1"</option>
+      <option value="5'2">5'2"</option>
+      <option value="5'3">5'3"</option>
+      <option value="5'4">5'4"</option>
+      <option value="5'5">5'5"</option>
+      <option value="5'6">5'6"</option>
+      <option value="5'7">5'7"</option>
+      <option value="5'8">5'8"</option>
+      <option value="5'9" selected>5'9"</option>
+      <option value="5'10">5'10"</option>
+      <option value="5'11">5'11"</option>
+      <option value="6'0">6'0"</option>
+      <option value="6'1">6'1"</option>
+      <option value="6'2">6'2"</option>
+      <option value="6'3">6'3"</option>
+      <option value="6'4">6'4"</option>
+      <option value="6'5">6'5"</option>
+      <option value="6'6">6'6"</option>
+      <option value="6'7">6'7"</option>
+      <option value="6'8">6'8"</option>
+      <option value="6'9">6'9"</option>
+      <option value="6'10">6'10"</option>
+      <option value="6'11">6'11"</option>
+      <option value="7ft+">Over 7 ft</option>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="orientation">Sexual Orientation</label>
-    <select id="orientation">
-      <option>Straight</option>
-      <option>Bisexual</option>
-      <option>Homosexual</option>
-      <option>Pansexual</option>
+    <select>
+      <option disabled selected>Sexual Orientation</option>
+      <option value="Straight" selected>Straight</option>
+      <option value="Bisexual">Bisexual</option>
+      <option value="Homosexual">Homosexual</option>
+      <option value="Pansexual">Pansexual</option>
     </select>
   </div>
-    <!-- Sexual Profile -->
-  <div class="section-header">Sexual Profile</div>
+
+  <div class="section-title">Sexual Profile</div>
   <div class="field-group">
-    <label for="role">Role</label>
-    <select id="role">
-      <option>Dominant</option>
-      <option>Submissive</option>
-      <option>Switch</option>
+    <label>Your Sexual Archetype:</label><br>
+    <a class="archetype-link" href="/premium/erotic-blueprint_mood_multiplier.html">Mood Multiplier</a>
+  </div>
+
+  <div class="field-group">
+    <label>Enjoys:</label>
+    <select>
+      <option selected>Passionate sex, massage, pillow talk, cuddling</option>
+      <option>One-night stands, striptease, role-play, toys</option>
+      <option>BDSM, spanking, power exchange, dirty talk</option>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="spectrum">Naughty-to-Nice Spectrum</label>
-    <select id="spectrum">
-      <option>Vanilla</option>
-      <option>Frisky</option>
-      <option>Kinky</option>
-    </select>
-  </div>
-  <div class="field-group">
-    <label>Your Sexual Archetype</label>
-    <div>
-      <a href="#" id="archetypeLink" style="color: white; text-decoration: underline;">Mood Multiplier</a>
-    </div>
-  </div>
-  <div class="field-group">
-    <label for="enjoys">Enjoys</label>
-    <select id="enjoys">
-      <option>Passionate sex, sensual massage, pillow talk, cuddling, new positions with a partner, and maybe a little whipped cream</option>
-      <option>One-night stands, giving/receiving a striptease or lap dance, watching porn together, sexy role-play, and an assortment of new sex toys</option>
-      <option>BDSM, spanking, power exchange, naughty mind games, and a side of filthy dirty talk</option>
-    </select>
-  </div>
-  <div class="field-group">
-    <label for="foreplay">Foreplay Style</label>
-    <select id="foreplay">
-      <option>Adored</option>
+    <label>Foreplay Style:</label>
+    <select>
+      <option selected>Adored</option>
       <option>Obeyed</option>
       <option>Put in their place</option>
       <option>Ego-stroked</option>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="looking">Looking For</label>
-    <select id="looking">
-      <option>Love / Long-term</option>
-      <option>Good time / Short-term</option>
-      <option>Let it evolve</option>
+    <label>Looking For:</label>
+    <select>
+      <option selected>Love / Long-term</option>
+      <option>Good Time / Short-term</option>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="sugar">Open to Sugar Daddy/Mama Dynamic</label>
-    <select id="sugar">
-      <option>Yes</option>
+    <label>Open to Sugar Dynamic:</label>
+    <select>
+      <option selected>Yes</option>
       <option>No</option>
     </select>
   </div>
 
-  <!-- Lifestyle -->
-  <div class="section-header">Lifestyle</div>
+  <div class="section-title">Lifestyle</div>
+
   <div class="field-group">
-    <label for="drink">Do you drink alcohol?</label>
-    <select id="drink">
-      <option>Yes</option>
+    <label>Do you drink alcohol?</label>
+    <select>
+      <option selected>Yes</option>
       <option>No</option>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="smoke">Do you smoke cigarettes/vape?</label>
-    <select id="smoke">
+    <label>Do you smoke cigarettes/vape?</label>
+    <select>
+      <option selected>No</option>
       <option>Yes</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label>Do you smoke weed?</label>
+    <select>
+      <option selected>No</option>
+      <option>Yes</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label>Do you use drugs?</label>
+    <select>
+      <option selected>No</option>
+      <option>Yes</option>
+    </select>
+  </div>
+    <div class="section-title">Beliefs & Values</div>
+
+  <div class="field-group">
+    <label>Do you have children?</label>
+    <select>
+      <option selected>No</option>
+      <option>Yes</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label>Would you like to have children in the future?</label>
+    <select>
+      <option selected>Yes</option>
       <option>No</option>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="weed">Do you smoke weed?</label>
-    <select id="weed">
-      <option>Yes</option>
-      <option>No</option>
-    </select>
+    <label>Education:</label>
+    <input type="text" placeholder="School name" />
   </div>
+
   <div class="field-group">
-    <label for="drugs">Do you use drugs?</label>
-    <select id="drugs">
-      <option>Yes</option>
-      <option>No</option>
-    </select>
+    <label>Job Title:</label>
+    <input type="text" placeholder="e.g. Creative Director" />
   </div>
-    <!-- Beliefs & Values -->
-  <div class="section-header">Beliefs & Values</div>
+
   <div class="field-group">
-    <label for="kidsHave">Do you have children?</label>
-    <select id="kidsHave">
-      <option>Yes</option>
-      <option>No</option>
-    </select>
-  </div>
-  <div class="field-group">
-    <label for="kidsWant">Would you like to have children in the future?</label>
-    <select id="kidsWant">
-      <option>Yes</option>
-      <option>No</option>
-    </select>
-  </div>
-  <div class="field-group">
-    <label for="job">Job Title</label>
-    <input type="text" id="job" placeholder="Ex: Creative Director" />
-  </div>
-  <div class="field-group">
-    <label for="education">Education</label>
-    <input type="text" id="education" placeholder="School name" />
-  </div>
-  <div class="field-group">
-    <label for="religion">Religion</label>
-    <select id="religion">
+    <label>Religion:</label>
+    <select>
+      <option selected>Prefer not to say</option>
       <option>Atheist</option>
       <option>Catholic</option>
       <option>Christian</option>
@@ -413,106 +342,67 @@
       <option>Other</option>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="religionFilter">Only show to those who share this belief?</label>
-    <select id="religionFilter">
+    <label>Only show my religion to people with same beliefs?</label>
+    <select>
+      <option selected>No</option>
       <option>Yes</option>
-      <option>No</option>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="politics">Political Views</label>
-    <select id="politics">
+    <label>Political Views:</label>
+    <select>
+      <option selected>Prefer not to say</option>
       <option>Conservative</option>
       <option>Liberal</option>
       <option>Moderate</option>
-      <option>Not political</option>
-      <option>Prefer not to say</option>
+      <option>Not Political</option>
       <option>Other</option>
     </select>
   </div>
 
-  <!-- Notifications -->
-  <div class="section-header">Notifications</div>
+  <div class="section-title">Visibility & Notifications</div>
+
   <div class="field-group">
-    <label for="notif1">Get notified when someone wants you</label>
-    <select id="notif1">
-      <option>Yes</option>
-      <option>No</option>
+    <label>Who can message you?</label>
+    <select>
+      <option selected>Verified Only</option>
+      <option>Anonymous & Verified</option>
+      <option>Anonymous Only</option>
     </select>
   </div>
+
   <div class="field-group">
-    <label for="notif2">Get notified when someone checks you out</label>
-    <select id="notif2">
-      <option>Yes</option>
+    <label>Who can see your profile?</label>
+    <select>
+      <option selected>Verified Only</option>
+      <option>Anonymous & Verified</option>
+      <option>Anonymous Only</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label>Get notified when someone wants you?</label>
+    <select>
+      <option selected>Yes</option>
       <option>No</option>
     </select>
   </div>
 
-  <!-- Visibility Settings -->
-  <div class="section-header">Visibility Settings</div>
   <div class="field-group">
-    <label for="showTo">Show My Profile To:</label>
-    <select id="showTo">
-      <option>Verified Only</option>
-      <option>Anonymous Only</option>
-      <option>Both</option>
+    <label>Get notified when someone checks you out?</label>
+    <select>
+      <option selected>Yes</option>
+      <option>No</option>
     </select>
-  </div>
-  <div class="field-group">
-    <label for="messagesFrom">Allow Messages From:</label>
-    <select id="messagesFrom">
-      <option>Verified Only</option>
-      <option>Anonymous Only</option>
-      <option>Both</option>
-    </select>
-  </div>
-    <!-- Save Button -->
-  <div style="margin: 40px auto; text-align: center;">
-    <button class="save-btn">Save My Profile</button>
   </div>
 
-  <!-- Footer -->
-  <footer style="text-align: center; margin-top: 40px;">
-    <p style="font-size: 0.8rem; color: white; opacity: 0.6;">
-      © 2025 Le Libido. All rights reserved. |
-      <a href="/legal.html" style="color: #e1bf78; text-decoration: underline;">Legal Notice</a>
-    </p>
+  <footer style="margin: 40px auto; text-align: center; font-size: 0.8rem; opacity: 0.6;">
+    © 2025 Le Libido. All rights reserved. |
+    <a href="/legal.html" style="color: #e1bf78;">Legal Notice</a>
   </footer>
-
-  <script>
-    // Get archetype from query param
-    const params = new URLSearchParams(window.location.search);
-    const archetype = params.get("archetype") || "Mood Multiplier";
-    const safeArchetype = archetype.toLowerCase().replace(/[^a-z0-9]+/g, "_");
-    const profileLink = "/premium/erotic-blueprint_" + safeArchetype + ".html";
-
-    document.getElementById("archetypeText").textContent = archetype;
-    document.getElementById("archetypeText").href = profileLink;
-
-    // Set background color
-    const red = ["claimed and trained", "punish me", "provoker", "dungeon master"];
-    const green = ["charmer in charge", "bedroom adventurer", "generous giver", "promiscuous plaything"];
-    const blue = ["tender protector", "heatwave", "mood multiplier", "devoted darling"];
-    const body = document.body;
-
-    if (red.includes(safeArchetype)) {
-      body.style.backgroundColor = "#950606";
-    } else if (green.includes(safeArchetype)) {
-      body.style.backgroundColor = "#06954E";
-    } else {
-      body.style.backgroundColor = "#064D95";
-    }
-
-    // Calculate progress bar
-    const progress = 33; // You can later calculate dynamically
-    const circle = document.querySelector(".progress-ring__circle");
-    const radius = circle.r.baseVal.value;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (progress / 100) * circumference;
-
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    circle.style.strokeDashoffset = offset;
-  </script>
+</div>
 </body>
 </html>
