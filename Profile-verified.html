@@ -513,7 +513,114 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Use proper title if stored format is slug
   const archetype = slugToTitleMap[stored] || stored;
+  // Set sexual profile fields based on archetype
+  const autofillMap = {
+    "Devoted Darling": {
+      "enjoys": "passionate",
+      "foreplay": "adored",
+      "dirtyTalk": "praise",
+      "lookingFor": "love",
+      "sugarDynamic": "no",
+      "threesome": "no"
+    },
+    "Mood Multiplier": {
+      "enjoys": "passionate",
+      "foreplay": "adored",
+      "dirtyTalk": "teasing",
+      "lookingFor": "love",
+      "sugarDynamic": "no",
+      "threesome": "maybe"
+    },
+    "Tender Protector": {
+      "enjoys": "passionate",
+      "foreplay": "adored",
+      "dirtyTalk": "praise",
+      "lookingFor": "love",
+      "sugarDynamic": "no",
+      "threesome": "no"
+    },
+    "Heatwave": {
+      "enjoys": "passionate",
+      "foreplay": "ego_stroked",
+      "dirtyTalk": "teasing",
+      "lookingFor": "let_it_evolve",
+      "sugarDynamic": "no",
+      "threesome": "maybe"
+    },
+    "Promiscuous Plaything": {
+      "enjoys": "toys",
+      "foreplay": "ego_stroked",
+      "dirtyTalk": "filthy",
+      "lookingFor": "good_time",
+      "sugarDynamic": "yes",
+      "threesome": "hell_yes"
+    },
+    "Generous Giver": {
+      "enjoys": "passionate",
+      "foreplay": "adored",
+      "dirtyTalk": "praise",
+      "lookingFor": "let_it_evolve",
+      "sugarDynamic": "no",
+      "threesome": "maybe"
+    },
+    "Bedroom Adventurer": {
+      "enjoys": "toys",
+      "foreplay": "ego_stroked",
+      "dirtyTalk": "filthy",
+      "lookingFor": "good_time",
+      "sugarDynamic": "yes",
+      "threesome": "hell_yes"
+    },
+    "Charmer in Charge": {
+      "enjoys": "toys",
+      "foreplay": "ego_stroked",
+      "dirtyTalk": "teasing",
+      "lookingFor": "let_it_evolve",
+      "sugarDynamic": "yes",
+      "threesome": "yes"
+    },
+    "Punish Me": {
+      "enjoys": "bdsm",
+      "foreplay": "put_in_place",
+      "dirtyTalk": "degradation",
+      "lookingFor": "good_time",
+      "sugarDynamic": "yes",
+      "threesome": "hell_yes"
+    },
+    "Provoker": {
+      "enjoys": "bdsm",
+      "foreplay": "ego_stroked",
+      "dirtyTalk": "filthy",
+      "lookingFor": "good_time",
+      "sugarDynamic": "yes",
+      "threesome": "hell_yes"
+    },
+    "Dungeon Master": {
+      "enjoys": "bdsm",
+      "foreplay": "put_in_place",
+      "dirtyTalk": "filthy",
+      "lookingFor": "let_it_evolve",
+      "sugarDynamic": "no",
+      "threesome": "yes"
+    },
+    "Claimed & Trained": {
+      "enjoys": "bdsm",
+      "foreplay": "obeyed",
+      "dirtyTalk": "degradation",
+      "lookingFor": "love",
+      "sugarDynamic": "no",
+      "threesome": "maybe"
+    }
+  };
 
+  if (autofillMap[archetype]) {
+    const values = autofillMap[archetype];
+    const fields = ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"];
+    fields.forEach(fieldId => {
+      const el = document.getElementById(fieldId);
+      if (el) el.value = values[fieldId];
+    });
+  }
   const formatArchetypeURL = (name) => {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
   };
