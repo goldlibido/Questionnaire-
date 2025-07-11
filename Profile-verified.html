@@ -554,3 +554,61 @@ if (blueprintLink) {
   if (circle) circle.textContent = "33%";
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Fill Age Dropdown
+  const ageSelect = document.getElementById("age");
+  if (ageSelect && ageSelect.options.length <= 1) {
+    for (let i = 18; i <= 100; i++) {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = i;
+      ageSelect.appendChild(opt);
+    }
+  }
+
+  // Fill Height Dropdown
+  const heightSelect = document.getElementById("height");
+  if (heightSelect && heightSelect.options.length <= 3) {
+    const short = document.createElement("option");
+    short.value = "<5ft";
+    short.textContent = "Under 5 ft";
+    heightSelect.appendChild(short);
+
+    for (let i = 60; i <= 84; i++) {
+      const ft = Math.floor(i / 12);
+      const inch = i % 12;
+      const label = `${ft}'${inch}"`;
+      const opt = document.createElement("option");
+      opt.value = label;
+      opt.textContent = label;
+      heightSelect.appendChild(opt);
+    }
+
+    const tall = document.createElement("option");
+    tall.value = ">7ft";
+    tall.textContent = "Over 7 ft";
+    heightSelect.appendChild(tall);
+  }
+
+  // Autofill from localStorage
+  const keys = ["enjoys", "foreplay", "dirtyTalk", "lookingFor", "sugarDynamic", "threesome"];
+  keys.forEach(key => {
+    const el = document.getElementById(key);
+    const val = localStorage.getItem(key);
+    if (el && val) el.value = val;
+
+    // Add visibility toggle
+    if (el && !document.getElementById(`${key}-toggle`)) {
+      const wrapper = el.closest(".field");
+      const checkbox = document.createElement("label");
+      checkbox.id = `${key}-toggle`;
+      checkbox.innerHTML = `
+        <input type="checkbox" checked style="margin-left: 10px; margin-right: 4px;" onchange="this.closest('.field').style.opacity = this.checked ? '1' : '0.3'">
+        <span style="font-size: 0.85rem;">Make visible</span>
+      `;
+      wrapper.appendChild(checkbox);
+    }
+  });
+});
+</script>
