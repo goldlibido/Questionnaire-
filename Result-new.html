@@ -210,6 +210,10 @@
   for (let i = 1; i <= 10; i++) {
     answers[`q${i}`] = params.get(`q${i}`);
   }
+  const {
+  q1, q2, q3, q4, q5,
+  q6, q7, q8, q9, q10
+} = answers;
 localStorage.setItem("quizAnswers", JSON.stringify(answers));
   const scoreMap = {
     "Devoted Darling": 0, "Mood Multiplier": 0, "Tender Protector": 0, "Heatwave": 0,
