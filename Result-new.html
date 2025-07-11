@@ -210,52 +210,6 @@
   for (let i = 1; i <= 10; i++) {
     answers[`q${i}`] = params.get(`q${i}`);
   }
-  // Normalize raw answer codes into values for profile
-const enjoymentMap = {
-  "3a": "passionate",
-  "3b": "toys",
-  "3c": "bdsm"
-};
-
-const foreplayMap = {
-  "4a": "adored",
-  "4b": "put_in_place",
-  "4c": "ego_stroked",
-  "4d": "ego_stroked",
-  "4e": "obeyed"
-};
-
-const dirtyTalkMap = {
-  "10a": "praise",
-  "10b": "teasing",
-  "10c": "degradation",
-  "10d": "filthy",
-  "10e": "private"
-};
-
-const lookingForMap = {
-  "2a": "love",
-  "2b": "good_time",
-  "2c": "good_time",
-  "2d": "let_it_evolve",
-  "2e": "love",
-  "2f": "let_it_evolve",
-  "2g": "good_time"
-};
-
-const sugarMap = {
-  "5a": "yes",
-  "5b": "yes",
-  "5c": "no",
-  "5d": "yes"
-};
-
-const threesomeMap = {
-  "7a": "no",
-  "7b": "maybe",
-  "7c": "yes",
-  "7d": "hell_yes"
-};
 localStorage.setItem("quizAnswers", JSON.stringify(answers));
   const scoreMap = {
     "Devoted Darling": 0, "Mood Multiplier": 0, "Tender Protector": 0, "Heatwave": 0,
@@ -356,61 +310,8 @@ localStorage.setItem("quizAnswers", JSON.stringify(answers));
   });
 
   const sortedScores = Object.entries(scoreMap).sort((a, b) => b[1] - a[1]);
-const topArchetype = sortedScores[0][0];
+  const topArchetype = sortedScores[0][0];
 localStorage.setItem("archetype", topArchetype);
-
-// ✅ Normalize raw answers into profile fields:
-const enjoymentMap = {
-  "3a": "passionate",
-  "3b": "toys",
-  "3c": "bdsm"
-};
-
-const foreplayMap = {
-  "1a": "adored",
-  "1b": "ego_stroked",
-  "1c": "put_in_place",
-  "1d": "ego_stroked"
-};
-
-const dirtyTalkMap = {
-  "10a": "praise",
-  "10b": "teasing",
-  "10c": "degradation",
-  "10d": "filthy",
-  "10e": "private"
-};
-
-const lookingForMap = {
-  "2a": "love",
-  "2b": "good_time",
-  "2c": "good_time",
-  "2d": "let_it_evolve",
-  "2e": "love",
-  "2f": "let_it_evolve",
-  "2g": "good_time"
-};
-
-const sugarMap = {
-  "5a": "yes",
-  "5b": "yes",
-  "5c": "no",
-  "5d": "yes"
-};
-
-const threesomeMap = {
-  "7a": "no",
-  "7b": "maybe",
-  "7c": "yes",
-  "7d": "hell_yes"
-};
-
-localStorage.setItem("enjoys", enjoymentMap[answers.q3] || "");
-localStorage.setItem("foreplay", foreplayMap[answers.q1] || "");
-localStorage.setItem("dirtyTalk", dirtyTalkMap[answers.q10] || "");
-localStorage.setItem("lookingFor", lookingForMap[answers.q2] || "");
-localStorage.setItem("sugarDynamic", sugarMap[answers.q5] || "");
-localStorage.setItem("threesome", threesomeMap[answers.q7] || "");
   const gender = answers.q8;
   const genderSuffix = gender === "8a" ? "male" : "female";
 
