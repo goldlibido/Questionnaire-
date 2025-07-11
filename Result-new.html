@@ -210,7 +210,7 @@
   for (let i = 1; i <= 10; i++) {
     answers[`q${i}`] = params.get(`q${i}`);
   }
-
+localStorage.setItem("quizAnswers", JSON.stringify(answers));
   const scoreMap = {
     "Devoted Darling": 0, "Mood Multiplier": 0, "Tender Protector": 0, "Heatwave": 0,
     "Promiscuous Plaything": 0, "Generous Giver": 0, "Bedroom Adventurer": 0, "Charmer in Charge": 0,
