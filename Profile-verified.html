@@ -545,7 +545,10 @@ document.addEventListener("DOMContentLoaded", function () {
     archetypeLink.href = `/premium/erotic-blueprint_${slug}.html`;
     console.log("🔗 Link set to:", archetypeLink.href);
   }
-
+const blueprintLink = document.getElementById("blueprintLink");
+if (blueprintLink) {
+  blueprintLink.href = `/premium/erotic-blueprint_${slug}.html`;
+}
   // Progress
   const circle = document.getElementById('progressCircle');
   if (circle) circle.textContent = "33%";
