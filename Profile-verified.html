@@ -561,7 +561,7 @@ document.getElementById("archetypeName").innerHTML = archetypeHTML;
   function saveProfile() {
     alert("Profile saved! (This would be stored or sent via backend)");
   }
-  const archetype = "Mood Multiplier"; // Replace with dynamic value in production
+  const archetype = localStorage.getItem("archetype") || "Mood Multiplier";
 const archetypeSlug = archetype.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/_+$/, "");
 const correctedSlug = archetype === "Claimed & Trained" ? "claimed_and_trained" :
                       archetype === "The Punish Me" ? "punish_me" :
