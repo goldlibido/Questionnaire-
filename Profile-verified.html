@@ -239,30 +239,24 @@
 
   <div class="section-label">Basic Info</div>
   <div class="field" style="max-width: 500px; margin: 0 auto;">
-  <label for="legalName">Legal Name</label>
-  <input type="text" id="legalName" placeholder="First & Last Name" />
+  <label for="name">Name</label>
+  <input type="text" id="name" placeholder="First & Last Name" />
 </div>
 
   <div class="field">
     <label for="age">Age</label>
     <select id="age">
       <option disabled selected>Select your age</option>
-      ${Array.from({ length: 83 }, (_, i) => `<option value="${i + 18}">${i + 18}</option>`).join('')}
     </select>
   </div>
-
   <div class="field">
     <label for="height">Height</label>
-    <select id="height">
-      <option disabled selected>Select your height</option>
-      <option value="<5ft">Under 5 ft</option>
-      ${Array.from({ length: 24 }, (_, i) => {
-        const ft = Math.floor((i + 60) / 12);
-        const inch = (i + 60) % 12;
-        return `<option value="${ft}'${inch}">${ft}'${inch}"</option>`;
-      }).join('')}
-      <option value=">7ft">Over 7 ft</option>
-    </select>
+    <div class="field">
+  <label for="height">Height</label>
+  <select id="height">
+    <option disabled selected>Select your height</option>
+  </select>
+</div>
   </div>
 
   <div class="field">
@@ -303,13 +297,13 @@
 </div>
 
 <div class="field">
-  <label>Turn-On Vocabulary</label>
-  <select id="turnOnVocab">
-    <option value="sweet">Sweet & affectionate</option>
-    <option value="confident">Confident & direct</option>
-    <option value="filthy">Filthy & explicit</option>
-    <option value="teasing">Playful & teasing</option>
-    <option value="commanding">Commanding & dominant</option>
+  <label>My Type</label>
+  <select id="tyle">
+    <option value="tall">Tall</option>
+    <option value="confident">Confident & funny</option>
+    <option value="brunettes">Brunnetes</option>
+    <option value="blonde">Blondes</option>
+    <option value="prefer">Prefer not to say</option>
   </select>
 </div>
 
@@ -320,18 +314,18 @@
     <option value="submission">Giving up control</option>
     <option value="dominance">Taking control</option>
     <option value="roleplay">Roleplay & costumes</option>
-    <option value="threesome">Threesome or group</option>
-    <option value="other">Something else</option>
+    <option value="something else">Something else</option>
+    <option value="prefer">Prefer not to say</option>
   </select>
 </div>
 
 <div class="field">
   <label>Kinks</label>
   <select id="kinks">
-    <option value="none">None</option>
-    <option value="light_bondage">Light bondage</option>
-    <option value="impact">Spanking & impact</option>
-    <option value="dirty_talk">Dirty talk</option>
+    <option value="prefer">Prefer not to say</option>
+    <option value="role_play">Role play</option>
+    <option value="impact">Spanking & impact play</option>
+    <option value="body_worship">Body worship</option>
     <option value="bdsm">BDSM & power play</option>
     <option value="voyeur">Voyeurism & exhibition</option>
   </select>
@@ -342,7 +336,7 @@
   <select id="lookingFor">
     <option value="love">Love / Long-Term</option>
     <option value="good_time">Good Time / Casual</option>
-    <option value="let_it_evolve">Let It Evolve</option>
+    <option value="let_it_evolve">Depends, i like to let things evolve naturally</option>
   </select>
 </div>
 
@@ -354,7 +348,15 @@
     <option value="no">No</option>
   </select>
 </div>
-
+<div class="field">
+  <label>Open to Threesome?</label>
+  <select id="threesome">
+    <option value="hell_yes">Hell yes, the more the merrier</option>
+    <option value="yes">Yes</option>
+    <option value="maybe">Maybe, depends on the lighting and if anyone brought snacks</option>
+    <option value="no">No thank you</option>
+  </select>
+</div>
   <div class="divider"></div>
   <div class="section-label">Lifestyle</div>
     <div class="field">
@@ -631,8 +633,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
   const formatArchetypeURL = (name) => {
-    return name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
-  };
+  if (name === "Claimed & Trained") return "claimed_and_trained";
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/_+$/, "");
+};
 
   const roomMap = {
     "Tender Protector": "blue",
