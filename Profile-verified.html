@@ -414,43 +414,73 @@
     ">Save Profile</button>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const stored = localStorage.getItem("archetype") || "Mood Multiplier";
-      const slugToTitle = {
-        "devoted_darling": "Devoted Darling",
-        "mood_multiplier": "Mood Multiplier",
-        "tender_protector": "Tender Protector",
-        "heatwave": "Heatwave",
-        "promiscuous_plaything": "Promiscuous Plaything",
-        "generous_giver": "Generous Giver",
-        "bedroom_adventurer": "Bedroom Adventurer",
-        "charmer_in_charge": "Charmer in Charge",
-        "punish_me": "Punish Me",
-        "provoker": "Provoker",
-        "dungeon_master": "Dungeon Master",
-        "claimed_and_trained": "Claimed & Trained"
-      };
-      const roomMap = {
-        "Tender Protector": "blue", "Devoted Darling": "blue", "Mood Multiplier": "blue", "Heatwave": "blue",
-        "Promiscuous Plaything": "green", "Generous Giver": "green", "Bedroom Adventurer": "green", "Charmer in Charge": "green",
-        "Dungeon Master": "red", "Provoker": "red", "Punish Me": "red", "Claimed & Trained": "red"
-      };
-      const formatSlug = (name) => name === "Claimed & Trained" ? "claimed_and_trained" : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const stored = localStorage.getItem("archetype") || "Mood Multiplier";
 
-      document.body.classList.add(roomMap[slugToTitle[stored]]);
-      document.getElementById("archetypeName").textContent = slugToTitle[stored];
-      document.getElementById("blueprintLink").href = `/premium/erotic-blueprint_${formatSlug(slugToTitle[stored])}.html`;
+    const slugToTitle = {
+      "devoted_darling": "Devoted Darling",
+      "mood_multiplier": "Mood Multiplier",
+      "tender_protector": "Tender Protector",
+      "heatwave": "Heatwave",
+      "promiscuous_plaything": "Promiscuous Plaything",
+      "generous_giver": "Generous Giver",
+      "bedroom_adventurer": "Bedroom Adventurer",
+      "charmer_in_charge": "Charmer in Charge",
+      "punish_me": "Punish Me",
+      "provoker": "Provoker",
+      "dungeon_master": "Dungeon Master",
+      "claimed_and_trained": "Claimed & Trained"
+    };
 
-      const ageSelect = document.getElementById("age");
+    const title = slugToTitle[stored] || stored;
+
+    const roomMap = {
+      "Tender Protector": "blue",
+      "Devoted Darling": "blue",
+      "Mood Multiplier": "blue",
+      "Heatwave": "blue",
+      "Promiscuous Plaything": "green",
+      "Generous Giver": "green",
+      "Bedroom Adventurer": "green",
+      "Charmer in Charge": "green",
+      "Dungeon Master": "red",
+      "Provoker": "red",
+      "Punish Me": "red",
+      "Claimed & Trained": "red"
+    };
+
+    const formatSlug = (name) =>
+      name === "Claimed & Trained"
+        ? "claimed_and_trained"
+        : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+
+    // Set dynamic background class
+    document.body.classList.add(roomMap[title]);
+
+    // Set archetype display name
+    const nameDiv = document.getElementById("archetypeName");
+    if (nameDiv) nameDiv.textContent = title;
+
+    // Fix sexual profile link
+    const blueprintLink = document.getElementById("blueprintLink");
+    if (blueprintLink) {
+      blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
+    }
+
+    // Populate dropdowns
+    const ageSelect = document.getElementById("age");
+    if (ageSelect) {
       for (let i = 18; i <= 80; i++) {
         const opt = document.createElement("option");
         opt.value = i;
         opt.textContent = i;
         ageSelect.appendChild(opt);
       }
+    }
 
-      const heightSelect = document.getElementById("height");
+    const heightSelect = document.getElementById("height");
+    if (heightSelect) {
       for (let ft = 4; ft <= 7; ft++) {
         for (let inch = 0; inch < 12; inch++) {
           if (ft === 7 && inch > 0) continue;
@@ -461,76 +491,93 @@
           heightSelect.appendChild(opt);
         }
       }
+    }
 
-      document.getElementById("sugarDynamic").value = "";
-      document.getElementById("threesome").value = "";
-    });
+    // Reset default values
+    const sugarSelect = document.getElementById("sugarDynamic");
+    if (sugarSelect) sugarSelect.value = "";
 
-    function handlePhotoUpload(event, index) {
-      const file = event.target.files[0];
-      if (!file) return;
+    const threesomeSelect = document.getElementById("threesome");
+    if (threesomeSelect) threesomeSelect.value = "";
+  });
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const photoUpload = event.target.closest('.photo-upload');
-        photoUpload.innerHTML = '';
+  // Handle photo upload + preview
+  function handlePhotoUpload(event, index) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.objectFit = 'cover';
-        img.style.borderRadius = '6px';
-        photoUpload.appendChild(img);
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const photoUpload = event.target.closest(".photo-upload");
+      photoUpload.innerHTML = "";
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.innerHTML = '×';
-        deleteBtn.style.position = 'absolute';
-        deleteBtn.style.top = '5px';
-        deleteBtn.style.right = '5px';
-        deleteBtn.style.width = '20px';
-        deleteBtn.style.height = '20px';
-        deleteBtn.style.borderRadius = '50%';
-        deleteBtn.style.border = 'none';
-        deleteBtn.style.background = 'rgba(0,0,0,0.7)';
-        deleteBtn.style.color = 'white';
-        deleteBtn.style.cursor = 'pointer';
-        deleteBtn.style.fontSize = '14px';
-        deleteBtn.style.display = 'flex';
-        deleteBtn.style.alignItems = 'center';
-        deleteBtn.style.justifyContent = 'center';
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "6px";
+      photoUpload.appendChild(img);
 
-        deleteBtn.onclick = function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          photoUpload.innerHTML = `
-            <span class="plus">+</span>
-            ${index === 0 ? '<span>Main Photo</span>' : ''}
-            <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
-          `;
-          if (index === 0) photoUpload.classList.add('required');
-        };
+      const deleteBtn = document.createElement("button");
+      deleteBtn.innerHTML = "×";
+      deleteBtn.style.position = "absolute";
+      deleteBtn.style.top = "5px";
+      deleteBtn.style.right = "5px";
+      deleteBtn.style.width = "20px";
+      deleteBtn.style.height = "20px";
+      deleteBtn.style.borderRadius = "50%";
+      deleteBtn.style.border = "none";
+      deleteBtn.style.background = "rgba(0,0,0,0.7)";
+      deleteBtn.style.color = "white";
+      deleteBtn.style.cursor = "pointer";
+      deleteBtn.style.fontSize = "14px";
+      deleteBtn.style.display = "flex";
+      deleteBtn.style.alignItems = "center";
+      deleteBtn.style.justifyContent = "center";
 
-        photoUpload.appendChild(deleteBtn);
-        photoUpload.style.position = 'relative';
-        if (index === 0) photoUpload.classList.remove('required');
+      deleteBtn.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        photoUpload.innerHTML = `
+          <span class="plus">+</span>
+          ${index === 0 ? "<span>Main Photo</span>" : ""}
+          <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
+        `;
+        if (index === 0) photoUpload.classList.add("required");
       };
 
-      reader.readAsDataURL(file);
+      photoUpload.appendChild(deleteBtn);
+      photoUpload.style.position = "relative";
+      if (index === 0) photoUpload.classList.remove("required");
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  // Updated saveProfile() with redirect to correct blueprint
+  function saveProfile() {
+    const email = prompt("Enter your email:");
+    const phone = prompt("Enter your phone number:");
+    if (!email || !phone) {
+      alert("Email and phone number are required.");
+      return;
     }
 
-    function saveProfile() {
-      const email = prompt("Enter your email:");
-      const phone = prompt("Enter your phone number:");
-      if (!email || !phone) {
-        alert("Email and phone number are required.");
-        return;
-      }
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("userPhone", phone);
-      alert("Profile saved! Redirecting to map...");
-      window.location.href = "/map.html";
-    }
-  </script>
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userPhone", phone);
+
+    const stored = localStorage.getItem("archetype") || "Mood Multiplier";
+    const formatSlug = (name) =>
+      name === "Claimed & Trained"
+        ? "claimed_and_trained"
+        : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+
+    const slug = formatSlug(stored);
+    alert("Profile saved! Redirecting to your full profile...");
+
+    window.location.href = `/premium/erotic-blueprint_${slug}.html`;
+  }
+</script>
 </body>
 </html>
