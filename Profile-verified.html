@@ -155,6 +155,9 @@
         margin-right: auto;
       }
     }
+    .upload-preview {
+  pointer-events: none;
+}
   </style>
 </head>
 
@@ -552,7 +555,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const threesomeSelect = document.getElementById("threesome");
   if (threesomeSelect) threesomeSelect.value = "";
 
-  <script>
+<script>
 function handlePhotoUpload(event, index) {
   const input = event.target;
   const file = input.files[0];
@@ -561,11 +564,28 @@ function handlePhotoUpload(event, index) {
   if (file && label) {
     const reader = new FileReader();
     reader.onload = function (e) {
-      label.style.backgroundImage = `url(${e.target.result})`;
-      label.style.backgroundSize = "cover";
-      label.style.backgroundPosition = "center";
-      label.style.backgroundRepeat = "no-repeat";
-      label.innerHTML = ""; // remove the "+" and text inside
+      // Create an img element if not already inside
+      let img = label.querySelector("img.upload-preview");
+      if (!img) {
+        img = document.createElement("img");
+        img.classList.add("upload-preview");
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "6px";
+        img.style.position = "absolute";
+        img.style.top = 0;
+        img.style.left = 0;
+        label.appendChild(img);
+      }
+
+      img.src = e.target.result;
+
+      // Hide the "+" and "Main Photo" label text
+      const plus = label.querySelector(".plus");
+      const span = label.querySelector("span:not(.plus)");
+      if (plus) plus.style.display = "none";
+      if (span) span.style.display = "none";
     };
     reader.readAsDataURL(file);
   }
