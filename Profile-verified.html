@@ -84,25 +84,15 @@
       font-size: 0.8rem;
       cursor: pointer;
       position: relative;
-      overflow: hidden;
     }
 
     .photo-upload input {
       display: none;
     }
 
-    .photo-upload img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
     .photo-upload .plus {
       font-size: 1.5rem;
-      z-index: 2;
+      margin-bottom: 4px;
     }
 
     .photo-upload.required::after {
@@ -117,7 +107,6 @@
       padding: 2px 6px;
       border-radius: 4px;
       font-weight: bold;
-      z-index: 2;
     }
 
     .field {
@@ -133,8 +122,7 @@
       font-weight: 600;
     }
 
-    .field input,
-    .field select {
+    .field input, .field select {
       max-width: 100%;
       width: 100%;
       box-sizing: border-box;
@@ -150,36 +138,8 @@
       appearance: none;
     }
 
-    .locked {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    .divider {
-      border-top: 1px solid rgba(255,255,255,0.15);
-      margin: 30px 0 10px;
-    }
-
-    .button {
-      background-color: var(--gold);
-      color: var(--black);
-      font-size: 1.2rem;
-      font-weight: bold;
-      padding: 14px 32px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      margin-top: 40px;
-      display: block;
-      width: 100%;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
     @media (min-width: 768px) {
-      .photo-grid,
-      .field {
+      .photo-grid, .field {
         max-width: 500px;
         margin-left: auto;
         margin-right: auto;
@@ -188,34 +148,36 @@
   </style>
 </head>
 <body id="profileBody">
+
   <div class="header-banner">
     <div>Verified Mode</div>
     <div class="progress-circle" id="progressCircle">33%</div>
   </div>
+
   <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo"/>
-    <div class="field" style="text-align: center;">
+
+  <div class="field" style="text-align: center;">
     <label for="bio">Flirty First Impression</label>
     <input type="text" id="bio" placeholder="e.g. Catch me before I change my mind…" />
   </div>
 
   <div class="section-label">Upload Photos</div>
   <div class="photo-grid" id="photoGrid">
-    ${Array.from({ length: 6 }, (_, i) => `
-      <label class="photo-upload ${i === 0 ? "required" : ""}">
+    ${[...Array(6)].map((_, i) => `
+      <label class="photo-upload${i === 0 ? ' required' : ''}">
         <span class="plus">+</span>
-        ${i === 0 ? "<span>Main Photo</span>" : ""}
+        <span>${i === 0 ? 'Main Photo' : 'Photo ' + (i + 1)}</span>
         <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${i})">
-      </label>
-    `).join("")}
+      </label>`).join('')}
   </div>
 
-  <div class="field">
+  <div class="field" style="max-width: 500px; margin: 0 auto;">
     <label for="instagram">Link Instagram (optional)</label>
     <input type="text" id="instagram" placeholder="@yourhandle" />
   </div>
 
   <div class="section-label">Basic Info</div>
-  <div class="field">
+  <div class="field" style="max-width: 500px; margin: 0 auto;">
     <label for="name">Name</label>
     <input type="text" id="name" placeholder="First & Last Name" />
   </div>
@@ -233,8 +195,7 @@
       <option disabled selected>Select your height</option>
     </select>
   </div>
-
-  <div class="field">
+    <div class="field">
     <label for="orientation">Sexual Orientation</label>
     <select id="orientation">
       <option disabled selected>Select your preference</option>
@@ -250,11 +211,13 @@
 
   <div class="field locked">
     <label>Your Sexual Archetype</label>
-    <a id="archetypeLink" style="font-weight: bold; color: white; text-decoration: underline;" target="_blank">Mood Multiplier</a>
+    <a id="archetypeLink" style="font-weight: bold; color: white; text-decoration: underline;" target="_blank">Loading...</a>
   </div>
 
-  <div class="field" style="text-align: center;">
-    <a id="blueprintLink" target="_blank" style="color: var(--gold); font-weight: bold; text-decoration: underline;">
+  <div class="field" style="text-align: center; margin-top: 8px;">
+    <a id="blueprintLink"
+       target="_blank"
+       style="display: inline-block; margin-top: 6px; color: var(--gold); font-weight: bold; text-decoration: underline;">
       → View Your Full Sexual Profile
     </a>
   </div>
@@ -268,29 +231,6 @@
       <option value="time">Quality time</option>
       <option value="gifts">Gifts</option>
       <option value="acts">Acts of service</option>
-    </select>
-  </div>
-
-  <div class="field">
-    <label>Fantasies</label>
-    <select id="fantasies">
-      <option disabled selected>Select your preference</option>
-      <option value="voyeurism">Being watched</option>
-      <option value="submission">Giving up control</option>
-      <option value="dominance">Taking control</option>
-      <option value="roleplay">Roleplay & costumes</option>
-      <option value="threesome">Threesome or group</option>
-      <option value="other">Something else</option>
-    </select>
-  </div>
-
-  <div class="field">
-    <label>Looking For</label>
-    <select id="lookingFor">
-      <option disabled selected>Select your preference</option>
-      <option value="love">Love / Long-Term</option>
-      <option value="good_time">Good Time / Casual</option>
-      <option value="let_it_evolve">Let It Evolve</option>
     </select>
   </div>
 
@@ -310,17 +250,17 @@
       <option disabled selected>Select your preference</option>
       <option value="hell_yes">Hell yes, the more the merrier</option>
       <option value="yes">Yes</option>
-      <option value="maybe">Maybe, depends on the lighting</option>
+      <option value="maybe">Maybe, depends on the lighting and if anyone brought snacks</option>
       <option value="no">No thank you</option>
     </select>
   </div>
 
   <div class="divider"></div>
-  <div class="section-label">Lifestyle</div>
+  <div class="section-label">Beliefs & Values</div>
 
   <div class="field">
-    <label>Do you drink alcohol?</label>
-    <select id="drinks">
+    <label>Do you have children?</label>
+    <select id="hasKids">
       <option disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
@@ -328,8 +268,8 @@
   </div>
 
   <div class="field">
-    <label>Do you smoke cigarettes/vape?</label>
-    <select id="smokes">
+    <label>Would you like to have children?</label>
+    <select id="wantsKids">
       <option disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
@@ -337,8 +277,22 @@
   </div>
 
   <div class="field">
-    <label>Do you smoke weed?</label>
-    <select id="weed">
+    <label>Religion</label>
+    <select id="religion">
+      <option disabled selected>Select your religion</option>
+      <option value="atheist">Atheist</option>
+      <option value="catholic">Catholic</option>
+      <option value="christian">Christian</option>
+      <option value="hindu">Hindu</option>
+      <option value="islam">Islam</option>
+      <option value="jewish">Jewish</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Only show my religion to others with same religion?</label>
+    <select id="showReligionMatchOnly">
       <option disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
@@ -346,16 +300,46 @@
   </div>
 
   <div class="field">
-    <label>Do you use drugs?</label>
-    <select id="drugs">
-      <option disabled selected>Select your preference</option>
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
+    <label>Political Views</label>
+    <select id="politics">
+      <option disabled selected>Select your political views</option>
+      <option value="conservative">Conservative</option>
+      <option value="liberal">Liberal</option>
+      <option value="moderate">Moderate</option>
+      <option value="not_political">Not political</option>
+      <option value="prefer_not_to_say">Prefer not to say</option>
+      <option value="other">Other</option>
     </select>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Finish & Save</div>
+
+  <div class="field">
+    <label for="email">Email Address</label>
+    <input type="email" id="email" placeholder="your@email.com" />
+  </div>
+
+  <div class="field">
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" placeholder="+1 (___) ___-____" />
+  </div>
+
+  <div class="field" style="text-align: center; margin-top: 30px;">
+    <button onclick="saveProfile()" style="
+      background-color: var(--gold);
+      color: black;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 14px 32px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    ">Save Profile</button>
   </div>
   <script>
 document.addEventListener("DOMContentLoaded", function () {
-  const slugToTitleMap = {
+  const archetypeMap = {
     "devoted_darling": "Devoted Darling",
     "mood_multiplier": "Mood Multiplier",
     "tender_protector": "Tender Protector",
@@ -370,90 +354,54 @@ document.addEventListener("DOMContentLoaded", function () {
     "claimed_and_trained": "Claimed & Trained"
   };
 
-  const archetypeSlug = localStorage.getItem("archetype") || "mood_multiplier";
-  const archetype = slugToTitleMap[archetypeSlug] || archetypeSlug;
-
-  const formatArchetypeURL = (name) =>
-    name === "Claimed & Trained"
-      ? "claimed_and_trained"
-      : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+  const storedSlug = localStorage.getItem("archetype") || "mood_multiplier";
+  const title = archetypeMap[storedSlug.toLowerCase()] || "Mood Multiplier";
 
   const roomMap = {
     "Devoted Darling": "blue", "Mood Multiplier": "blue", "Tender Protector": "blue", "Heatwave": "blue",
     "Promiscuous Plaything": "green", "Generous Giver": "green", "Bedroom Adventurer": "green", "Charmer in Charge": "green",
-    "Punish Me": "red", "Provoker": "red", "Dungeon Master": "red", "Claimed & Trained": "red"
+    "Dungeon Master": "red", "Provoker": "red", "Punish Me": "red", "Claimed & Trained": "red"
   };
 
-  const archetypeLink = document.getElementById("archetypeLink");
-  const blueprintLink = document.getElementById("blueprintLink");
-  const resultBody = document.getElementById("profileBody");
-  const slug = formatArchetypeURL(archetype);
-  const roomClass = roomMap[archetype];
+  document.body.classList.add(roomMap[title] || "blue");
+  document.getElementById("archetypeLink").textContent = title;
+  const slug = storedSlug.replace(/[^a-z0-9]+/gi, "_").replace(/_+$/, "").toLowerCase();
+  const safeSlug = slug === "claimed___trained" ? "claimed_and_trained" : slug;
+  document.getElementById("archetypeLink").href = `/premium/erotic-blueprint_${safeSlug}.html`;
+  document.getElementById("blueprintLink").href = `/premium/erotic-blueprint_${safeSlug}.html`;
 
-  if (roomClass) resultBody.classList.add(roomClass);
-  if (archetypeLink) {
-    archetypeLink.textContent = archetype;
-    archetypeLink.href = `/premium/erotic-blueprint_${slug}.html`;
-  }
-  if (blueprintLink) blueprintLink.href = `/premium/erotic-blueprint_${slug}.html`;
-
-  // Fill age
-  const ageSelect = document.getElementById("age");
-  if (ageSelect) {
-    for (let i = 18; i <= 80; i++) {
-      const opt = document.createElement("option");
-      opt.value = i;
-      opt.textContent = i;
-      ageSelect.appendChild(opt);
-    }
+  // Populate Age Dropdown
+  const age = document.getElementById("age");
+  for (let i = 18; i <= 80; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = i;
+    age.appendChild(option);
   }
 
-  // Fill height
-  const heightSelect = document.getElementById("height");
-  if (heightSelect) {
-    for (let ft = 4; ft <= 7; ft++) {
-      for (let inch = 0; inch <= 11; inch++) {
-        const label = `${ft}'${inch}"`;
-        const opt = document.createElement("option");
-        opt.value = label;
-        opt.textContent = label;
-        heightSelect.appendChild(opt);
-      }
-    }
+  // Populate Height Dropdown
+  const height = document.getElementById("height");
+  const short = document.createElement("option");
+  short.value = "<4ft";
+  short.textContent = "Under 4 ft";
+  height.appendChild(short);
+
+  for (let i = 48; i <= 84; i++) {
+    const ft = Math.floor(i / 12);
+    const inch = i % 12;
+    const label = `${ft}'${inch}"`;
+    const option = document.createElement("option");
+    option.value = label;
+    option.textContent = label;
+    height.appendChild(option);
   }
 
-  // Autofill quiz-based preferences
-  const storedAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
-  const sugarMap = { "5a": "yes", "5d": "yes", "5b": "maybe", "5c": "no", "5e": "no" };
-  if (storedAnswers.q5 && sugarMap[storedAnswers.q5]) {
-    const sugarSelect = document.getElementById("sugarDynamic");
-    if (sugarSelect) sugarSelect.value = sugarMap[storedAnswers.q5];
-  }
-
-  // Autofill archetype-specific traits
-  const defaults = {
-    "Devoted Darling": { sugarDynamic: "no", threesome: "no" },
-    "Mood Multiplier": { sugarDynamic: "no", threesome: "maybe" },
-    "Tender Protector": { sugarDynamic: "no", threesome: "no" },
-    "Heatwave": { sugarDynamic: "no", threesome: "maybe" },
-    "Promiscuous Plaything": { sugarDynamic: "yes", threesome: "hell_yes" },
-    "Generous Giver": { sugarDynamic: "no", threesome: "maybe" },
-    "Bedroom Adventurer": { sugarDynamic: "yes", threesome: "hell_yes" },
-    "Charmer in Charge": { sugarDynamic: "yes", threesome: "yes" },
-    "Punish Me": { sugarDynamic: "yes", threesome: "hell_yes" },
-    "Provoker": { sugarDynamic: "yes", threesome: "hell_yes" },
-    "Dungeon Master": { sugarDynamic: "no", threesome: "yes" },
-    "Claimed & Trained": { sugarDynamic: "no", threesome: "maybe" }
-  };
-  const setValue = (id, val) => {
-    const el = document.getElementById(id);
-    if (el && val) el.value = val;
-  };
-  const traits = defaults[archetype];
-  Object.entries(traits).forEach(([k, v]) => setValue(k, v));
+  const tall = document.createElement("option");
+  tall.value = ">7ft";
+  tall.textContent = "Over 7 ft";
+  height.appendChild(tall);
 });
 </script>
-
 <script>
 function handlePhotoUpload(event, index) {
   const file = event.target.files[0];
@@ -461,15 +409,46 @@ function handlePhotoUpload(event, index) {
 
   const reader = new FileReader();
   reader.onload = function (e) {
-    const label = event.target.closest("label");
+    const label = event.target.closest('.photo-upload');
     label.style.backgroundImage = `url('${e.target.result}')`;
     label.style.backgroundSize = "cover";
     label.style.backgroundPosition = "center";
-    label.innerHTML = "";
+    label.querySelector('.plus').style.display = "none";
+    if (label.querySelector("span")) label.querySelector("span").style.display = "none";
   };
   reader.readAsDataURL(file);
 }
 </script>
 
-</body>
-</html>
+<script>
+function saveProfile() {
+  const requiredFields = ["name", "age", "height"];
+  let valid = true;
+
+  requiredFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || !el.value) {
+      el.style.border = "2px solid red";
+      valid = false;
+    } else {
+      el.style.border = "none";
+    }
+  });
+
+  if (!valid) {
+    alert("Please complete all required fields.");
+    return;
+  }
+
+  // Example: Save data locally
+  const fields = document.querySelectorAll("input, select");
+  const profileData = {};
+  fields.forEach(el => {
+    if (el.id) profileData[el.id] = el.value;
+  });
+
+  localStorage.setItem("userProfile", JSON.stringify(profileData));
+  alert("Profile saved successfully. You’re now verified!");
+  window.location.href = "/map.html";
+}
+</script>
