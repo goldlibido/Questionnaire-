@@ -97,7 +97,6 @@
 
     .photo-upload.required::after {
       content: "Required";
-      color: var(--white);
       font-size: 0.7rem;
       position: absolute;
       top: 6px;
@@ -138,8 +137,19 @@
       appearance: none;
     }
 
+    .divider {
+      border-top: 1px solid rgba(255,255,255,0.15);
+      margin: 30px 0 10px;
+    }
+
+    .locked {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
     @media (min-width: 768px) {
-      .photo-grid, .field {
+      .photo-grid,
+      .field {
         max-width: 500px;
         margin-left: auto;
         margin-right: auto;
@@ -147,6 +157,7 @@
     }
   </style>
 </head>
+
 <body id="profileBody">
 
   <div class="header-banner">
@@ -163,21 +174,25 @@
 
   <div class="section-label">Upload Photos</div>
   <div class="photo-grid" id="photoGrid">
-    ${[...Array(6)].map((_, i) => `
-      <label class="photo-upload${i === 0 ? ' required' : ''}">
-        <span class="plus">+</span>
-        <span>${i === 0 ? 'Main Photo' : 'Photo ' + (i + 1)}</span>
-        <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${i})">
-      </label>`).join('')}
+    <label class="photo-upload required">
+      <span class="plus">+</span>
+      <span>Main Photo</span>
+      <input type="file" accept="image/*" onchange="handlePhotoUpload(event, 0)">
+    </label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 1)"></label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 2)"></label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 3)"></label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 4)"></label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 5)"></label>
   </div>
 
   <div class="field" style="max-width: 500px; margin: 0 auto;">
     <label for="instagram">Link Instagram (optional)</label>
     <input type="text" id="instagram" placeholder="@yourhandle" />
   </div>
+    <div class="section-label">Basic Info</div>
 
-  <div class="section-label">Basic Info</div>
-  <div class="field" style="max-width: 500px; margin: 0 auto;">
+  <div class="field">
     <label for="name">Name</label>
     <input type="text" id="name" placeholder="First & Last Name" />
   </div>
@@ -195,10 +210,11 @@
       <option disabled selected>Select your height</option>
     </select>
   </div>
-    <div class="field">
+
+  <div class="field">
     <label for="orientation">Sexual Orientation</label>
     <select id="orientation">
-      <option disabled selected>Select your preference</option>
+      <option value="" disabled selected>Select your preference</option>
       <option value="Straight">Straight</option>
       <option value="Bisexual">Bisexual</option>
       <option value="Homosexual">Homosexual</option>
@@ -211,10 +227,10 @@
 
   <div class="field locked">
     <label>Your Sexual Archetype</label>
-    <a id="archetypeLink" style="font-weight: bold; color: white; text-decoration: underline;" target="_blank">Loading...</a>
+    <div id="archetypeName" style="font-weight: bold;">Mood Multiplier</div>
   </div>
 
-  <div class="field" style="text-align: center; margin-top: 8px;">
+  <div class="field" style="margin-top: 8px; text-align: center;">
     <a id="blueprintLink"
        target="_blank"
        style="display: inline-block; margin-top: 6px; color: var(--gold); font-weight: bold; text-decoration: underline;">
@@ -225,7 +241,7 @@
   <div class="field">
     <label>Love Language</label>
     <select id="loveLanguage">
-      <option disabled selected>Select your preference</option>
+      <option value="" disabled selected>Select your preference</option>
       <option value="words">Words of affirmation</option>
       <option value="touch">Physical touch</option>
       <option value="time">Quality time</option>
@@ -235,9 +251,59 @@
   </div>
 
   <div class="field">
+    <label>Turn-On Vocabulary</label>
+    <select id="turnOnVocab">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="sweet">Sweet & affectionate</option>
+      <option value="confident">Confident & direct</option>
+      <option value="filthy">Filthy & explicit</option>
+      <option value="teasing">Playful & teasing</option>
+      <option value="commanding">Commanding & dominant</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>My Type</label>
+    <select id="tyle">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="tall">Tall</option>
+      <option value="confident">Confident & funny</option>
+      <option value="brunette">Brunette</option>
+      <option value="blonde">Blonde</option>
+      <option value="latin">Latin</option>
+      <option value="asian">Asian</option>
+      <option value="black">Black</option>
+      <option value="prefer">Prefer not to say</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Fantasies</label>
+    <select id="fantasies">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="exhibitionism">Being watched</option>
+      <option value="submission">Giving up control</option>
+      <option value="dominance">Taking control</option>
+      <option value="roleplay">Roleplay & costumes</option>
+      <option value="something else">Something else</option>
+      <option value="prefer">Prefer not to say</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Looking For</label>
+    <select id="lookingFor">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="love">Love / Long-Term</option>
+      <option value="good_time">Good Time / Casual</option>
+      <option value="let_it_evolve">Let it evolve</option>
+    </select>
+  </div>
+
+  <div class="field">
     <label>Open to Sugar Dynamic?</label>
     <select id="sugarDynamic">
-      <option disabled selected>Select your preference</option>
+      <option value="" disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
       <option value="maybe">Maybe</option>
       <option value="no">No</option>
@@ -247,11 +313,59 @@
   <div class="field">
     <label>Open to Threesome?</label>
     <select id="threesome">
-      <option disabled selected>Select your preference</option>
+      <option value="" disabled selected>Select your preference</option>
       <option value="hell_yes">Hell yes, the more the merrier</option>
       <option value="yes">Yes</option>
       <option value="maybe">Maybe, depends on the lighting and if anyone brought snacks</option>
       <option value="no">No thank you</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="email">Email Address</label>
+    <input type="email" id="email" placeholder="you@example.com" />
+  </div>
+
+  <div class="field">
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" placeholder="e.g. 555-123-4567" />
+  </div>
+    <div class="divider"></div>
+  <div class="section-label">Lifestyle</div>
+
+  <div class="field">
+    <label>Do you drink alcohol?</label>
+    <select id="drinks">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Do you smoke cigarettes/vape?</label>
+    <select id="smokes">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Do you smoke weed?</label>
+    <select id="weed">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Do you use drugs?</label>
+    <select id="drugs">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
     </select>
   </div>
 
@@ -261,7 +375,7 @@
   <div class="field">
     <label>Do you have children?</label>
     <select id="hasKids">
-      <option disabled selected>Select your preference</option>
+      <option value="" disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
     </select>
@@ -270,16 +384,26 @@
   <div class="field">
     <label>Would you like to have children?</label>
     <select id="wantsKids">
-      <option disabled selected>Select your preference</option>
+      <option value="" disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
     </select>
   </div>
 
   <div class="field">
+    <label for="job">Job Title</label>
+    <input type="text" id="job" placeholder="Enter job title" />
+  </div>
+
+  <div class="field">
+    <label for="education">Education</label>
+    <input type="text" id="education" placeholder="School name" />
+  </div>
+
+  <div class="field">
     <label>Religion</label>
     <select id="religion">
-      <option disabled selected>Select your religion</option>
+      <option value="" disabled selected>Select your preference</option>
       <option value="atheist">Atheist</option>
       <option value="catholic">Catholic</option>
       <option value="christian">Christian</option>
@@ -293,7 +417,7 @@
   <div class="field">
     <label>Only show my religion to others with same religion?</label>
     <select id="showReligionMatchOnly">
-      <option disabled selected>Select your preference</option>
+      <option value="" disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
     </select>
@@ -302,7 +426,7 @@
   <div class="field">
     <label>Political Views</label>
     <select id="politics">
-      <option disabled selected>Select your political views</option>
+      <option value="" disabled selected>Select your preference</option>
       <option value="conservative">Conservative</option>
       <option value="liberal">Liberal</option>
       <option value="moderate">Moderate</option>
@@ -313,22 +437,46 @@
   </div>
 
   <div class="divider"></div>
-  <div class="section-label">Finish & Save</div>
+  <div class="section-label">Notifications & Visibility</div>
 
   <div class="field">
-    <label for="email">Email Address</label>
-    <input type="email" id="email" placeholder="your@email.com" />
+    <label>Get notified when someone wants you?</label>
+    <select id="notifyWantsYou">
+      <option value="yes" selected>Yes</option>
+      <option value="no">No</option>
+    </select>
   </div>
 
   <div class="field">
-    <label for="phone">Phone Number</label>
-    <input type="tel" id="phone" placeholder="+1 (___) ___-____" />
+    <label>Get notified when someone checks you out?</label>
+    <select id="notifyChecksYouOut">
+      <option value="yes" selected>Yes</option>
+      <option value="no">No</option>
+    </select>
   </div>
 
-  <div class="field" style="text-align: center; margin-top: 30px;">
+  <div class="field">
+    <label>Allow messages from:</label>
+    <select id="allowMessagesFrom">
+      <option value="verified" selected>Verified Only</option>
+      <option value="anonymous">Anonymous Only</option>
+      <option value="both">Both</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Show profile to:</label>
+    <select id="visibility">
+      <option value="verified" selected>Verified Only</option>
+      <option value="anonymous">Anonymous Only</option>
+      <option value="both">Both</option>
+    </select>
+  </div>
+
+  <div style="margin-top: 40px;">
     <button onclick="saveProfile()" style="
-      background-color: var(--gold);
-      color: black;
+      background-color: #e1bf78;
+      color: #000;
       font-size: 1.2rem;
       font-weight: bold;
       padding: 14px 32px;
@@ -339,7 +487,9 @@
   </div>
   <script>
 document.addEventListener("DOMContentLoaded", function () {
-  const archetypeMap = {
+  // Set archetype and background color
+  const stored = localStorage.getItem("archetype") || "Mood Multiplier";
+  const slugToTitle = {
     "devoted_darling": "Devoted Darling",
     "mood_multiplier": "Mood Multiplier",
     "tender_protector": "Tender Protector",
@@ -353,102 +503,84 @@ document.addEventListener("DOMContentLoaded", function () {
     "dungeon_master": "Dungeon Master",
     "claimed_and_trained": "Claimed & Trained"
   };
-
-  const storedSlug = localStorage.getItem("archetype") || "mood_multiplier";
-  const title = archetypeMap[storedSlug.toLowerCase()] || "Mood Multiplier";
-
+  const archetype = slugToTitle[stored] || stored;
   const roomMap = {
-    "Devoted Darling": "blue", "Mood Multiplier": "blue", "Tender Protector": "blue", "Heatwave": "blue",
+    "Tender Protector": "blue", "Devoted Darling": "blue", "Mood Multiplier": "blue", "Heatwave": "blue",
     "Promiscuous Plaything": "green", "Generous Giver": "green", "Bedroom Adventurer": "green", "Charmer in Charge": "green",
     "Dungeon Master": "red", "Provoker": "red", "Punish Me": "red", "Claimed & Trained": "red"
   };
+  const formatSlug = (name) => name === "Claimed & Trained" ? "claimed_and_trained" : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
 
-  document.body.classList.add(roomMap[title] || "blue");
-  document.getElementById("archetypeLink").textContent = title;
-  const slug = storedSlug.replace(/[^a-z0-9]+/gi, "_").replace(/_+$/, "").toLowerCase();
-  const safeSlug = slug === "claimed___trained" ? "claimed_and_trained" : slug;
-  document.getElementById("archetypeLink").href = `/premium/erotic-blueprint_${safeSlug}.html`;
-  document.getElementById("blueprintLink").href = `/premium/erotic-blueprint_${safeSlug}.html`;
+  document.body.classList.add(roomMap[archetype]);
+  document.getElementById("archetypeLink").textContent = archetype;
+  document.getElementById("blueprintLink").href = `/premium/erotic-blueprint_${formatSlug(archetype)}.html`;
 
-  // Populate Age Dropdown
-  const age = document.getElementById("age");
-  for (let i = 18; i <= 80; i++) {
-    const option = document.createElement("option");
-    option.value = i;
-    option.textContent = i;
-    age.appendChild(option);
-  }
+  // Progress indicator
+  const circle = document.getElementById("progressCircle");
+  if (circle) circle.textContent = "33%";
 
-  // Populate Height Dropdown
-  const height = document.getElementById("height");
-  const short = document.createElement("option");
-  short.value = "<4ft";
-  short.textContent = "Under 4 ft";
-  height.appendChild(short);
-
-  for (let i = 48; i <= 84; i++) {
-    const ft = Math.floor(i / 12);
-    const inch = i % 12;
-    const label = `${ft}'${inch}"`;
-    const option = document.createElement("option");
-    option.value = label;
-    option.textContent = label;
-    height.appendChild(option);
-  }
-
-  const tall = document.createElement("option");
-  tall.value = ">7ft";
-  tall.textContent = "Over 7 ft";
-  height.appendChild(tall);
-});
-</script>
-<script>
-function handlePhotoUpload(event, index) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const label = event.target.closest('.photo-upload');
-    label.style.backgroundImage = `url('${e.target.result}')`;
-    label.style.backgroundSize = "cover";
-    label.style.backgroundPosition = "center";
-    label.querySelector('.plus').style.display = "none";
-    if (label.querySelector("span")) label.querySelector("span").style.display = "none";
-  };
-  reader.readAsDataURL(file);
-}
-</script>
-
-<script>
-function saveProfile() {
-  const requiredFields = ["name", "age", "height"];
-  let valid = true;
-
-  requiredFields.forEach(id => {
-    const el = document.getElementById(id);
-    if (!el || !el.value) {
-      el.style.border = "2px solid red";
-      valid = false;
-    } else {
-      el.style.border = "none";
+  // Age Dropdown
+  const ageSelect = document.getElementById("age");
+  if (ageSelect) {
+    for (let i = 18; i <= 80; i++) {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = i;
+      ageSelect.appendChild(opt);
     }
-  });
-
-  if (!valid) {
-    alert("Please complete all required fields.");
-    return;
   }
 
-  // Example: Save data locally
-  const fields = document.querySelectorAll("input, select");
-  const profileData = {};
-  fields.forEach(el => {
-    if (el.id) profileData[el.id] = el.value;
-  });
+  // Height Dropdown
+  const heightSelect = document.getElementById("height");
+  if (heightSelect) {
+    for (let ft = 4; ft <= 7; ft++) {
+      for (let inch = 0; inch < 12; inch++) {
+        if (ft === 7 && inch > 0) continue;
+        const label = `${ft}'${inch}"`;
+        const opt = document.createElement("option");
+        opt.value = label;
+        opt.textContent = label;
+        heightSelect.appendChild(opt);
+      }
+    }
+  }
 
-  localStorage.setItem("userProfile", JSON.stringify(profileData));
-  alert("Profile saved successfully. You’re now verified!");
-  window.location.href = "/map.html";
-}
+  // Fix sugarDynamic default
+  const sugarSelect = document.getElementById("sugarDynamic");
+  if (sugarSelect) sugarSelect.value = "";
+
+  const threesomeSelect = document.getElementById("threesome");
+  if (threesomeSelect) threesomeSelect.value = "";
+
+  // Photo upload preview
+  window.handlePhotoUpload = function (event, index) {
+    const label = event.target.closest(".photo-upload");
+    const file = event.target.files[0];
+    if (file && label) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        label.style.backgroundImage = `url(${e.target.result})`;
+        label.style.backgroundSize = "cover";
+        label.style.backgroundPosition = "center";
+        label.innerHTML = '';
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Save profile → redirect
+  window.saveProfile = function () {
+    const email = prompt("Enter your email:");
+    const phone = prompt("Enter your phone number:");
+    if (!email || !phone) {
+      alert("Email and phone number are required.");
+      return;
+    }
+    // Optionally save to localStorage for now
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userPhone", phone);
+    alert("Profile saved! Redirecting to map...");
+    window.location.href = "/map.html";
+  };
+});
 </script>
