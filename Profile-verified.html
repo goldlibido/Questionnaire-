@@ -11,6 +11,7 @@
       --white: #ffffff;
       --black: #000000;
     }
+
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
@@ -18,18 +19,122 @@
       padding: 20px;
       background-color: #0d0d0d;
     }
+
+    body.blue { background-color: #064D95; }
+    body.green { background-color: #06954E; }
+    body.red { background-color: #950606; }
+
+    .header-banner {
+      background-color: var(--gold);
+      color: var(--black);
+      font-weight: bold;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .progress-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: conic-gradient(var(--black) 0% 33%, transparent 0% 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--white);
+      font-weight: bold;
+    }
+
+    .logo {
+      max-width: 140px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .section-label {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin: 30px 0 10px;
+      padding-bottom: 6px;
+      color: var(--gold);
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .photo-upload {
+      width: 100%;
+      aspect-ratio: 1;
+      background-color: rgba(255,255,255,0.1);
+      border: 2px dashed var(--gold);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 0.8rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-upload input {
+      display: none;
+    }
+
+    .photo-upload img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .photo-upload .plus {
+      font-size: 1.5rem;
+      z-index: 2;
+    }
+
+    .photo-upload.required::after {
+      content: "Required";
+      color: var(--white);
+      font-size: 0.7rem;
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background-color: var(--gold);
+      color: var(--black);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      z-index: 2;
+    }
+
     .field {
       margin: 12px auto;
       font-size: 1rem;
       max-width: 500px;
       width: 100%;
     }
+
     .field label {
       display: block;
       margin-bottom: 4px;
       font-weight: 600;
     }
-    .field input, .field select {
+
+    .field input,
+    .field select {
       max-width: 100%;
       width: 100%;
       box-sizing: border-box;
@@ -40,19 +145,81 @@
       color: var(--white);
       background-color: rgba(255,255,255,0.1);
     }
-    button {
-      background-color: #e1bf78;
-      color: #000;
+
+    .field select {
+      appearance: none;
+    }
+
+    .locked {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .divider {
+      border-top: 1px solid rgba(255,255,255,0.15);
+      margin: 30px 0 10px;
+    }
+
+    .button {
+      background-color: var(--gold);
+      color: var(--black);
       font-size: 1.2rem;
       font-weight: bold;
       padding: 14px 32px;
       border-radius: 10px;
       border: none;
       cursor: pointer;
+      margin-top: 40px;
+      display: block;
+      width: 100%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (min-width: 768px) {
+      .photo-grid,
+      .field {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
     }
   </style>
 </head>
-<body>
+<body id="profileBody">
+  <div class="header-banner">
+    <div>Verified Mode</div>
+    <div class="progress-circle" id="progressCircle">33%</div>
+  </div>
+  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo"/>
+    <div class="field" style="text-align: center;">
+    <label for="bio">Flirty First Impression</label>
+    <input type="text" id="bio" placeholder="e.g. Catch me before I change my mind…" />
+  </div>
+
+  <div class="section-label">Upload Photos</div>
+  <div class="photo-grid" id="photoGrid">
+    ${Array.from({ length: 6 }, (_, i) => `
+      <label class="photo-upload ${i === 0 ? "required" : ""}">
+        <span class="plus">+</span>
+        ${i === 0 ? "<span>Main Photo</span>" : ""}
+        <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${i})">
+      </label>
+    `).join("")}
+  </div>
+
+  <div class="field">
+    <label for="instagram">Link Instagram (optional)</label>
+    <input type="text" id="instagram" placeholder="@yourhandle" />
+  </div>
+
+  <div class="section-label">Basic Info</div>
+  <div class="field">
+    <label for="name">Name</label>
+    <input type="text" id="name" placeholder="First & Last Name" />
+  </div>
+
   <div class="field">
     <label for="age">Age</label>
     <select id="age">
@@ -66,19 +233,69 @@
       <option disabled selected>Select your height</option>
     </select>
   </div>
-    <div class="field">
-    <label for="threesome">Open to Threesome?</label>
-    <select id="threesome">
+
+  <div class="field">
+    <label for="orientation">Sexual Orientation</label>
+    <select id="orientation">
       <option disabled selected>Select your preference</option>
-      <option value="hell_yes">Hell yes, the more the merrier</option>
-      <option value="yes">Yes</option>
-      <option value="maybe">Maybe, depends on the vibe</option>
-      <option value="no">No thanks</option>
+      <option value="Straight">Straight</option>
+      <option value="Bisexual">Bisexual</option>
+      <option value="Homosexual">Homosexual</option>
+      <option value="Pansexual">Pansexual</option>
+    </select>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Sexual Profile</div>
+
+  <div class="field locked">
+    <label>Your Sexual Archetype</label>
+    <a id="archetypeLink" style="font-weight: bold; color: white; text-decoration: underline;" target="_blank">Mood Multiplier</a>
+  </div>
+
+  <div class="field" style="text-align: center;">
+    <a id="blueprintLink" target="_blank" style="color: var(--gold); font-weight: bold; text-decoration: underline;">
+      → View Your Full Sexual Profile
+    </a>
+  </div>
+
+  <div class="field">
+    <label>Love Language</label>
+    <select id="loveLanguage">
+      <option disabled selected>Select your preference</option>
+      <option value="words">Words of affirmation</option>
+      <option value="touch">Physical touch</option>
+      <option value="time">Quality time</option>
+      <option value="gifts">Gifts</option>
+      <option value="acts">Acts of service</option>
     </select>
   </div>
 
   <div class="field">
-    <label for="sugarDynamic">Open to Sugar Dynamic?</label>
+    <label>Fantasies</label>
+    <select id="fantasies">
+      <option disabled selected>Select your preference</option>
+      <option value="voyeurism">Being watched</option>
+      <option value="submission">Giving up control</option>
+      <option value="dominance">Taking control</option>
+      <option value="roleplay">Roleplay & costumes</option>
+      <option value="threesome">Threesome or group</option>
+      <option value="other">Something else</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Looking For</label>
+    <select id="lookingFor">
+      <option disabled selected>Select your preference</option>
+      <option value="love">Love / Long-Term</option>
+      <option value="good_time">Good Time / Casual</option>
+      <option value="let_it_evolve">Let It Evolve</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Open to Sugar Dynamic?</label>
     <select id="sugarDynamic">
       <option disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
@@ -88,24 +305,101 @@
   </div>
 
   <div class="field">
-    <label for="email">Email Address</label>
-    <input type="email" id="email" placeholder="you@example.com" required>
+    <label>Open to Threesome?</label>
+    <select id="threesome">
+      <option disabled selected>Select your preference</option>
+      <option value="hell_yes">Hell yes, the more the merrier</option>
+      <option value="yes">Yes</option>
+      <option value="maybe">Maybe, depends on the lighting</option>
+      <option value="no">No thank you</option>
+    </select>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Lifestyle</div>
+
+  <div class="field">
+    <label>Do you drink alcohol?</label>
+    <select id="drinks">
+      <option disabled selected>Select your preference</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
   </div>
 
   <div class="field">
-    <label for="phone">Phone Number</label>
-    <input type="tel" id="phone" placeholder="e.g. 555-123-4567" required>
+    <label>Do you smoke cigarettes/vape?</label>
+    <select id="smokes">
+      <option disabled selected>Select your preference</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
   </div>
 
-  <div style="margin-top: 30px; text-align: center;">
-    <button onclick="saveProfile()">Save Profile</button>
-    <p id="status" style="margin-top: 10px; font-size: 0.9rem;"></p>
+  <div class="field">
+    <label>Do you smoke weed?</label>
+    <select id="weed">
+      <option disabled selected>Select your preference</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Do you use drugs?</label>
+    <select id="drugs">
+      <option disabled selected>Select your preference</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
   </div>
   <script>
 document.addEventListener("DOMContentLoaded", function () {
-  // Fill Age Dropdown (18–80)
+  const slugToTitleMap = {
+    "devoted_darling": "Devoted Darling",
+    "mood_multiplier": "Mood Multiplier",
+    "tender_protector": "Tender Protector",
+    "heatwave": "Heatwave",
+    "promiscuous_plaything": "Promiscuous Plaything",
+    "generous_giver": "Generous Giver",
+    "bedroom_adventurer": "Bedroom Adventurer",
+    "charmer_in_charge": "Charmer in Charge",
+    "punish_me": "Punish Me",
+    "provoker": "Provoker",
+    "dungeon_master": "Dungeon Master",
+    "claimed_and_trained": "Claimed & Trained"
+  };
+
+  const archetypeSlug = localStorage.getItem("archetype") || "mood_multiplier";
+  const archetype = slugToTitleMap[archetypeSlug] || archetypeSlug;
+
+  const formatArchetypeURL = (name) =>
+    name === "Claimed & Trained"
+      ? "claimed_and_trained"
+      : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+
+  const roomMap = {
+    "Devoted Darling": "blue", "Mood Multiplier": "blue", "Tender Protector": "blue", "Heatwave": "blue",
+    "Promiscuous Plaything": "green", "Generous Giver": "green", "Bedroom Adventurer": "green", "Charmer in Charge": "green",
+    "Punish Me": "red", "Provoker": "red", "Dungeon Master": "red", "Claimed & Trained": "red"
+  };
+
+  const archetypeLink = document.getElementById("archetypeLink");
+  const blueprintLink = document.getElementById("blueprintLink");
+  const resultBody = document.getElementById("profileBody");
+  const slug = formatArchetypeURL(archetype);
+  const roomClass = roomMap[archetype];
+
+  if (roomClass) resultBody.classList.add(roomClass);
+  if (archetypeLink) {
+    archetypeLink.textContent = archetype;
+    archetypeLink.href = `/premium/erotic-blueprint_${slug}.html`;
+  }
+  if (blueprintLink) blueprintLink.href = `/premium/erotic-blueprint_${slug}.html`;
+
+  // Fill age
   const ageSelect = document.getElementById("age");
-  if (ageSelect && ageSelect.options.length <= 1) {
+  if (ageSelect) {
     for (let i = 18; i <= 80; i++) {
       const opt = document.createElement("option");
       opt.value = i;
@@ -114,15 +408,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Fill Height Dropdown (4'0" to 7'0")
+  // Fill height
   const heightSelect = document.getElementById("height");
-  if (heightSelect && heightSelect.options.length <= 1) {
-    const placeholder = document.createElement("option");
-    placeholder.disabled = true;
-    placeholder.selected = true;
-    placeholder.textContent = "Select your height";
-    heightSelect.appendChild(placeholder);
-
+  if (heightSelect) {
     for (let ft = 4; ft <= 7; ft++) {
       for (let inch = 0; inch <= 11; inch++) {
         const label = `${ft}'${inch}"`;
@@ -133,38 +421,55 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   }
-});
 
-function saveProfile() {
-  const email = document.getElementById("email").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const status = document.getElementById("status");
-
-  if (!email || !phone) {
-    status.textContent = "Please enter your email and phone number.";
-    status.style.color = "orange";
-    return;
+  // Autofill quiz-based preferences
+  const storedAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
+  const sugarMap = { "5a": "yes", "5d": "yes", "5b": "maybe", "5c": "no", "5e": "no" };
+  if (storedAnswers.q5 && sugarMap[storedAnswers.q5]) {
+    const sugarSelect = document.getElementById("sugarDynamic");
+    if (sugarSelect) sugarSelect.value = sugarMap[storedAnswers.q5];
   }
 
-  // Simulate saving
-  const data = {
-    name: document.getElementById("name")?.value || "",
-    age: document.getElementById("age")?.value || "",
-    height: document.getElementById("height")?.value || "",
-    email,
-    phone,
-    threesome: document.getElementById("threesome")?.value || "",
-    sugarDynamic: document.getElementById("sugarDynamic")?.value || "",
-    archetype: localStorage.getItem("archetype") || "",
-    // You can add more fields as needed
+  // Autofill archetype-specific traits
+  const defaults = {
+    "Devoted Darling": { sugarDynamic: "no", threesome: "no" },
+    "Mood Multiplier": { sugarDynamic: "no", threesome: "maybe" },
+    "Tender Protector": { sugarDynamic: "no", threesome: "no" },
+    "Heatwave": { sugarDynamic: "no", threesome: "maybe" },
+    "Promiscuous Plaything": { sugarDynamic: "yes", threesome: "hell_yes" },
+    "Generous Giver": { sugarDynamic: "no", threesome: "maybe" },
+    "Bedroom Adventurer": { sugarDynamic: "yes", threesome: "hell_yes" },
+    "Charmer in Charge": { sugarDynamic: "yes", threesome: "yes" },
+    "Punish Me": { sugarDynamic: "yes", threesome: "hell_yes" },
+    "Provoker": { sugarDynamic: "yes", threesome: "hell_yes" },
+    "Dungeon Master": { sugarDynamic: "no", threesome: "yes" },
+    "Claimed & Trained": { sugarDynamic: "no", threesome: "maybe" }
   };
+  const setValue = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val) el.value = val;
+  };
+  const traits = defaults[archetype];
+  Object.entries(traits).forEach(([k, v]) => setValue(k, v));
+});
+</script>
 
-  localStorage.setItem("verifiedProfile", JSON.stringify(data));
-  status.textContent = "Profile saved successfully!";
-  status.style.color = "lightgreen";
+<script>
+function handlePhotoUpload(event, index) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-  setTimeout(() => {
-    window.location.href = "/map.html";
-  }, 1200);
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const label = event.target.closest("label");
+    label.style.backgroundImage = `url('${e.target.result}')`;
+    label.style.backgroundSize = "cover";
+    label.style.backgroundPosition = "center";
+    label.innerHTML = "";
+  };
+  reader.readAsDataURL(file);
 }
 </script>
+
+</body>
+</html>
