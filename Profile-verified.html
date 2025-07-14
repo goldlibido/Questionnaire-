@@ -557,41 +557,73 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 function handlePhotoUpload(event, index) {
-  const input = event.target;
-  const file = input.files[0];
-  const label = input.closest(".photo-upload");
+  const file = event.target.files[0];
+  if (!file) return;
 
-  if (file && label) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      // Create an img element if not already inside
-      let img = label.querySelector("img.upload-preview");
-      if (!img) {
-        img = document.createElement("img");
-        img.classList.add("upload-preview");
-        img.style.width = "100%";
-        img.style.height = "100%";
-        img.style.objectFit = "cover";
-        img.style.borderRadius = "6px";
-        img.style.position = "absolute";
-        img.style.top = 0;
-        img.style.left = 0;
-        label.appendChild(img);
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const photoUpload = event.target.closest('.photo-upload');
+    
+    // Clear existing content
+    photoUpload.innerHTML = '';
+    
+    // Create image element
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+    img.style.borderRadius = '6px';
+    
+    // Add image to container
+    photoUpload.appendChild(img);
+    
+    // Add delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.innerHTML = '×';
+    deleteBtn.style.position = 'absolute';
+    deleteBtn.style.top = '5px';
+    deleteBtn.style.right = '5px';
+    deleteBtn.style.width = '20px';
+    deleteBtn.style.height = '20px';
+    deleteBtn.style.borderRadius = '50%';
+    deleteBtn.style.border = 'none';
+    deleteBtn.style.background = 'rgba(0,0,0,0.7)';
+    deleteBtn.style.color = 'white';
+    deleteBtn.style.cursor = 'pointer';
+    deleteBtn.style.fontSize = '14px';
+    deleteBtn.style.display = 'flex';
+    deleteBtn.style.alignItems = 'center';
+    deleteBtn.style.justifyContent = 'center';
+    
+    deleteBtn.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Reset to original state
+      photoUpload.innerHTML = `
+        <span class="plus">+</span>
+        ${index === 0 ? '<span>Main Photo</span>' : ''}
+        <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
+      `;
+      
+      if (index === 0) {
+        photoUpload.classList.add('required');
       }
-
-      img.src = e.target.result;
-
-      // Hide the "+" and "Main Photo" label text
-      const plus = label.querySelector(".plus");
-      const span = label.querySelector("span:not(.plus)");
-      if (plus) plus.style.display = "none";
-      if (span) span.style.display = "none";
     };
-    reader.readAsDataURL(file);
-  }
+    
+    photoUpload.appendChild(deleteBtn);
+    photoUpload.style.position = 'relative';
+    
+    // Remove required class if it's the main photo
+    if (index === 0) {
+      photoUpload.classList.remove('required');
+    }
+  };
+  
+  reader.readAsDataURL(file);
 }
 </script>
-
   // Save profile → redirect
   window.saveProfile = function () {
     const email = prompt("Enter your email:");
