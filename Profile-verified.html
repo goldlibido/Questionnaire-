@@ -623,8 +623,22 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("sugarDynamic").value = "";
   document.getElementById("threesome").value = "";
 });
-
-// ✅ Image upload handler
+// ✅ Save profile → redirect
+function saveProfile() {
+  const email = prompt("Enter your email:");
+  const phone = prompt("Enter your phone number:");
+  if (!email || !phone) {
+    alert("Email and phone number are required.");
+    return;
+  }
+  localStorage.setItem("userEmail", email);
+  localStorage.setItem("userPhone", phone);
+  alert("Profile saved! Redirecting to map...");
+  window.location.href = "/map.html";
+}
+</script>
+</body>
+<script>
 function handlePhotoUpload(event, index) {
   const file = event.target.files[0];
   if (!file) return;
@@ -677,20 +691,5 @@ function handlePhotoUpload(event, index) {
 
   reader.readAsDataURL(file);
 }
-
-// ✅ Save profile → redirect
-function saveProfile() {
-  const email = prompt("Enter your email:");
-  const phone = prompt("Enter your phone number:");
-  if (!email || !phone) {
-    alert("Email and phone number are required.");
-    return;
-  }
-  localStorage.setItem("userEmail", email);
-  localStorage.setItem("userPhone", phone);
-  alert("Profile saved! Redirecting to map...");
-  window.location.href = "/map.html";
-}
 </script>
-</body>
 </html>
