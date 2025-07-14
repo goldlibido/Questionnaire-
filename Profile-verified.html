@@ -552,21 +552,25 @@ document.addEventListener("DOMContentLoaded", function () {
   const threesomeSelect = document.getElementById("threesome");
   if (threesomeSelect) threesomeSelect.value = "";
 
-  // Photo upload preview
-  window.handlePhotoUpload = function (event, index) {
-    const label = event.target.closest(".photo-upload");
-    const file = event.target.files[0];
-    if (file && label) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        label.style.backgroundImage = `url(${e.target.result})`;
-        label.style.backgroundSize = "cover";
-        label.style.backgroundPosition = "center";
-        label.innerHTML = '';
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  <script>
+function handlePhotoUpload(event, index) {
+  const input = event.target;
+  const file = input.files[0];
+  const label = input.closest(".photo-upload");
+
+  if (file && label) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      label.style.backgroundImage = `url(${e.target.result})`;
+      label.style.backgroundSize = "cover";
+      label.style.backgroundPosition = "center";
+      label.style.backgroundRepeat = "no-repeat";
+      label.innerHTML = ""; // remove the "+" and text inside
+    };
+    reader.readAsDataURL(file);
+  }
+}
+</script>
 
   // Save profile → redirect
   window.saveProfile = function () {
