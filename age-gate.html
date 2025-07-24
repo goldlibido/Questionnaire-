@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Le Libido – Age Verification</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #e1bf78;
+      --red: #950606;
+      --blue: #064D95;
+      --green: #06954E;
+      --black: #0d0d0d;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--black);
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+      border: 4px solid;
+      border-image: linear-gradient(to right, var(--red), var(--blue), var(--green)) 1;
+    }
+
+    .logo {
+      max-width: 120px;
+      margin-bottom: 10px;
+    }
+
+    .slogan {
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .description {
+      font-size: 1.1rem;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .question {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .button {
+      background-color: var(--gold);
+      color: #000;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: transform 0.2s ease;
+    }
+
+    .button:hover {
+      transform: scale(1.05);
+    }
+
+    .green { color: var(--green); font-weight: 600; }
+    .blue { color: var(--blue); font-weight: 600; }
+    .red { color: var(--red); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- Replace this src with your actual logo file -->
+  <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+
+  <div class="slogan">FOREPLAY</div>
+
+  <h1>We make dating feel <span class="green">organic</span>.</h1>
+
+  <div class="description">
+    We built Le Libido to bring back <span class="blue">spontaneity</span> and <span class="red">serendipity</span> to dating.
+  </div>
+
+  <div class="question">Are you 18 or older?</div>
+
+  <button class="button" onclick="window.location.href='tap.html'">Yes, I’m 18+</button>
+  <button class="button" onclick="window.location.href='https://www.google.com'">No, take me back</button>
+
+</body>
+</html>
