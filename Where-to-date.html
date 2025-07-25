@@ -13,27 +13,46 @@
       --green: #06954E;
     }
 
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      color: var(--gold);
-      text-align: center;
-      animation: backgroundCycle 30s linear infinite;
+      padding: 0;
     }
 
-    @keyframes backgroundCycle {
-      0%   { background-color: var(--red); }
-      20%  { background-color: var(--blue); }
-      40%  { background-color: var(--green); }
-      60%  { background-color: var(--blue); }
-      80%  { background-color: var(--red); }
-      100% { background-color: var(--red); }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--gold);
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Animated background layer */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      background: linear-gradient(135deg, var(--red), var(--blue), var(--green), var(--blue), var(--red));
+      background-size: 500% 500%;
+      animation: backgroundWipe 60s ease-in-out infinite;
+    }
+
+    @keyframes backgroundWipe {
+      0%   { background-position: 100% 100%; }
+      25%  { background-position: 0% 100%; }
+      50%  { background-position: 0% 0%; }
+      75%  { background-position: 100% 0%; }
+      100% { background-position: 100% 100%; }
     }
 
     .container {
       padding: 60px 20px 40px;
       max-width: 600px;
       margin: 0 auto;
+      text-align: center;
     }
 
     .logo {
@@ -84,6 +103,7 @@
       font-size: 0.8rem;
       color: var(--gold);
       padding: 20px;
+      text-align: center;
     }
 
     footer a {
@@ -112,6 +132,7 @@
       width: 90%;
       color: white;
       text-align: left;
+      position: relative;
     }
 
     .modal-content h2 {
@@ -171,7 +192,7 @@
     © 2025 Le Libido. All rights reserved. | <a href="/legal.html">Legal Notice</a>
   </footer>
 
-  <!-- Venue Modal -->
+  <!-- Modal -->
   <div id="venueModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="document.getElementById('venueModal').style.display='none'">&times;</span>
