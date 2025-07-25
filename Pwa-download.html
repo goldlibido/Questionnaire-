@@ -3,185 +3,159 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Download Le Libido</title>
+  <title>Download the App – Le Libido</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --gold: #e1bf78;
-      --charcoal: #111111;
+      --deep-gold: #b99a5c;
+      --red: #950606;
+      --green: #06954E;
+      --blue: #064D95;
       --white: #ffffff;
     }
 
     body {
-      margin: 0;
-      background-color: var(--charcoal);
       font-family: 'Montserrat', sans-serif;
+      background-color: var(--deep-gold);
       color: var(--white);
-      display: flex;
-      justify-content: center;
-    }
-
-    .wrapper {
-      width: 100%;
-      max-width: 550px;
-      background-color: var(--charcoal);
+      margin: 0;
       padding: 0;
     }
 
-    .logo-container {
-      background-color: var(--charcoal);
-      text-align: center;
-      padding: 20px 0 10px 0;
-    }
-
-    .logo-container img {
-      max-width: 120px;
-      height: auto;
-    }
-
-    .main-box {
-      background-color: var(--gold);
+    .wrapper {
+      max-width: 700px;
+      margin: 40px auto;
+      background-color: var(--deep-gold);
+      border: 4px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
       padding: 40px 20px;
-      border-radius: 20px;
+      text-align: center;
     }
 
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      text-shadow: 0 0 8px rgba(255,255,255,0.4);
+    .logo {
+      max-width: 180px;
+      margin-bottom: 30px;
+    }
+
+    p.description {
+      font-size: 1rem;
+      line-height: 1.6;
       margin-bottom: 20px;
-      color: var(--white);
     }
 
-    p {
-      font-size: 1rem;
-      margin: 10px 0 20px 0;
-      color: var(--white);
+    .install-button {
+      font-size: 1.1rem;
+      font-weight: bold;
+      padding: 16px 30px;
+      background-color: var(--white);
+      color: var(--gold);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 8px rgba(255,255,255,0.2);
+      margin-bottom: 30px;
     }
 
-    .step-section {
+    .install-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(255,255,255,0.4);
+    }
+
+    .how-it-works {
       text-align: left;
-      font-size: 1rem;
-      margin: 30px 0;
+      background-color: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 30px;
     }
 
-    .step-section h2 {
-      font-size: 1.3rem;
-      color: var(--white);
+    .how-it-works h2 {
+      font-size: 1.2rem;
       margin-bottom: 10px;
     }
 
-    .step-section ol {
+    .how-it-works ol {
       padding-left: 20px;
+      font-size: 0.95rem;
     }
 
-    .step-section ol li {
-      margin-bottom: 14px;
-    }
-
-    .pulse-button {
-      margin-top: 30px;
-      padding: 14px 28px;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      color: var(--gold);
-      background-color: var(--charcoal);
-      cursor: pointer;
-      animation: pulse 2.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.07); }
-      100% { transform: scale(1); }
+    .how-it-works li {
+      margin-bottom: 15px;
     }
   </style>
 </head>
 <body>
-
   <div class="wrapper">
+    <img src="le-libido-logo.png" alt="Le Libido Logo" class="logo" />
 
-    <div class="logo-container">
-      <img src="le-libido-logo.png" alt="Le Libido Logo">
-    </div>
+    <p class="description">
+      Le Libido is the dating app that only works when you’re out in the world. You check into a venue like a bar, a café, a restaurant, etc. and the app activates, showing you who else is nearby and open to making a connection right here and right now. There’s no ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
+    </p>
 
-    <div class="main-box">
+    <button class="install-button" id="installButton">Install the App & Enable Access</button>
 
-      <h1>Download Le Libido</h1>
-
-      <p>
-        Le Libido is the dating app that only works when you’re out in the world. 
-        You check into a venue like a bar, a café, or a restaurant, and the app activates — 
-        showing you who else is nearby and open to making a connection right here and right now.
-      </p>
-
-      <p>
-        No ghosting. No swiping. Just real people, in real places, in real time.
-      </p>
-
-      <div class="step-section">
-        <h2>🔥 How It Works</h2>
-        <ol>
-          <li><strong>Take our hilariously sexy 10-question quiz</strong><br>
-          Discover who you’re compatible with and why they might just be your perfect match.</li>
-
-          <li><strong>Choose your mode: Verified or Anonymous</strong><br>
-          Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
-
-          <li><strong>Scope out the scene</strong><br>
-          Peek at who’s hot at each venue before you go, or check into a bar, café, or restaurant to see who’s checking you out.</li>
-
-          <li><strong>Make your move</strong><br>
-          Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
-
-          <li><strong>Slide into real life</strong><br>
-          Use our 1-on-1 or group chat feature to set up your date IRL and skip the small talk.</li>
-        </ol>
-      </div>
-
-      <button class="pulse-button" onclick="installAndRequestPermissions()">Enable Le Libido</button>
-
+    <div class="how-it-works">
+      <h2>🔥 How It Works</h2>
+      <ol>
+        <li><strong>Take our hilariously sexy 10-question quiz</strong><br>Discover who you’re compatible with and why they might just be your perfect match.</li>
+        <li><strong>Choose your mode: Verified or Anonymous</strong><br>Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
+        <li><strong>Scope out the scene</strong><br>Peek at who’s hot at each venue before you go, or check into a bar, café, or restaurant to get checked in and see who’s checking you out.</li>
+        <li><strong>Make your move</strong><br>Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
+        <li><strong>Slide into real life</strong><br>Use our 1-on-1 or group chat feature to set up your date IRL, and skip the small talk.</li>
+      </ol>
     </div>
   </div>
 
   <script>
-    async function installAndRequestPermissions() {
-      // Request push notifications
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        await Notification.requestPermission();
-      }
+    let deferredPrompt;
 
-      // Request geolocation
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          position => console.log('Geolocation granted:', position),
-          error => console.warn('Geolocation denied:', error),
-          { enableHighAccuracy: true }
-        );
-      }
-
-      // iOS manual install
-      if (navigator.standalone === false) {
-        alert("To install the app, tap the Share icon in Safari and choose 'Add to Home Screen'.");
-      }
-
-      // Android install
-      if (window.deferredPrompt) {
-        window.deferredPrompt.prompt();
-        const choiceResult = await window.deferredPrompt.userChoice;
-        console.log('User response to install prompt:', choiceResult.outcome);
-        window.deferredPrompt = null;
-      }
-    }
-
-    // Store Android install event
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
-      window.deferredPrompt = e;
+      deferredPrompt = e;
+    });
+
+    document.getElementById('installButton').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        deferredPrompt = null;
+      }
+
+      // Push Notification Permission
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        try {
+          const permission = await Notification.requestPermission();
+          console.log(`Push notification permission: ${permission}`);
+        } catch (e) {
+          console.error('Push request failed', e);
+        }
+      }
+
+      // Geolocation Access
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log('Geo granted:', position.coords);
+          },
+          (error) => {
+            console.error('Geo denied:', error);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        );
+      } else {
+        console.warn('Geolocation not supported');
+      }
     });
   </script>
-
 </body>
 </html>
