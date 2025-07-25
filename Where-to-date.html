@@ -13,59 +13,53 @@
       --green: #06954E;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
+      margin: 0;
       font-family: 'Montserrat', sans-serif;
       color: var(--gold);
-      position: relative;
-      overflow-x: hidden;
-      min-height: 100vh;
+      text-align: center;
+      overflow: hidden;
     }
 
-    /* Animated background layer */
-    body::before {
-      content: "";
+    .wipe-bg {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       z-index: -1;
-      background: linear-gradient(135deg, var(--red), var(--blue), var(--green), var(--blue), var(--red));
-      background-size: 500% 500%;
-      animation: backgroundWipe 60s ease-in-out infinite;
+      animation: colorWipe 25s linear infinite;
     }
 
-    @keyframes backgroundWipe {
-      0%   { background-position: 100% 100%; }
-      25%  { background-position: 0% 100%; }
-      50%  { background-position: 0% 0%; }
-      75%  { background-position: 100% 0%; }
-      100% { background-position: 100% 100%; }
+    @keyframes colorWipe {
+      0% { background-color: var(--red); }
+      20% { background-color: var(--blue); }
+      40% { background-color: var(--green); }
+      60% { background-color: var(--blue); }
+      80% { background-color: var(--red); }
+      100% { background-color: var(--blue); }
     }
 
     .container {
-      padding: 60px 20px 40px;
-      max-width: 600px;
-      margin: 0 auto;
-      text-align: center;
+      padding: 40px 20px 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .logo {
       max-width: 140px;
-      margin-bottom: 30px;
+      margin: 0 auto 20px;
     }
 
     h1 {
       font-size: 2rem;
       margin-bottom: 30px;
+      font-weight: 700;
     }
 
-    .buttons {
+    .button-group {
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -73,138 +67,68 @@
     }
 
     .button {
-      background-color: transparent;
-      color: var(--gold);
       border: 2px solid var(--gold);
+      background: transparent;
+      color: var(--gold);
+      font-size: 1.1rem;
       padding: 15px 25px;
-      font-size: 1rem;
-      font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
-      transition: transform 0.2s ease, background-color 0.2s ease;
+      transition: all 0.3s ease;
     }
 
     .button:hover {
-      transform: scale(1.05);
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: var(--gold);
+      color: #000;
     }
 
     .caption {
       font-size: 1rem;
-      margin-bottom: 40px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 0 10px;
+      margin: 20px auto 30px;
+      max-width: 600px;
       line-height: 1.6;
     }
 
     footer {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--gold);
-      padding: 20px;
-      text-align: center;
+      margin-bottom: 10px;
     }
 
-    footer a {
+    a {
       color: var(--gold);
       text-decoration: underline;
     }
 
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 99;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.85);
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-content {
-      background-color: #202020;
-      border: 2px solid var(--gold);
-      padding: 30px 20px;
-      border-radius: 10px;
-      max-width: 400px;
-      width: 90%;
-      color: white;
-      text-align: left;
-      position: relative;
-    }
-
-    .modal-content h2 {
-      color: var(--gold);
-      margin-top: 0;
-    }
-
-    .modal-content input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      margin-bottom: 15px;
-      border: 1px solid var(--gold);
-      background: black;
-      color: white;
-      border-radius: 4px;
-    }
-
-    .modal-content button {
-      background-color: var(--gold);
-      color: black;
-      border: none;
-      padding: 10px 20px;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .close {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 24px;
-      color: var(--gold);
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
+  <div class="wipe-bg"></div>
 
   <div class="container">
-    <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+    <div>
+      <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+      <h1>Where do you want to date?</h1>
 
-    <h1>Where do you want to date?</h1>
+      <div class="button-group">
+        <button class="button" onclick="window.location.href='mailto:spencer@lelibido.com?subject=Le%20Libido%20Venue%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist.%0AName:%0AEmail:'">
+          In a Le Libido venue
+        </button>
 
-    <div class="buttons">
-      <button class="button" onclick="document.getElementById('venueModal').style.display='flex'">In a Le Libido Venue</button>
-      <button class="button" onclick="window.location.href='https://lelibido.com/proximity-app.html'">Date on the Go</button>
+        <button class="button" onclick="window.location.href='pwa-download.html'">
+          Date on the go
+        </button>
+      </div>
+
+      <div class="caption">
+        Meet someone as wild, adventurous, or romantic as you are. Step into a Le Libido venue for a night of laughter, lust, and love, or take the magic with you, wherever you go.
+      </div>
     </div>
 
-    <div class="caption">
-      Meet someone as wild, adventurous, or romantic as you are. Step into a Le Libido venue for a night of laughter, lust, and love, or take the magic with you, wherever you go.
-    </div>
+    <footer>
+      © 2025 Le Libido. All rights reserved. |
+      <a href="/legal.html">Legal Notice</a>
+    </footer>
   </div>
-
-  <footer>
-    © 2025 Le Libido. All rights reserved. | <a href="/legal.html">Legal Notice</a>
-  </footer>
-
-  <!-- Modal -->
-  <div id="venueModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="document.getElementById('venueModal').style.display='none'">&times;</span>
-      <h2>Coming Soon</h2>
-      <p>The first Le Libido venue is almost here. Want early access?</p>
-      <form action="mailto:spencer@lelibido.com" method="POST" enctype="text/plain">
-        <input type="text" name="name" placeholder="Your Name" required />
-        <input type="email" name="email" placeholder="Your Email" required />
-        <button type="submit">Join the Waitlist</button>
-      </form>
-    </div>
-  </div>
-
 </body>
 </html>
