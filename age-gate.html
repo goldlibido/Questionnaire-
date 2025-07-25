@@ -11,11 +11,14 @@
       --red: #950606;
       --blue: #064D95;
       --green: #06954E;
+      --black: #1a1a1a;
+      --pink-glow: #ff91d3;
+      --blue-glow: #91d8ff;
     }
 
     body {
       margin: 0;
-      background-color: #1a1a1a;
+      background-color: var(--black);
       font-family: 'Montserrat', sans-serif;
       color: white;
       display: flex;
@@ -81,8 +84,36 @@
     }
 
     .green { color: var(--green); font-weight: 600; }
-    .blue { color: var(--blue); font-weight: 600; }
-    .red { color: var(--red); font-weight: 600; }
+
+    .blue-glow {
+      color: var(--red);
+      text-shadow: 0 0 8px var(--blue-glow), 0 0 14px var(--blue-glow);
+      animation: glow-blue 3s ease-in-out infinite;
+    }
+
+    .pink-glow {
+      color: var(--blue);
+      text-shadow: 0 0 8px var(--pink-glow), 0 0 14px var(--pink-glow);
+      animation: glow-pink 3s ease-in-out infinite;
+    }
+
+    @keyframes glow-pink {
+      0%, 100% {
+        text-shadow: 0 0 8px var(--pink-glow), 0 0 14px var(--pink-glow);
+      }
+      50% {
+        text-shadow: 0 0 2px var(--pink-glow), 0 0 5px var(--pink-glow);
+      }
+    }
+
+    @keyframes glow-blue {
+      0%, 100% {
+        text-shadow: 0 0 8px var(--blue-glow), 0 0 14px var(--blue-glow);
+      }
+      50% {
+        text-shadow: 0 0 2px var(--blue-glow), 0 0 5px var(--blue-glow);
+      }
+    }
   </style>
 </head>
 <body>
@@ -95,7 +126,7 @@
   <h1>We make dating feel <span class="green">organic</span>.</h1>
 
   <div class="description">
-    We built Le Libido to bring <span class="blue">spontaneity</span> and <span class="red">serendipity</span> back to dating.
+    We built Le Libido to bring back <span class="pink-glow">spontaneity</span> and <span class="blue-glow">serendipity</span> to dating.
   </div>
 
   <div class="question">Are you 18 or older?</div>
