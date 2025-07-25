@@ -8,14 +8,15 @@
   <style>
     :root {
       --gold: #e1bf78;
-      --red: #950606;
-      --blue: #064D95;
+      --red: #c21818;      /* Brighter red for readability */
+      --blue: #0e5edb;     /* Brighter blue for readability */
       --green: #06954E;
+      --background: #262626;  /* Slightly lighter than 202020 for visibility */
     }
 
     body {
       margin: 0;
-      background-color: #202020;
+      background-color: var(--background);
       font-family: 'Montserrat', sans-serif;
       color: white;
       display: flex;
@@ -29,16 +30,8 @@
     }
 
     .logo {
-      max-width: 120px;
-      margin-bottom: 10px;
-    }
-
-    .slogan {
-      font-size: 0.85rem;
-      letter-spacing: 2px;
-      color: var(--gold);
+      max-width: 280px;  /* Increased logo size */
       margin-bottom: 40px;
-      text-transform: uppercase;
     }
 
     h1 {
@@ -88,8 +81,6 @@
 <body>
 
   <img src="le-libido-logo.PNG" alt="Le Libido Logo" class="logo" />
-
-  <div class="slogan">FOREPLAY</div>
 
   <h1>We make dating feel <span class="green">organic</span></h1>
 
