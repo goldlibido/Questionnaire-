@@ -19,40 +19,27 @@
       padding: 0;
     }
 
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
     body {
       font-family: 'Montserrat', sans-serif;
       color: var(--gold);
       position: relative;
       overflow-x: hidden;
-      min-height: 100vh;
+      background-color: var(--red);
     }
 
-    /* Animated background layer */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      background: linear-gradient(135deg, var(--red), var(--blue), var(--green), var(--blue), var(--red));
-      background-size: 500% 500%;
-      animation: backgroundWipe 60s ease-in-out infinite;
-    }
-
-    @keyframes backgroundWipe {
-      0%   { background-position: 100% 100%; }
-      25%  { background-position: 0% 100%; }
-      50%  { background-position: 0% 0%; }
-      75%  { background-position: 100% 0%; }
-      100% { background-position: 100% 100%; }
-    }
-
-    .container {
+    .border-wrapper {
       padding: 60px 20px 40px;
       max-width: 600px;
-      margin: 0 auto;
+      margin: 40px auto;
       text-align: center;
+      border: 6px solid;
+      border-image: linear-gradient(45deg, var(--green), var(--blue)) 1;
+      border-radius: 20px;
     }
 
     .logo {
@@ -173,7 +160,7 @@
 </head>
 <body>
 
-  <div class="container">
+  <div class="border-wrapper">
     <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
 
     <h1>Where do you want to date?</h1>
