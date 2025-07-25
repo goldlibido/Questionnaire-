@@ -10,9 +10,6 @@
       --gold: #e1bf78;
       --charcoal: #111111;
       --white: #ffffff;
-      --red: #950606;
-      --green: #06954E;
-      --blue: #064D95;
     }
 
     body {
@@ -20,15 +17,31 @@
       background-color: var(--charcoal);
       font-family: 'Montserrat', sans-serif;
       color: var(--white);
+      display: flex;
+      justify-content: center;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 550px;
+      background-color: var(--charcoal);
+      padding: 0;
+    }
+
+    .logo-container {
+      background-color: var(--charcoal);
       text-align: center;
+      padding: 20px 0 10px 0;
+    }
+
+    .logo-container img {
+      max-width: 120px;
+      height: auto;
     }
 
     .main-box {
       background-color: var(--gold);
-      color: var(--white);
       padding: 40px 20px;
-      margin: 0 auto;
-      max-width: 500px;
       border-radius: 20px;
     }
 
@@ -37,6 +50,7 @@
       font-weight: 700;
       text-shadow: 0 0 8px rgba(255,255,255,0.4);
       margin-bottom: 20px;
+      color: var(--white);
     }
 
     p {
@@ -87,52 +101,59 @@
 </head>
 <body>
 
-  <div class="main-box">
+  <div class="wrapper">
 
-    <h1>Download Le Libido</h1>
-
-    <p>
-      Le Libido is the dating app that only works when you’re out in the world. 
-      You check into a venue like a bar, a café, or a restaurant, and the app activates — 
-      showing you who else is nearby and open to making a connection right here and right now.
-    </p>
-
-    <p>
-      No ghosting. No swiping. Just real people, in real places, in real time.
-    </p>
-
-    <div class="step-section">
-      <h2>🔥 How It Works</h2>
-      <ol>
-        <li><strong>Take our hilariously sexy 10-question quiz</strong><br>
-        Discover who you’re compatible with and why they might just be your perfect match.</li>
-
-        <li><strong>Choose your mode: Verified or Anonymous</strong><br>
-        Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
-
-        <li><strong>Scope out the scene</strong><br>
-        Peek at who’s hot at each venue before you go, or check into a bar, café, or restaurant to see who’s checking you out.</li>
-
-        <li><strong>Make your move</strong><br>
-        Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
-
-        <li><strong>Slide into real life</strong><br>
-        Use our 1-on-1 or group chat feature to set up your date IRL and skip the small talk.</li>
-      </ol>
+    <div class="logo-container">
+      <img src="le-libido-logo.png" alt="Le Libido Logo">
     </div>
 
-    <button class="pulse-button" onclick="installAndRequestPermissions()">Enable Le Libido</button>
+    <div class="main-box">
 
+      <h1>Download Le Libido</h1>
+
+      <p>
+        Le Libido is the dating app that only works when you’re out in the world. 
+        You check into a venue like a bar, a café, or a restaurant, and the app activates — 
+        showing you who else is nearby and open to making a connection right here and right now.
+      </p>
+
+      <p>
+        No ghosting. No swiping. Just real people, in real places, in real time.
+      </p>
+
+      <div class="step-section">
+        <h2>🔥 How It Works</h2>
+        <ol>
+          <li><strong>Take our hilariously sexy 10-question quiz</strong><br>
+          Discover who you’re compatible with and why they might just be your perfect match.</li>
+
+          <li><strong>Choose your mode: Verified or Anonymous</strong><br>
+          Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
+
+          <li><strong>Scope out the scene</strong><br>
+          Peek at who’s hot at each venue before you go, or check into a bar, café, or restaurant to see who’s checking you out.</li>
+
+          <li><strong>Make your move</strong><br>
+          Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
+
+          <li><strong>Slide into real life</strong><br>
+          Use our 1-on-1 or group chat feature to set up your date IRL and skip the small talk.</li>
+        </ol>
+      </div>
+
+      <button class="pulse-button" onclick="installAndRequestPermissions()">Enable Le Libido</button>
+
+    </div>
   </div>
 
   <script>
     async function installAndRequestPermissions() {
-      // Try push notification
+      // Request push notifications
       if ('Notification' in window && Notification.permission !== 'granted') {
         await Notification.requestPermission();
       }
 
-      // Try geolocation
+      // Request geolocation
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           position => console.log('Geolocation granted:', position),
@@ -141,178 +162,12 @@
         );
       }
 
-      // iOS Safari PWA instructions (trigger only visual prompt or custom modal)
-      if (navigator.standalone === false) {
-        alert("To install the app, tap the Share button and choose 'Add to Home Screen'.");
-      }
-
-      // Android PWA prompt (if beforeinstallprompt was cached earlier)
-      if (window.deferredPrompt) {
-        window.deferredPrompt.prompt();
-        const choiceResult = await window.deferredPrompt.userChoice;
-        console.log('User response to install prompt:', choiceResult.outcome);
-        window.deferredPrompt = null;
-      }
-    }
-
-    // Cache beforeinstallprompt for Android
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      window.deferredPrompt = e;
-    });
-  </script>
-
-</body
-
-Here is the **full HTML code** for your PWA download page, with your requested layout, styling, and full content included:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Download Le Libido</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --gold: #e1bf78;
-      --charcoal: #111111;
-      --white: #ffffff;
-    }
-
-    body {
-      margin: 0;
-      background-color: var(--charcoal);
-      font-family: 'Montserrat', sans-serif;
-      color: var(--white);
-      text-align: center;
-    }
-
-    .main-box {
-      background-color: var(--gold);
-      color: var(--white);
-      padding: 40px 20px;
-      margin: 0 auto;
-      max-width: 500px;
-      border-radius: 20px;
-    }
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      text-shadow: 0 0 8px rgba(255,255,255,0.4);
-      margin-bottom: 20px;
-    }
-
-    p {
-      font-size: 1rem;
-      margin: 10px 0 20px 0;
-      color: var(--white);
-    }
-
-    .step-section {
-      text-align: left;
-      font-size: 1rem;
-      margin: 30px 0;
-    }
-
-    .step-section h2 {
-      font-size: 1.3rem;
-      color: var(--white);
-      margin-bottom: 10px;
-    }
-
-    .step-section ol {
-      padding-left: 20px;
-    }
-
-    .step-section ol li {
-      margin-bottom: 14px;
-    }
-
-    .pulse-button {
-      margin-top: 30px;
-      padding: 14px 28px;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      color: var(--gold);
-      background-color: var(--charcoal);
-      cursor: pointer;
-      animation: pulse 2.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.07); }
-      100% { transform: scale(1); }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="main-box">
-
-    <h1>Download Le Libido</h1>
-
-    <p>
-      Le Libido is the dating app that only works when you’re out in the world. 
-      You check into a venue like a bar, a café, or a restaurant, and the app activates — 
-      showing you who else is nearby and open to making a connection right here and right now.
-    </p>
-
-    <p>
-      No ghosting. No swiping. Just real people, in real places, in real time.
-    </p>
-
-    <div class="step-section">
-      <h2>🔥 How It Works</h2>
-      <ol>
-        <li><strong>Take our hilariously sexy 10-question quiz</strong><br>
-        Discover who you’re compatible with and why they might just be your perfect match.</li>
-
-        <li><strong>Choose your mode: Verified or Anonymous</strong><br>
-        Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
-
-        <li><strong>Scope out the scene</strong><br>
-        Peek at who’s hot at each venue before you go, or check into a bar, café, or restaurant to see who’s checking you out.</li>
-
-        <li><strong>Make your move</strong><br>
-        Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
-
-        <li><strong>Slide into real life</strong><br>
-        Use our 1-on-1 or group chat feature to set up your date IRL and skip the small talk.</li>
-      </ol>
-    </div>
-
-    <button class="pulse-button" onclick="installAndRequestPermissions()">Enable Le Libido</button>
-
-  </div>
-
-  <script>
-    async function installAndRequestPermissions() {
-      // Request push notification permission
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        await Notification.requestPermission();
-      }
-
-      // Request background geolocation (iOS needs manual instruction)
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          position => console.log('Geolocation granted:', position),
-          error => console.warn('Geolocation denied:', error),
-          { enableHighAccuracy: true }
-        );
-      }
-
-      // iOS Safari doesn't support beforeinstallprompt, show manual instructions
+      // iOS manual install
       if (navigator.standalone === false) {
         alert("To install the app, tap the Share icon in Safari and choose 'Add to Home Screen'.");
       }
 
-      // Android PWA install prompt if available
+      // Android install
       if (window.deferredPrompt) {
         window.deferredPrompt.prompt();
         const choiceResult = await window.deferredPrompt.userChoice;
@@ -321,7 +176,7 @@ Here is the **full HTML code** for your PWA download page, with your requested l
       }
     }
 
-    // Save beforeinstallprompt event for Android
+    // Store Android install event
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       window.deferredPrompt = e;
