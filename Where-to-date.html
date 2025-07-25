@@ -8,9 +8,9 @@
   <style>
     :root {
       --gold: #e1bf78;
-      --red: #950606;
-      --blue: #064D95;
-      --green: #06954E;
+      --red: #ff4d4d;
+      --blue: #57b9ff;
+      --green: #41e291;
     }
 
     * {
@@ -27,9 +27,9 @@
     body {
       font-family: 'Montserrat', sans-serif;
       color: var(--gold);
+      background-color: #000000;
       position: relative;
       overflow-x: hidden;
-      background-color: black;
     }
 
     .border-wrapper {
@@ -37,8 +37,7 @@
       max-width: 600px;
       margin: 40px auto;
       text-align: center;
-      border: 6px solid;
-      border-image: linear-gradient(45deg, var(--red), var(--blue), var(--green)) 1;
+      border: 6px solid var(--gold);
       border-radius: 20px;
     }
 
@@ -84,6 +83,10 @@
       margin-right: auto;
       padding: 0 10px;
       line-height: 1.6;
+    }
+
+    .caption span {
+      font-weight: bold;
     }
 
     footer {
@@ -171,7 +174,7 @@
     </div>
 
     <div class="caption">
-      Meet someone as wild, adventurous, or romantic as you are. Step into a Le Libido venue for a night of laughter, lust, and love, or take the magic with you, wherever you go.
+      Meet someone as <span style="color: var(--red);">wild</span>, <span style="color: var(--green);">adventurous</span>, or <span style="color: var(--blue);">romantic</span> as you are. Step into a Le Libido venue for a night of laughter, lust, and love, or take the magic with you, wherever you go.
     </div>
   </div>
 
