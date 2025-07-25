@@ -8,6 +8,7 @@
   <style>
     :root {
       --gold: #e1bf78;
+      --deep-gold: #b99a5c;
       --red: #950606;
       --green: #06954E;
       --blue: #064D95;
@@ -16,7 +17,7 @@
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: var(--gold);
+      background-color: var(--deep-gold);
       color: var(--white);
       margin: 0;
       padding: 0;
@@ -25,7 +26,7 @@
     .wrapper {
       max-width: 700px;
       margin: 40px auto;
-      background-color: var(--gold);
+      background-color: var(--deep-gold);
       border: 4px solid rgba(255, 255, 255, 0.2);
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
       border-radius: 16px;
@@ -34,19 +35,33 @@
     }
 
     .logo {
-      max-width: 120px;
+      max-width: 180px;
       margin-bottom: 30px;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
     }
 
     p.description {
       font-size: 1rem;
       line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .install-button {
+      font-size: 1.1rem;
+      font-weight: bold;
+      padding: 16px 30px;
+      background-color: var(--white);
+      color: var(--gold);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 8px rgba(255,255,255,0.2);
       margin-bottom: 30px;
+    }
+
+    .install-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(255,255,255,0.4);
     }
 
     .how-it-works {
@@ -72,37 +87,17 @@
     .how-it-works li {
       margin-bottom: 15px;
     }
-
-    .highlight-red { color: var(--red); }
-    .highlight-green { color: var(--green); }
-    .highlight-blue { color: var(--blue); }
-
-    .install-button {
-      font-size: 1.1rem;
-      font-weight: bold;
-      padding: 16px 30px;
-      background-color: var(--white);
-      color: var(--gold);
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 8px rgba(255,255,255,0.2);
-    }
-
-    .install-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(255,255,255,0.4);
-    }
   </style>
 </head>
 <body>
   <div class="wrapper">
-    <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
-    <h1>WYA?</h1>
+    <img src="le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+
     <p class="description">
       Le Libido is the dating app that only works when you’re out in the world. You check into a venue like a bar, a café, a restaurant, etc. and the app activates, showing you who else is nearby and open to making a connection right here and right now. There’s no ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
     </p>
+
+    <button class="install-button" id="installButton">Install the App & Enable Access</button>
 
     <div class="how-it-works">
       <h2>🔥 How It Works</h2>
@@ -114,8 +109,6 @@
         <li><strong>Slide into real life</strong><br>Use our 1-on-1 or group chat feature to set up your date IRL, and skip the small talk.</li>
       </ol>
     </div>
-
-    <button class="install-button" id="installButton">Install the App & Enable Access</button>
   </div>
 
   <script>
