@@ -19,24 +19,33 @@
       padding: 0;
     }
 
-    html, body {
+    body {
       font-family: 'Montserrat', sans-serif;
       color: var(--gold);
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
       min-height: 100vh;
     }
 
-    .wipe-bg {
+    /* Animated background layer */
+    body::before {
+      content: "";
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: -1;
-      transform-origin: bottom right;
-      background-color: var(--red);
-      transition: background-color 0s;
+      background: linear-gradient(135deg, var(--red), var(--blue), var(--green), var(--blue), var(--red));
+      background-size: 500% 500%;
+      animation: backgroundWipe 60s ease-in-out infinite;
+    }
+
+    @keyframes backgroundWipe {
+      0%   { background-position: 100% 100%; }
+      25%  { background-position: 0% 100%; }
+      50%  { background-position: 0% 0%; }
+      75%  { background-position: 100% 0%; }
+      100% { background-position: 100% 100%; }
     }
 
     .container {
@@ -44,8 +53,6 @@
       max-width: 600px;
       margin: 0 auto;
       text-align: center;
-      position: relative;
-      z-index: 2;
     }
 
     .logo {
@@ -166,8 +173,6 @@
 </head>
 <body>
 
-  <div class="wipe-bg" id="wipeBg"></div>
-
   <div class="container">
     <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
 
@@ -175,7 +180,7 @@
 
     <div class="buttons">
       <button class="button" onclick="document.getElementById('venueModal').style.display='flex'">In a Le Libido Venue</button>
-      <button class="button" onclick="window.location.href='pwa-download.html'">Date on the Go</button>
+      <button class="button" onclick="window.location.href='https://lelibido.com/proximity-app.html'">Date on the Go</button>
     </div>
 
     <div class="caption">
@@ -200,28 +205,6 @@
       </form>
     </div>
   </div>
-
-  <script>
-    const colors = ['#950606', '#064D95', '#06954E', '#064D95', '#950606'];
-    let currentIndex = 0;
-    const bg = document.getElementById('wipeBg');
-
-    function updateColor() {
-      currentIndex = (currentIndex + 1) % colors.length;
-      bg.style.backgroundColor = colors[currentIndex];
-      bg.style.transform = 'scale(0)';
-      setTimeout(() => {
-        bg.style.transition = 'none';
-        bg.style.transform = 'scale(0)';
-        bg.style.backgroundColor = colors[currentIndex];
-        void bg.offsetWidth; // Force repaint
-        bg.style.transition = 'transform 2s ease-in-out';
-        bg.style.transform = 'scale(1)';
-      }, 50);
-    }
-
-    setInterval(updateColor, 6000); // Change color every 6 seconds
-  </script>
 
 </body>
 </html>
