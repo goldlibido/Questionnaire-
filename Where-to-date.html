@@ -13,29 +13,35 @@
       --green: #06954E;
     }
 
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(-45deg, var(--red), var(--blue), var(--green), var(--blue), var(--red));
-      background-size: 400% 400%;
-      animation: gradientShift 30s ease infinite;
       color: var(--gold);
       text-align: center;
+      height: 100%;
+    }
+
+    body {
+      animation: bgCycle 40s infinite;
+      background-color: var(--red);
+      transition: background-color 4s ease-in-out;
       padding: 40px 20px 60px;
       border: 4px solid var(--gold);
     }
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      25% { background-position: 50% 100%; }
-      50% { background-position: 100% 50%; }
-      75% { background-position: 50% 0%; }
-      100% { background-position: 0% 50%; }
+    @keyframes bgCycle {
+      0%   { background-color: var(--red); }
+      20%  { background-color: var(--blue); }
+      40%  { background-color: var(--green); }
+      60%  { background-color: var(--blue); }
+      80%  { background-color: var(--red); }
+      100% { background-color: var(--red); }
     }
 
     .logo {
       max-width: 140px;
-      margin: 0 auto 25px;
+      margin: 0 auto 20px;
       display: block;
     }
 
@@ -100,6 +106,63 @@
         justify-content: center;
       }
     }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: #1a1a1a;
+      padding: 30px;
+      border: 2px solid var(--gold);
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+      color: white;
+    }
+
+    .modal-content h2 {
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .modal-content input[type="text"],
+    .modal-content input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .modal-content button {
+      background-color: var(--gold);
+      color: black;
+      border: none;
+      padding: 12px 20px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .modal-content .close {
+      background: none;
+      color: var(--gold);
+      font-size: 1.2rem;
+      float: right;
+      cursor: pointer;
+      border: none;
+    }
   </style>
 </head>
 <body>
@@ -109,12 +172,8 @@
   <h1>Where do you want to date?</h1>
 
   <div class="button-container">
-    <button class="option-button" onclick="window.location.href='coming-soon.html'">
-      🎪 In a Le Libido Venue
-    </button>
-    <button class="option-button" onclick="window.location.href='download-app.html'">
-      📍 Date on the Go
-    </button>
+    <button class="option-button" onclick="openModal()">🎪 In a Le Libido Venue</button>
+    <button class="option-button" onclick="window.location.href='download-app.html'">📍 Date on the Go</button>
   </div>
 
   <div class="caption">
@@ -124,6 +183,30 @@
   <footer>
     © 2025 Le Libido. All rights reserved. | <a href="/legal.html">Legal Notice</a>
   </footer>
+
+  <!-- Modal -->
+  <div id="venueModal" class="modal">
+    <div class="modal-content">
+      <button class="close" onclick="closeModal()">✕</button>
+      <h2>Coming Soon</h2>
+      <p>Enter your name and email to join the waitlist for our first Le Libido venue.</p>
+      <form action="mailto:spencer@lelibido.com" method="POST" enctype="text/plain">
+        <input type="text" name="Name" placeholder="Your Name" required />
+        <input type="email" name="Email" placeholder="Your Email" required />
+        <button type="submit">Join Waitlist</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      document.getElementById('venueModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('venueModal').style.display = 'none';
+    }
+  </script>
 
 </body>
 </html>
