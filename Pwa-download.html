@@ -3,112 +3,120 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Download the App – Le Libido</title>
+  <title>Le Libido PWA Download</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --gold: #e1bf78;
-      --deep-gold: #b99a5c;
+      --charcoal: #111111;
       --red: #950606;
-      --green: #06954E;
       --blue: #064D95;
-      --white: #ffffff;
+      --green: #06954E;
     }
 
     body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: body {
-  background-color: #7d653f; /* darkened metallic gold */
-};
-      color: var(--white);
       margin: 0;
       padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--gold);
+      color: white;
     }
 
-    .wrapper {
-      max-width: 700px;
-      margin: 40px auto;
-      background-color: var(--deep-gold);
-      border: 4px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      padding: 40px 20px;
+    .header {
+      background-color: var(--charcoal);
+      padding: 40px 0;
+      border-bottom: 6px solid var(--gold);
+      box-shadow: inset 0 -3px 5px rgba(255, 215, 0, 0.4);
       text-align: center;
     }
 
     .logo {
-      max-width: 180px;
-      margin-bottom: 30px;
+      max-width: 160px;
+      filter: drop-shadow(0 0 10px rgba(0,0,0,0.6));
     }
 
-    p.description {
-      font-size: 1rem;
-      line-height: 1.6;
+    .wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: var(--charcoal);
       margin-bottom: 20px;
     }
 
-    .install-button {
-      font-size: 1.1rem;
-      font-weight: bold;
-      padding: 16px 30px;
-      background-color: var(--white);
-      color: var(--gold);
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 8px rgba(255,255,255,0.2);
+    .description {
+      font-size: 1rem;
+      line-height: 1.6;
       margin-bottom: 30px;
+      color: var(--charcoal);
     }
 
-    .install-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(255,255,255,0.4);
+    .install-button {
+      background-color: var(--charcoal);
+      color: var(--gold);
+      font-weight: bold;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-bottom: 30px;
     }
 
     .how-it-works {
       text-align: left;
-      background-color: rgba(255,255,255,0.05);
-      border-radius: 12px;
+      background-color: #fdf7e2;
       padding: 20px;
-      max-height: 300px;
-      overflow-y: auto;
-      margin-bottom: 30px;
+      border-radius: 10px;
+      color: #111;
+      border: 2px solid var(--gold);
     }
 
     .how-it-works h2 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
+      color: var(--charcoal);
+      margin-bottom: 15px;
     }
 
     .how-it-works ol {
       padding-left: 20px;
       font-size: 0.95rem;
+      line-height: 1.6;
     }
 
-    .how-it-works li {
-      margin-bottom: 15px;
+    @media (max-width: 600px) {
+      .logo {
+        max-width: 120px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
+
+  <div class="header">
     <img src="le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+  </div>
 
-    <p class="description">
+  <div class="wrapper">
+    <h1>Le Libido</h1>
+
+    <div class="description">
       Le Libido is the dating app that only works when you’re out in the world. You check into a venue like a bar, a café, a restaurant, etc. and the app activates, showing you who else is nearby and open to making a connection right here and right now. There’s no ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
-    </p>
+    </div>
 
-    <button class="install-button" id="installButton">Install the App & Enable Access</button>
+    <button class="install-button" onclick="enablePWA()">Enable the Magic</button>
 
     <div class="how-it-works">
       <h2>🔥 How It Works</h2>
       <ol>
-        <li><strong>Take our hilariously sexy 10-question quiz</strong><br>Discover who you’re compatible with and why they might just be your perfect match.</li>
-        <li><strong>Choose your mode: Verified or Anonymous</strong><br>Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
-        <li><strong>Scope out the scene</strong><br>Peek at who’s hot at each venue before you go, or check into a bar, café, or restaurant to get checked in and see who’s checking you out.</li>
-        <li><strong>Make your move</strong><br>Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
-        <li><strong>Slide into real life</strong><br>Use our 1-on-1 or group chat feature to set up your date IRL, and skip the small talk.</li>
+        <li><strong>Take our hilariously sexy 10-question quiz.</strong> Discover who you’re compatible with and why they might just be your perfect match.</li>
+        <li><strong>Choose your mode: Verified or Anonymous.</strong> Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
+        <li><strong>Scope out the scene.</strong> Peek at who’s hot at each venue before you go, or check into a bar, café, restaurant to get checked in and see who’s checking you out.</li>
+        <li><strong>Make your move.</strong> Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
+        <li><strong>Slide into real life.</strong> Use our 1-on-1 or group chat feature to set up your date IRL—and skip the small talk.</li>
       </ol>
     </div>
   </div>
@@ -121,43 +129,30 @@
       deferredPrompt = e;
     });
 
-    document.getElementById('installButton').addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`User response to the install prompt: ${outcome}`);
-        deferredPrompt = null;
-      }
-
-      // Push Notification Permission
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        try {
-          const permission = await Notification.requestPermission();
-          console.log(`Push notification permission: ${permission}`);
-        } catch (e) {
-          console.error('Push request failed', e);
-        }
-      }
-
-      // Geolocation Access
+    function enablePWA() {
+      // Geolocation
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
-          (position) => {
-            console.log('Geo granted:', position.coords);
-          },
-          (error) => {
-            console.error('Geo denied:', error);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-          }
+          () => {},
+          () => {},
+          { enableHighAccuracy: true }
         );
-      } else {
-        console.warn('Geolocation not supported');
       }
-    });
+
+      // Push Notifications
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission();
+      }
+
+      // PWA Install
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+        });
+      }
+    }
   </script>
+
 </body>
 </html>
