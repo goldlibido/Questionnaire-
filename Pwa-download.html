@@ -2,205 +2,101 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Install Le Libido</title>
-
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#064D95" />
+  <link rel="icon" href="le-libido-icon.png" />
+  <meta name="theme-color" content="#950606" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Le Libido" />
   <link rel="apple-touch-icon" href="le-libido-icon.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-
   <style>
-    :root {
-      --gold: #e1bf78;
-      --red: #950606;
-      --blue: #064D95;
-      --green: #06954E;
-      --white: #ffffff;
-      --charcoal: #0d0d0d;
-    }
-
     body {
       margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background-color: var(--charcoal);
-      color: var(--white);
       padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #000;
+      color: white;
       text-align: center;
     }
-
-    .container {
-      padding: 40px 20px;
-      max-width: 800px;
+    .wrapper {
+      padding: 60px 20px;
+      max-width: 600px;
       margin: 0 auto;
     }
-
-    img.logo {
-      max-width: 180px;
-      margin-top: 20px;
-      border-radius: 24px;
+    .logo {
+      width: 120px;
+      margin: 0 auto 20px;
+      display: block;
     }
-
-    .app-description {
+    .title {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #e1bf78;
+    }
+    .subtitle {
       font-size: 1.1rem;
-      line-height: 1.6;
-      margin: 20px 0 30px;
+      margin-bottom: 30px;
     }
-
-    .install-button {
-      background-color: var(--red);
-      color: var(--white);
-      border: none;
-      padding: 16px 32px;
-      font-size: 1.3rem;
-      border-radius: 10px;
-      cursor: pointer;
-      animation: pulse 2s infinite;
+    .install-instructions {
+      background-color: #1a1a1a;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 30px;
+      border: 2px solid #e1bf78;
     }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-      100% { transform: scale(1); }
+    .share-icon {
+      width: 40px;
+      margin-bottom: 10px;
     }
-
-    .trust-badge {
-      font-size: 0.9rem;
-      color: var(--gold);
-      margin-top: 12px;
-    }
-
-    .ios-banner {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #ffffff;
-      color: #000000;
-      font-size: 0.95rem;
-      padding: 14px 16px;
-      z-index: 10000;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.25);
-    }
-
-    .ios-banner img {
-      height: 18px;
-      vertical-align: middle;
-      margin-right: 8px;
-    }
-
-    .how-it-works {
-      background-color: var(--blue);
-      border: 4px solid var(--green);
-      border-radius: 12px;
-      padding: 30px 20px;
-      margin-top: 40px;
-      text-align: left;
-    }
-
-    .how-it-works h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.7rem;
-    }
-
-    .how-it-works ol {
-      padding-left: 20px;
+    .instruction-step {
+      margin-bottom: 16px;
       font-size: 1rem;
-      line-height: 1.7;
+    }
+    .btn-disabled {
+      background-color: #555;
+      border: none;
+      color: #ccc;
+      font-size: 1rem;
+      padding: 14px 30px;
+      border-radius: 8px;
+      cursor: not-allowed;
+    }
+    .footer {
+      font-size: 0.8rem;
+      color: #777;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="le-libido-icon.png" alt="Le Libido App Icon" class="logo" />
+  <div class="wrapper">
+    <img src="le-libido-icon.png" alt="Le Libido Logo" class="logo" />
+    <div class="title">Install Le Libido</div>
+    <div class="subtitle">To start dating, you’ll need to install the app first. Don’t worry—it’s fast, free, and private.</div>
 
-    <div class="app-description">
-      Le Libido is the dating app that only works when you go out. No ghosting. No swiping. Just real-time, in-person spark.
+    <div class="install-instructions">
+      <img src="share-icon.jpg" alt="Share Icon" class="share-icon" />
+      <div class="instruction-step"><strong>1.</strong> Tap the Share button in Safari (bottom center)</div>
+      <div class="instruction-step"><strong>2.</strong> Scroll down and tap <strong>Add to Home Screen</strong></div>
     </div>
 
-    <button class="install-button" id="installBtn">🚀 Install & Start Dating</button>
-    <div class="trust-badge">Already used by thousands of adventurous daters nearby</div>
+    <button class="btn-disabled">⬆ Add to Home Screen to Continue</button>
 
-    <div class="how-it-works">
-      <h2>🔥 How It Works</h2>
-      <ol>
-        <li><strong>Install the app</strong> — it's free, fast, and works offline</li>
-        <li><strong>Take the quiz</strong> to reveal your erotic blueprint</li>
-        <li><strong>Check in at any venue</strong> — bars, cafés, etc.</li>
-        <li><strong>See who else is there</strong> & meet in real life</li>
-        <li><strong>No swiping. No ghosting.</strong> Just real connection</li>
-      </ol>
-    </div>
-  </div>
-
-  <!-- iOS Safari banner -->
-  <div id="pwaBanner" class="ios-banner">
-    <img src="share-icon.jpg" alt="Share Icon">
-    Tap the <strong>Share icon</strong>, then scroll down and select <strong>"Add to Home Screen"</strong> to install Le Libido.
+    <div class="footer">Need help? Visit <a href="https://whatpwacando.today/installation" target="_blank" style="color: #e1bf78;">this guide</a>.</div>
   </div>
 
   <script>
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('installBtn').style.display = 'inline-block';
+    // Optional: redirect after install
+    window.addEventListener("appinstalled", () => {
+      window.location.href = "/quiz-new.html";
     });
 
-    document.getElementById('installBtn').addEventListener('click', async () => {
-      // Request Geolocation
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => console.log('Geo success:', pos),
-          (err) => console.error('Geo error:', err),
-          { enableHighAccuracy: true }
-        );
-      }
-
-      // Request Notification Permission
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        try {
-          const result = await Notification.requestPermission();
-          console.log('Push permission:', result);
-        } catch (err) {
-          console.error('Push permission error:', err);
-        }
-      }
-
-      // Install App
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const result = await deferredPrompt.userChoice;
-        if (result.outcome === 'accepted') {
-          console.log('PWA installed');
-          window.location.href = '/quiz-new.html';
-        }
-        deferredPrompt = null;
-      } else {
-        // For Safari or fallback
-        window.location.href = '/quiz-new.html';
-      }
-    });
-
-    // Show iOS Add-to-Home Banner
-    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true;
-
-    if (!isStandalone && isIOS && isSafari) {
-      document.getElementById('pwaBanner').style.display = 'block';
-    }
-
-    // Register Service Worker
+    // Analytics: track PWA install intent
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(() => console.log('Service Worker registered'))
-        .catch((err) => console.error('SW registration failed:', err));
+      navigator.serviceWorker.register('service-worker.js');
     }
   </script>
 </body>
