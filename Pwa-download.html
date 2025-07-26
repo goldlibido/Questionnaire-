@@ -31,7 +31,7 @@
       padding: 40px 30px;
       text-align: center;
       background-color: var(--red);
-      transform: translateY(-40px); /* Raise frame slightly */
+      transform: translateY(-40px); /* slight upward shift */
     }
 
     .logo {
@@ -54,7 +54,7 @@
     }
 
     .install-btn:active {
-      transform: scale(0.96); /* Tap feedback */
+      transform: scale(0.96);
     }
 
     @keyframes pulse {
@@ -64,7 +64,7 @@
     }
 
     .modal {
-      display: none;
+      display: none; /* hidden by default */
       position: fixed;
       z-index: 9999;
       top: 0;
@@ -75,7 +75,8 @@
       color: white;
       padding: 20px;
       box-sizing: border-box;
-      display: flex;
+
+      display: none; /* stays hidden until JS triggers it */
       justify-content: center;
       align-items: center;
     }
