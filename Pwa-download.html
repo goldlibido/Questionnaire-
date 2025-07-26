@@ -20,21 +20,21 @@
       background-color: var(--black);
       color: var(--white);
       margin: 0;
-      padding: 0;
+      padding: 40px 20px;
+      border: 6px solid var(--gold);
+      box-sizing: border-box;
     }
 
     .wrapper {
       max-width: 700px;
-      margin: 40px auto;
+      margin: 0 auto;
       background-color: var(--black);
-      border: 4px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
-      padding: 40px 20px;
       text-align: center;
     }
 
     .logo {
-      max-width: 180px;
+      max-width: 240px;
       margin-bottom: 30px;
     }
 
@@ -54,20 +54,20 @@
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 8px rgba(255,255,255,0.2);
       margin-bottom: 30px;
+      animation: pulse 1.8s infinite;
     }
 
-    .install-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(255,255,255,0.4);
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 10px rgba(149, 6, 6, 0.4); }
+      50% { transform: scale(1.07); box-shadow: 0 0 20px rgba(149, 6, 6, 0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 10px rgba(149, 6, 6, 0.4); }
     }
 
     .how-it-works {
       text-align: left;
       background-color: var(--blue);
-      border: 2px solid var(--green);
+      border: 3px solid var(--green);
       border-radius: 12px;
       padding: 20px;
       max-height: 300px;
