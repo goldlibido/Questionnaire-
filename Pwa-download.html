@@ -4,131 +4,134 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Install Le Libido</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="/le-libido-icon.png" />
+  <meta name="theme-color" content="#950606" />
   <style>
+    :root {
+      --red: #950606;
+      --gold: #e1bf78;
+      --darkred: #7c0404;
+    }
+
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
-      background-color: #0d0d0d;
-      color: #ffffff;
+      background-color: var(--red);
+      color: white;
       text-align: center;
-      padding: 30px 20px;
+      padding: 20px;
+      border: 8px solid var(--gold);
     }
 
-    .logo {
+    img.logo {
       max-width: 120px;
-      margin: 0 auto 30px;
       display: block;
+      margin: 20px auto;
     }
 
-    h1 {
-      font-size: 2rem;
-      color: #e1bf78;
-      text-shadow: 0 0 5px #e1bf78, 0 0 15px #e1bf78;
-      margin-bottom: 10px;
+    .install-btn {
+      background-color: var(--gold);
+      color: var(--red);
+      padding: 16px 28px;
+      font-size: 1.2rem;
+      border: 4px solid var(--gold);
+      border-radius: 12px;
+      cursor: pointer;
+      animation: pulse 1.8s infinite;
+      font-weight: bold;
+      margin: 30px auto;
+      display: inline-block;
     }
 
-    p {
-      font-size: 1rem;
-      margin: 10px 0 30px;
-      color: #ccc;
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0px var(--gold); }
+      50% { transform: scale(1.05); box-shadow: 0 0 15px var(--gold); }
+      100% { transform: scale(1); box-shadow: 0 0 0px var(--gold); }
     }
 
-    .install-box {
-      background-color: #1a1a1a;
-      border: 2px solid #e1bf78;
+    .how-it-works {
+      background-color: var(--darkred);
       border-radius: 12px;
       padding: 20px;
-      margin-bottom: 30px;
-      display: inline-block;
-      text-align: left;
-    }
-
-    .step {
-      display: flex;
-      align-items: center;
-      margin-bottom: 16px;
-      gap: 10px;
-    }
-
-    .step img {
-      width: 24px;
-      height: 24px;
-    }
-
-    .screenshots {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
-    }
-
-    .screenshots img {
-      width: 90px;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 2px solid #e1bf78;
-    }
-
-    .install-button {
-      background-color: #950606;
-      color: white;
-      border: none;
-      padding: 16px 24px;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: not-allowed;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-      gap: 10px;
-    }
-
-    .install-button img {
-      width: 20px;
-      height: 20px;
-    }
-
-    .note {
       margin-top: 20px;
-      color: #888;
-      font-size: 0.9rem;
+      text-align: left;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .modal-content {
+      background-color: var(--red);
+      border: 4px solid var(--gold);
+      border-radius: 16px;
+      max-width: 500px;
+      margin: 100px auto;
+      padding: 30px;
+    }
+
+    .modal h2 {
+      color: var(--gold);
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+    }
+
+    .modal img {
+      width: 40px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .close-modal {
+      cursor: pointer;
+      color: white;
+      float: right;
+      font-size: 20px;
     }
   </style>
 </head>
 <body>
+  <img src="golden-le-libido-logo.png" class="logo" alt="Le Libido Logo" />
 
-  <img src="golden–Le–Libido-logo.png" alt="Le Libido Logo" class="logo">
+  <button class="install-btn" id="installBtn">Click here to install app</button>
 
-  <h1>Install Le Libido</h1>
-  <p>To unlock the full experience, please install the app to your home screen.</p>
+  <div class="how-it-works">
+    <h2 style="color: var(--gold);">How It Works:</h2>
+    <ol>
+      <li>Install app by adding to Home Screen, so you can date on the go.</li>
+      <li>Complete our hilariously sexy 10-question quiz to discover who you're compatible with.</li>
+      <li>Sign up for either verified mode or anonymous mode and complete your profile.</li>
+      <li>Check out who's hot at each venue before visiting, or go to a venue like a bar, café, or restaurant to check in and see who's checking you out.</li>
+      <li>Make your move by tapping “Approach” or only reveal your location to people you want to “Invite.”</li>
+      <li>Start flirting! Use our chat/group chat feature to set up your date IRL.</li>
+    </ol>
+  </div>
 
-  <div class="install-box">
-    <div class="step">
-      <img src="share-icon.jpg" alt="Share Icon">
-      <span><strong>1.</strong> Tap <strong>Share</strong></span>
+  <div class="modal" id="installModal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="document.getElementById('installModal').style.display='none'">&times;</span>
+      <h2>Install App Now</h2>
+      <p>To enjoy the full experience, install <strong>Le Libido</strong> to your Home Screen.</p>
+      <p>If you're on <strong>iOS Safari</strong>:</p>
+      <p><img src="share-icon.png" alt="Share Icon" /> Tap the share icon and scroll down to “Add to Home Screen”.</p>
+      <p id="androidInstructions" style="display: none;"><strong>Android user?</strong> A browser prompt should appear—just tap "Install" when it does!</p>
+      <p>If it doesn’t appear, use your browser menu to add this page to your Home Screen.</p>
     </div>
-    <div class="step">
-      <img src="le-libido-icon.png" alt="Home Icon">
-      <span><strong>2.</strong> Scroll down and tap <strong>Add to Home Screen</strong></span>
-    </div>
   </div>
 
-  <div class="screenshots">
-    <img src="install-step-1.jpg" alt="Step 1">
-    <img src="install-step-2.jpg" alt="Step 2">
-    <img src="install-step-3.jpg" alt="Step 3">
-  </div>
-
-  <div class="install-button">
-    <img src="le-libido-icon.png" alt="Phone Icon">
-    Install to Home Screen
-  </div>
-
-  <p class="note">You’ll only need to do this once. After that, you’ll be able to date on the go, anytime.</p>
-
+  <script src="install.js"></script>
 </body>
 </html>
