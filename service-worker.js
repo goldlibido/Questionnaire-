@@ -1,15 +1,16 @@
 const CACHE_NAME = 'le-libido-cache-v1';
-const OFFLINE_URL = '/offline.html'; // Optional
+const OFFLINE_URL = '/offline.html';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll([
+    caches.open(CACHE_NAME).then((cache) =>
+      cache.addAll([
         '/',
         '/pwa-download.html',
-        '/le-libido-icon.png'
-      ]);
-    })
+        '/le-libido-icon.png',
+        OFFLINE_URL
+      ])
+    )
   );
   self.skipWaiting();
 });
@@ -19,9 +20,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
       )
     )
@@ -31,9 +30,11 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((res) => {
-      return res || fetch(event.request).catch(() => caches.match(OFFLINE_URL));
-    })
+    fetch(event.request).catch(() =>
+      caches.match(event.request).then((res) =>
+        res || caches.match(OFFLINE_URL)
+      )
+    )
   );
 });
 
