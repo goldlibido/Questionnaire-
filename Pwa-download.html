@@ -4,14 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Install Le Libido</title>
-  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#950606" />
+  <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="/le-libido-icon.png" />
   <style>
     :root {
       --red: #950606;
       --gold: #e1bf78;
-      --darkred: #7c0404;
     }
 
     body {
@@ -19,15 +18,22 @@
       font-family: 'Montserrat', sans-serif;
       background-color: var(--red);
       color: white;
-      text-align: center;
-      padding: 20px;
-      border: 8px solid var(--gold);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-    img.logo {
+    .center-box {
+      border: 8px solid var(--gold);
+      padding: 40px 20px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .logo {
       max-width: 120px;
-      display: block;
-      margin: 20px auto;
+      margin-bottom: 30px;
     }
 
     .install-btn {
@@ -40,8 +46,6 @@
       cursor: pointer;
       animation: pulse 1.8s infinite;
       font-weight: bold;
-      margin: 30px auto;
-      display: inline-block;
     }
 
     @keyframes pulse {
@@ -97,22 +101,21 @@
     .android-note {
       margin-top: 12px;
     }
-
-    b {
-      color: var(--gold);
-    }
   </style>
 </head>
 <body>
-  <img src="golden-le-libido-logo.png" class="logo" alt="Le Libido Logo" />
 
-  <button class="install-btn" id="installBtn">Click here to install app</button>
+  <div class="center-box">
+    <img src="golden-le-libido-logo.png" class="logo" alt="Le Libido Logo" />
+    <button class="install-btn" id="installBtn">Click here to install app</button>
+  </div>
 
+  <!-- Modal for install instructions -->
   <div class="modal" id="installModal">
     <div class="modal-content">
       <span class="close-modal" onclick="document.getElementById('installModal').style.display='none'">&times;</span>
       <h2>Install App Now</h2>
-      <p>To enjoy the full experience, install <strong>Le Libido</strong><br>to your Home Screen.</p>
+      <p>To enjoy the full experience,<br>install <strong>Le Libido</strong><br>to your Home Screen.</p>
 
       <p><strong>If you're on iOS Safari:</strong><br>
       Tap <img src="share-icon.png" alt="Share Icon" /> scroll down and click<br><strong>“Add to Home Screen”</strong>.</p>
@@ -133,8 +136,6 @@
       installModal.style.display = 'block';
 
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-      const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
       const isAndroid = /android/i.test(userAgent);
       const isChrome = /Chrome/.test(userAgent) && /Google Inc/.test(navigator.vendor);
       const isBrave = navigator.brave !== undefined;
