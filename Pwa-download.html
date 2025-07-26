@@ -7,48 +7,56 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
+      --silver: #C4C4C4;
+      --charcoal: #1a1a1a;
       --gold: #e1bf78;
-      --light-gold: #F1E3A4;
-      --text-color: #111111;
       --white: #ffffff;
     }
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: var(--light-gold);
-      color: var(--text-color);
       margin: 0;
       padding: 0;
+      background-color: var(--silver);
+      color: var(--charcoal);
+    }
+
+    .top-banner {
+      background-color: var(--charcoal);
+      padding: 30px 0 20px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .top-banner img {
+      max-width: 160px;
+      height: auto;
     }
 
     .wrapper {
       max-width: 700px;
-      margin: 40px auto;
-      background-color: var(--light-gold);
+      margin: 0 auto;
+      background-color: var(--silver);
       border: 4px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      border-radius: 16px;
+      border-top: none;
+      border-radius: 0 0 16px 16px;
       padding: 40px 20px;
       text-align: center;
-    }
-
-    .logo {
-      max-width: 180px;
-      margin-bottom: 30px;
     }
 
     p.description {
       font-size: 1rem;
       line-height: 1.6;
       margin-bottom: 20px;
+      color: var(--charcoal);
     }
 
     .install-button {
       font-size: 1.1rem;
       font-weight: bold;
       padding: 16px 30px;
-      background-color: var(--text-color);
-      color: var(--light-gold);
+      background-color: var(--charcoal);
+      color: var(--gold);
       border: none;
       border-radius: 10px;
       cursor: pointer;
@@ -95,9 +103,12 @@
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <img src="le-libido-logo.png" alt="Le Libido Logo" class="logo" />
 
+  <div class="top-banner">
+    <img src="le-libido-logo.png" alt="Le Libido Logo" />
+  </div>
+
+  <div class="wrapper">
     <p class="description">
       Le Libido is the dating app that only works when you’re out in the world. You check into a venue like a bar, a café, a restaurant, etc. and the app activates, showing you who else is nearby and open to making a connection right here and right now. There’s no ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
     </p>
