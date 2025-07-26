@@ -7,9 +7,14 @@ self.addEventListener('install', (event) => {
       cache.addAll([
         '/',
         '/pwa-download.html',
+        '/quiz-new.html',
         '/le-libido-icon.png',
         '/fallback.html',
-        '/share-icon.jpeg'
+        '/share-icon.jpg', // ✅ Corrected from .jpeg to .jpg
+        '/golden–Le–Libido-logo.png', // ✅ Optional
+        '/install-step-1.jpg',         // ✅ Optional screenshots
+        '/install-step-2.jpg',
+        '/install-step-3.jpg'
       ])
     )
   );
