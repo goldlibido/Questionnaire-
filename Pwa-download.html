@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Install Le Libido</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#950606" />
+  <link rel="icon" href="/le-libido-icon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --gold: #e1bf78;
       --red: #950606;
+      --gold: #e1bf78;
     }
 
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--red);
+      color: white;
       font-family: 'Montserrat', sans-serif;
       display: flex;
       justify-content: center;
@@ -23,47 +26,132 @@
     }
 
     .frame {
-      border: 4px solid var(--gold);
+      border: 6px solid var(--gold);
       border-radius: 20px;
-      padding: 40px 30px;
+      padding: 30px 24px;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 30px;
+      background-color: var(--red);
+      transform: translateY(-30px); /* This raises it slightly */
     }
 
     .logo {
-      max-width: 140px;
-      height: auto;
+      max-width: 120px;
+      margin: 0 auto 28px;
+      display: block;
     }
 
     .install-btn {
       background-color: var(--gold);
       color: var(--red);
-      font-size: 1.1rem;
-      font-weight: 700;
-      padding: 14px 24px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      padding: 14px 28px;
       border: none;
-      border-radius: 14px;
+      border-radius: 12px;
       cursor: pointer;
-      font-family: 'Montserrat', sans-serif;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0px var(--gold); }
+      50% { transform: scale(1.05); box-shadow: 0 0 15px var(--gold); }
+      100% { transform: scale(1); box-shadow: 0 0 0px var(--gold); }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .modal-content {
+      background-color: var(--red);
+      border: 4px solid var(--gold);
+      border-radius: 16px;
+      max-width: 480px;
+      margin: 80px auto;
+      padding: 24px 20px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .modal h2 {
+      color: var(--gold);
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+
+    .modal img {
+      width: 30px;
+      vertical-align: middle;
+      margin: 0 4px;
+    }
+
+    .close-modal {
+      cursor: pointer;
+      color: white;
+      float: right;
+      font-size: 22px;
+    }
+
+    .android-note {
+      margin-top: 12px;
+    }
+
+    b {
+      color: var(--gold);
     }
   </style>
 </head>
 <body>
   <div class="frame">
-    <img src="golden-bee-hummingbird.png" alt="Le Libido Logo" class="logo" />
-    <button class="install-btn" onclick="startInstall()">Click here to install app</button>
+    <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+    <button class="install-btn" id="installBtn">Click here to install app</button>
+  </div>
+
+  <div class="modal" id="installModal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="document.getElementById('installModal').style.display='none'">&times;</span>
+      <h2>Install App Now</h2>
+      <p>To enjoy the full experience,<br>install <strong>Le Libido</strong> to your Home Screen.</p>
+
+      <p><strong>If you're on iOS Safari:</strong><br>
+      Tap <img src="share-icon.png" alt="Share Icon" /> scroll down and click<br><strong>“Add to Home Screen”</strong>.</p>
+
+      <p id="androidInstructions" class="android-note" style="display:none;">
+        <strong>On Android Chrome or Brave:</strong><br>
+        Wait for the install banner or tap the menu (⋮) and select “Install App”.
+      </p>
+    </div>
   </div>
 
   <script>
-    function startInstall() {
-      alert("To install, tap the Share icon and choose 'Add to Home Screen'");
-    }
+    const installBtn = document.getElementById('installBtn');
+    const installModal = document.getElementById('installModal');
+    const androidInstructions = document.getElementById('androidInstructions');
 
-    // Optional: Auto-redirect to quiz once installed from home screen
+    installBtn.addEventListener('click', () => {
+      installModal.style.display = 'block';
+
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const isAndroid = /android/i.test(userAgent);
+      const isChrome = /Chrome/.test(userAgent) && /Google Inc/.test(navigator.vendor);
+      const isBrave = navigator.brave !== undefined;
+
+      if (isAndroid && (isChrome || isBrave)) {
+        androidInstructions.style.display = 'block';
+      }
+    });
+
+    // Auto-redirect to quiz after install
     if (window.matchMedia('(display-mode: standalone)').matches && !localStorage.getItem('quizRedirected')) {
       localStorage.setItem('quizRedirected', 'true');
       window.location.href = '/quiz-new.html';
