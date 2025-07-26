@@ -1,19 +1,21 @@
 {
   "name": "Le Libido",
   "short_name": "Le Libido",
-  "start_url": "/pwa-download.html",
+  "start_url": "/quiz-new.html",
   "display": "standalone",
-  "background_color": "#064D95",
+  "background_color": "#0d0d0d",
   "theme_color": "#064D95",
-  "orientation": "portrait-primary",
-  "lang": "en-US",
-  "description": "The dating app that only works when you go out. No swiping, no ghosting — just real-time connection.",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "/le-libido-icon.png",
-      "sizes": "1024x1024",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "le-libido-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "le-libido-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
