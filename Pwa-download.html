@@ -3,190 +3,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Download the App – Le Libido</title>
+  <title>Install Le Libido</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#064D95" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --gold: #e1bf78;
       --red: #950606;
-      --green: #06954E;
       --blue: #064D95;
+      --green: #06954E;
       --white: #ffffff;
-      --black: #000000;
+      --charcoal: #0d0d0d;
     }
 
     body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: var(--gold);
       margin: 0;
-      padding: 40px 20px;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--charcoal);
+      color: var(--white);
+      text-align: center;
+      padding: 0;
+      border: 5px solid var(--gold);
+      border-radius: 16px;
     }
 
     .container {
-      background-color: var(--black);
-      border: 6px solid var(--gold);
-      border-radius: 16px;
       padding: 40px 20px;
+    }
+
+    img.logo {
+      max-width: 180px;
+      margin-top: 20px;
+    }
+
+    .app-description {
       max-width: 700px;
-      margin: 0 auto;
-      text-align: center;
-      color: var(--white);
-    }
-
-    img.icon-preview {
-      width: 180px;
-      height: 180px;
-      border-radius: 32px;
-      margin-bottom: 25px;
-      cursor: pointer;
-    }
-
-    p.description {
+      margin: 20px auto 30px auto;
       font-size: 1rem;
-      line-height: 1.5;
-      max-width: 580px;
-      margin: 0 auto 30px;
+      line-height: 1.6;
     }
 
     .install-button {
-      font-size: 1.1rem;
-      font-weight: bold;
-      padding: 16px 30px;
       background-color: var(--red);
       color: var(--white);
       border: none;
-      border-radius: 10px;
+      padding: 14px 28px;
+      font-size: 1.2rem;
+      border-radius: 8px;
       cursor: pointer;
-      margin-bottom: 30px;
-      animation: pulse 2.5s infinite;
+      animation: pulse 2s infinite;
+      margin-bottom: 40px;
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 10px rgba(149, 6, 6, 0.3); }
-      50% { transform: scale(1.07); box-shadow: 0 0 20px rgba(149, 6, 6, 0.8); }
-      100% { transform: scale(1); box-shadow: 0 0 10px rgba(149, 6, 6, 0.3); }
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
     }
 
     .how-it-works {
-      text-align: left;
       background-color: var(--blue);
       border: 4px solid var(--green);
-      border-radius: 16px;
-      padding: 25px;
-      max-width: 700px;
-      margin: 0 auto;
-      color: var(--white);
+      border-radius: 12px;
+      max-width: 800px;
+      margin: 0 auto 60px;
+      padding: 30px 20px;
+      text-align: left;
     }
 
     .how-it-works h2 {
-      font-size: 1.3rem;
-      margin-bottom: 10px;
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
     }
 
     .how-it-works ol {
       padding-left: 20px;
       font-size: 1rem;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
-    .how-it-works li {
-      margin-bottom: 16px;
-    }
-
-    .safari-instructions {
-      display: none;
-      font-size: 0.95rem;
-      background-color: #222;
-      color: #fff;
+    .ios-instructions {
+      background-color: var(--gold);
+      color: black;
+      font-size: 0.9rem;
       padding: 15px;
-      margin-top: 20px;
+      margin-top: 30px;
       border-radius: 10px;
-      border: 2px solid var(--gold);
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      display: none;
     }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <img src="le-libido-icon.png" alt="Le Libido App Icon" class="icon-preview" id="iconInstall" />
+    <img src="le-libido-icon.png" alt="Le Libido App Icon" class="logo" />
 
-    <p class="description">
+    <div class="app-description">
       Le Libido is the dating app that only works when you’re out in the world. There’s no ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
-    </p>
-
-    <button class="install-button" id="installButton">Install the App</button>
-
-    <div id="safariInstructions" class="safari-instructions">
-      🧠 On iPhone using Safari?<br> Tap the <strong>Share</strong> icon and choose <strong>"Add to Home Screen"</strong> to install the app.
     </div>
-  </div>
 
-  <!-- How it works section -->
-  <div class="how-it-works" style="margin-top: 40px;">
-    <h2>🔥 How It Works</h2>
-    <ol>
-      <li><strong>Take our hilariously sexy 10-question quiz</strong><br>Discover who you’re compatible with and why they might just be your perfect match.</li>
-      <li><strong>Choose your mode: Verified or Anonymous</strong><br>Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
-      <li><strong>Scope out the scene</strong><br>Peek at who’s hot at each venue before you go, or check into a bar, café, or restaurant to get checked in and see who’s checking you out.</li>
-      <li><strong>Make your move</strong><br>Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
-      <li><strong>Slide into real life</strong><br>Use our 1-on-1 or group chat feature to set up your date IRL, and skip the small talk.</li>
-    </ol>
+    <button class="install-button" id="installBtn">Install the App</button>
+
+    <div class="how-it-works">
+      <h2>🔥 How It Works</h2>
+      <ol>
+        <li><strong>Take our hilariously sexy 10-question quiz</strong><br/>Discover who you’re compatible with and why they might just be your perfect match.</li>
+        <li><strong>Choose your mode: Verified or Anonymous</strong><br/>Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
+        <li><strong>Scope out the scene</strong><br/>Peek at who’s hot at each venue before you go, or check into a bar, café, or restaurant to get checked in and see who’s checking you out.</li>
+        <li><strong>Make your move</strong><br/>Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
+        <li><strong>Slide into real life</strong><br/>Use our 1-on-1 or group chat feature to set up your date IRL, and skip the small talk.</li>
+      </ol>
+    </div>
+
+    <div id="iosInstructions" class="ios-instructions">
+      On Safari? Tap the <strong>Share</strong> icon and then <strong>"Add to Home Screen"</strong> to install Le Libido.
+    </div>
   </div>
 
   <script>
     let deferredPrompt;
 
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-    if (isIOS && isSafari) {
-      document.getElementById('safariInstructions').style.display = 'block';
-      document.getElementById('installButton').style.display = 'none';
-    }
-
-    // Capture install prompt event
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'inline-block';
     });
 
-    async function requestPermissions() {
-      // Push notification permission
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        try {
-          await Notification.requestPermission();
-        } catch (err) {
-          console.log('Push permission error:', err);
-        }
-      }
-
-      // Geolocation permission
+    document.getElementById('installBtn').addEventListener('click', async () => {
+      // Request Geolocation
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           (pos) => console.log('Geo success:', pos),
-          (err) => console.warn('Geo error:', err),
-          { enableHighAccuracy: true, timeout: 8000 }
+          (err) => console.error('Geo error:', err),
+          { enableHighAccuracy: true }
         );
       }
-    }
 
-    async function handleInstallClick() {
-      await requestPermissions();
+      // Request Push Notification Permission
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        await Notification.requestPermission();
+      }
 
+      // Trigger PWA install prompt
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice;
-        console.log('Install choice:', choice.outcome);
+        deferredPrompt.userChoice.then(choice => {
+          console.log('User install choice:', choice.outcome);
+        });
         deferredPrompt = null;
       }
+    });
+
+    // Show iOS instructions if on Safari
+    function isiOS() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     }
 
-    document.getElementById('installButton').addEventListener('click', handleInstallClick);
-    document.getElementById('iconInstall').addEventListener('click', handleInstallClick);
-  </script>
+    function isSafari() {
+      return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    }
 
+    if (isiOS() && isSafari()) {
+      document.getElementById('iosInstructions').style.display = 'block';
+    }
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').then(() => {
+        console.log('Service Worker registered');
+      });
+    }
+  </script>
 </body>
 </html>
