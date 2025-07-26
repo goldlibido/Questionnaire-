@@ -4,12 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Install Le Libido</title>
-
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#064D95" />
-  <link rel="apple-touch-icon" href="le-libido-icon.png" />
+  <link rel="apple-touch-icon" href="/le-libido-icon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --gold: #e1bf78;
@@ -36,27 +34,26 @@
     }
 
     img.logo {
-      max-width: 180px;
+      width: 160px;
       margin-top: 20px;
     }
 
     .app-description {
-      max-width: 700px;
-      margin: 20px auto 30px auto;
       font-size: 1rem;
-      line-height: 1.6;
+      line-height: 1.5;
+      max-width: 700px;
+      margin: 20px auto 30px;
     }
 
     .install-button {
       background-color: var(--red);
       color: var(--white);
       border: none;
-      padding: 14px 28px;
-      font-size: 1.2rem;
-      border-radius: 8px;
+      padding: 14px 30px;
+      font-size: 1.1rem;
+      border-radius: 10px;
       cursor: pointer;
       animation: pulse 2s infinite;
-      margin-bottom: 40px;
     }
 
     @keyframes pulse {
@@ -70,7 +67,7 @@
       border: 4px solid var(--green);
       border-radius: 12px;
       max-width: 800px;
-      margin: 0 auto 60px;
+      margin: 40px auto;
       padding: 30px 20px;
       text-align: left;
     }
@@ -95,95 +92,80 @@
       margin-top: 30px;
       border-radius: 10px;
       display: none;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="le-libido-icon.png" alt="Le Libido App Icon" class="logo" />
-
+    <img src="/le-libido-icon.png" alt="Le Libido Icon" class="logo" />
     <div class="app-description">
-      Le Libido is the dating app that only works when you’re out in the world. No ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
+      Le Libido only works when you install the app.<br>
+      No swiping. No ghosting. Just real people, real time, real places.
     </div>
-
     <button class="install-button" id="installBtn">Install the App</button>
+
+    <div class="ios-instructions" id="iosInstructions">
+      <strong>Using Safari?</strong><br>
+      Tap the <strong>Share</strong> icon <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Share_icon_iOS.svg/1024px-Share_icon_iOS.svg.png" alt="Share Icon" style="height: 16px; vertical-align: middle;" /> and select <strong>"Add to Home Screen"</strong> to unlock Le Libido.
+    </div>
 
     <div class="how-it-works">
       <h2>🔥 How It Works</h2>
       <ol>
-        <li><strong>Take our hilariously sexy 10-question quiz</strong></li>
-        <li><strong>Choose your mode: Verified or Anonymous</strong></li>
-        <li><strong>Scope out the scene</strong></li>
-        <li><strong>Make your move</strong></li>
-        <li><strong>Slide into real life</strong></li>
+        <li><strong>Install the app</strong> to unlock the experience</li>
+        <li><strong>Take the quiz</strong> to discover your erotic archetype</li>
+        <li><strong>Check into venues</strong> to meet real daters nearby</li>
+        <li><strong>Flirt in real time</strong>—only when you're out and about</li>
       </ol>
-    </div>
-
-    <div id="iosInstructions" class="ios-instructions">
-      Using Safari? Tap the <strong>Share</strong> icon and then <strong>"Add to Home Screen"</strong> to install Le Libido.
     </div>
   </div>
 
   <script>
     let deferredPrompt;
 
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(() => console.log('Service Worker registered'))
-        .catch((err) => console.error('SW registration failed:', err));
+    // Redirect if in standalone PWA mode
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      window.location.href = '/quiz-new.html';
     }
 
-    // Show iOS instructions
-    const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isiOS) {
+    // iOS instructions
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       document.getElementById('iosInstructions').style.display = 'block';
     }
 
-    // Handle beforeinstallprompt
+    // Android PWA prompt
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-
-      // Show install prompt immediately
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((result) => {
-        console.log('Install result:', result.outcome);
-        deferredPrompt = null;
-      });
+      document.getElementById('installBtn').style.display = 'inline-block';
     });
 
-    // Request location and push permissions
-    async function requestPermissions() {
-      // Location
+    document.getElementById('installBtn').addEventListener('click', async () => {
       if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => console.log('Location allowed:', pos),
-          (err) => console.error('Location denied:', err),
-          { enableHighAccuracy: true }
-        );
+        navigator.geolocation.getCurrentPosition(() => {}, () => {}, { enableHighAccuracy: true });
       }
 
-      // Push Notifications
       if ('Notification' in window && Notification.permission !== 'granted') {
-        try {
-          const permission = await Notification.requestPermission();
-          console.log('Push permission:', permission);
-        } catch (err) {
-          console.error('Push request error:', err);
-        }
+        await Notification.requestPermission();
       }
+
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        if (choice.outcome === 'accepted') {
+          window.location.href = '/quiz-new.html';
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    // Service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
     }
-
-    // Trigger everything on page load
-    window.addEventListener('load', () => {
-      requestPermissions();
-    });
-
-    // Fallback: Red button still visible but now does nothing
-    document.getElementById('installBtn').addEventListener('click', () => {
-      alert('If you see an “Add to Home Screen” option, tap it to install!');
-    });
   </script>
 </body>
 </html>
