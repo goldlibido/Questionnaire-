@@ -56,7 +56,14 @@
       padding: 20px;
       margin-top: 20px;
       text-align: left;
-      white-space: pre-line;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .how-it-works h2 {
+      color: var(--gold);
+      text-align: center;
+      margin-top: 0;
     }
 
     .modal {
@@ -67,7 +74,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.85);
       color: white;
       padding: 20px;
       box-sizing: border-box;
@@ -77,23 +84,23 @@
       background-color: var(--red);
       border: 4px solid var(--gold);
       border-radius: 16px;
-      max-width: 500px;
-      margin: 100px auto;
-      padding: 30px;
-      line-height: 1.7;
+      max-width: 480px;
+      margin: 80px auto;
+      padding: 24px 20px;
+      line-height: 1.5;
       text-align: center;
     }
 
     .modal h2 {
       color: var(--gold);
-      font-size: 1.8rem;
-      margin-bottom: 16px;
+      font-size: 1.6rem;
+      margin-bottom: 12px;
     }
 
     .modal img {
-      width: 36px;
+      width: 30px;
       vertical-align: middle;
-      margin-bottom: 6px;
+      margin: 0 4px;
     }
 
     .close-modal {
@@ -103,9 +110,12 @@
       font-size: 22px;
     }
 
-    ol {
-      padding-left: 1.2rem;
-      line-height: 2rem;
+    .android-note {
+      margin-top: 12px;
+    }
+
+    b {
+      color: var(--gold);
     }
   </style>
 </head>
@@ -115,25 +125,29 @@
   <button class="install-btn" id="installBtn">Click here to install app</button>
 
   <div class="how-it-works">
-    <h2 style="color: var(--gold); text-align:center;">How It Works:</h2>
-    <ol>
-      <li>Install app by adding to Home Screen, so you can date on the go.</li><br/>
-      <li>Complete our hilariously sexy 10-questionnaire to discover people you’re compatible with.</li><br/>
-      <li>Sign up for either verified mode or anonymous mode and complete your profile.</li><br/>
-      <li>Check out who’s hot at each venue before visiting, or visit a venue like a bar, café, or restaurant to get checked in and see who’s checking you out.</li><br/>
-      <li>Make your move by tapping “Approach” or only reveal your location to people you want to “Invite” and give permission to approach you.</li><br/>
-      <li>Start flirting! Use our chat/group chat feature to set up your date IRL.</li>
-    </ol>
+    <h2>How It Works:</h2>
+
+    <p><b>Install app</b> by adding to Home Screen, so you can date on the go.</p>
+    <p><b>Complete our questionnaire</b> to discover people you’re compatible with.</p>
+    <p><b>Sign up</b> for either verified mode or anonymous mode and complete your profile.</p>
+    <p><b>Check out who’s hot</b> at each venue before visiting, or visit a venue like a bar, café, or restaurant to get checked in and see who’s checking you out.</p>
+    <p><b>Make your move</b> by tapping “Approach” or only reveal your location to people you want to “Invite” and give permission to approach you.</p>
+    <p><b>Start flirting!</b> Use our chat/group chat feature to set up your date IRL.</p>
   </div>
 
   <div class="modal" id="installModal">
     <div class="modal-content">
       <span class="close-modal" onclick="document.getElementById('installModal').style.display='none'">&times;</span>
       <h2>Install App Now</h2>
-      <p>To enjoy the full experience, install <strong>Le Libido</strong><br>to your Home Screen.</p>
-      <p><strong>If you're on iOS Safari:</strong></p>
-      <p><img src="share-icon.png" alt="Share Icon" /><br>Tap the share icon<br>and scroll down to<br><strong>“Add to Home Screen”</strong>.</p>
-      <p id="androidInstructions" style="display:none;"><strong>On Android Chrome or Brave?</strong><br>Wait for the install prompt or open the browser menu (3 dots) and select “Install App”.</p>
+      <p>To enjoy the full experience, install <strong>Le Libido</strong> to your Home Screen.</p>
+
+      <p><strong>If you're on iOS Safari:</strong><br>
+      Tap <img src="share-icon.png" alt="Share Icon" /> scroll down and click<br><strong>“Add to Home Screen”</strong>.</p>
+
+      <p id="androidInstructions" class="android-note" style="display:none;">
+        <strong>On Android Chrome or Brave:</strong><br>
+        Wait for the install banner or tap the menu (⋮) and select “Install App”.
+      </p>
     </div>
   </div>
 
