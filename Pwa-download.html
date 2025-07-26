@@ -17,27 +17,34 @@
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: var(--black);
-      color: var(--white);
+      background-color: var(--gold);
       margin: 0;
-      padding: 30px 20px;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background-color: var(--black);
+      border: 6px solid var(--gold);
+      border-radius: 16px;
+      padding: 40px 20px;
+      max-width: 700px;
+      margin: 0 auto;
       text-align: center;
+      color: var(--white);
     }
 
     img.icon-preview {
-      width: 200px;
-      height: 200px;
-      border-radius: 30px;
-      border: 4px solid var(--gold);
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-      margin-bottom: 20px;
+      width: 180px;
+      height: 180px;
+      border-radius: 32px;
+      margin-bottom: 25px;
       cursor: pointer;
     }
 
     p.description {
       font-size: 1rem;
       line-height: 1.5;
-      max-width: 600px;
+      max-width: 580px;
       margin: 0 auto 30px;
     }
 
@@ -51,13 +58,13 @@
       border-radius: 10px;
       cursor: pointer;
       margin-bottom: 30px;
-      animation: pulse 2s infinite;
+      animation: pulse 2.5s infinite;
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 10px rgba(149, 6, 6, 0.4); }
+      0% { transform: scale(1); box-shadow: 0 0 10px rgba(149, 6, 6, 0.3); }
       50% { transform: scale(1.07); box-shadow: 0 0 20px rgba(149, 6, 6, 0.8); }
-      100% { transform: scale(1); box-shadow: 0 0 10px rgba(149, 6, 6, 0.4); }
+      100% { transform: scale(1); box-shadow: 0 0 10px rgba(149, 6, 6, 0.3); }
     }
 
     .how-it-works {
@@ -68,12 +75,12 @@
       padding: 25px;
       max-width: 700px;
       margin: 0 auto;
+      color: var(--white);
     }
 
     .how-it-works h2 {
       font-size: 1.3rem;
       margin-bottom: 10px;
-      color: var(--white);
     }
 
     .how-it-works ol {
@@ -103,23 +110,21 @@
 </head>
 <body>
 
-  <!-- Icon as preview of app -->
-  <img src="le-libido-icon.png" alt="Le Libido App Icon" class="icon-preview" id="iconInstall">
+  <div class="container">
+    <img src="le-libido-icon.png" alt="Le Libido App Icon" class="icon-preview" id="iconInstall" />
 
-  <!-- App description -->
-  <p class="description">
-    Le Libido is the dating app that only works when you’re out in the world. There’s no ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
-  </p>
+    <p class="description">
+      Le Libido is the dating app that only works when you’re out in the world. There’s no ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
+    </p>
 
-  <!-- Install button -->
-  <button class="install-button" id="installButton">Install the App</button>
+    <button class="install-button" id="installButton">Install the App</button>
 
-  <!-- Safari instructions -->
-  <div id="safariInstructions" class="safari-instructions">
-    🧠 On iPhone?<br> Tap the <strong>Share</strong> icon in Safari and select <strong>"Add to Home Screen"</strong> to install the app. (This is how iOS does it!)
+    <div id="safariInstructions" class="safari-instructions">
+      🧠 On iPhone using Safari?<br> Tap the <strong>Share</strong> icon and choose <strong>"Add to Home Screen"</strong> to install the app.
+    </div>
   </div>
 
-  <!-- How it works -->
+  <!-- How it works section -->
   <div class="how-it-works" style="margin-top: 40px;">
     <h2>🔥 How It Works</h2>
     <ol>
@@ -142,14 +147,14 @@
       document.getElementById('installButton').style.display = 'none';
     }
 
-    // Listen for install prompt event
+    // Capture install prompt event
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
     });
 
     async function requestPermissions() {
-      // Push
+      // Push notification permission
       if ('Notification' in window && Notification.permission !== 'granted') {
         try {
           await Notification.requestPermission();
@@ -158,7 +163,7 @@
         }
       }
 
-      // Geolocation
+      // Geolocation permission
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           (pos) => console.log('Geo success:', pos),
@@ -167,10 +172,6 @@
         );
       }
     }
-
-    // Handle install button click
-    const installButton = document.getElementById('installButton');
-    const iconInstall = document.getElementById('iconInstall');
 
     async function handleInstallClick() {
       await requestPermissions();
@@ -183,8 +184,8 @@
       }
     }
 
-    installButton.addEventListener('click', handleInstallClick);
-    iconInstall.addEventListener('click', handleInstallClick);
+    document.getElementById('installButton').addEventListener('click', handleInstallClick);
+    document.getElementById('iconInstall').addEventListener('click', handleInstallClick);
   </script>
 
 </body>
