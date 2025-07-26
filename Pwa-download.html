@@ -4,9 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Install Le Libido</title>
+
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#064D95" />
+  <link rel="apple-touch-icon" href="le-libido-icon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --gold: #e1bf78;
@@ -22,10 +25,10 @@
       font-family: 'Montserrat', sans-serif;
       background-color: var(--charcoal);
       color: var(--white);
-      text-align: center;
       padding: 0;
       border: 5px solid var(--gold);
       border-radius: 16px;
+      text-align: center;
     }
 
     .container {
@@ -100,7 +103,7 @@
     <img src="le-libido-icon.png" alt="Le Libido App Icon" class="logo" />
 
     <div class="app-description">
-      Le Libido is the dating app that only works when you’re out in the world. There’s no ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
+      Le Libido is the dating app that only works when you’re out in the world. No ghosting. No swiping. Just instant IRL connection with real people, in real places, in real time.
     </div>
 
     <button class="install-button" id="installBtn">Install the App</button>
@@ -108,22 +111,23 @@
     <div class="how-it-works">
       <h2>🔥 How It Works</h2>
       <ol>
-        <li><strong>Take our hilariously sexy 10-question quiz</strong><br/>Discover who you’re compatible with and why they might just be your perfect match.</li>
-        <li><strong>Choose your mode: Verified or Anonymous</strong><br/>Then complete your profile. Keep it mysterious, or show off who you are and share exactly what you’re looking for.</li>
-        <li><strong>Scope out the scene</strong><br/>Peek at who’s hot at each venue before you go, or check into a bar, café, or restaurant to get checked in and see who’s checking you out.</li>
-        <li><strong>Make your move</strong><br/>Tap “Approach” to see who wants to meet you right now, or keep your location private until you “Invite” someone and give them permission to approach you.</li>
-        <li><strong>Slide into real life</strong><br/>Use our 1-on-1 or group chat feature to set up your date IRL, and skip the small talk.</li>
+        <li><strong>Take our hilariously sexy 10-question quiz</strong></li>
+        <li><strong>Choose your mode: Verified or Anonymous</strong></li>
+        <li><strong>Scope out the scene</strong></li>
+        <li><strong>Make your move</strong></li>
+        <li><strong>Slide into real life</strong></li>
       </ol>
     </div>
 
     <div id="iosInstructions" class="ios-instructions">
-      On Safari? Tap the <strong>Share</strong> icon and then <strong>"Add to Home Screen"</strong> to install Le Libido.
+      Using Safari? Tap the <strong>Share</strong> icon and then <strong>"Add to Home Screen"</strong> to install Le Libido.
     </div>
   </div>
 
   <script>
     let deferredPrompt;
 
+    // Handle beforeinstallprompt for Android/Chrome/Brave
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -140,39 +144,35 @@
         );
       }
 
-      // Request Push Notification Permission
+      // Request Push Notifications
       if ('Notification' in window && Notification.permission !== 'granted') {
-        await Notification.requestPermission();
+        try {
+          const result = await Notification.requestPermission();
+          console.log('Push permission:', result);
+        } catch (err) {
+          console.error('Push permission error:', err);
+        }
       }
 
-      // Trigger PWA install prompt
+      // Trigger PWA install
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choice => {
-          console.log('User install choice:', choice.outcome);
-        });
+        const result = await deferredPrompt.userChoice;
+        console.log('Install choice:', result.outcome);
         deferredPrompt = null;
       }
     });
 
-    // Show iOS instructions if on Safari
-    function isiOS() {
-      return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    }
-
-    function isSafari() {
-      return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    }
-
-    if (isiOS() && isSafari()) {
+    // Show iOS add-to-home instructions
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       document.getElementById('iosInstructions').style.display = 'block';
     }
 
     // Register service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js').then(() => {
-        console.log('Service Worker registered');
-      });
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(() => console.log('Service Worker registered'))
+        .catch((err) => console.error('SW registration failed:', err));
     }
   </script>
 </body>
