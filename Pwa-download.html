@@ -4,13 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Install Le Libido</title>
-  <meta name="theme-color" content="#950606" />
   <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#950606" />
   <link rel="icon" href="/le-libido-icon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --red: #950606;
       --gold: #e1bf78;
+      --darkred: #7c0404;
     }
 
     body {
@@ -20,20 +22,23 @@
       color: white;
       display: flex;
       justify-content: center;
-      align-items: center;
       height: 100vh;
+      padding-top: 60px;
+      box-sizing: border-box;
     }
 
     .center-box {
       border: 8px solid var(--gold);
+      border-radius: 20px;
       padding: 40px 20px;
-      border-radius: 16px;
       text-align: center;
+      background-color: var(--red);
     }
 
-    .logo {
+    img.logo {
       max-width: 120px;
-      margin-bottom: 30px;
+      display: block;
+      margin: 0 auto 30px;
     }
 
     .install-btn {
@@ -46,6 +51,7 @@
       cursor: pointer;
       animation: pulse 1.8s infinite;
       font-weight: bold;
+      display: inline-block;
     }
 
     @keyframes pulse {
@@ -101,21 +107,23 @@
     .android-note {
       margin-top: 12px;
     }
+
+    b {
+      color: var(--gold);
+    }
   </style>
 </head>
 <body>
-
   <div class="center-box">
     <img src="golden-le-libido-logo.png" class="logo" alt="Le Libido Logo" />
     <button class="install-btn" id="installBtn">Click here to install app</button>
   </div>
 
-  <!-- Modal for install instructions -->
   <div class="modal" id="installModal">
     <div class="modal-content">
       <span class="close-modal" onclick="document.getElementById('installModal').style.display='none'">&times;</span>
       <h2>Install App Now</h2>
-      <p>To enjoy the full experience,<br>install <strong>Le Libido</strong><br>to your Home Screen.</p>
+      <p>To enjoy the full experience,<br>install <strong>Le Libido</strong> to your Home Screen.</p>
 
       <p><strong>If you're on iOS Safari:</strong><br>
       Tap <img src="share-icon.png" alt="Share Icon" /> scroll down and click<br><strong>“Add to Home Screen”</strong>.</p>
