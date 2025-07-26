@@ -112,10 +112,10 @@
     <h2 style="color: var(--gold);">How It Works:</h2>
     <ol>
       <li>Install app by adding to Home Screen, so you can date on the go.</li>
-      <li>Complete our hilariously sexy 10-question quiz to discover who you're compatible with.</li>
+      <li>Complete our hilariously sexy 10-questionnaire to discover people you’re compatible with.</li>
       <li>Sign up for either verified mode or anonymous mode and complete your profile.</li>
-      <li>Check out who's hot at each venue before visiting, or go to a venue like a bar, café, or restaurant to check in and see who's checking you out.</li>
-      <li>Make your move by tapping “Approach” or only reveal your location to people you want to “Invite.”</li>
+      <li>Check out who’s hot at each venue before visiting, or visit a venue like a bar, café, or restaurant to get checked in and see who’s checking you out.</li>
+      <li>Make your move by tapping “Approach” or only reveal your location to people you want to “Invite” and give permission to approach you.</li>
       <li>Start flirting! Use our chat/group chat feature to set up your date IRL.</li>
     </ol>
   </div>
@@ -127,11 +127,27 @@
       <p>To enjoy the full experience, install <strong>Le Libido</strong> to your Home Screen.</p>
       <p>If you're on <strong>iOS Safari</strong>:</p>
       <p><img src="share-icon.png" alt="Share Icon" /> Tap the share icon and scroll down to “Add to Home Screen”.</p>
-      <p id="androidInstructions" style="display: none;"><strong>Android user?</strong> A browser prompt should appear—just tap "Install" when it does!</p>
-      <p>If it doesn’t appear, use your browser menu to add this page to your Home Screen.</p>
+      <p id="androidInstructions" style="display: none;"><strong>Android user?</strong> A browser prompt should appear—just tap "Install" when it does! If not, use the browser menu.</p>
     </div>
   </div>
 
-  <script src="install.js"></script>
+  <script>
+    const installBtn = document.getElementById('installBtn');
+    const installModal = document.getElementById('installModal');
+    const androidInstructions = document.getElementById('androidInstructions');
+
+    installBtn.addEventListener('click', () => {
+      installModal.style.display = 'block';
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+      const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+      const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+      const isAndroid = /android/i.test(userAgent);
+
+      if (isAndroid) {
+        androidInstructions.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
