@@ -28,15 +28,15 @@
     .frame {
       border: 6px solid var(--gold);
       border-radius: 20px;
-      padding: 30px 24px;
+      padding: 40px 30px;
       text-align: center;
       background-color: var(--red);
-      transform: translateY(-30px); /* This raises it slightly */
+      transform: translateY(-15px); /* Raise frame 15px */
     }
 
     .logo {
       max-width: 120px;
-      margin: 0 auto 28px;
+      margin: 0 auto 30px;
       display: block;
     }
 
@@ -50,6 +50,11 @@
       border-radius: 12px;
       cursor: pointer;
       animation: pulse 1.8s infinite;
+      transition: transform 0.1s ease;
+    }
+
+    .install-btn:active {
+      transform: scale(0.96); /* Tap feedback */
     }
 
     @keyframes pulse {
@@ -150,12 +155,6 @@
         androidInstructions.style.display = 'block';
       }
     });
-
-    // Auto-redirect to quiz after install
-    if (window.matchMedia('(display-mode: standalone)').matches && !localStorage.getItem('quizRedirected')) {
-      localStorage.setItem('quizRedirected', 'true');
-      window.location.href = '/quiz-new.html';
-    }
   </script>
 </body>
 </html>
