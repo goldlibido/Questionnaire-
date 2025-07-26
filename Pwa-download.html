@@ -8,17 +8,15 @@
   <style>
     :root {
       --gold: #e1bf78;
-      --deep-gold: #b99a5c;
-      --red: #950606;
-      --green: #06954E;
-      --blue: #064D95;
+      --light-gold: #F1E3A4;
+      --text-color: #111111;
       --white: #ffffff;
     }
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: #F1E3A4;
-      color: var(--white);
+      background-color: var(--light-gold);
+      color: var(--text-color);
       margin: 0;
       padding: 0;
     }
@@ -26,9 +24,9 @@
     .wrapper {
       max-width: 700px;
       margin: 40px auto;
-      background-color: var(--deep-gold);
-      border: 4px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+      background-color: var(--light-gold);
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       border-radius: 16px;
       padding: 40px 20px;
       text-align: center;
@@ -49,24 +47,25 @@
       font-size: 1.1rem;
       font-weight: bold;
       padding: 16px 30px;
-      background-color: var(--white);
-      color: var(--gold);
+      background-color: var(--text-color);
+      color: var(--light-gold);
       border: none;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 0 8px rgba(255,255,255,0.2);
+      box-shadow: 0 0 8px rgba(0,0,0,0.2);
       margin-bottom: 30px;
+      animation: pulse 2s infinite;
     }
 
     .install-button:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 12px rgba(255,255,255,0.4);
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
     }
 
     .how-it-works {
       text-align: left;
-      background-color: rgba(255,255,255,0.05);
+      background-color: rgba(255,255,255,0.3);
       border-radius: 12px;
       padding: 20px;
       max-height: 300px;
@@ -86,6 +85,12 @@
 
     .how-it-works li {
       margin-bottom: 15px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
