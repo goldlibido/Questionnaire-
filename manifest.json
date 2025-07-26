@@ -6,8 +6,8 @@
   "background_color": "#064D95",
   "theme_color": "#064D95",
   "orientation": "portrait-primary",
-  "description": "The dating app that only works when you go out. No swiping, no ghosting — just real-time connection.",
   "lang": "en-US",
+  "description": "The dating app that only works when you go out. No swiping, no ghosting — just real-time connection.",
   "scope": "/",
   "icons": [
     {
@@ -16,11 +16,5 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "permissions": [
-    "geolocation",
-    "notifications",
-    "background-sync",
-    "push"
   ]
 }
