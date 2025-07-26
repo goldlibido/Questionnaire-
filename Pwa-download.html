@@ -13,94 +13,116 @@
   <style>
     :root {
       --gold: #e1bf78;
-      --red: #950606;
-      --blue: #064D95;
-      --green: #06954E;
-      --white: #ffffff;
       --charcoal: #0d0d0d;
+      --red: #950606;
     }
 
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
       background-color: var(--charcoal);
-      color: var(--white);
-      padding: 0;
+      color: white;
       text-align: center;
+      padding: 0;
     }
 
     .container {
-      padding: 40px 20px;
-      max-width: 700px;
+      max-width: 800px;
       margin: 0 auto;
+      padding: 40px 20px 80px;
     }
 
-    img.logo {
+    .logo {
       max-width: 120px;
-      display: block;
       margin: 30px auto 20px;
+      display: block;
     }
 
-    .instructions {
-      background-color: #fff;
-      color: #000;
+    .instruction-box {
+      background-color: #ffffff;
+      color: #000000;
       border-radius: 12px;
-      padding: 30px 20px;
-      margin-top: 20px;
-    }
-
-    .instructions h2 {
-      font-size: 1.4rem;
-      margin-bottom: 16px;
-    }
-
-    .instructions ol {
+      padding: 25px 20px;
       text-align: left;
-      padding-left: 20px;
       font-size: 1rem;
-      line-height: 1.7;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
-    .instructions ol li {
-      margin-bottom: 10px;
+    .instruction-box h2 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
     }
 
-    .instructions img {
-      height: 20px;
+    .instruction-box ol {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .instruction-box li {
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .instruction-box img {
+      height: 22px;
       vertical-align: middle;
       margin-right: 8px;
     }
 
-    .install-button {
-      background-color: var(--gold);
-      color: #000;
-      border: none;
-      padding: 14px 28px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-top: 30px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+    .screenshot-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
     }
 
-    .install-button:hover {
-      background-color: #ffdc8a;
+    .screenshot-row img {
+      width: 30%;
+      max-width: 180px;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+    }
+
+    .install-button {
+      background-color: var(--red);
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      margin-top: 30px;
+      cursor: pointer;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="golden–Le–Libido-logo.png" alt="Le Libido Logo" class="logo" />
+  <img src="golden–Le–Libido-logo.png" alt="Le Libido Logo" class="logo" />
 
-    <div class="instructions">
+  <div class="container">
+    <h1>Install Le Libido</h1>
+    <p>To unlock the full experience, please install the app to your home screen.</p>
+
+    <div class="instruction-box">
       <h2>To install the app from Safari on iOS:</h2>
       <ol>
-        <li><img src="share-icon.jpg" alt="Share Icon"> Tap <strong>Share</strong></li>
-        <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+        <li><img src="share-icon.jpg" alt="Share Icon" /> Tap <strong>Share</strong></li>
+        <li>Swipe up and tap <strong>Add to Home Screen</strong></li>
       </ol>
+    </div>
+
+    <div class="screenshot-row">
+      <img src="install-step-1.jpg" alt="Step 1 Screenshot" />
+      <img src="install-step-2.jpg" alt="Step 2 Screenshot" />
+      <img src="install-step-3.jpg" alt="Step 3 Screenshot" />
     </div>
 
     <button class="install-button" id="installBtn">📱 Install to Home Screen</button>
@@ -112,58 +134,30 @@
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      document.getElementById('installBtn').style.display = 'inline-flex';
     });
 
     document.getElementById('installBtn').addEventListener('click', async () => {
-      // Request Geo
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => console.log('Geo success:', pos),
-          (err) => console.error('Geo error:', err),
-          { enableHighAccuracy: true }
-        );
-      }
-
-      // Request Push
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        try {
-          await Notification.requestPermission();
-        } catch (err) {
-          console.error('Notification error:', err);
-        }
-      }
-
       if (deferredPrompt) {
         deferredPrompt.prompt();
         const result = await deferredPrompt.userChoice;
         if (result.outcome === 'accepted') {
-          console.log('PWA installed');
           window.location.href = '/quiz-new.html';
         }
-        deferredPrompt = null;
-      } else {
-        // Fallback to iOS behavior
-        alert("Please tap the Share icon and select 'Add to Home Screen' to continue.");
       }
     });
 
-    // Detect iOS + Safari
+    // Force full-screen hard stop for non-installed users
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     const isStandalone =
       window.matchMedia('(display-mode: standalone)').matches ||
       window.navigator.standalone === true;
 
-    if (!isStandalone && isIOS && isSafari) {
-      document.getElementById('installBtn').style.display = 'inline-flex';
+    if (!isStandalone && isIOS) {
+      // Block navigation unless installed
+      document.getElementById('installBtn').disabled = false;
+    } else if (isStandalone) {
+      window.location.href = '/quiz-new.html';
     }
-
-    // Analytics-ready install event
-    window.addEventListener('appinstalled', () => {
-      console.log('Le Libido was installed');
-      // Send to analytics if needed
-    });
   </script>
 </body>
 </html>
