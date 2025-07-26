@@ -1,0 +1,15 @@
+{
+  "name": "Le Libido",
+  "short_name": "Le Libido",
+  "start_url": "/pwa-download.html",
+  "display": "standalone",
+  "background_color": "#064D95",
+  "theme_color": "#064D95",
+  "icons": [
+    {
+      "src": "le-libido-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}
