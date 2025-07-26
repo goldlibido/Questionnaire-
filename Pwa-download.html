@@ -127,53 +127,63 @@
   <script>
     let deferredPrompt;
 
-    // Handle beforeinstallprompt for Android/Chrome/Brave
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('installBtn').style.display = 'inline-block';
-    });
-
-    document.getElementById('installBtn').addEventListener('click', async () => {
-      // Request Geolocation
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => console.log('Geo success:', pos),
-          (err) => console.error('Geo error:', err),
-          { enableHighAccuracy: true }
-        );
-      }
-
-      // Request Push Notifications
-      if ('Notification' in window && Notification.permission !== 'granted') {
-        try {
-          const result = await Notification.requestPermission();
-          console.log('Push permission:', result);
-        } catch (err) {
-          console.error('Push permission error:', err);
-        }
-      }
-
-      // Trigger PWA install
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const result = await deferredPrompt.userChoice;
-        console.log('Install choice:', result.outcome);
-        deferredPrompt = null;
-      }
-    });
-
-    // Show iOS add-to-home instructions
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      document.getElementById('iosInstructions').style.display = 'block';
-    }
-
     // Register service worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js')
         .then(() => console.log('Service Worker registered'))
         .catch((err) => console.error('SW registration failed:', err));
     }
+
+    // Show iOS instructions
+    const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isiOS) {
+      document.getElementById('iosInstructions').style.display = 'block';
+    }
+
+    // Handle beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+
+      // Show install prompt immediately
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((result) => {
+        console.log('Install result:', result.outcome);
+        deferredPrompt = null;
+      });
+    });
+
+    // Request location and push permissions
+    async function requestPermissions() {
+      // Location
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => console.log('Location allowed:', pos),
+          (err) => console.error('Location denied:', err),
+          { enableHighAccuracy: true }
+        );
+      }
+
+      // Push Notifications
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        try {
+          const permission = await Notification.requestPermission();
+          console.log('Push permission:', permission);
+        } catch (err) {
+          console.error('Push request error:', err);
+        }
+      }
+    }
+
+    // Trigger everything on page load
+    window.addEventListener('load', () => {
+      requestPermissions();
+    });
+
+    // Fallback: Red button still visible but now does nothing
+    document.getElementById('installBtn').addEventListener('click', () => {
+      alert('If you see an “Add to Home Screen” option, tap it to install!');
+    });
   </script>
 </body>
 </html>
