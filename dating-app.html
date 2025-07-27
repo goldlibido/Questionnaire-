@@ -12,6 +12,7 @@
       --red: #950606;
       --gold: #e1bf78;
       --black: #0d0d0d;
+      --charcoal: #1a1a1a;
     }
 
     body {
@@ -25,6 +26,7 @@
     header {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 15px 20px;
     }
 
@@ -33,7 +35,7 @@
     }
 
     .trophy-icon {
-      width: 30px;
+      font-size: 1.8rem;
       cursor: pointer;
     }
 
@@ -71,7 +73,6 @@
       width: 80px;
       height: 80px;
       border-radius: 12px;
-      border: 3px solid var(--gold);
       object-fit: cover;
       margin-right: 16px;
     }
@@ -123,74 +124,204 @@
       text-decoration: underline;
     }
 
+    /* Fullscreen modal */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.85);
+      background-color: var(--charcoal);
       z-index: 999;
-      justify-content: center;
-      align-items: center;
+      overflow-y: auto;
       padding: 20px;
       box-sizing: border-box;
     }
 
-    .modal-content {
-      background-color: var(--black);
-      border: 3px solid var(--gold);
-      border-radius: 16px;
-      max-width: 500px;
-      width: 100%;
-      padding: 20px;
-      text-align: center;
-      overflow-y: auto;
-      max-height: 80vh;
+    .modal-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
     }
 
-    .modal-close {
-      color: white;
-      float: right;
-      font-size: 24px;
+    .back-arrow {
+      font-size: 1.5rem;
       cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .modal-content {
+      padding: 10px;
+      text-align: left;
+    }
+
+    .modal-content img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .modal-content h2 {
+      margin: 0 0 10px;
+      font-size: 1.8rem;
+    }
+
+    .modal-content p {
+      margin: 0 0 10px;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <header>
     <img src="golden-le-libido-logo.png" alt="Logo" class="logo" />
-    <img src="trophy-icon.png" alt="Trophy" class="trophy-icon" onclick="showLeaderboard()" />
+    <div class="trophy-icon" onclick="showLeaderboard()">🏆</div>
   </header>
 
+  <!-- Main Content -->
   <div class="content">
     <!-- Daters Section -->
     <div id="datersTab" class="tab-section active row-container">
-      <div class="profile-row profile-red" onclick="showProfile('Alex')">
+      <div class="profile-row profile-red" onclick="showProfile('Alex', '“Bet you can’t handle me.”', 'profile1.jpg')">
         <img src="profile1.jpg" class="profile-img" />
         <div class="profile-info">
           <div class="profile-name">Alex</div>
-          <div class="profile-bio">“Bet you can't handle me.”</div>
+          <div class="profile-bio">“Bet you can’t handle me.”</div>
         </div>
         <div class="medals">
           <img src="gold-medal.png" alt="Gold" />
-          <img src="chocolate-icon.png" alt="Chocolate" />
         </div>
       </div>
-      <!-- Add two more sample daters -->
+      <div class="profile-row profile-green" onclick="showProfile('Jordan', '“Adventurous soul.”', 'profile2.jpg')">
+        <img src="profile2.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Jordan</div>
+          <div class="profile-bio">“Adventurous soul.”</div>
+        </div>
+      </div>
+      <div class="profile-row profile-blue" onclick="showProfile('Taylor', '“Coffee & chaos.”', 'profile3.jpg')">
+        <img src="profile3.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Taylor</div>
+          <div class="profile-bio">“Coffee & chaos.”</div>
+        </div>
+        <div class="medals">
+          <img src="bronze-medal.png" alt="Bronze" />
+        </div>
+      </div>
+      <div class="profile-row profile-red" onclick="showProfile('Riley', '“Love late-night talks.”', 'profile4.jpg')">
+        <img src="profile4.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Riley</div>
+          <div class="profile-bio">“Love late-night talks.”</div>
+        </div>
+      </div>
+      <div class="profile-row profile-green" onclick="showProfile('Charlie', '“Sarcasm is my love language.”', 'profile5.jpg')">
+        <img src="profile5.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Charlie</div>
+          <div class="profile-bio">“Sarcasm is my love language.”</div>
+        </div>
+      </div>
+      <div class="profile-row profile-blue" onclick="showProfile('Morgan', '“Always planning my next trip.”', 'profile6.jpg')">
+        <img src="profile6.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Morgan</div>
+          <div class="profile-bio">“Always planning my next trip.”</div>
+        </div>
+      </div>
+      <div class="profile-row profile-red" onclick="showProfile('Avery', '“Music is my therapy.”', 'profile7.jpg')">
+        <img src="profile7.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Avery</div>
+          <div class="profile-bio">“Music is my therapy.”</div>
+        </div>
+      </div>
+      <div class="profile-row profile-green" onclick="showProfile('Casey', '“Foodie at heart.”', 'profile8.jpg')">
+        <img src="profile8.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Casey</div>
+          <div class="profile-bio">“Foodie at heart.”</div>
+        </div>
+      </div>
+      <div class="profile-row profile-blue" onclick="showProfile('Quinn', '“Let’s make stories worth telling.”', 'profile9.jpg')">
+        <img src="profile9.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Quinn</div>
+          <div class="profile-bio">“Let’s make stories worth telling.”</div>
+        </div>
+      </div>
     </div>
 
     <!-- Venues Section -->
     <div id="venuesTab" class="tab-section row-container">
-      <div class="venue-row profile-blue" onclick="showVenue('Lounge 88')">
+      <div class="venue-row profile-blue" onclick="showVenue('Velvet Room', 'Jazz & cocktails', 'venue1.jpg')">
         <img src="venue1.jpg" class="profile-img" />
         <div class="profile-info">
-          <div class="profile-name">Lounge 88</div>
-          <div class="profile-bio">Downtown jazz & cocktails</div>
+          <div class="profile-name">Velvet Room</div>
+          <div class="profile-bio">Jazz & cocktails</div>
         </div>
       </div>
-      <!-- Add two more sample venues -->
+      <div class="venue-row profile-green" onclick="showVenue('The Garden Bar', 'Outdoor vibes', 'venue2.jpg')">
+        <img src="venue2.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">The Garden Bar</div>
+          <div class="profile-bio">Outdoor vibes</div>
+        </div>
+      </div>
+      <div class="venue-row profile-red" onclick="showVenue('Firefly Café', 'Cozy coffee spot', 'venue3.jpg')">
+        <img src="venue3.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Firefly Café</div>
+          <div class="profile-bio">Cozy coffee spot</div>
+        </div>
+      </div>
+      <div class="venue-row profile-blue" onclick="showVenue('Neon Nights', 'Dance & drinks', 'venue4.jpg')">
+        <img src="venue4.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Neon Nights</div>
+          <div class="profile-bio">Dance & drinks</div>
+        </div>
+      </div>
+      <div class="venue-row profile-green" onclick="showVenue('Sunset Lounge', 'Scenic views', 'venue5.jpg')">
+        <img src="venue5.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Sunset Lounge</div>
+          <div class="profile-bio">Scenic views</div>
+        </div>
+      </div>
+      <div class="venue-row profile-red" onclick="showVenue('The Hive', 'Live music hub', 'venue6.jpg')">
+        <img src="venue6.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">The Hive</div>
+          <div class="profile-bio">Live music hub</div>
+        </div>
+      </div>
+      <div class="venue-row profile-blue" onclick="showVenue('Blue Orchid', 'Fine dining', 'venue7.jpg')">
+        <img src="venue7.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Blue Orchid</div>
+          <div class="profile-bio">Fine dining</div>
+        </div>
+      </div>
+      <div class="venue-row profile-green" onclick="showVenue('The Rooftop', 'Skyline drinks', 'venue8.jpg')">
+        <img src="venue8.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">The Rooftop</div>
+          <div class="profile-bio">Skyline drinks</div>
+        </div>
+      </div>
+      <div class="venue-row profile-red" onclick="showVenue('Red Lantern', 'Asian fusion', 'venue9.jpg')">
+        <img src="venue9.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Red Lantern</div>
+          <div class="profile-bio">Asian fusion</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -200,21 +331,20 @@
     <div id="venuesTabBtn" onclick="toggleTab('venues')">Venues</div>
   </div>
 
-  <!-- Modals -->
+  <!-- Profile Modal -->
   <div class="modal" id="profileModal">
-    <div class="modal-content">
-      <span class="modal-close" onclick="closeModal('profileModal')">&times;</span>
-      <h2>Alex</h2>
-      <p>Full profile details here...</p>
+    <div class="modal-header">
+      <span class="back-arrow" onclick="closeModal('profileModal')">←</span>
     </div>
+    <div class="modal-content" id="profileContent"></div>
   </div>
 
+  <!-- Venue Modal -->
   <div class="modal" id="venueModal">
-    <div class="modal-content">
-      <span class="modal-close" onclick="closeModal('venueModal')">&times;</span>
-      <h2>Lounge 88</h2>
-      <p>Currently checked-in daters...</p>
+    <div class="modal-header">
+      <span class="back-arrow" onclick="closeModal('venueModal')">←</span>
     </div>
+    <div class="modal-content" id="venueContent"></div>
   </div>
 
   <!-- Scripts -->
@@ -234,12 +364,24 @@
       }
     }
 
-    function showProfile(name) {
-      document.getElementById('profileModal').style.display = 'flex';
+    function showProfile(name, bio, img) {
+      const content = `
+        <img src="${img}" alt="${name}">
+        <h2>${name}</h2>
+        <p>${bio}</p>
+      `;
+      document.getElementById('profileContent').innerHTML = content;
+      document.getElementById('profileModal').style.display = 'block';
     }
 
-    function showVenue(name) {
-      document.getElementById('venueModal').style.display = 'flex';
+    function showVenue(name, desc, img) {
+      const content = `
+        <img src="${img}" alt="${name}">
+        <h2>${name}</h2>
+        <p>${desc}</p>
+      `;
+      document.getElementById('venueContent').innerHTML = content;
+      document.getElementById('venueModal').style.display = 'block';
     }
 
     function closeModal(id) {
@@ -248,20 +390,6 @@
 
     function showLeaderboard() {
       alert("Leaderboard popup coming soon...");
-    }
-
-    // Geolocation Request
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        console.log('User location allowed', pos.coords);
-      });
-    }
-
-    // Push Notification Request
-    if ('Notification' in window && Notification.permission !== 'granted') {
-      Notification.requestPermission().then(result => {
-        console.log('Push notification permission:', result);
-      });
     }
   </script>
 
