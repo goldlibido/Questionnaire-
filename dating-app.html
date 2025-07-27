@@ -7,285 +7,263 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --gold: #e1bf78;
-      --red: #950606;
-      --green: #06954E;
       --blue: #064D95;
+      --green: #06954E;
+      --red: #950606;
+      --gold: #e1bf78;
       --black: #0d0d0d;
     }
 
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
-      background: var(--black);
+      background-color: var(--black);
       color: white;
       overflow-x: hidden;
     }
 
-    .gradient-border {
-      padding: 2px;
-      background: linear-gradient(to right, var(--red), var(--blue), var(--green));
-      height: 100vh;
-      box-sizing: border-box;
-    }
-
-    .app-container {
-      height: 100%;
-      background-color: var(--black);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .top-bar {
+    header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
+      padding: 15px 20px;
     }
 
     .logo {
-      max-width: 50px;
+      max-width: 100px;
     }
 
-    .trophy {
-      max-width: 40px;
+    .trophy-icon {
+      width: 30px;
       cursor: pointer;
     }
 
-    .main-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px 16px 60px;
+    .content {
+      padding-bottom: 80px;
     }
 
-    .card {
-      background-color: #1a1a1a;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      padding: 14px;
+    .tab-section {
+      display: none;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    .row-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-row, .venue-row {
       display: flex;
       align-items: center;
-      cursor: pointer;
-      position: relative;
+      padding: 16px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
-    .card[data-color="red"] { background-color: #4d0b0b; }
-    .card[data-color="green"] { background-color: #0b4d2b; }
-    .card[data-color="blue"] { background-color: #0b1e4d; }
+    .profile-blue { background-color: var(--blue); }
+    .profile-green { background-color: var(--green); }
+    .profile-red { background-color: var(--red); }
 
-    .card img {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 50%;
+    .profile-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
       border: 3px solid var(--gold);
-      margin-right: 12px;
+      object-fit: cover;
+      margin-right: 16px;
     }
 
-    .card .text {
+    .profile-info {
       flex-grow: 1;
     }
 
-    .card .text .name {
+    .profile-name {
+      font-size: 1.3rem;
       font-weight: bold;
-      font-size: 1.2rem;
-      margin-bottom: 4px;
     }
 
-    .card .text .quote {
+    .profile-bio {
       font-size: 0.95rem;
-      color: #ddd;
+      margin-top: 4px;
     }
 
-    .icons {
+    .medals {
+      margin-left: auto;
       display: flex;
-      gap: 6px;
       align-items: center;
+      gap: 6px;
     }
 
-    .icons img {
-      width: 22px;
-      height: 22px;
+    .medals img {
+      width: 24px;
+      height: 24px;
     }
 
-    .tab-bar {
+    .gold-banner {
+      background-color: var(--gold);
+      color: var(--black);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
       position: fixed;
       bottom: 0;
       width: 100%;
-      background-color: #111;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      border-top: 2px solid var(--gold);
+      padding: 12px 0;
+      font-weight: bold;
     }
 
-    .tab {
-      color: var(--gold);
-      font-weight: bold;
-      font-size: 1rem;
+    .gold-banner div {
       cursor: pointer;
     }
 
-    .tab.active {
+    .gold-banner .active-tab {
       text-decoration: underline;
     }
 
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0,0,0,0.9);
-      z-index: 999;
+    .modal {
       display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      z-index: 999;
       justify-content: center;
       align-items: center;
       padding: 20px;
+      box-sizing: border-box;
     }
 
-    .modal {
-      background-color: #222;
-      border: 4px solid var(--gold);
+    .modal-content {
+      background-color: var(--black);
+      border: 3px solid var(--gold);
       border-radius: 16px;
       max-width: 500px;
-      max-height: 90vh;
-      overflow-y: auto;
+      width: 100%;
       padding: 20px;
-      position: relative;
-    }
-
-    .modal .close {
-      position: absolute;
-      top: 12px;
-      right: 16px;
-      font-size: 20px;
-      color: white;
-      cursor: pointer;
-    }
-
-    .venue-title {
-      font-size: 1.3rem;
-      font-weight: bold;
-      margin-bottom: 12px;
-      color: var(--gold);
       text-align: center;
+      overflow-y: auto;
+      max-height: 80vh;
+    }
+
+    .modal-close {
+      color: white;
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="gradient-border">
-    <div class="app-container">
-      <div class="top-bar">
-        <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
-        <img src="trophy-icon.png" alt="Leaderboard" class="trophy" onclick="showModal('leaderboardModal')" />
-      </div>
 
-      <div class="main-content" id="datersList">
-        <!-- Example Dater Card -->
-        <div class="card" data-color="red" onclick="showModal('profileModal')">
-          <img src="profile1.jpg" alt="Profile" />
-          <div class="text">
-            <div class="name">Avery</div>
-            <div class="quote">"Catch me if you can."</div>
-          </div>
-          <div class="icons">
-            <img src="gold-medal.png" alt="Gold Match" />
-            <img src="chocolate.png" alt="Sugar Dynamic" />
-          </div>
+  <header>
+    <img src="golden-le-libido-logo.png" alt="Logo" class="logo" />
+    <img src="trophy-icon.png" alt="Trophy" class="trophy-icon" onclick="showLeaderboard()" />
+  </header>
+
+  <div class="content">
+    <!-- Daters Section -->
+    <div id="datersTab" class="tab-section active row-container">
+      <div class="profile-row profile-red" onclick="showProfile('Alex')">
+        <img src="profile1.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Alex</div>
+          <div class="profile-bio">“Bet you can't handle me.”</div>
+        </div>
+        <div class="medals">
+          <img src="gold-medal.png" alt="Gold" />
+          <img src="chocolate-icon.png" alt="Chocolate" />
         </div>
       </div>
+      <!-- Add two more sample daters -->
+    </div>
 
-      <div class="main-content" id="venuesList" style="display:none;">
-        <!-- Example Venue Card -->
-        <div class="card" data-color="blue" onclick="showModal('venueModal')">
-          <img src="venue1.jpg" alt="Venue" />
-          <div class="text">
-            <div class="name">Velvet Lounge</div>
-            <div class="quote">Home of late-night flirtation</div>
-          </div>
+    <!-- Venues Section -->
+    <div id="venuesTab" class="tab-section row-container">
+      <div class="venue-row profile-blue" onclick="showVenue('Lounge 88')">
+        <img src="venue1.jpg" class="profile-img" />
+        <div class="profile-info">
+          <div class="profile-name">Lounge 88</div>
+          <div class="profile-bio">Downtown jazz & cocktails</div>
         </div>
       </div>
-
-      <div class="tab-bar">
-        <div class="tab active" onclick="switchTab('daters')">Daters</div>
-        <div class="tab" onclick="switchTab('venues')">Venues</div>
-      </div>
+      <!-- Add two more sample venues -->
     </div>
   </div>
 
-  <!-- Profile Modal -->
-  <div class="modal-overlay" id="profileModal">
-    <div class="modal">
-      <span class="close" onclick="closeModal('profileModal')">&times;</span>
-      <h2 style="color:var(--gold)">Full Profile</h2>
-      <p>This would include the full profile details from profile-verified.html</p>
+  <!-- Bottom Banner Tabs -->
+  <div class="gold-banner">
+    <div id="datersTabBtn" class="active-tab" onclick="toggleTab('daters')">Daters</div>
+    <div id="venuesTabBtn" onclick="toggleTab('venues')">Venues</div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal" id="profileModal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal('profileModal')">&times;</span>
+      <h2>Alex</h2>
+      <p>Full profile details here...</p>
     </div>
   </div>
 
-  <!-- Venue Modal -->
-  <div class="modal-overlay" id="venueModal">
-    <div class="modal">
-      <span class="close" onclick="closeModal('venueModal')">&times;</span>
-      <div class="venue-title">Velvet Lounge</div>
-      <div class="card" data-color="green" onclick="showModal('profileModal')">
-        <img src="profile2.jpg" alt="Profile" />
-        <div class="text">
-          <div class="name">Jordan</div>
-          <div class="quote">"I dare you."</div>
-        </div>
-        <div class="icons">
-          <img src="silver-medal.png" alt="Silver Match" />
-        </div>
-      </div>
+  <div class="modal" id="venueModal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal('venueModal')">&times;</span>
+      <h2>Lounge 88</h2>
+      <p>Currently checked-in daters...</p>
     </div>
   </div>
 
-  <!-- Leaderboard Modal -->
-  <div class="modal-overlay" id="leaderboardModal">
-    <div class="modal">
-      <span class="close" onclick="closeModal('leaderboardModal')">&times;</span>
-      <h2 style="color:var(--gold)">Seducer Scoreboard</h2>
-      <p>Leaderboard of top Lure-to-Location daters goes here.</p>
-    </div>
-  </div>
-
+  <!-- Scripts -->
   <script>
-    function switchTab(tab) {
-      document.getElementById('datersList').style.display = tab === 'daters' ? 'block' : 'none';
-      document.getElementById('venuesList').style.display = tab === 'venues' ? 'block' : 'none';
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => {
-        if (t.textContent.toLowerCase() === tab) t.classList.add('active');
-      });
+    function toggleTab(tab) {
+      document.getElementById('datersTab').classList.remove('active');
+      document.getElementById('venuesTab').classList.remove('active');
+      document.getElementById('datersTabBtn').classList.remove('active-tab');
+      document.getElementById('venuesTabBtn').classList.remove('active-tab');
+
+      if (tab === 'daters') {
+        document.getElementById('datersTab').classList.add('active');
+        document.getElementById('datersTabBtn').classList.add('active-tab');
+      } else {
+        document.getElementById('venuesTab').classList.add('active');
+        document.getElementById('venuesTabBtn').classList.add('active-tab');
+      }
     }
 
-    function showModal(id) {
-      document.getElementById(id).style.display = 'flex';
+    function showProfile(name) {
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+
+    function showVenue(name) {
+      document.getElementById('venueModal').style.display = 'flex';
     }
 
     function closeModal(id) {
       document.getElementById(id).style.display = 'none';
     }
 
-    // Request geolocation
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          console.log("User location:", position.coords.latitude, position.coords.longitude);
-        },
-        error => {
-          console.warn("Geolocation error:", error.message);
-        }
-      );
+    function showLeaderboard() {
+      alert("Leaderboard popup coming soon...");
     }
 
-    // Ask for push notification permission
+    // Geolocation Request
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        console.log('User location allowed', pos.coords);
+      });
+    }
+
+    // Push Notification Request
     if ('Notification' in window && Notification.permission !== 'granted') {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          console.log("Push notifications allowed");
-        }
+      Notification.requestPermission().then(result => {
+        console.log('Push notification permission:', result);
       });
     }
   </script>
+
 </body>
 </html>
