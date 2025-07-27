@@ -7,105 +7,56 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
+      --gold: #e1bf78;
       --blue: #064D95;
       --green: #06954E;
       --red: #950606;
-      --gold: #e1bf78;
+      --white: #ffffff;
       --black: #0d0d0d;
-      --charcoal: #1a1a1a;
     }
 
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
       background-color: var(--black);
-      color: white;
-      overflow-x: hidden;
+      color: var(--white);
+      padding-bottom: 70px; /* space for bottom nav */
     }
 
     header {
+      position: sticky;
+      top: 0;
+      background-color: var(--black);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 20px;
+      padding: 12px 10px;
+      z-index: 1000;
     }
 
-    .logo {
-      max-width: 100px;
-    }
-
-    .trophy-icon {
-      font-size: 1.8rem;
-      cursor: pointer;
-    }
-
-    .content {
-      padding-bottom: 80px;
-    }
-
-    .tab-section {
-      display: none;
-    }
-
-    .tab-section.active {
-      display: block;
-    }
-
-    .row-container {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .profile-row, .venue-row {
-      display: flex;
-      align-items: center;
-      padding: 16px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .profile-blue { background-color: var(--blue); }
-    .profile-green { background-color: var(--green); }
-    .profile-red { background-color: var(--red); }
-
-    .profile-img {
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
-      object-fit: cover;
-      margin-right: 16px;
-    }
-
-    .profile-info {
-      flex-grow: 1;
-    }
-
-    .profile-name {
-      font-size: 1.3rem;
+    .top-button {
+      color: white;
       font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin: 0 4px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background-color: transparent;
+      border: 1px solid var(--gold);
     }
 
-    .profile-bio {
-      font-size: 0.95rem;
-      margin-top: 4px;
-    }
-
-    .medals {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .medals img {
-      width: 24px;
-      height: 24px;
+    .top-button img.profile-thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold);
     }
 
     .gold-banner {
-      background-color: var(--gold);
-      color: var(--black);
+      background-color: var(--black);
+      color: white;
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -114,6 +65,7 @@
       width: 100%;
       padding: 12px 0;
       font-weight: bold;
+      z-index: 1000;
     }
 
     .gold-banner div {
@@ -124,274 +76,287 @@
       text-decoration: underline;
     }
 
-    /* Fullscreen modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: var(--charcoal);
-      z-index: 999;
-      overflow-y: auto;
+    .tab-content {
       padding: 20px;
-      box-sizing: border-box;
     }
 
-    .modal-header {
+    .profile-card, .venue-card {
+      width: 100%;
+      margin-bottom: 20px;
+      padding: 16px;
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      justify-content: flex-start;
+      color: white;
     }
 
-    .back-arrow {
+    .profile-card img, .venue-card img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-right: 16px;
+      border: 2px solid var(--gold);
+    }
+
+    .profile-info h3 {
+      margin: 0 0 5px 0;
+      font-size: 1.2rem;
+    }
+
+    .profile-info p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.85);
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    .popup-overlay.active {
+      display: flex;
+    }
+
+    .popup-close {
+      align-self: flex-end;
+      color: white;
       font-size: 1.5rem;
       cursor: pointer;
-      margin-right: 10px;
-    }
-
-    .modal-content {
-      padding: 10px;
-      text-align: left;
-    }
-
-    .modal-content img {
-      width: 100%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 8px;
       margin-bottom: 20px;
     }
 
-    .modal-content h2 {
-      margin: 0 0 10px;
-      font-size: 1.8rem;
-    }
-
-    .modal-content p {
-      margin: 0 0 10px;
-      line-height: 1.5;
+    .popup-content {
+      width: 100%;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <img src="golden-le-libido-logo.png" alt="Logo" class="logo" />
-    <div class="trophy-icon" onclick="showLeaderboard()">🏆</div>
-  </header>
-
-  <!-- Main Content -->
-  <div class="content">
-    <!-- Daters Section -->
-    <div id="datersTab" class="tab-section active row-container">
-      <div class="profile-row profile-red" onclick="showProfile('Alex', '“Bet you can’t handle me.”', 'profile1.jpg')">
-        <img src="profile1.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Alex</div>
-          <div class="profile-bio">“Bet you can’t handle me.”</div>
-        </div>
-        <div class="medals">
-          <img src="gold-medal.png" alt="Gold" />
-        </div>
-      </div>
-      <div class="profile-row profile-green" onclick="showProfile('Jordan', '“Adventurous soul.”', 'profile2.jpg')">
-        <img src="profile2.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Jordan</div>
-          <div class="profile-bio">“Adventurous soul.”</div>
-        </div>
-      </div>
-      <div class="profile-row profile-blue" onclick="showProfile('Taylor', '“Coffee & chaos.”', 'profile3.jpg')">
-        <img src="profile3.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Taylor</div>
-          <div class="profile-bio">“Coffee & chaos.”</div>
-        </div>
-        <div class="medals">
-          <img src="bronze-medal.png" alt="Bronze" />
-        </div>
-      </div>
-      <div class="profile-row profile-red" onclick="showProfile('Riley', '“Love late-night talks.”', 'profile4.jpg')">
-        <img src="profile4.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Riley</div>
-          <div class="profile-bio">“Love late-night talks.”</div>
-        </div>
-      </div>
-      <div class="profile-row profile-green" onclick="showProfile('Charlie', '“Sarcasm is my love language.”', 'profile5.jpg')">
-        <img src="profile5.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Charlie</div>
-          <div class="profile-bio">“Sarcasm is my love language.”</div>
-        </div>
-      </div>
-      <div class="profile-row profile-blue" onclick="showProfile('Morgan', '“Always planning my next trip.”', 'profile6.jpg')">
-        <img src="profile6.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Morgan</div>
-          <div class="profile-bio">“Always planning my next trip.”</div>
-        </div>
-      </div>
-      <div class="profile-row profile-red" onclick="showProfile('Avery', '“Music is my therapy.”', 'profile7.jpg')">
-        <img src="profile7.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Avery</div>
-          <div class="profile-bio">“Music is my therapy.”</div>
-        </div>
-      </div>
-      <div class="profile-row profile-green" onclick="showProfile('Casey', '“Foodie at heart.”', 'profile8.jpg')">
-        <img src="profile8.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Casey</div>
-          <div class="profile-bio">“Foodie at heart.”</div>
-        </div>
-      </div>
-      <div class="profile-row profile-blue" onclick="showProfile('Quinn', '“Let’s make stories worth telling.”', 'profile9.jpg')">
-        <img src="profile9.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Quinn</div>
-          <div class="profile-bio">“Let’s make stories worth telling.”</div>
-        </div>
+<header>
+  <div class="top-button" onclick="openProfile()">
+    <img src="profile-thumb.jpg" alt="Profile" class="profile-thumb" />
+  </div>
+  <div class="top-button" onclick="openFriends()">Friends</div>
+  <div class="top-button" onclick="openDeals()">Deals for you</div>
+  <div class="top-button" onclick="openScoreboard()">Scoreboard</div>
+  <div class="top-button" onclick="openBlindfold()">Blindfold</div>
+  <div class="top-button" onclick="openMessages()">⚙</div>
+</header>
+<div id="tab-content" class="tab-content">
+  <!-- DATERS TAB -->
+  <div id="daters-tab">
+    <div class="profile-card" style="background-color: var(--red);" onclick="openDaterProfile('Aria Blaze', 'Catch me if you can 💋', 'red')">
+      <img src="aria.jpg" alt="Aria" />
+      <div class="profile-info">
+        <h3>Aria Blaze</h3>
+        <p>Catch me if you can 💋</p>
       </div>
     </div>
-
-    <!-- Venues Section -->
-    <div id="venuesTab" class="tab-section row-container">
-      <div class="venue-row profile-blue" onclick="showVenue('Velvet Room', 'Jazz & cocktails', 'venue1.jpg')">
-        <img src="venue1.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Velvet Room</div>
-          <div class="profile-bio">Jazz & cocktails</div>
-        </div>
+    <div class="profile-card" style="background-color: var(--green);" onclick="openDaterProfile('Jules Nova', 'Drinks, dancing, danger?', 'green')">
+      <img src="jules.jpg" alt="Jules" />
+      <div class="profile-info">
+        <h3>Jules Nova</h3>
+        <p>Drinks, dancing, danger?</p>
       </div>
-      <div class="venue-row profile-green" onclick="showVenue('The Garden Bar', 'Outdoor vibes', 'venue2.jpg')">
-        <img src="venue2.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">The Garden Bar</div>
-          <div class="profile-bio">Outdoor vibes</div>
-        </div>
+    </div>
+    <div class="profile-card" style="background-color: var(--blue);" onclick="openDaterProfile('Rowan Vale', 'Tender but a tease.', 'blue')">
+      <img src="rowan.jpg" alt="Rowan" />
+      <div class="profile-info">
+        <h3>Rowan Vale</h3>
+        <p>Tender but a tease.</p>
       </div>
-      <div class="venue-row profile-red" onclick="showVenue('Firefly Café', 'Cozy coffee spot', 'venue3.jpg')">
-        <img src="venue3.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Firefly Café</div>
-          <div class="profile-bio">Cozy coffee spot</div>
-        </div>
+    </div>
+    <div class="profile-card" style="background-color: var(--red);" onclick="openDaterProfile('Kai Ember', 'Warning: I flirt back.', 'red')">
+      <img src="kai.jpg" alt="Kai" />
+      <div class="profile-info">
+        <h3>Kai Ember</h3>
+        <p>Warning: I flirt back.</p>
       </div>
-      <div class="venue-row profile-blue" onclick="showVenue('Neon Nights', 'Dance & drinks', 'venue4.jpg')">
-        <img src="venue4.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Neon Nights</div>
-          <div class="profile-bio">Dance & drinks</div>
-        </div>
+    </div>
+    <div class="profile-card" style="background-color: var(--green);" onclick="openDaterProfile('Luca Rain', 'Your favorite mistake.', 'green')">
+      <img src="luca.jpg" alt="Luca" />
+      <div class="profile-info">
+        <h3>Luca Rain</h3>
+        <p>Your favorite mistake.</p>
       </div>
-      <div class="venue-row profile-green" onclick="showVenue('Sunset Lounge', 'Scenic views', 'venue5.jpg')">
-        <img src="venue5.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Sunset Lounge</div>
-          <div class="profile-bio">Scenic views</div>
-        </div>
+    </div>
+    <div class="profile-card" style="background-color: var(--blue);" onclick="openDaterProfile('Devon Sky', 'Soft, slow, and serious.', 'blue')">
+      <img src="devon.jpg" alt="Devon" />
+      <div class="profile-info">
+        <h3>Devon Sky</h3>
+        <p>Soft, slow, and serious.</p>
       </div>
-      <div class="venue-row profile-red" onclick="showVenue('The Hive', 'Live music hub', 'venue6.jpg')">
-        <img src="venue6.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">The Hive</div>
-          <div class="profile-bio">Live music hub</div>
-        </div>
+    </div>
+    <div class="profile-card" style="background-color: var(--red);" onclick="openDaterProfile('Phoenix Noir', 'Messy fun only.', 'red')">
+      <img src="phoenix.jpg" alt="Phoenix" />
+      <div class="profile-info">
+        <h3>Phoenix Noir</h3>
+        <p>Messy fun only.</p>
       </div>
-      <div class="venue-row profile-blue" onclick="showVenue('Blue Orchid', 'Fine dining', 'venue7.jpg')">
-        <img src="venue7.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Blue Orchid</div>
-          <div class="profile-bio">Fine dining</div>
-        </div>
+    </div>
+    <div class="profile-card" style="background-color: var(--green);" onclick="openDaterProfile('Romy Wilde', 'Try me. No really.', 'green')">
+      <img src="romy.jpg" alt="Romy" />
+      <div class="profile-info">
+        <h3>Romy Wilde</h3>
+        <p>Try me. No really.</p>
       </div>
-      <div class="venue-row profile-green" onclick="showVenue('The Rooftop', 'Skyline drinks', 'venue8.jpg')">
-        <img src="venue8.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">The Rooftop</div>
-          <div class="profile-bio">Skyline drinks</div>
-        </div>
-      </div>
-      <div class="venue-row profile-red" onclick="showVenue('Red Lantern', 'Asian fusion', 'venue9.jpg')">
-        <img src="venue9.jpg" class="profile-img" />
-        <div class="profile-info">
-          <div class="profile-name">Red Lantern</div>
-          <div class="profile-bio">Asian fusion</div>
-        </div>
+    </div>
+    <div class="profile-card" style="background-color: var(--blue);" onclick="openDaterProfile('Elliot Frost', 'I want it to mean something.', 'blue')">
+      <img src="elliot.jpg" alt="Elliot" />
+      <div class="profile-info">
+        <h3>Elliot Frost</h3>
+        <p>I want it to mean something.</p>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Banner Tabs -->
-  <div class="gold-banner">
-    <div id="datersTabBtn" class="active-tab" onclick="toggleTab('daters')">Daters</div>
-    <div id="venuesTabBtn" onclick="toggleTab('venues')">Venues</div>
-  </div>
-
-  <!-- Profile Modal -->
-  <div class="modal" id="profileModal">
-    <div class="modal-header">
-      <span class="back-arrow" onclick="closeModal('profileModal')">←</span>
+  <!-- VENUES TAB (Hidden by default) -->
+  <div id="venues-tab" style="display:none;">
+    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Metropolitan Cafe')">
+      <img src="metropolitan.jpg" alt="Metropolitan Cafe" />
+      <div class="profile-info"><h3>🍴 Metropolitan Cafe</h3></div>
     </div>
-    <div class="modal-content" id="profileContent"></div>
-  </div>
-
-  <!-- Venue Modal -->
-  <div class="modal" id="venueModal">
-    <div class="modal-header">
-      <span class="back-arrow" onclick="closeModal('venueModal')">←</span>
+    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('The Standard at the American Hotel')">
+      <img src="standard.jpg" alt="The Standard" />
+      <div class="profile-info"><h3>🍴 The Standard at the American Hotel</h3></div>
     </div>
-    <div class="modal-content" id="venueContent"></div>
+    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Café 360')">
+      <img src="cafe360.jpg" alt="Café 360" />
+      <div class="profile-info"><h3>☕️ Café 360</h3></div>
+    </div>
+    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Jersey Freeze')">
+      <img src="jerseyfreeze.jpg" alt="Jersey Freeze" />
+      <div class="profile-info"><h3>🍦 Jersey Freeze</h3></div>
+    </div>
+    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Lola’s')">
+      <img src="lolas.jpg" alt="Lola’s" />
+      <div class="profile-info"><h3>🍸 Lola’s</h3></div>
+    </div>
+    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Nonna’s Cucina')">
+      <img src="nonnas.jpg" alt="Nonna’s Cucina" />
+      <div class="profile-info"><h3>🍴 Nonna’s Cucina</h3></div>
+    </div>
   </div>
+</div>
 
-  <!-- Scripts -->
-  <script>
-    function toggleTab(tab) {
-      document.getElementById('datersTab').classList.remove('active');
-      document.getElementById('venuesTab').classList.remove('active');
-      document.getElementById('datersTabBtn').classList.remove('active-tab');
-      document.getElementById('venuesTabBtn').classList.remove('active-tab');
+<!-- STICKY FOOTER TABS -->
+<div class="gold-banner">
+  <div onclick="showTab('daters')" id="daters-tab-btn" class="active-tab">Daters</div>
+  <div onclick="window.location.href='/archetype-gallery.html'"><img src="golden-le-libido-logo.png" style="height:30px;" /></div>
+  <div onclick="showTab('venues')" id="venues-tab-btn">Venues</div>
+</div>
 
-      if (tab === 'daters') {
-        document.getElementById('datersTab').classList.add('active');
-        document.getElementById('datersTabBtn').classList.add('active-tab');
-      } else {
-        document.getElementById('venuesTab').classList.add('active');
-        document.getElementById('venuesTabBtn').classList.add('active-tab');
-      }
-    }
+<!-- POPUP FULLSCREEN -->
+<div class="popup-overlay" id="popup">
+  <div class="popup-close" onclick="closePopup()">✕</div>
+  <div id="popup-content" class="popup-content"></div>
+</div>
+<script>
+  // Switch between Daters and Venues tabs
+  function showTab(tabName) {
+    document.getElementById('daters-tab').style.display = tabName === 'daters' ? 'block' : 'none';
+    document.getElementById('venues-tab').style.display = tabName === 'venues' ? 'block' : 'none';
 
-    function showProfile(name, bio, img) {
-      const content = `
-        <img src="${img}" alt="${name}">
-        <h2>${name}</h2>
-        <p>${bio}</p>
-      `;
-      document.getElementById('profileContent').innerHTML = content;
-      document.getElementById('profileModal').style.display = 'block';
-    }
+    document.getElementById('daters-tab-btn').classList.toggle('active-tab', tabName === 'daters');
+    document.getElementById('venues-tab-btn').classList.toggle('active-tab', tabName === 'venues');
+  }
 
-    function showVenue(name, desc, img) {
-      const content = `
-        <img src="${img}" alt="${name}">
-        <h2>${name}</h2>
-        <p>${desc}</p>
-      `;
-      document.getElementById('venueContent').innerHTML = content;
-      document.getElementById('venueModal').style.display = 'block';
-    }
+  // Open Dater Profile
+  function openDaterProfile(name, bio, color) {
+    const popup = document.getElementById('popup');
+    const content = document.getElementById('popup-content');
+    popup.style.display = 'flex';
+    popup.style.backgroundColor = getColor(color);
+    content.innerHTML = `
+      <h2>${name}</h2>
+      <p>${bio}</p>
+      <p>✨ Full profile content goes here...</p>
+    `;
+  }
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
-    }
+  // Open Venue Profile
+  function openVenueProfile(venueName) {
+    const popup = document.getElementById('popup');
+    const content = document.getElementById('popup-content');
+    popup.style.display = 'flex';
+    popup.style.backgroundColor = '#111';
+    content.innerHTML = `
+      <h2>${venueName}</h2>
+      <p>✔️ Dater: Kai Ember – Checked in now</p>
+      <p>🕓 Dater: Rowan Vale – Last checked in 2 days ago</p>
+      <p>🕓 Dater: Jules Nova – Last checked in 1 week ago</p>
+    `;
+  }
 
-    function showLeaderboard() {
-      alert("Leaderboard popup coming soon...");
-    }
-  </script>
+  // Close popup
+  function closePopup() {
+    const popup = document.getElementById('popup');
+    popup.style.display = 'none';
+    document.getElementById('popup-content').innerHTML = '';
+  }
 
-</body>
-</html>
+  // Background color utility
+  function getColor(archetype) {
+    if (archetype === 'red') return '#950606';
+    if (archetype === 'green') return '#06954E';
+    if (archetype === 'blue') return '#064D95';
+    return '#222';
+  }
+
+  // Top nav popups (placeholders for future full screen windows)
+  function openProfile() {
+    openPopupHTML('Your Profile', 'Edit or delete your profile here.');
+  }
+
+  function openFriends() {
+    openPopupHTML('Friends', 'Invite 3 friends to unlock perks. [Invite button]');
+  }
+
+  function openDeals() {
+    openPopupHTML('Deals For You', '<p>🛍️ Featured products & offers</p><button onclick="openLoyalty()">View Loyalty Tracker</button>');
+  }
+
+  function openLoyalty() {
+    openPopupHTML('Loyalty Tracker', '📍 Earn rewards by visiting venues repeatedly or exploring new ones!');
+  }
+
+  function openScoreboard() {
+    openPopupHTML('Seduction Scoreboard', `
+      <ol>
+        <li>🔥 Jules Nova – 42 lures</li>
+        <li>💋 Aria Blaze – 39 lures</li>
+        <li>🎯 Kai Ember – 35 lures</li>
+      </ol>
+    `);
+  }
+
+  function openBlindfold() {
+    openPopupHTML('Blindfold Mode', 'Anonymous encounters activated...');
+  }
+
+  function openMessages() {
+    openPopupHTML('Messages', '💬 Choose: <br/><button>One-on-One Chat</button> <button>Group Chat</button>');
+  }
+
+  // Generic popup opener
+  function openPopupHTML(title, bodyHTML) {
+    const popup = document.getElementById('popup');
+    const content = document.getElementById('popup-content');
+    popup.style.display = 'flex';
+    popup.style.backgroundColor = '#111';
+    content.innerHTML = `<h2>${title}</h2><div>${bodyHTML}</div>`;
+  }
+
+  // Set default tab on load
+  document.addEventListener('DOMContentLoaded', function () {
+    showTab('daters');
+  });
+</script>
