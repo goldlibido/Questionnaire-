@@ -179,7 +179,7 @@
   <div class="photo-grid" id="photoGrid">
     <label class="photo-upload required">
       <span class="plus">+</span>
-      <span>Main Photo</span>
+      <span>Profile Pic</span>
       <input type="file" accept="image/*" onchange="handlePhotoUpload(event, 0)">
     </label>
     <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 1)"></label>
@@ -203,10 +203,12 @@
     <label for="orientation">Sexual Orientation</label>
     <select id="orientation">
       <option value="" disabled selected>Select your preference</option>
-      <option value="Straight">Straight</option>
-      <option value="Bisexual">Bisexual</option>
-      <option value="Homosexual">Homosexual</option>
-      <option value="Pansexual">Pansexual</option>
+      <option value="Straight men">Man into Women</option>
+      <option value="Straight women">Women into Men </option>
+      <option value="Gay man">Man into men</option>
+      <option value="Gay woman">Women into women</option>
+          <option value="Bisexual man">Man into all</option>
+      <option value="Bisexual woman">Women into all</option>
     </select>
   </div>
 
@@ -242,51 +244,73 @@
     <label>Turn-On Vocabulary</label>
     <select id="turnOnVocab">
       <option value="" disabled selected>Select your preference</option>
-      <option value="sweet">Sweet & affectionate</option>
-      <option value="confident">Confident & direct</option>
-      <option value="filthy">Filthy & explicit</option>
-      <option value="teasing">Playful & teasing</option>
-      <option value="commanding">Commanding & dominant</option>
+      <option value="prefer">Prefer not to say</option>
+      <option value="babe">Babe</option>
+      <option value="baby">Baby</option>
+      <option value="sexy">Sexy</option>
+      <option value="fucker">Fucker</option>
+      <option value="brat">Brat</option>
+      <option value="good boy">Good boy</option>
+      <option value="good girl">Good Girl</option>
+      <option value="Goddess">Goddess</option>
+      <option value="master">Master</option>
     </select>
   </div>
 
   <div class="field">
-    <label>My Type</label>
+    <label>My Type (Looks)</label>
     <select id="tyle">
       <option value="" disabled selected>Select your preference</option>
+      <option value="prefer">Prefer not to say</option>
       <option value="tall">Tall</option>
       <option value="short">Short</option>
-      <option value="confident">Confident & funny</option>
-      <option value="smart">Smart & sophisticated</option>
-      <option value="extroverted">Extroverted & friendly</option>
-      <option value="introverted">Introverted & thoughtful</option>
-      <option value="athletic">Athletic & physically active </option>
-      <option value="organize">Organized & orderly</option>
-      <option value="silly">silly & fun</option>
       <option value="Thin">Thin & lean</option>
+      <option value="curvy">Curvy & voluptuous</option>
+      <option value="muscular">Muscular</option>
       <option value="tan">Tan</option>
+      <option value="pale">Pale</option>
       <option value="brunette">Brunette</option>
       <option value="blonde">Blonde</option>
       <option value="latin">Latin</option>
       <option value="asian">Asian</option>
       <option value="black">Black</option>
+      <option value="jewish">Jewish</option>
       <option value="indian">Indian</option>
       <option value="middle">Middle Eastern</option>
-      
-      <option value="prefer">Prefer not to say</option>
     </select>
   </div>
 
+<div class="field">
+    <label>My Type (Personality)</label>
+    <select id="tyle">
+      <option value="prefer">Prefer not to say</option>
+      <option value="confident">Confident & powerful</option>
+      <option value="funny">Funny and witty</option>
+      <option value="smart">Smart & sophisticated</option>
+      <option value="flirty">Flirty & provocative</option>
+      <option value="extroverted">Extroverted & friendly</option>
+      <option value="introverted">Introverted & thoughtful</option>
+      <option value="athletic">Athletic & sporty </option>
+      <option value="organize">Organized & orderly</option>
+      <option value="silly">Silly & goofy</option>
+    </select>
+  </div>
+      
   <div class="field">
     <label>Fantasies</label>
     <select id="fantasies">
       <option value="" disabled selected>Select your preference</option>
-      <option value="exhibitionism">Being watched</option>
-      <option value="submission">Giving up control</option>
-      <option value="dominance">Taking control</option>
-      <option value="roleplay">Roleplay & costumes</option>
-      <option value="something else">Something else</option>
       <option value="prefer">Prefer not to say</option>
+      <option value="beach">Sex on the beach </option>
+      <option value="bath">Candlelit bath with a partner</option>
+      <option value="massage">Erotic massage</option>
+      <option value="mile">Joining the Mile High Club</option>
+      <option value="dipping">Skinny dipping </option>
+      <option value="role-play">Role-play</option>
+      <option value="bondage">Light bondage or restraints</option>
+      <option value="sensory">Sensory play</option>
+      <option value="impact">Impact play</option>
+      <option value="hypnosis">Erotic hypnosis</option>
     </select>
   </div>
 
@@ -314,7 +338,6 @@
     <select id="threesome">
       <option value="" disabled selected>Select your preference</option>
       <option value="hell_yes">Hell yes, the more the merrier</option>
-      <option value="yes">Yes</option>
       <option value="maybe">Maybe, depends on the lighting and if anyone brought snacks</option>
       <option value="no">No thank you</option>
     </select>
