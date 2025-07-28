@@ -604,5 +604,22 @@
     window.location.href = `/premium/erotic-blueprint_${slug}.html`;
   }
 </script>
+<script type="module">
+  import { auth } from './firebase-config.js';
+  import { signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  signInAnonymously(auth).catch((error) => {
+    console.error("Anonymous sign-in failed:", error);
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("Logged in as UID:", user.uid);
+
+      // Optional: Save UID for later use
+      localStorage.setItem("uid", user.uid);
+    }
+  });
+</script>
 </body>
 </html>
