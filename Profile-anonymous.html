@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anonymous Profile – Le Libido</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #e1bf78;
+      --white: #ffffff;
+      --black: #000000;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--white);
+      padding: 20px;
+      background-color: #0d0d0d;
+    }
+
+    body.blue { background-color: #064D95; }
+    body.green { background-color: #06954E; }
+    body.red { background-color: #950606; }
+
+    .header-banner {
+      background-color: var(--gold);
+      color: var(--black);
+      font-weight: bold;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .progress-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: conic-gradient(var(--black) 0% 33%, transparent 0% 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--white);
+      font-weight: bold;
+    }
+
+    .logo {
+      max-width: 140px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .section-label {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin: 30px 0 10px;
+      padding-bottom: 6px;
+      color: var(--gold);
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .photo-upload {
+      width: 100%;
+      aspect-ratio: 1;
+      background-color: rgba(255,255,255,0.1);
+      border: 2px dashed var(--gold);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 0.8rem;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .photo-upload input {
+      display: none;
+    }
+
+    .photo-upload .plus {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .photo-upload.required::after {
+      content: "Required";
+      font-size: 0.7rem;
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background-color: var(--gold);
+      color: var(--black);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .field {
+      margin: 12px auto;
+      font-size: 1rem;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .field input, .field select {
+      max-width: 100%;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      color: var(--white);
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    .field select {
+      appearance: none;
+    }
+
+    .divider {
+      border-top: 1px solid rgba(255,255,255,0.15);
+      margin: 30px 0 10px;
+    }
+
+    .locked {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    @media (min-width: 768px) {
+      .photo-grid,
+      .field {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    .upload-preview {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body id="profileBody">
+  <div class="header-banner">
+    <div>Anonymous Mode</div>
+    <div class="progress-circle" id="progressCircle">33%</div>
+  </div>
+
+  <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo"/>
+
+  <div class="field" style="text-align: center;">
+    <label for="bio">Flirty First Impression</label>
+    <input type="text" id="bio" placeholder="e.g. Catch me before I change my mind…" />
+  </div>
+
+  <div class="section-label">Upload Photos</div>
+  <div class="photo-grid" id="photoGrid">
+    <label class="photo-upload required">
+      <span class="plus">+</span>
+      <span>Profile Pic</span>
+      <input type="file" accept="image/*" onchange="handlePhotoUpload(event, 0)">
+    </label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 1)"></label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 2)"></label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 3)"></label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 4)"></label>
+    <label class="photo-upload"><span class="plus">+</span><input type="file" accept="image/*" onchange="handlePhotoUpload(event, 5)"></label>
+  </div>
+
+  <div class="section-label">Basic Info</div>
+  <div class="field"><label for="name">Name</label><input type="text" id="name" placeholder="First & Last Name" /></div>
+  <div class="field"><label for="age">Age</label><select id="age"><option disabled selected>Select your age</option></select></div>
+  <div class="field"><label for="height">Height</label><select id="height"><option disabled selected>Select your height</option></select></div>
+
+  <div class="field">
+    <label for="orientation">Sexual Orientation</label>
+    <select id="orientation">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="Straight men">Man into Women</option>
+      <option value="Straight women">Woman into Men</option>
+      <option value="Gay man">Man into Men</option>
+      <option value="Gay woman">Woman into Women</option>
+      <option value="Bisexual man">Man into All</option>
+      <option value="Bisexual woman">Woman into All</option>
+    </select>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Sexual Profile</div>
+
+  <div class="field locked">
+    <label>Your Sexual Archetype</label>
+    <div id="archetypeName" style="font-weight: bold;">Mood Multiplier</div>
+  </div>
+
+  <div class="field" style="margin-top: 8px; text-align: center;">
+    <a id="blueprintLink"
+       target="_blank"
+       style="display: inline-block; margin-top: 6px; color: var(--gold); font-weight: bold; text-decoration: underline;">
+      → View Your Full Sexual Profile
+    </a>
+  </div>
+
+  <div class="field"><label>Love Language</label><select id="loveLanguage">
+    <option value="" disabled selected>Select your preference</option>
+    <option value="words">Words of affirmation</option>
+    <option value="touch">Physical touch</option>
+    <option value="time">Quality time</option>
+    <option value="gifts">Gifts</option>
+    <option value="acts">Acts of service</option>
+  </select></div>
+
+  <div class="field"><label>Turn-On Vocabulary</label><select id="turnOnVocab">
+    <option value="" disabled selected>Select your preference</option>
+    <option value="prefer">Prefer not to say</option>
+    <option value="babe">Babe</option>
+    <option value="baby">Baby</option>
+    <option value="sexy">Sexy</option>
+    <option value="fucker">Fucker</option>
+    <option value="brat">Brat</option>
+    <option value="good boy">Good boy</option>
+    <option value="good girl">Good Girl</option>
+    <option value="Goddess">Goddess</option>
+    <option value="master">Master</option>
+  </select></div>
+
+  <!-- continues in next part... -->
+  <div class="field">
+    <label>My Type (Looks)</label>
+    <select id="tyle">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="prefer">Prefer not to say</option>
+      <option value="tall">Tall</option>
+      <option value="short">Short</option>
+      <option value="Thin">Thin & lean</option>
+      <option value="curvy">Curvy & voluptuous</option>
+      <option value="muscular">Muscular</option>
+      <option value="tan">Tan</option>
+      <option value="pale">Pale</option>
+      <option value="brunette">Brunette</option>
+      <option value="blonde">Blonde</option>
+      <option value="latin">Latin</option>
+      <option value="asian">Asian</option>
+      <option value="black">Black</option>
+      <option value="jewish">Jewish</option>
+      <option value="indian">Indian</option>
+      <option value="middle">Middle Eastern</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>My Type (Personality)</label>
+    <select id="tyle">
+      <option value="prefer">Prefer not to say</option>
+      <option value="confident">Confident & powerful</option>
+      <option value="funny">Funny and witty</option>
+      <option value="smart">Smart & sophisticated</option>
+      <option value="flirty">Flirty & provocative</option>
+      <option value="extroverted">Extroverted & friendly</option>
+      <option value="introverted">Introverted & thoughtful</option>
+      <option value="athletic">Athletic & sporty</option>
+      <option value="organize">Organized & orderly</option>
+      <option value="silly">Silly & goofy</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Fantasies</label>
+    <select id="fantasies">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="prefer">Prefer not to say</option>
+      <option value="beach">Sex on the beach</option>
+      <option value="bath">Candlelit bath with a partner</option>
+      <option value="massage">Erotic massage</option>
+      <option value="mile">Joining the Mile High Club</option>
+      <option value="dipping">Skinny dipping</option>
+      <option value="role-play">Role-play</option>
+      <option value="bondage">Light bondage or restraints</option>
+      <option value="sensory">Sensory play</option>
+      <option value="impact">Impact play</option>
+      <option value="hypnosis">Erotic hypnosis</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Looking For</label>
+    <select id="lookingFor">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="love">Love / Long-Term</option>
+      <option value="good_time">Good Time / Casual</option>
+      <option value="let_it_evolve">Let it evolve</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Open to Sugar Dynamic?</label>
+    <select id="sugarDynamic">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="yes">Yes</option>
+      <option value="maybe">Maybe</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Open to Threesome?</label>
+    <select id="threesome">
+      <option value="" disabled selected>Select your preference</option>
+      <option value="hell_yes">Hell yes, the more the merrier</option>
+      <option value="maybe">Maybe, depends on the lighting and if anyone brought snacks</option>
+      <option value="no">No thank you</option>
+    </select>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-label">Lifestyle</div>
+
+  <div class="field"><label>Do you drink alcohol?</label><select id="drinks"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="field"><label>Do you smoke cigarettes/vape?</label><select id="smokes"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="field"><label>Do you smoke weed?</label><select id="weed"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="field"><label>Do you use drugs?</label><select id="drugs"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+
+  <div class="divider"></div>
+  <div class="section-label">Notifications & Visibility</div>
+
+  <div class="field">
+    <label>Get notified when someone wants you?</label>
+    <select id="notifyWantsYou">
+      <option value="yes" selected>Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Get notified when someone checks you out?</label>
+    <select id="notifyChecksYouOut">
+      <option value="yes" selected>Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Allow messages from:</label>
+    <select id="allowMessagesFrom">
+      <option value="verified" selected>Verified Only</option>
+      <option value="anonymous">Anonymous Only</option>
+      <option value="both">Both</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Show profile to:</label>
+    <select id="visibility">
+      <option value="verified" selected>Verified Only</option>
+      <option value="anonymous">Anonymous Only</option>
+      <option value="both">Both</option>
+    </select>
+  </div>
+
+  <div style="margin-top: 40px;">
+    <button onclick="saveProfile()" style="
+      background-color: #e1bf78;
+      color: #000;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 14px 32px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    ">Save Profile</button>
+  </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const stored = localStorage.getItem("archetype") || "Mood Multiplier";
+
+    const slugToTitle = {
+      "devoted_darling": "Devoted Darling",
+      "mood_multiplier": "Mood Multiplier",
+      "tender_protector": "Tender Protector",
+      "heatwave": "Heatwave",
+      "promiscuous_plaything": "Promiscuous Plaything",
+      "generous_giver": "Generous Giver",
+      "bedroom_adventurer": "Bedroom Adventurer",
+      "charmer_in_charge": "Charmer in Charge",
+      "punish_me": "Punish Me",
+      "provoker": "Provoker",
+      "dungeon_master": "Dungeon Master",
+      "claimed_and_trained": "Claimed & Trained"
+    };
+
+    const title = slugToTitle[stored] || stored;
+
+    const roomMap = {
+      "Tender Protector": "blue",
+      "Devoted Darling": "blue",
+      "Mood Multiplier": "blue",
+      "Heatwave": "blue",
+      "Promiscuous Plaything": "green",
+      "Generous Giver": "green",
+      "Bedroom Adventurer": "green",
+      "Charmer in Charge": "green",
+      "Dungeon Master": "red",
+      "Provoker": "red",
+      "Punish Me": "red",
+      "Claimed & Trained": "red"
+    };
+
+    const formatSlug = (name) =>
+      name === "Claimed & Trained"
+        ? "claimed_and_trained"
+        : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+
+    // Set background color by room
+    document.body.classList.add(roomMap[title]);
+
+    // Update name
+    const nameDiv = document.getElementById("archetypeName");
+    if (nameDiv) nameDiv.textContent = title;
+
+    // Set blueprint link
+    const blueprintLink = document.getElementById("blueprintLink");
+    if (blueprintLink) {
+      blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
+    }
+
+    // Populate age
+    const ageSelect = document.getElementById("age");
+    if (ageSelect) {
+      for (let i = 18; i <= 80; i++) {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = i;
+        ageSelect.appendChild(opt);
+      }
+    }
+
+    // Populate height
+    const heightSelect = document.getElementById("height");
+    if (heightSelect) {
+      for (let ft = 4; ft <= 7; ft++) {
+        for (let inch = 0; inch < 12; inch++) {
+          if (ft === 7 && inch > 0) continue;
+          const label = `${ft}'${inch}"`;
+          const opt = document.createElement("option");
+          opt.value = label;
+          opt.textContent = label;
+          heightSelect.appendChild(opt);
+        }
+      }
+    }
+
+    // Reset default values
+    const sugarSelect = document.getElementById("sugarDynamic");
+    if (sugarSelect) sugarSelect.value = "";
+
+    const threesomeSelect = document.getElementById("threesome");
+    if (threesomeSelect) threesomeSelect.value = "";
+  });
+
+  function handlePhotoUpload(event, index) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const photoUpload = event.target.closest(".photo-upload");
+      photoUpload.innerHTML = "";
+
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "6px";
+      photoUpload.appendChild(img);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.innerHTML = "×";
+      deleteBtn.style.position = "absolute";
+      deleteBtn.style.top = "5px";
+      deleteBtn.style.right = "5px";
+      deleteBtn.style.width = "20px";
+      deleteBtn.style.height = "20px";
+      deleteBtn.style.borderRadius = "50%";
+      deleteBtn.style.border = "none";
+      deleteBtn.style.background = "rgba(0,0,0,0.7)";
+      deleteBtn.style.color = "white";
+      deleteBtn.style.cursor = "pointer";
+      deleteBtn.style.fontSize = "14px";
+      deleteBtn.style.display = "flex";
+      deleteBtn.style.alignItems = "center";
+      deleteBtn.style.justifyContent = "center";
+
+      deleteBtn.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        photoUpload.innerHTML = `
+          <span class="plus">+</span>
+          ${index === 0 ? "<span>Main Photo</span>" : ""}
+          <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
+        `;
+        if (index === 0) photoUpload.classList.add("required");
+      };
+
+      photoUpload.appendChild(deleteBtn);
+      photoUpload.style.position = "relative";
+      if (index === 0) photoUpload.classList.remove("required");
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  function saveProfile() {
+    const stored = localStorage.getItem("archetype") || "Mood Multiplier";
+    const formatSlug = (name) =>
+      name === "Claimed & Trained"
+        ? "claimed_and_trained"
+        : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+
+    const slug = formatSlug(stored);
+    alert("Profile saved! Redirecting to your full profile...");
+    window.location.href = `/premium/erotic-blueprint_${slug}.html`;
+  }
+</script>
+
+<script type="module">
+  import { auth } from './firebase-config.js';
+  import { signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  signInAnonymously(auth).catch((error) => {
+    console.error("Anonymous sign-in failed:", error);
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("Logged in as UID:", user.uid);
+      localStorage.setItem("uid", user.uid);
+    }
+  });
+</script>
+</body>
+</html>
