@@ -8,305 +8,566 @@
   <style>
     :root {
       --gold: #e1bf78;
-      --red: #950606;
-      --green: #06954E;
       --blue: #064D95;
-      --black: #000;
-      --white: #fff;
+      --green: #06954E;
+      --red: #950606;
+      --dark: #0d0d0d;
+      --white: #ffffff;
     }
 
     body {
       margin: 0;
+      padding: 0;
       font-family: 'Montserrat', sans-serif;
-      background: #0d0d0d;
+      background-color: var(--dark);
       color: var(--white);
+      overflow-x: hidden;
     }
 
-    /* HEADER */
+    /* Header */
     .top-bar {
+      background-color: #000;
+      color: var(--white);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--black);
-      padding: 10px 16px;
-      border-bottom: 1px solid #222;
+      padding: 10px 15px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
-    .top-bar img {
-      height: 36px;
-      border-radius: 8px;
+    .top-bar img.logo {
+      height: 32px;
     }
 
-    .logo {
-      max-height: 40px;
+    .top-bar .profile-pic,
+    .top-bar .bell-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
     }
 
-    .top-bar .bell {
-      height: 30px;
-      filter: invert(1);
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #000;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid var(--gold);
+      z-index: 1000;
     }
 
-    /* MAIN COLOR STACK */
-    .color-section {
-      height: calc(100vh - 140px); /* header + bottom nav ~140px */
+    .nav-item {
+      color: var(--white);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .center-icon {
+      font-size: 20px;
+      background-color: var(--gold);
+      color: #000;
+      padding: 6px 10px;
+      border-radius: 10px;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      padding-bottom: 80px;
+    }
+
+    .dater-card {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin: 10px 15px;
+      border: 2px solid var(--gold);
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
+
+    .dater-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .dater-info {
       display: flex;
       flex-direction: column;
     }
 
-    .color-section div {
-      flex: 1;
+    .dater-info .name {
+      font-weight: bold;
+      font-size: 16px;
     }
 
-    .blue { background: var(--blue); }
-    .green { background: var(--green); }
-    .red { background: var(--red); }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      background: var(--black);
-      border-top: 1px solid #222;
-      padding: 12px 0;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-
-    .bottom-nav div {
-      text-align: center;
-      color: white;
+    .dater-info .bio {
       font-size: 14px;
+      opacity: 0.8;
     }
 
-    .bottom-nav img {
-      height: 28px;
-      margin-bottom: 4px;
+    .blue-bg { background-color: var(--blue); }
+    .green-bg { background-color: var(--green); }
+    .red-bg { background-color: var(--red); }
+
+    /* Modal Styling (placeholders) */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.95);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
     }
 
-    .active-bubble {
-      background: white;
-      border-radius: 8px;
-      padding: 6px;
+    .modal-content {
+      background-color: #111;
+      border: 2px solid var(--gold);
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      color: var(--white);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
-    <!-- HEADER -->
+
+  <!-- Header -->
   <div class="top-bar">
-    <img src="your-profile.jpg" alt="Profile Photo" style="border-radius: 8px; width: 40px; height: 40px;" />
-    <img src="golden-le-libido-logo.png" class="logo" alt="Le Libido Logo" />
-    <img src="bell-icon.png" class="bell" alt="Notifications" />
+    <img src="profile.jpg" alt="Profile" class="profile-pic" onclick="openProfile()">
+    <img src="golden-le-libido-logo.png" alt="Logo" class="logo">
+    <img src="notification-bell.png" alt="Bell" class="bell-icon" onclick="openNotifications()">
   </div>
 
-  <!-- COLORED STACKED SECTIONS -->
-  <div class="color-section">
-    <div class="blue"></div>
-    <div class="green"></div>
-    <div class="red"></div>
+  <!-- Main Content Area -->
+  <div class="main-content" id="daters-feed">
+    <!-- JS will inject dater cards here -->
   </div>
 
-<div id="venueList" style="padding: 20px;"></div>
-
-  <!-- BOTTOM NAVIGATION -->
+  <!-- Bottom Nav -->
   <div class="bottom-nav">
-    <div>
-      <div>Daters</div>
-    </div>
-    <div class="active-bubble">
-      <img src="chat-bubble-icon.png" alt="Chat" />
-    </div>
-    <div>
-      <div>Venues</div>
+    <div class="nav-item" onclick="showTab('daters')">Daters</div>
+    <div class="nav-item center-icon" onclick="showTab('chat')">💬</div>
+    <div class="nav-item" onclick="showTab('venues')">Venues</div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content" id="profileContent">
+      <span class="close-btn" onclick="closeModal('profileModal')">×</span>
+      <h2 class="section-title">Full Profile</h2>
+      <!-- Filled by JS -->
     </div>
   </div>
+
+  <!-- Chat Inbox Modal -->
+  <div id="chatModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('chatModal')">×</span>
+      <h2 class="section-title">Messages</h2>
+      <p>[Inbox goes here]</p>
+    </div>
+  </div>
+
+  <!-- Venue Modal -->
+  <div id="venueModal" class="modal">
+    <div class="modal-content" id="venueContent">
+      <span class="close-btn" onclick="closeModal('venueModal')">×</span>
+      <h2 class="section-title">Venue Info</h2>
+      <p>[Check-in + daters list here]</p>
+    </div>
+  </div>
+
+  <!-- Scripts come next -->
+  <script>
+    // JS logic in Part 2
+  </script>
+
 </body>
 </html>
 <script>
-// Dummy example data — replace with real data from Firebase
-const currentUserId = 'user123';
-const topMatches = ['user456', 'user789', 'user321']; // Sorted by compatibility
-const daters = [
-  {
-    id: 'user456',
-    name: 'Alex',
-    age: 29,
-    archetype: 'Tender Protector',
-    archetypeColor: 'blue',
-    firstImpression: 'Charming and confident.',
-    chocolate: true,
-    profilePic: 'alex.jpg',
-    profileLink: '/premium/tender_protector.html'
-  },
-  {
-    id: 'user789',
-    name: 'Riley',
-    age: 32,
-    archetype: 'Mood Multiplier',
-    archetypeColor: 'green',
-    firstImpression: 'Always up for more.',
-    chocolate: false,
-    profilePic: 'riley.jpg',
-    profileLink: '/premium/mood_multiplier.html'
-  },
-  {
-    id: 'user321',
-    name: 'Jordan',
-    age: 35,
-    archetype: 'Dungeon Master',
-    archetypeColor: 'red',
-    firstImpression: 'Unapologetically in charge.',
-    chocolate: true,
-    profilePic: 'jordan.jpg',
-    profileLink: '/premium/dungeon_master.html'
-  }
-];
-
-// Returns medal emoji if the user is a top match
-function getMedal(userId) {
-  const index = topMatches.indexOf(userId);
-  if (index === 0) return '🥇';
-  if (index === 1) return '🥈';
-  if (index === 2) return '🥉';
-  return '';
-}
-
-// Create dater card HTML
-function renderDaterCard(dater) {
-  const section = document.querySelector(`.${dater.archetypeColor}`);
-  const medal = getMedal(dater.id);
-  const chocolate = dater.chocolate ? '🍫' : '';
-
-  const card = document.createElement('div');
-  card.classList.add('dater-card');
-  card.style.border = '2px solid var(--gold)';
-  card.style.borderRadius = '12px';
-  card.style.margin = '10px';
-  card.style.padding = '12px';
-  card.style.background = '#000';
-  card.style.color = '#fff';
-  card.style.cursor = 'pointer';
-
-  card.innerHTML = `
-    <div style="display:flex; align-items:center; gap:12px;">
-      <img src="${dater.profilePic}" alt="${dater.name}" style="width:50px; height:50px; border-radius:10px; object-fit:cover; border:2px solid var(--gold);" />
-      <div>
-        <div style="font-size: 1.2rem; font-weight: 600;">${dater.name}, ${dater.age} ${medal} ${chocolate}</div>
-        <div style="font-size: 0.9rem; color: var(--gold);">${dater.archetype}</div>
-        <div style="font-size: 0.8rem;">${dater.firstImpression}</div>
-      </div>
-    </div>
-  `;
-
-  card.onclick = () => {
-    window.location.href = dater.profileLink;
+  // Dummy data (will later be pulled from Firebase)
+  const currentUser = {
+    uid: 'user001',
+    username: 'spicyTiger',
+    topMatches: ['user002', 'user004'], // top 1 = 🥇, top 2 = 🥈, top 3 = 🥉
+    mode: 'verified', // or 'anonymous'
+    visibleTo: ['verified'],
+    archetype: 'Mood Multiplier'
   };
 
-  section.appendChild(card);
-}
+  const daters = [
+    {
+      id: 'user002',
+      name: 'Alex',
+      username: 'alexxx',
+      age: 28,
+      archetype: 'Mood Multiplier',
+      archetypeColor: 'blue',
+      impression: 'Playfully magnetic energy',
+      profilePic: 'alex.jpg',
+      chocolate: true
+    },
+    {
+      id: 'user003',
+      name: 'Jordan',
+      username: 'jojo',
+      age: 32,
+      archetype: 'Promiscuous Plaything',
+      archetypeColor: 'green',
+      impression: 'Can’t sit still, won’t stop flirting',
+      profilePic: 'jordan.jpg',
+      chocolate: false
+    },
+    {
+      id: 'user004',
+      name: 'Taylor',
+      username: 'taybae',
+      age: 30,
+      archetype: 'Tender Protector',
+      archetypeColor: 'red',
+      impression: 'Quietly confident, deeply curious',
+      profilePic: 'taylor.jpg',
+      chocolate: true
+    }
+  ];
 
-// Load all daters
-window.onload = () => {
-  daters.forEach(renderDaterCard);
-};
+  // Render Dater Cards
+  function renderDaters() {
+    const container = document.getElementById('daters-feed');
+    container.innerHTML = '';
+
+    daters.forEach((d, index) => {
+      if (!currentUser.visibleTo.includes(d.mode || 'verified')) return;
+
+      const medal =
+        currentUser.topMatches[0] === d.id ? '🥇' :
+        currentUser.topMatches[1] === d.id ? '🥈' :
+        currentUser.topMatches[2] === d.id ? '🥉' : '';
+
+      const sugar = d.chocolate ? '🍫' : '';
+      const bgClass =
+        d.archetypeColor === 'blue' ? 'blue-bg' :
+        d.archetypeColor === 'green' ? 'green-bg' : 'red-bg';
+
+      const card = document.createElement('div');
+      card.className = `dater-card ${bgClass}`;
+      card.setAttribute('onclick', `openFullProfile("${d.id}")`);
+      card.innerHTML = `
+        <img src="${d.profilePic}" alt="${d.name}">
+        <div class="dater-info">
+          <div class="name">${medal} ${d.name}, ${d.age} ${sugar}</div>
+          <div class="bio">${d.archetype} – ${d.impression}</div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // Tab Switching
+  function showTab(tabName) {
+    if (tabName === 'daters') {
+      document.getElementById('daters-feed').style.display = 'block';
+      document.getElementById('chatModal').style.display = 'none';
+      document.getElementById('venueModal').style.display = 'none';
+    } else if (tabName === 'chat') {
+      document.getElementById('daters-feed').style.display = 'none';
+      document.getElementById('venueModal').style.display = 'none';
+      document.getElementById('chatModal').style.display = 'flex';
+    } else if (tabName === 'venues') {
+      document.getElementById('daters-feed').style.display = 'none';
+      document.getElementById('chatModal').style.display = 'none';
+      document.getElementById('venueModal').style.display = 'flex';
+    }
+  }
+
+  // Open full profile modal
+  function openFullProfile(userId) {
+    const user = daters.find(d => d.id === userId);
+    if (!user) return;
+
+    const content = document.getElementById('profileContent');
+    content.innerHTML = `
+      <span class="close-btn" onclick="closeModal('profileModal')">×</span>
+      <h2 class="section-title">${user.name}, ${user.age}</h2>
+      <img src="${user.profilePic}" alt="${user.name}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:10px;">
+      <p><strong>Username:</strong> @${user.username}</p>
+      <p><strong>Archetype:</strong> ${user.archetype}</p>
+      <p><strong>Impression:</strong> ${user.impression}</p>
+      ${user.chocolate ? '<p><strong>Sugar Dynamic:</strong> 🍫 Open</p>' : ''}
+    `;
+    document.getElementById('profileModal').style.display = 'flex';
+  }
+
+  // Notification, profile, modal close handlers
+  function openNotifications() {
+    alert("Notifications panel will appear here.");
+  }
+
+  function openProfile() {
+    alert("Redirect to profile-anonymous.html or profile-verified.html depending on mode.");
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  // Init
+  window.onload = () => {
+    renderDaters();
+    showTab('daters');
+  };
 </script>
 <script>
-// === MONMOUTH COUNTY VENUES ===
-const monmouthVenues = [
-  "Metropolitan Cafe", "American Hotel", "Nonna’s", "Rosalitas", "Tre", "Sweet Buns", "365 Cafe",
-  "Jersey Freeze", "Moore’s Tavern", "Osaka", "El Meson", "La Lupa", "Osteria", "Gabriella’s",
-  "Lola’s", "Johnny Mac’s", "Taka", "Paradise", "Porta", "Watermark", "Cardinal Provisions",
-  "St. Laurent Social Club", "Stone Pony", "Pascale and Sabine", "Kim Marie’s", "Asbury Ale House",
-  "Laylow Cocktail Lounge", "Donovan’s Reef", "Ocean House Tap and Grill", "Brothers Daly",
-  "Tommy’s Tavern", "The Avenue", "Bar Anticipation", "D’jais", "Buena Sera", "Strollo’s Lighthouse",
-  "Playa Bowls", "Lita", "Salt Steakhouse", "The Butcher’s Block", "Surf Taco",
-  "Brick House Tavern & Tap", "Centrada", "Teak", "Cabin", "Mj’s", "Centerfolds", "La Dolce Vita",
-  "Deal Lake Bar + Co"
-];
+  const venueNames = [
+    "Metropolitan Cafe", "American Hotel", "Nonna’s", "Rosalitas", "Tre",
+    "Sweet Buns", "365 Cafe", "Jersey Freeze", "Moore’s Tavern", "Osaka",
+    "El Meson", "La Lupa", "Osteria", "Gabriella’s", "Lola’s", "Johnny Mac’s",
+    "Taka", "Paradise", "Porta", "Watermark", "Cardinal Provisions",
+    "St. Laurent Social Club", "Stone Pony", "Pascale and Sabine", "Kim Marie’s",
+    "Asbury Ale House", "Laylow Cocktail Lounge", "Donovan’s Reef", "Ocean House Tap and Grill",
+    "Brothers Daly", "Tommy’s Tavern", "The Avenue", "Bar Anticipation", "D’jais",
+    "Buena Sera", "Strollo’s Lighthouse", "Playa Bowls", "Lita", "Salt Steakhouse",
+    "The Butcher’s Block", "Surf Taco", "Brick House Tavern & Tap", "Centrada", "Teak",
+    "Cabin", "Mj’s", "Centerfolds", "La Dolce Vita", "Deal Lake Bar + Co"
+  ];
 
-// === GOOGLE MAPS VENUE FETCHING ===
-function fetchVenuesNearUser(userLocation) {
-  const venueList = document.getElementById("venueList");
-  const service = new google.maps.places.PlacesService(document.createElement('div'));
+  const venueIcons = {
+    "bar": "🍸", "restaurant": "🍴", "cafe": "☕", "ice cream": "🍦", "nightclub": "🪩"
+  };
 
-  monmouthVenues.forEach(name => {
-    service.textSearch({
-      query: name,
-      location: new google.maps.LatLng(userLocation.lat, userLocation.lng),
-      radius: 20000
-    }, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && results[0]) {
-        const venue = results[0];
+  const checkedInKey = "lelibido_last_checkin"; // localStorage key
 
-        const distance = google.maps.geometry.spherical.computeDistanceBetween(
-          new google.maps.LatLng(userLocation.lat, userLocation.lng),
-          venue.geometry.location
-        );
-        const isNearby = distance < 75;
+  let userPosition = null;
+  let placesService;
 
-        // Pick icon
-        const emoji = venue.types.includes("restaurant") ? "🍴"
-                    : venue.types.includes("bar") ? "🍸"
-                    : venue.types.includes("cafe") ? "☕"
-                    : venue.types.includes("ice_cream") ? "🍦" : "📍";
+  function initVenueSearch() {
+    if (!navigator.geolocation) return alert("Geolocation not supported.");
+    navigator.geolocation.getCurrentPosition(pos => {
+      userPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+      const map = new google.maps.Map(document.createElement('div')); // hidden dummy map
+      placesService = new google.maps.places.PlacesService(map);
+      searchVenues();
+    }, () => alert("Could not retrieve location."));
+  }
 
-        // Image fallback
-        const image = venue.photos?.[0]?.getUrl({ maxWidth: 100, maxHeight: 100 }) ||
-                      "https://via.placeholder.com/100";
-
-        // Build card
-        const card = document.createElement("div");
-        card.className = "venue-card";
-        card.innerHTML = `
-          <div class="venue-header">
-            <img src="${image}" alt="${venue.name}" />
-            <div class="venue-name">${emoji} ${venue.name}</div>
-          </div>
-          <p>Distance: ${Math.round(distance)} m</p>
-          <button class="checkin-btn" onclick="checkInToVenue('${venue.place_id}', ${isNearby})">
-            ${isNearby ? "✅ You are here" : "Check In"}
-          </button>
-          <div id="users-${venue.place_id}" class="dater-container"></div>
-        `;
-        venueList.appendChild(card);
-      }
+  function searchVenues() {
+    venueNames.forEach(name => {
+      const request = {
+        query: name + " Monmouth County NJ",
+        fields: ["name", "geometry", "photos", "place_id", "types"]
+      };
+      placesService.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results[0]) {
+          renderVenue(results[0]);
+        }
+      });
     });
+  }
+
+  function renderVenue(place) {
+    if (!userPosition) return;
+
+    const venueLatLng = place.geometry.location;
+    const distMeters = google.maps.geometry.spherical.computeDistanceBetween(userPosition, venueLatLng);
+    const distFeet = Math.round(distMeters * 3.28084);
+    const withinRange = distFeet <= 75;
+    const cooldown = getCooldown();
+    const icon = getVenueEmoji(place.types);
+
+    const thumb = place.photos && place.photos.length
+      ? place.photos[0].getUrl({ maxWidth: 300 })
+      : 'fallback-image.jpg';
+
+    const div = document.createElement("div");
+    div.className = "dater-card";
+    div.innerHTML = `
+      <img src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;margin-right:15px;">
+      <div class="dater-info">
+        <div class="name">${icon} ${place.name}</div>
+        <div class="bio">${distFeet} ft away</div>
+        <button onclick="checkIntoVenue('${place.place_id}', '${place.name}', ${distFeet})" ${cooldown ? "disabled" : ""}>
+          ${withinRange ? "✅ You are here" : "Check In"}
+        </button>
+      </div>
+    `;
+    document.getElementById("venueContent").appendChild(div);
+  }
+
+  function checkIntoVenue(placeId, name, distance) {
+    if (distance > 75) return alert("You must be physically at this venue to check in.");
+    if (getCooldown()) return alert("Please wait before checking in again.");
+
+    // Save to localStorage
+    localStorage.setItem(checkedInKey, Date.now().toString());
+
+    // TODO: Firebase write — store user's currentVenueId and timestamp
+    console.log("✅ Checked into", name);
+
+    alert(`You are now checked in to ${name}!`);
+    document.getElementById("venueContent").innerHTML = "";
+    searchVenues(); // refresh view
+  }
+
+  function getCooldown() {
+    const last = parseInt(localStorage.getItem(checkedInKey) || "0");
+    const now = Date.now();
+    return now - last < 10 * 60 * 1000; // 10 minutes
+  }
+
+  function getVenueEmoji(types = []) {
+    if (types.includes("bar")) return venueIcons["bar"];
+    if (types.includes("restaurant")) return venueIcons["restaurant"];
+    if (types.includes("cafe")) return venueIcons["cafe"];
+    if (types.includes("night_club")) return venueIcons["nightclub"];
+    if (types.includes("bakery")) return venueIcons["ice cream"];
+    return "📍";
+  }
+
+  // Load venues when venue tab opens
+  document.querySelector(".bottom-nav .nav-item:last-child").addEventListener("click", () => {
+    document.getElementById("venueContent").innerHTML = "";
+    initVenueSearch();
   });
-}
+</script>
+<!-- Firebase Setup -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-// === ON LOAD ===
-window.onload = () => {
-  navigator.geolocation.getCurrentPosition(pos => {
-    const userLocation = {
-      lat: pos.coords.latitude,
-      lng: pos.coords.longitude
-    };
-    fetchVenuesNearUser(userLocation);
-  });
-};
+<script>
+  // Replace with your Firebase config
+  const firebaseConfig = {
+    apiKey: "YOUR_KEY",
+    authDomain: "YOUR_APP.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_APP.appspot.com",
+    messagingSenderId: "YOUR_MSG_ID",
+    appId: "YOUR_APP_ID"
+  };
 
-// === CHECK-IN FUNCTION ===
-function canCheckIn() {
-  const last = localStorage.getItem("lastCheckInTime");
-  const now = Date.now();
-  if (!last || now - parseInt(last) > 10 * 60 * 1000) {
-    localStorage.setItem("lastCheckInTime", now.toString());
-    return true;
-  }
-  return false;
-}
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-function checkInToVenue(placeId, isNearby) {
-  if (!isNearby) {
-    alert("You must visit this venue to check in.");
-    return;
+  // Check-In Firestore Sync
+  async function checkIntoVenue(placeId, name, distance) {
+    if (distance > 75) return alert("You must be physically at this venue to check in.");
+    if (getCooldown()) return alert("Please wait before checking in again.");
+    const uid = currentUser.uid;
+
+    localStorage.setItem(checkedInKey, Date.now().toString());
+
+    try {
+      await db.collection("checkins").doc(placeId).collection("users").doc(uid).set({
+        userId: uid,
+        name: currentUser.name,
+        archetype: currentUser.archetype,
+        username: currentUser.username,
+        profilePic: currentUser.profilePic || 'profile.jpg',
+        mode: currentUser.mode,
+        chocolate: currentUser.chocolate || false,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      await db.collection("users").doc(uid).set({
+        currentVenueId: placeId,
+        lastCheckIn: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+      alert(`✅ Checked into ${name}`);
+      document.getElementById("venueContent").innerHTML = "";
+      searchVenues();
+
+    } catch (err) {
+      console.error("Check-in failed:", err);
+      alert("Check-in failed. Try again.");
+    }
   }
-  if (!canCheckIn()) {
-    alert("You can only check in once every 10 minutes.");
-    return;
+
+  // Load daters checked into venue
+  async function loadVenueDaters(placeId) {
+    const container = document.getElementById("venueContent");
+    const snapshot = await db.collection("checkins").doc(placeId).collection("users").get();
+    if (snapshot.empty) {
+      container.innerHTML += "<p style='margin-top:10px;'>No one is currently checked in.</p>";
+      return;
+    }
+
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      if (!currentUser.visibleTo.includes(user.mode)) return;
+
+      const bg =
+        user.archetypeColor === "blue" ? "blue-bg" :
+        user.archetypeColor === "green" ? "green-bg" : "red-bg";
+
+      const div = document.createElement("div");
+      div.className = `dater-card ${bg}`;
+      div.setAttribute("onclick", `openCheckedInProfile('${user.userId}')`);
+      div.innerHTML = `
+        <img src="${user.profilePic}" alt="${user.name}">
+        <div class="dater-info">
+          <div class="name">${user.name} ${user.chocolate ? "🍫" : ""}</div>
+          <div class="bio">${user.archetype}</div>
+        </div>
+      `;
+      container.appendChild(div);
+    });
   }
-  alert("Checked into venue: " + placeId);
-  // TODO: Save check-in to Firebase if needed
-}
+
+  // When venue modal opens
+  function openVenue(placeId, name, thumb) {
+    document.getElementById("venueContent").innerHTML = `
+      <img src="${thumb}" style="width:100px;height:100px;border-radius:8px;margin:10px 0;">
+      <h3>${name}</h3>
+      <p>Users at this venue:</p>
+    `;
+    document.getElementById("venueModal").style.display = "flex";
+    loadVenueDaters(placeId);
+  }
+
+  // Load full profile from Firestore
+  async function openCheckedInProfile(userId) {
+    const doc = await db.collection("users").doc(userId).get();
+    const user = doc.data();
+    if (!user) return alert("Profile not found.");
+
+    const content = document.getElementById('profileContent');
+    content.innerHTML = `
+      <span class="close-btn" onclick="closeModal('profileModal')">×</span>
+      <h2 class="section-title">${user.name}</h2>
+      <img src="${user.profilePic}" alt="${user.name}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:10px;">
+      <p><strong>Username:</strong> @${user.username}</p>
+      <p><strong>Archetype:</strong> ${user.archetype}</p>
+      ${user.chocolate ? '<p><strong>Sugar Dynamic:</strong> 🍫 Open</p>' : ''}
+    `;
+    document.getElementById('profileModal').style.display = 'flex';
+  }
 </script>
