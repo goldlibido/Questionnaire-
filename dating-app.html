@@ -3,128 +3,383 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Le Libido – Dater Feed Mockup</title>
+  <title>Le Libido – Dating App</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --gold: #e1bf78;
       --blue: #064D95;
       --green: #06954E;
       --red: #950606;
-      --black: #000;
-      --white: #fff;
+      --black: #000000;
+      --white: #ffffff;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
       font-family: 'Montserrat', sans-serif;
       background-color: var(--black);
       color: var(--white);
-      height: 100%;
     }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    header {
       background-color: var(--black);
-      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
     }
 
-    .top-bar img {
-      width: 30px;
-      height: 30px;
+    header img.logo {
+      height: 40px;
+    }
+
+    header img.icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       object-fit: cover;
     }
 
-    .top-bar .logo {
-      height: 32px;
-      width: auto;
-    }
-
-    .main-feed {
+    .daters-list {
+      height: calc(100vh - 110px);
       overflow-y: scroll;
-      height: calc(100vh - 60px); /* bottom nav height */
-      scroll-behavior: smooth;
+      padding: 0;
+      margin: 0;
     }
 
     .dater-card {
       width: 100%;
-      min-height: calc((100vh - 60px) / 3); /* Show 3 at a time */
+      height: 33.33vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 24px;
       font-weight: bold;
+      color: var(--white);
     }
 
-    .blue { background-color: var(--blue); }
-    .green { background-color: var(--green); }
-    .red { background-color: var(--red); }
-
-    .bottom-nav {
+    .footer-nav {
       position: fixed;
       bottom: 0;
-      left: 0;
-      right: 0;
+      width: 100%;
       background-color: var(--black);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 10px 0;
-      border-top: 1px solid var(--gold);
-      z-index: 10;
+      height: 60px;
+      border-top: 2px solid var(--gold);
     }
 
-    .bottom-nav .nav-item {
+    .footer-nav div {
       color: var(--white);
-      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
     }
 
-    .bottom-nav .center-icon {
-      background-color: var(--white);
-      color: var(--black);
-      font-size: 18px;
-      padding: 6px 10px;
-      border-radius: 8px;
+    .footer-nav img {
+      width: 32px;
+      height: 32px;
     }
   </style>
-</head>
 
+  <!-- Firebase + Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
 <body>
 
-  <!-- Header -->
-  <div class="top-bar">
-    <img src="profile.jpg" alt="Profile Pic">
-    <img src="golden-le-libido-logo.png" alt="Logo" class="logo">
-    <img src="notification-bell.png" alt="Bell Icon">
+  <header>
+    <img src="your-profile-photo.jpg" class="icon" id="profile-pic" />
+    <img src="golden-le-libido-logo.png" class="logo" />
+    <img src="bell-icon.png" class="icon" id="notifications" />
+  </header>
+
+  <div class="daters-list" id="daters-container">
+    <!-- Profiles will load here -->
   </div>
 
-  <!-- Scrollable Feed -->
-  <div class="main-feed" id="mainFeed">
-    <div class="dater-card blue">Blue Archetype</div>
-    <div class="dater-card green">Green Archetype</div>
-    <div class="dater-card red">Red Archetype</div>
-    <div class="dater-card green">Green Archetype</div>
-    <div class="dater-card red">Red Archetype</div>
-    <div class="dater-card blue">Blue Archetype</div>
-    <div class="dater-card red">Red Archetype</div>
-    <div class="dater-card green">Green Archetype</div>
-    <div class="dater-card blue">Blue Archetype</div>
+  <div class="footer-nav">
+    <div>Daters</div>
+    <div><img src="chat-icon.png" alt="Chat" /></div>
+    <div>Venues</div>
   </div>
 
-  <!-- Bottom nav -->
-  <div class="bottom-nav">
-    <div class="nav-item">Daters</div>
-    <div class="nav-item center-icon">💬</div>
-    <div class="nav-item">Venues</div>
-  </div>
+  <script>
+    // Initialize Firebase with le-libido-mvp config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBN0wDQlL2xZbFwq1gxw8VXeddVG2Gwh34",
+      authDomain: "le-libido-mvp.firebaseapp.com",
+      projectId: "le-libido-mvp",
+      storageBucket: "le-libido-mvp.appspot.com",
+      messagingSenderId: "131616941592",
+      appId: "1:131616941592:web:e8773a0951f7b86c1a056d",
+      measurementId: "G-8C9DXQ4M6T"
+    };
 
-</body>
-</html>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+        // Define the color by archetype
+    function getColorByArchetype(archetype) {
+      const colorMap = {
+        "Tender Protector": "#064D95", // blue
+        "Mood Multiplier": "#06954E", // green
+        "Heatwave": "#950606",        // red
+        "Devoted Darling": "#064D95",
+        "Promiscuous Plaything": "#06954E",
+        "Generous Giver": "#06954E",
+        "Bedroom Adventurer": "#06954E",
+        "Charmer in Charge": "#064D95",
+        "Punish Me": "#950606",
+        "Provoker": "#950606",
+        "Dungeon Master": "#950606",
+        "Claimed & Trained": "#950606"
+      };
+      return colorMap[archetype] || "#333";
+    }
+
+    function renderDaterCard(profile) {
+      const card = document.createElement("div");
+      card.classList.add("dater-card");
+      card.style.backgroundColor = getColorByArchetype(profile.archetype);
+      card.innerHTML = `
+        <div style="text-align: center;">
+          <img src="${profile.photoURL || 'default-profile.jpg'}" alt="Profile" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:10px;" />
+          <div>${profile.name}, ${profile.age}</div>
+          <div style="font-size:16px; margin-top:4px;">${profile.archetype}</div>
+          <div style="font-size:14px; margin-top:4px; font-style:italic;">"${profile.bio || ''}"</div>
+        </div>
+      `;
+      card.onclick = () => showFullProfile(profile);
+      return card;
+    }
+
+    function loadDaters() {
+      const container = document.getElementById("daters-container");
+      db.collection("profiles")
+        .where("visible", "==", true)
+        .orderBy("timestamp", "desc")
+        .onSnapshot(snapshot => {
+          container.innerHTML = "";
+          snapshot.forEach(doc => {
+            const profile = doc.data();
+            const card = renderDaterCard(profile);
+            container.appendChild(card);
+          });
+        });
+    }
+
+    loadDaters();
+        // Show full profile modal
+    function showFullProfile(profile) {
+      const modal = document.createElement("div");
+      modal.style.position = "fixed";
+      modal.style.top = 0;
+      modal.style.left = 0;
+      modal.style.width = "100%";
+      modal.style.height = "100%";
+      modal.style.backgroundColor = "rgba(0,0,0,0.95)";
+      modal.style.color = "white";
+      modal.style.overflowY = "scroll";
+      modal.style.zIndex = 1000;
+      modal.style.padding = "20px";
+
+      modal.innerHTML = `
+        <button onclick="this.parentElement.remove()" style="position:absolute;top:20px;right:20px;font-size:24px;background:none;border:none;color:white;">✕</button>
+        <div style="text-align:center;margin-top:40px;">
+          <img src="${profile.photoURL || 'default-profile.jpg'}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;" />
+          <h2 style="margin-top:10px;">${profile.name}, ${profile.age}</h2>
+          <h3>${profile.archetype}</h3>
+          <p><strong>Flirty First Impression:</strong> ${profile.bio || "—"}</p>
+          <p><strong>Looking For:</strong> ${profile.lookingFor || "Not specified"}</p>
+          <p><strong>Enjoys:</strong> ${profile.enjoys || "—"}</p>
+          <p><strong>Dirty Talk Style:</strong> ${profile.talkStyle || "—"}</p>
+          <p><strong>Can Host/Travel:</strong> ${profile.hosting || "—"}</p>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+    }
+
+    // Notifications mockup (expand later)
+    document.getElementById("notification-icon").addEventListener("click", () => {
+      alert("You were approached by: Alex\nInvited to Approach: Jamie\nChecked out by: Casey");
+      // You can later render this as a custom panel
+    });
+
+    // Profile edit mockup
+    document.getElementById("profile-pic").addEventListener("click", () => {
+      window.location.href = "profile-anonymous.html"; // or "profile-verified.html"
+    });
+    <!-- VENUE PANEL (Hidden until Venues tab is clicked) -->
+<div id="venue-panel" style="display:none;padding:20px;">
+  <h2 style="color:var(--gold);margin-bottom:15px;">Nearby Venues</h2>
+  <div id="venue-list"></div>
+</div>
+
+<script>
+  const venueList = [
+    "Metropolitan Cafe", "American Hotel", "Nonna’s", "Rosalitas", "Tre",
+    "Sweet Buns", "365 Cafe", "Jersey Freeze", "Moore’s Tavern", "Osaka",
+    "El Meson", "La Lupa", "Osteria", "Gabriella’s", "Lola’s", "Johnny Mac’s",
+    "Taka", "Paradise", "Porta", "Watermark", "Cardinal Provisions",
+    "St. Laurent Social Club", "Stone Pony", "Pascale and Sabine", "Kim Marie’s",
+    "Asbury Ale House", "Laylow Cocktail Lounge", "Donovan’s Reef",
+    "Ocean House Tap and Grill", "Brothers Daly", "Tommy’s Tavern",
+    "The Avenue", "Bar Anticipation", "D’jais", "Buena Sera", "Strollo’s Lighthouse",
+    "Playa Bowls", "Lita", "Salt Steakhouse", "The Butcher’s Block",
+    "Surf Taco", "Brick House Tavern & Tap", "Centrada", "Teak", "Cabin",
+    "Mj’s", "Centerfolds", "La Dolce Vita", "Deal Lake Bar + Co"
+  ];
+
+  function getVenueEmoji(name) {
+    name = name.toLowerCase();
+    if (name.includes("bar") || name.includes("tavern") || name.includes("tap") || name.includes("cocktail") || name.includes("club")) return "🍸";
+    if (name.includes("cafe") || name.includes("coffee")) return "☕";
+    if (name.includes("restaurant") || name.includes("grill") || name.includes("steakhouse") || name.includes("buns")) return "🍴";
+    if (name.includes("ice cream") || name.includes("freeze") || name.includes("lighthouse")) return "🍦";
+    return "📍";
+  }
+
+  function computeDistanceMeters(lat1, lng1, lat2, lng2) {
+    const p = 0.017453292519943295;
+    const c = Math.cos;
+    const a = 0.5 - c((lat2 - lat1) * p)/2 + 
+              c(lat1 * p) * c(lat2 * p) * 
+              (1 - c((lng2 - lng1) * p))/2;
+    return 12742 * 1000 * Math.asin(Math.sqrt(a)); // meters
+  }
+
+  function checkInToVenue(venue, userLat, userLng, venueLat, venueLng) {
+    const dist = computeDistanceMeters(userLat, userLng, venueLat, venueLng);
+    const lastCheck = localStorage.getItem("lastCheckin");
+    const now = Date.now();
+
+    if (lastCheck && now - lastCheck < 600000) {
+      alert("You can only check in once every 10 minutes.");
+      return;
+    }
+
+    if (dist > 75) {
+      alert("You must physically be at this venue to check in.");
+      return;
+    }
+
+    // Store check-in
+    localStorage.setItem("lastCheckin", now);
+    localStorage.setItem("currentVenue", venue);
+
+    // 🔥 Write to Firebase (replace with actual user ID handling)
+    const userId = firebase.auth().currentUser?.uid || "anonymous";
+    db.collection("checkins").doc(userId).set({
+      venue: venue,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert(`✅ Checked in at ${venue}`);
+    renderVenueList(userLat, userLng); // Re-render with updated status
+  }
+
+  function renderVenueList(userLat, userLng) {
+    const list = document.getElementById("venue-list");
+    list.innerHTML = "";
+
+    const venuesWithCoords = [];
+
+    venueList.forEach(name => {
+      const service = new google.maps.places.PlacesService(document.createElement('div'));
+      service.textSearch({ query: name + ", Monmouth County NJ" }, results => {
+        if (!results || !results[0]) return;
+        const place = results[0];
+        const dist = computeDistanceMeters(userLat, userLng, place.geometry.location.lat(), place.geometry.location.lng());
+        venuesWithCoords.push({ name, place, dist });
+        venuesWithCoords.sort((a, b) => a.dist - b.dist);
+
+        // Only render after all venues loaded
+        if (venuesWithCoords.length === venueList.length) {
+          venuesWithCoords.forEach(({ name, place, dist }) => {
+            const emoji = getVenueEmoji(name);
+            const currentVenue = localStorage.getItem("currentVenue");
+            const isCheckedIn = currentVenue === name;
+            const buttonText = isCheckedIn ? "✅ You are here" : "Check In";
+            const btnDisabled = isCheckedIn ? "disabled" : "";
+
+            const card = document.createElement("div");
+            card.style.borderTop = "1px solid var(--gold)";
+            card.style.padding = "15px 0";
+            card.style.display = "flex";
+            card.style.justifyContent = "space-between";
+            card.style.alignItems = "center";
+
+            card.innerHTML = `
+              <div>
+                <div style="font-size:18px;">${emoji} <strong>${name}</strong></div>
+                <div style="font-size:12px;color:#aaa;">${Math.round(dist)} meters away</div>
+              </div>
+              <button ${btnDisabled} onclick="checkInToVenue('${name}', ${userLat}, ${userLng}, ${place.geometry.location.lat()}, ${place.geometry.location.lng()})" style="padding:8px 12px;background-color:var(--gold);color:black;border:none;border-radius:8px;font-weight:bold;">${buttonText}</button>
+            `;
+
+            list.appendChild(card);
+          });
+        }
+      });
+    });
+  }
+
+  // Handle Venues tab click
+  document.getElementById("nav-venues").addEventListener("click", () => {
+    document.getElementById("venue-panel").style.display = "block";
+    navigator.geolocation.getCurrentPosition(pos => {
+      renderVenueList(pos.coords.latitude, pos.coords.longitude);
+    });
+  });
+</script>
+<!-- STICKY BOTTOM NAVIGATION -->
+<div id="bottom-nav" style="position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;align-items:center;background:#000;padding:10px 0;border-top:2px solid var(--gold);z-index:999;">
+  <div id="nav-daters" style="color:var(--gold);font-size:20px;cursor:pointer;">💋 Daters</div>
+  <div id="nav-chat" style="color:var(--gold);font-size:24px;cursor:pointer;">💬</div>
+  <div id="nav-venues" style="color:var(--gold);font-size:20px;cursor:pointer;">📍 Venues</div>
+</div>
+
+<!-- SECTION CONTAINERS -->
+<div id="daters-section" style="padding-bottom:80px;"></div>
+<div id="chat-section" style="display:none;padding:20px;padding-bottom:80px;"> 
+  <h2 style="color:var(--gold);margin-bottom:10px;">Messages</h2>
+  <p style="color:white;">(Chat UI to be implemented – includes list of matches, invite by username, profile pic lookup, and group chat builder.)</p>
+</div>
+
+<!-- TAB SWITCHING LOGIC -->
+<script>
+  const tabs = {
+    "nav-daters": "daters-section",
+    "nav-chat": "chat-section",
+    "nav-venues": "venue-panel"
+  };
+
+  Object.keys(tabs).forEach(id => {
+    document.getElementById(id).addEventListener("click", () => {
+      // Hide all panels
+      Object.values(tabs).forEach(section => {
+        const el = document.getElementById(section);
+        if (el) el.style.display = "none";
+      });
+      // Show selected panel
+      const target = tabs[id];
+      const el = document.getElementById(target);
+      if (el) el.style.display = "block";
+    });
+  });
+
+  // Auto-load user location and default tab
+  window.addEventListener('load', () => {
+    navigator.geolocation.getCurrentPosition(position => {
+      // Optional: pre-fetch nearby venues or default dater list
+      console.log("User location:", position.coords.latitude, position.coords.longitude);
+    }, () => {
+      alert("Location access is required to use this app.");
+    });
+
+    // Default to Daters tab
+    document.getElementById("nav-daters").click();
+  });
+</script>
