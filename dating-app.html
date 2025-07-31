@@ -3,360 +3,647 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Le Libido – Dating App</title>
+  <title>Le Libido – Dating Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --gold: #e1bf78;
+      --red: #950606;
       --blue: #064D95;
       --green: #06954E;
-      --red: #950606;
-      --white: #ffffff;
       --black: #0d0d0d;
     }
 
     body {
       margin: 0;
+      padding: 30px 20px;
+      background-color: var(--black);
+      color: white;
       font-family: 'Montserrat', sans-serif;
-      background-color: var(--black);
-      color: var(--white);
-      padding-bottom: 70px; /* space for bottom nav */
     }
 
-    header {
-      position: sticky;
-      top: 0;
-      background-color: var(--black);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 10px;
-      z-index: 1000;
+    h1 {
+      color: var(--gold);
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 30px;
     }
 
-    .top-button {
-      color: white;
-      font-weight: bold;
-      font-size: 0.9rem;
-      cursor: pointer;
-      margin: 0 4px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      background-color: transparent;
-      border: 1px solid var(--gold);
-    }
-
-    .top-button img.profile-thumb {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--gold);
-    }
-
-    .gold-banner {
-      background-color: var(--black);
-      color: white;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      padding: 12px 0;
-      font-weight: bold;
-      z-index: 1000;
-    }
-
-    .gold-banner div {
-      cursor: pointer;
-    }
-
-    .gold-banner .active-tab {
-      text-decoration: underline;
-    }
-
-    .tab-content {
-      padding: 20px;
-    }
-
-    .profile-card, .venue-card {
-      width: 100%;
-      margin-bottom: 20px;
+    .venue-card {
+      background-color: #111;
+      border-bottom: 1px solid var(--gold);
       padding: 16px;
+      margin-bottom: 10px;
+    }
+
+    .venue-thumbnail {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-right: 10px;
+    }
+
+    .venue-info {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      color: white;
     }
 
-    .profile-card img, .venue-card img {
-      width: 70px;
-      height: 70px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin-right: 16px;
-      border: 2px solid var(--gold);
-    }
-
-    .profile-info h3 {
-      margin: 0 0 5px 0;
-      font-size: 1.2rem;
-    }
-
-    .profile-info p {
-      margin: 0;
-      font-size: 0.9rem;
-    }
-
-    .popup-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0, 0, 0, 0.85);
-      display: none;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-      z-index: 2000;
-      padding: 20px;
-    }
-
-    .popup-overlay.active {
-      display: flex;
-    }
-
-    .popup-close {
-      align-self: flex-end;
-      color: white;
-      font-size: 1.5rem;
+    button {
+      background-color: var(--gold);
+      color: black;
+      font-weight: bold;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 8px;
+      border-radius: 8px;
       cursor: pointer;
-      margin-bottom: 20px;
     }
 
-    .popup-content {
-      width: 100%;
+    .dater-container {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .dater-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
     }
   </style>
 </head>
 <body>
+  <h1>Who's Out Tonight?</h1>
 
-<header>
-  <div class="top-button" onclick="openProfile()">
-    <img src="profile-thumb.jpg" alt="Profile" class="profile-thumb" />
+  <label for="venueTypeFilter" style="color: var(--gold); font-weight: bold;">Filter by Venue Type:</label>
+  <select id="venueTypeFilter" onchange="filterVenues()" style="padding: 10px; margin-bottom: 20px;">
+    <option value="all">All</option>
+    <option value="restaurant">🍴 Restaurants</option>
+    <option value="bar">🍸 Bars</option>
+    <option value="cafe">☕ Cafés</option>
+    <option value="ice_cream">🍦 Ice Cream</option>
+  </select>
+
+  <div id="venueList"></div>
+    <!-- Firebase & Google Maps API Initialization -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAA9haAkwA4_LvJ9qpuG9Q_YsO7S_o_4Hs&libraries=places,geometry"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBN0wDQhL2xZbFwq1gxw8VXeddVG2Gwh34",
+      authDomain: "le-libido-mvp.firebaseapp.com",
+      projectId: "le-libido-mvp",
+      storageBucket: "le-libido-mvp.appspot.com",
+      messagingSenderId: "131616941592",
+      appId: "1:131616941592:web:e8773a0951f7b86c1a056d",
+      measurementId: "G-8C9DXQ4M6T"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    const storage = firebase.storage();
+
+    const venueList = document.getElementById('venueList');
+    let lastCheckIn = null;
+
+    window.onload = function () {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const userLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        fetchNearbyVenues(userLocation);
+      });
+    };
+
+    function fetchNearbyVenues(location) {
+      const service = new google.maps.places.PlacesService(document.createElement('div'));
+      const request = {
+        location: new google.maps.LatLng(location.lat, location.lng),
+        radius: 500,
+        type: ['restaurant', 'bar', 'ice_cream']
+      };
+
+      service.nearbySearch(request, async (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          results.sort((a, b) =>
+            google.maps.geometry.spherical.computeDistanceBetween(
+              new google.maps.LatLng(location.lat, location.lng), a.geometry.location
+            ) -
+            google.maps.geometry.spherical.computeDistanceBetween(
+              new google.maps.LatLng(location.lat, location.lng), b.geometry.location
+            )
+          );
+
+          venueList.innerHTML = '';
+
+          for (const venue of results) {
+            const distance = google.maps.geometry.spherical.computeDistanceBetween(
+              new google.maps.LatLng(location.lat, location.lng), venue.geometry.location
+            );
+
+            const isWithinRadius = distance <= 23;
+            const emoji = venue.types.includes("restaurant") ? "🍴"
+                        : venue.types.includes("bar") ? "🍸"
+                        : venue.types.includes("ice_cream") ? "🍦"
+                        : "📍";
+
+            const thumbnail = venue.photos && venue.photos.length
+              ? venue.photos[0].getUrl({ maxWidth: 100, maxHeight: 100 })
+              : "https://via.placeholder.com/100";
+
+            const card = document.createElement('div');
+            card.classList.add("venue-card");
+            card.dataset.venuetype = venue.types[0];
+            card.innerHTML = `
+              <div class="venue-header">
+                <img src="${thumbnail}" alt="${venue.name}" />
+                <div class="venue-name">${emoji} ${venue.name}</div>
+              </div>
+              <p>Distance: ${Math.round(distance)}m</p>
+              <button class="checkin-btn" onclick="checkIn('${venue.place_id}', ${isWithinRadius})">
+                ${isWithinRadius ? "✅ You are here" : "Check In"}
+              </button>
+              <div id="users-${venue.place_id}" class="dater-container"></div>
+            `;
+
+            venueList.appendChild(card);
+          }
+        }
+      });
+    }
+        function checkIn(placeId, isWithinRadius) {
+      const now = new Date().getTime();
+
+      if (!isWithinRadius) {
+        alert("📍 You must physically be at the venue to check in.");
+        return;
+      }
+
+      if (lastCheckIn && now - lastCheckIn < 10 * 60 * 1000) {
+        alert("⏳ You can only check in once every 10 minutes.");
+        return;
+      }
+
+      lastCheckIn = now;
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert("🔒 Please sign in to check in.");
+        return;
+      }
+
+      db.collection("checkins").add({
+        userId: user.uid,
+        venueId: placeId,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("✅ Checked in!");
+    }
+
+    function filterVenuesByType() {
+      const filter = document.getElementById("venueFilter").value;
+      const allVenues = document.querySelectorAll(".venue-card");
+
+      allVenues.forEach(card => {
+        const type = card.dataset.venuetype;
+        if (filter === "all" || type === filter) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+
+    async function loadDatersForVenue(venueId, containerId) {
+      const snapshot = await db.collection("checkins")
+        .where("venueId", "==", venueId)
+        .orderBy("timestamp", "desc")
+        .limit(20)
+        .get();
+
+      const users = [];
+      for (const doc of snapshot.docs) {
+        const checkin = doc.data();
+        const userDoc = await db.collection("users").doc(checkin.userId).get();
+        if (userDoc.exists) {
+          users.push(userDoc.data());
+        }
+      }
+
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+
+      users.forEach((user, index) => {
+        const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "";
+        const color = getColorForArchetype(user.archetype);
+        const card = document.createElement("div");
+        card.style.background = color;
+        card.style.padding = "10px";
+        card.style.borderRadius = "10px";
+        card.style.marginTop = "10px";
+        card.style.cursor = "pointer";
+        card.style.color = "white";
+
+        card.innerHTML = `
+          <img src="${user.photoURL || 'https://via.placeholder.com/80'}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;" />
+          <div><strong>${medal} ${user.name || "Anonymous"}, ${user.age || "--"}</strong></div>
+          <div>${user.archetype || "Mystery Type"}</div>
+          <div style="font-style: italic; font-size: 0.9rem;">"${user.firstImpression || 'No intro yet.'}"</div>
+        `;
+
+        card.onclick = () => {
+          alert(`Open full profile for ${user.name || "this user"}`);
+        };
+
+        container.appendChild(card);
+      });
+    }
+
+    function getColorForArchetype(archetype) {
+      const map = {
+        "Tender Protector": "#064D95",
+        "Mood Multiplier": "#064D95",
+        "Heatwave": "#064D95",
+        "Promiscuous Plaything": "#06954E",
+        "Generous Giver": "#06954E",
+        "Bedroom Adventurer": "#06954E",
+        "Charmer in Charge": "#950606",
+        "Punish Me": "#950606",
+        "Provoker": "#950606",
+        "Dungeon Master": "#950606",
+        "Claimed & Trained": "#950606",
+        "Devoted Darling": "#064D95"
+      };
+      return map[archetype] || "#222";
+    }
+
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll('[id^="users-"]').forEach(el => {
+        const venueId = el.id.replace("users-", "");
+        loadDatersForVenue(venueId, el.id);
+      });
+    });
+
+    observer.observe(document.getElementById('venueList'), { childList: true });
+  </script>
+    <style>
+    #venueList {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .venue-card {
+      background-color: #0d0d0d;
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .venue-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+
+    .venue-header img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .venue-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .checkin-btn {
+      margin-top: 8px;
+      padding: 10px 20px;
+      background-color: var(--gold);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .checkin-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .dater-container {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .dater-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+
+    #controls {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #venueTypeFilter {
+      padding: 8px;
+      border-radius: 6px;
+      font-family: Montserrat;
+    }
+  </style>
+
+  <div id="controls">
+    <label for="venueTypeFilter" style="color: var(--gold); font-weight: 600;">Filter by Venue Type:</label>
+    <select id="venueTypeFilter" onchange="filterVenues()">
+      <option value="all">All</option>
+      <option value="restaurant">🍴 Restaurants</option>
+      <option value="bar">🍸 Bars</option>
+      <option value="cafe">☕ Cafés</option>
+      <option value="icecream">🍦 Ice Cream</option>
+    </select>
   </div>
-  <div class="top-button" onclick="openFriends()">Friends</div>
-  <div class="top-button" onclick="openDeals()">Deals for you</div>
-  <div class="top-button" onclick="openScoreboard()">Scoreboard</div>
-  <div class="top-button" onclick="openBlindfold()">Blindfold</div>
-  <div class="top-button" onclick="openMessages()">⚙</div>
-</header>
-<div id="tab-content" class="tab-content">
-  <!-- DATERS TAB -->
-  <div id="daters-tab">
-    <div class="profile-card" style="background-color: var(--red);" onclick="openDaterProfile('Aria Blaze', 'Catch me if you can 💋', 'red')">
-      <img src="aria.jpg" alt="Aria" />
-      <div class="profile-info">
-        <h3>Aria Blaze</h3>
-        <p>Catch me if you can 💋</p>
-      </div>
-    </div>
-    <div class="profile-card" style="background-color: var(--green);" onclick="openDaterProfile('Jules Nova', 'Drinks, dancing, danger?', 'green')">
-      <img src="jules.jpg" alt="Jules" />
-      <div class="profile-info">
-        <h3>Jules Nova</h3>
-        <p>Drinks, dancing, danger?</p>
-      </div>
-    </div>
-    <div class="profile-card" style="background-color: var(--blue);" onclick="openDaterProfile('Rowan Vale', 'Tender but a tease.', 'blue')">
-      <img src="rowan.jpg" alt="Rowan" />
-      <div class="profile-info">
-        <h3>Rowan Vale</h3>
-        <p>Tender but a tease.</p>
-      </div>
-    </div>
-    <div class="profile-card" style="background-color: var(--red);" onclick="openDaterProfile('Kai Ember', 'Warning: I flirt back.', 'red')">
-      <img src="kai.jpg" alt="Kai" />
-      <div class="profile-info">
-        <h3>Kai Ember</h3>
-        <p>Warning: I flirt back.</p>
-      </div>
-    </div>
-    <div class="profile-card" style="background-color: var(--green);" onclick="openDaterProfile('Luca Rain', 'Your favorite mistake.', 'green')">
-      <img src="luca.jpg" alt="Luca" />
-      <div class="profile-info">
-        <h3>Luca Rain</h3>
-        <p>Your favorite mistake.</p>
-      </div>
-    </div>
-    <div class="profile-card" style="background-color: var(--blue);" onclick="openDaterProfile('Devon Sky', 'Soft, slow, and serious.', 'blue')">
-      <img src="devon.jpg" alt="Devon" />
-      <div class="profile-info">
-        <h3>Devon Sky</h3>
-        <p>Soft, slow, and serious.</p>
-      </div>
-    </div>
-    <div class="profile-card" style="background-color: var(--red);" onclick="openDaterProfile('Phoenix Noir', 'Messy fun only.', 'red')">
-      <img src="phoenix.jpg" alt="Phoenix" />
-      <div class="profile-info">
-        <h3>Phoenix Noir</h3>
-        <p>Messy fun only.</p>
-      </div>
-    </div>
-    <div class="profile-card" style="background-color: var(--green);" onclick="openDaterProfile('Romy Wilde', 'Try me. No really.', 'green')">
-      <img src="romy.jpg" alt="Romy" />
-      <div class="profile-info">
-        <h3>Romy Wilde</h3>
-        <p>Try me. No really.</p>
-      </div>
-    </div>
-    <div class="profile-card" style="background-color: var(--blue);" onclick="openDaterProfile('Elliot Frost', 'I want it to mean something.', 'blue')">
-      <img src="elliot.jpg" alt="Elliot" />
-      <div class="profile-info">
-        <h3>Elliot Frost</h3>
-        <p>I want it to mean something.</p>
-      </div>
-    </div>
-  </div>
+</body>
+</html>
 
-  <!-- VENUES TAB (Hidden by default) -->
-  <div id="venues-tab" style="display:none;">
-    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Metropolitan Cafe')">
-      <img src="metropolitan.jpg" alt="Metropolitan Cafe" />
-      <div class="profile-info"><h3>🍴 Metropolitan Cafe</h3></div>
-    </div>
-    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('The Standard at the American Hotel')">
-      <img src="standard.jpg" alt="The Standard" />
-      <div class="profile-info"><h3>🍴 The Standard at the American Hotel</h3></div>
-    </div>
-    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Café 360')">
-      <img src="cafe360.jpg" alt="Café 360" />
-      <div class="profile-info"><h3>☕️ Café 360</h3></div>
-    </div>
-    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Jersey Freeze')">
-      <img src="jerseyfreeze.jpg" alt="Jersey Freeze" />
-      <div class="profile-info"><h3>🍦 Jersey Freeze</h3></div>
-    </div>
-    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Lola’s')">
-      <img src="lolas.jpg" alt="Lola’s" />
-      <div class="profile-info"><h3>🍸 Lola’s</h3></div>
-    </div>
-    <div class="venue-card" style="background-color: black; border-bottom: 1px solid var(--gold);" onclick="openVenueProfile('Nonna’s Cucina')">
-      <img src="nonnas.jpg" alt="Nonna’s Cucina" />
-      <div class="profile-info"><h3>🍴 Nonna’s Cucina</h3></div>
-    </div>
-  </div>
-</div>
-
-<!-- STICKY FOOTER TABS -->
-<div class="gold-banner">
-  <div onclick="showTab('daters')" id="daters-tab-btn" class="active-tab">Daters</div>
-  <div onclick="window.location.href='/archetype-gallery.html'"><img src="golden-le-libido-logo.png" style="height:30px;" /></div>
-  <div onclick="showTab('venues')" id="venues-tab-btn">Venues</div>
-</div>
-
-<!-- POPUP FULLSCREEN -->
-<div class="popup-overlay" id="popup">
-  <div class="popup-close" onclick="closePopup()">✕</div>
-  <div id="popup-content" class="popup-content"></div>
-</div>
 <script>
-  // Switch between Daters and Venues tabs
-  function showTab(tabName) {
-    document.getElementById('daters-tab').style.display = tabName === 'daters' ? 'block' : 'none';
-    document.getElementById('venues-tab').style.display = tabName === 'venues' ? 'block' : 'none';
-
-    document.getElementById('daters-tab-btn').classList.toggle('active-tab', tabName === 'daters');
-    document.getElementById('venues-tab-btn').classList.toggle('active-tab', tabName === 'venues');
+  // VENUE TYPE FILTER
+  function filterVenues() {
+    const selected = document.getElementById("venueTypeFilter").value;
+    const allVenues = document.querySelectorAll(".venue-card");
+    allVenues.forEach(card => {
+      const type = card.dataset.venuetype;
+      if (selected === "all" || selected === type) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    });
   }
 
-  // Open Dater Profile
-  function openDaterProfile(name, bio, color) {
-    const popup = document.getElementById('popup');
-    const content = document.getElementById('popup-content');
-    popup.style.display = 'flex';
-    popup.style.backgroundColor = getColor(color);
-    content.innerHTML = `
-      <h2>${name}</h2>
-      <p>${bio}</p>
-      <p>✨ Full profile content goes here...</p>
+  // COOLDOWN CHECK (10 MIN)
+  function canCheckIn() {
+    const lastCheckIn = localStorage.getItem("lastCheckInTime");
+    const now = Date.now();
+    if (!lastCheckIn || now - parseInt(lastCheckIn) > 10 * 60 * 1000) {
+      localStorage.setItem("lastCheckInTime", now.toString());
+      return true;
+    }
+    return false;
+  }
+
+  // FULL PROFILE MODAL LOGIC
+  function openProfileModal(profileHTML) {
+    document.getElementById("fullProfileInner").innerHTML = profileHTML;
+    document.getElementById("profileModal").style.display = "flex";
+  }
+  function closeModal() {
+    document.getElementById("profileModal").style.display = "none";
+  }
+
+  // VISIBILITY CHECK
+  function shouldShowToViewer(viewerPrefs, targetPrefs) {
+    // Simplified example: show everyone for now
+    return true;
+  }
+
+  // ARCHETYPE COLOR
+  function getArchetypeColor(archetype) {
+    const lower = archetype.toLowerCase();
+    if (lower.includes("protector") || lower.includes("darling")) return "archetype-blue";
+    if (lower.includes("giver") || lower.includes("adventurer")) return "archetype-green";
+    if (lower.includes("master") || lower.includes("punish")) return "archetype-red";
+    return "archetype-blue";
+  }
+
+  // RENDER FULL PROFILE VIEW
+  function renderFullProfile(dater) {
+    const medal = getMedalIcon(dater.compatibilityRank);
+    const chocolate = dater.sugarDynamic ? "🍫" : "";
+    const permit = dater.prefersToBeApproached ? "Permit to Approach" : "Approach";
+
+    return `
+      <h2>${dater.name}, ${dater.age} ${medal}</h2>
+      <p><strong>Sexual Archetype:</strong> ${dater.archetype}</p>
+      <p><strong>Flirty First Impression:</strong> ${dater.firstImpression}</p>
+      <p><strong>Looking For:</strong> ${dater.lookingFor}</p>
+      <p><strong>Enjoys:</strong> ${dater.enjoys}</p>
+      <p><strong>Dirty Talk Style:</strong> ${dater.dirtyTalk}</p>
+      <p><strong>Sugar Dynamic:</strong> ${chocolate}</p>
+      <button onclick="alert('${permit} sent!')" style="margin-top:15px; padding:8px 14px; font-weight:bold;">${permit}</button>
     `;
   }
 
-  // Open Venue Profile
-  function openVenueProfile(venueName) {
-    const popup = document.getElementById('popup');
-    const content = document.getElementById('popup-content');
-    popup.style.display = 'flex';
-    popup.style.backgroundColor = '#111';
-    content.innerHTML = `
-      <h2>${venueName}</h2>
-      <p>✔️ Dater: Kai Ember – Checked in now</p>
-      <p>🕓 Dater: Rowan Vale – Last checked in 2 days ago</p>
-      <p>🕓 Dater: Jules Nova – Last checked in 1 week ago</p>
+  // MEDAL SYSTEM FOR TOP MATCHES
+  function getMedalIcon(rank) {
+    if (rank === 1) return "🥇";
+    if (rank === 2) return "🥈";
+    if (rank === 3) return "🥉";
+    return "";
+  }
+</script>
+
+.archetype-red { border-left: 6px solid #950606; }
+.archetype-green { border-left: 6px solid #06954E; }
+.archetype-blue { border-left: 6px solid #064D95; }
+
+#profileModal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+#profileContent {
+  background: black;
+  padding: 30px;
+  border: 4px solid var(--gold);
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  color: white;
+}
+
+<div id="profileModal">
+  <div id="profileContent">
+    <button onclick="closeModal()" style="float:right; font-weight:bold; font-size:18px; background:none; color:white; border:none;">✕</button>
+    <div id="fullProfileInner"></div>
+  </div>
+</div>
+
+<style>
+  .archetype-red { border-left: 6px solid #950606; }
+  .archetype-green { border-left: 6px solid #06954E; }
+  .archetype-blue { border-left: 6px solid #064D95; }
+
+  #profileModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+
+  #profileContent {
+    background: black;
+    padding: 30px;
+    border: 4px solid var(--gold);
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    color: white;
+    position: relative;
+  }
+
+  #profileContent button.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    color: white;
+    border: none;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+
+<div id="profileModal">
+  <div id="profileContent">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <div id="fullProfileInner"></div>
+  </div>
+</div>
+<style>
+  .archetype-red { border-left: 6px solid #950606; }
+  .archetype-green { border-left: 6px solid #06954E; }
+  .archetype-blue { border-left: 6px solid #064D95; }
+
+  #profileModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+
+  #profileContent {
+    background: black;
+    padding: 30px;
+    border: 4px solid var(--gold);
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    color: white;
+    position: relative;
+  }
+
+  #profileContent button.close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    color: white;
+    font-size: 22px;
+    border: none;
+    cursor: pointer;
+  }
+</style>
+
+<div id="profileModal">
+  <div id="profileContent">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div id="fullProfileInner"></div>
+  </div>
+</div>
+
+<script>
+  // VENUE FILTER
+  function filterVenues() {
+    const selected = document.getElementById("venueTypeFilter").value;
+    const allVenues = document.querySelectorAll(".venue-card");
+    allVenues.forEach(card => {
+      const type = card.dataset.venuetype;
+      card.style.display = (selected === "all" || selected === type) ? "block" : "none";
+    });
+  }
+
+  // CHECK-IN COOLDOWN
+  function canCheckIn() {
+    const lastCheckIn = localStorage.getItem("lastCheckInTime");
+    const now = Date.now();
+    if (!lastCheckIn || now - parseInt(lastCheckIn) > 10 * 60 * 1000) {
+      localStorage.setItem("lastCheckInTime", now.toString());
+      return true;
+    }
+    return false;
+  }
+
+  // FULL PROFILE MODAL
+  function openProfileModal(profileHTML) {
+    document.getElementById("fullProfileInner").innerHTML = profileHTML;
+    document.getElementById("profileModal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("profileModal").style.display = "none";
+  }
+
+  // RENDER FULL PROFILE
+  function renderFullProfile(dater) {
+    const medal = getMedalIcon(dater.compatibilityRank);
+    const chocolate = dater.sugarDynamic ? "🍫" : "";
+    const permit = dater.prefersToBeApproached ? "Permit to Approach" : "Approach";
+
+    return `
+      <h2>${dater.name}, ${dater.age} ${medal}</h2>
+      <p><strong>Sexual Archetype:</strong> ${dater.archetype}</p>
+      <p><strong>Flirty First Impression:</strong> ${dater.firstImpression}</p>
+      <p><strong>Looking For:</strong> ${dater.lookingFor}</p>
+      <p><strong>Enjoys:</strong> ${dater.enjoys}</p>
+      <p><strong>Dirty Talk Style:</strong> ${dater.dirtyTalk}</p>
+      <p><strong>Sugar Dynamic:</strong> ${chocolate}</p>
+      <button onclick="alert('${permit} sent!')" style="margin-top:15px; padding:8px 14px; font-weight:bold;">${permit}</button>
     `;
   }
 
-  // Close popup
-  function closePopup() {
-    const popup = document.getElementById('popup');
-    popup.style.display = 'none';
-    document.getElementById('popup-content').innerHTML = '';
+  // MEDAL LOGIC
+  function getMedalIcon(rank) {
+    if (rank === 1) return "🥇";
+    if (rank === 2) return "🥈";
+    if (rank === 3) return "🥉";
+    return "";
   }
-
-  // Background color utility
-  function getColor(archetype) {
-    if (archetype === 'red') return '#950606';
-    if (archetype === 'green') return '#06954E';
-    if (archetype === 'blue') return '#064D95';
-    return '#222';
-  }
-
-  // Top nav popups (placeholders for future full screen windows)
-  function openProfile() {
-    openPopupHTML('Your Profile', 'Edit or delete your profile here.');
-  }
-
-  function openFriends() {
-    openPopupHTML('Friends', 'Invite 3 friends to unlock perks. [Invite button]');
-  }
-
-  function openDeals() {
-    openPopupHTML('Deals For You', '<p>🛍️ Featured products & offers</p><button onclick="openLoyalty()">View Loyalty Tracker</button>');
-  }
-
-  function openLoyalty() {
-    openPopupHTML('Loyalty Tracker', '📍 Earn rewards by visiting venues repeatedly or exploring new ones!');
-  }
-
-  function openScoreboard() {
-    openPopupHTML('Seduction Scoreboard', `
-      <ol>
-        <li>🔥 Jules Nova – 42 lures</li>
-        <li>💋 Aria Blaze – 39 lures</li>
-        <li>🎯 Kai Ember – 35 lures</li>
-      </ol>
-    `);
-  }
-
-  function openBlindfold() {
-    openPopupHTML('Blindfold Mode', 'Anonymous encounters activated...');
-  }
-
-  function openMessages() {
-    openPopupHTML('Messages', '💬 Choose: <br/><button>One-on-One Chat</button> <button>Group Chat</button>');
-  }
-
-  // Generic popup opener
-  function openPopupHTML(title, bodyHTML) {
-    const popup = document.getElementById('popup');
-    const content = document.getElementById('popup-content');
-    popup.style.display = 'flex';
-    popup.style.backgroundColor = '#111';
-    content.innerHTML = `<h2>${title}</h2><div>${bodyHTML}</div>`;
-  }
-
-  // Set default tab on load
-  document.addEventListener('DOMContentLoaded', function () {
-    showTab('daters');
-  });
 </script>
