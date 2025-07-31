@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Le Libido – Dating App</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_API_KEY_HERE&libraries=places,geometry"></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <style>
     :root {
       --gold: #e1bf78;
@@ -24,7 +32,6 @@
       overflow-x: hidden;
     }
 
-    /* Header */
     .top-bar {
       background-color: #000;
       color: var(--white);
@@ -37,10 +44,7 @@
       z-index: 1000;
     }
 
-    .top-bar img.logo {
-      height: 32px;
-    }
-
+    .top-bar img.logo { height: 32px; }
     .top-bar .profile-pic,
     .top-bar .bell-icon {
       width: 32px;
@@ -49,7 +53,6 @@
       object-fit: cover;
     }
 
-    /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -77,10 +80,7 @@
       border-radius: 10px;
     }
 
-    /* Main Content Area */
-    .main-content {
-      padding-bottom: 80px;
-    }
+    .main-content { padding-bottom: 80px; }
 
     .dater-card {
       display: flex;
@@ -106,21 +106,13 @@
       flex-direction: column;
     }
 
-    .dater-info .name {
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    .dater-info .bio {
-      font-size: 14px;
-      opacity: 0.8;
-    }
+    .dater-info .name { font-weight: bold; font-size: 16px; }
+    .dater-info .bio { font-size: 14px; opacity: 0.8; }
 
     .blue-bg { background-color: var(--blue); }
     .green-bg { background-color: var(--green); }
     .red-bg { background-color: var(--red); }
 
-    /* Modal Styling (placeholders) */
     .modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -158,8 +150,8 @@
     }
   </style>
 </head>
-<body>
 
+<body>
   <!-- Header -->
   <div class="top-bar">
     <img src="profile.jpg" alt="Profile" class="profile-pic" onclick="openProfile()">
@@ -167,407 +159,115 @@
     <img src="notification-bell.png" alt="Bell" class="bell-icon" onclick="openNotifications()">
   </div>
 
-  <!-- Main Content Area -->
-  <div class="main-content" id="daters-feed">
-    <!-- JS will inject dater cards here -->
-  </div>
+  <!-- Content -->
+  <div class="main-content" id="daters-feed"></div>
 
-  <!-- Bottom Nav -->
+  <!-- Bottom Navigation -->
   <div class="bottom-nav">
     <div class="nav-item" onclick="showTab('daters')">Daters</div>
     <div class="nav-item center-icon" onclick="showTab('chat')">💬</div>
     <div class="nav-item" onclick="showTab('venues')">Venues</div>
   </div>
 
-  <!-- Profile Modal -->
-  <div id="profileModal" class="modal">
-    <div class="modal-content" id="profileContent">
-      <span class="close-btn" onclick="closeModal('profileModal')">×</span>
-      <h2 class="section-title">Full Profile</h2>
-      <!-- Filled by JS -->
-    </div>
-  </div>
+  <!-- Modals -->
+  <div id="profileModal" class="modal"><div class="modal-content" id="profileContent"></div></div>
+  <div id="chatModal" class="modal"><div class="modal-content"></div></div>
+  <div id="venueModal" class="modal"><div class="modal-content" id="venueContent"></div></div>
 
-  <!-- Chat Inbox Modal -->
-  <div id="chatModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal('chatModal')">×</span>
-      <h2 class="section-title">Messages</h2>
-      <p>[Inbox goes here]</p>
-    </div>
-  </div>
-
-  <!-- Venue Modal -->
-  <div id="venueModal" class="modal">
-    <div class="modal-content" id="venueContent">
-      <span class="close-btn" onclick="closeModal('venueModal')">×</span>
-      <h2 class="section-title">Venue Info</h2>
-      <p>[Check-in + daters list here]</p>
-    </div>
-  </div>
-
-  <!-- Scripts come next -->
+  <!-- MASTER SCRIPT -->
   <script>
-    // JS logic in Part 2
-  </script>
+    // 🔥 FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "YOUR_FIREBASE_API_KEY",
+      authDomain: "YOUR_APP.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_APP.appspot.com",
+      messagingSenderId: "YOUR_MSG_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
+    const checkedInKey = "lelibido_last_checkin";
+    let currentUser = null;
+    let userPosition = null;
+    let placesService;
+
+    // 🔑 LOAD USER FROM FIRESTORE
+    async function loadUser() {
+      const fakeUID = localStorage.getItem("uid") || "user001";
+      const doc = await db.collection("users").doc(fakeUID).get();
+      if (!doc.exists) return window.location.href = "/profile-verified.html";
+
+      currentUser = doc.data();
+      currentUser.uid = fakeUID;
+      currentUser.visibleTo = currentUser.visibleTo || ['verified'];
+      currentUser.topMatches = currentUser.topMatches || [];
+
+      renderDaters();
+      showTab('daters');
+    }
+
+    // 🚀 ON LOAD
+    window.onload = () => loadUser();
+
+    // 🎯 TAB SWITCHING
+    function showTab(tab) {
+      document.getElementById('daters-feed').style.display = tab === 'daters' ? 'block' : 'none';
+      document.getElementById('chatModal').style.display = tab === 'chat' ? 'flex' : 'none';
+      document.getElementById('venueModal').style.display = tab === 'venues' ? 'flex' : 'none';
+    }
+
+    // ❤️ RENDER DATERS
+    function renderDaters() {
+      const feed = document.getElementById('daters-feed');
+      feed.innerHTML = '';
+      db.collection("users").get().then(snapshot => {
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          if (!currentUser.visibleTo.includes(d.mode)) return;
+
+          const medal =
+            currentUser.topMatches[0] === d.uid ? '🥇' :
+            currentUser.topMatches[1] === d.uid ? '🥈' :
+            currentUser.topMatches[2] === d.uid ? '🥉' : '';
+
+          const sugar = d.chocolate ? '🍫' : '';
+          const bg = d.archetypeColor === 'blue' ? 'blue-bg' : d.archetypeColor === 'green' ? 'green-bg' : 'red-bg';
+
+          const card = document.createElement('div');
+          card.className = `dater-card ${bg}`;
+          card.setAttribute("onclick", `openFullProfile('${d.uid}')`);
+          card.innerHTML = `
+            <img src="${d.profilePic}" alt="${d.name}">
+            <div class="dater-info">
+              <div class="name">${medal} ${d.name}, ${d.age} ${sugar}</div>
+              <div class="bio">${d.archetype} – ${d.bio}</div>
+            </div>`;
+          feed.appendChild(card);
+        });
+      });
+    }
+
+    function openFullProfile(uid) {
+      db.collection("users").doc(uid).get().then(doc => {
+        const d = doc.data();
+        const c = document.getElementById("profileContent");
+        c.innerHTML = `
+          <span class="close-btn" onclick="closeModal('profileModal')">×</span>
+          <h2 class="section-title">${d.name}, ${d.age}</h2>
+          <img src="${d.profilePic}" style="width:100px;height:100px;border-radius:50%;margin-bottom:10px;">
+          <p><strong>@${d.username}</strong></p>
+          <p>${d.bio}</p>
+          ${d.chocolate ? '<p>🍫 Open to sugar dynamics</p>' : ''}
+        `;
+        document.getElementById("profileModal").style.display = 'flex';
+      });
+    }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function openProfile() { window.location.href = currentUser.mode === 'anonymous' ? 'profile-anonymous.html' : 'profile-verified.html'; }
+    function openNotifications() { alert("Notifications will appear here."); }
+  </script>
 </body>
 </html>
-<script>
-  // Dummy data (will later be pulled from Firebase)
-  const currentUser = {
-    uid: 'user001',
-    username: 'spicyTiger',
-    topMatches: ['user002', 'user004'], // top 1 = 🥇, top 2 = 🥈, top 3 = 🥉
-    mode: 'verified', // or 'anonymous'
-    visibleTo: ['verified'],
-    archetype: 'Mood Multiplier'
-  };
-
-  const daters = [
-    {
-      id: 'user002',
-      name: 'Alex',
-      username: 'alexxx',
-      age: 28,
-      archetype: 'Mood Multiplier',
-      archetypeColor: 'blue',
-      impression: 'Playfully magnetic energy',
-      profilePic: 'alex.jpg',
-      chocolate: true
-    },
-    {
-      id: 'user003',
-      name: 'Jordan',
-      username: 'jojo',
-      age: 32,
-      archetype: 'Promiscuous Plaything',
-      archetypeColor: 'green',
-      impression: 'Can’t sit still, won’t stop flirting',
-      profilePic: 'jordan.jpg',
-      chocolate: false
-    },
-    {
-      id: 'user004',
-      name: 'Taylor',
-      username: 'taybae',
-      age: 30,
-      archetype: 'Tender Protector',
-      archetypeColor: 'red',
-      impression: 'Quietly confident, deeply curious',
-      profilePic: 'taylor.jpg',
-      chocolate: true
-    }
-  ];
-
-  // Render Dater Cards
-  function renderDaters() {
-    const container = document.getElementById('daters-feed');
-    container.innerHTML = '';
-
-    daters.forEach((d, index) => {
-      if (!currentUser.visibleTo.includes(d.mode || 'verified')) return;
-
-      const medal =
-        currentUser.topMatches[0] === d.id ? '🥇' :
-        currentUser.topMatches[1] === d.id ? '🥈' :
-        currentUser.topMatches[2] === d.id ? '🥉' : '';
-
-      const sugar = d.chocolate ? '🍫' : '';
-      const bgClass =
-        d.archetypeColor === 'blue' ? 'blue-bg' :
-        d.archetypeColor === 'green' ? 'green-bg' : 'red-bg';
-
-      const card = document.createElement('div');
-      card.className = `dater-card ${bgClass}`;
-      card.setAttribute('onclick', `openFullProfile("${d.id}")`);
-      card.innerHTML = `
-        <img src="${d.profilePic}" alt="${d.name}">
-        <div class="dater-info">
-          <div class="name">${medal} ${d.name}, ${d.age} ${sugar}</div>
-          <div class="bio">${d.archetype} – ${d.impression}</div>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  // Tab Switching
-  function showTab(tabName) {
-    if (tabName === 'daters') {
-      document.getElementById('daters-feed').style.display = 'block';
-      document.getElementById('chatModal').style.display = 'none';
-      document.getElementById('venueModal').style.display = 'none';
-    } else if (tabName === 'chat') {
-      document.getElementById('daters-feed').style.display = 'none';
-      document.getElementById('venueModal').style.display = 'none';
-      document.getElementById('chatModal').style.display = 'flex';
-    } else if (tabName === 'venues') {
-      document.getElementById('daters-feed').style.display = 'none';
-      document.getElementById('chatModal').style.display = 'none';
-      document.getElementById('venueModal').style.display = 'flex';
-    }
-  }
-
-  // Open full profile modal
-  function openFullProfile(userId) {
-    const user = daters.find(d => d.id === userId);
-    if (!user) return;
-
-    const content = document.getElementById('profileContent');
-    content.innerHTML = `
-      <span class="close-btn" onclick="closeModal('profileModal')">×</span>
-      <h2 class="section-title">${user.name}, ${user.age}</h2>
-      <img src="${user.profilePic}" alt="${user.name}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:10px;">
-      <p><strong>Username:</strong> @${user.username}</p>
-      <p><strong>Archetype:</strong> ${user.archetype}</p>
-      <p><strong>Impression:</strong> ${user.impression}</p>
-      ${user.chocolate ? '<p><strong>Sugar Dynamic:</strong> 🍫 Open</p>' : ''}
-    `;
-    document.getElementById('profileModal').style.display = 'flex';
-  }
-
-  // Notification, profile, modal close handlers
-  function openNotifications() {
-    alert("Notifications panel will appear here.");
-  }
-
-  function openProfile() {
-    alert("Redirect to profile-anonymous.html or profile-verified.html depending on mode.");
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
-
-  // Init
-  window.onload = () => {
-    renderDaters();
-    showTab('daters');
-  };
-</script>
-<script>
-  const venueNames = [
-    "Metropolitan Cafe", "American Hotel", "Nonna’s", "Rosalitas", "Tre",
-    "Sweet Buns", "365 Cafe", "Jersey Freeze", "Moore’s Tavern", "Osaka",
-    "El Meson", "La Lupa", "Osteria", "Gabriella’s", "Lola’s", "Johnny Mac’s",
-    "Taka", "Paradise", "Porta", "Watermark", "Cardinal Provisions",
-    "St. Laurent Social Club", "Stone Pony", "Pascale and Sabine", "Kim Marie’s",
-    "Asbury Ale House", "Laylow Cocktail Lounge", "Donovan’s Reef", "Ocean House Tap and Grill",
-    "Brothers Daly", "Tommy’s Tavern", "The Avenue", "Bar Anticipation", "D’jais",
-    "Buena Sera", "Strollo’s Lighthouse", "Playa Bowls", "Lita", "Salt Steakhouse",
-    "The Butcher’s Block", "Surf Taco", "Brick House Tavern & Tap", "Centrada", "Teak",
-    "Cabin", "Mj’s", "Centerfolds", "La Dolce Vita", "Deal Lake Bar + Co"
-  ];
-
-  const venueIcons = {
-    "bar": "🍸", "restaurant": "🍴", "cafe": "☕", "ice cream": "🍦", "nightclub": "🪩"
-  };
-
-  const checkedInKey = "lelibido_last_checkin"; // localStorage key
-
-  let userPosition = null;
-  let placesService;
-
-  function initVenueSearch() {
-    if (!navigator.geolocation) return alert("Geolocation not supported.");
-    navigator.geolocation.getCurrentPosition(pos => {
-      userPosition = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-      const map = new google.maps.Map(document.createElement('div')); // hidden dummy map
-      placesService = new google.maps.places.PlacesService(map);
-      searchVenues();
-    }, () => alert("Could not retrieve location."));
-  }
-
-  function searchVenues() {
-    venueNames.forEach(name => {
-      const request = {
-        query: name + " Monmouth County NJ",
-        fields: ["name", "geometry", "photos", "place_id", "types"]
-      };
-      placesService.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results[0]) {
-          renderVenue(results[0]);
-        }
-      });
-    });
-  }
-
-  function renderVenue(place) {
-    if (!userPosition) return;
-
-    const venueLatLng = place.geometry.location;
-    const distMeters = google.maps.geometry.spherical.computeDistanceBetween(userPosition, venueLatLng);
-    const distFeet = Math.round(distMeters * 3.28084);
-    const withinRange = distFeet <= 75;
-    const cooldown = getCooldown();
-    const icon = getVenueEmoji(place.types);
-
-    const thumb = place.photos && place.photos.length
-      ? place.photos[0].getUrl({ maxWidth: 300 })
-      : 'fallback-image.jpg';
-
-    const div = document.createElement("div");
-    div.className = "dater-card";
-    div.innerHTML = `
-      <img src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;margin-right:15px;">
-      <div class="dater-info">
-        <div class="name">${icon} ${place.name}</div>
-        <div class="bio">${distFeet} ft away</div>
-        <button onclick="checkIntoVenue('${place.place_id}', '${place.name}', ${distFeet})" ${cooldown ? "disabled" : ""}>
-          ${withinRange ? "✅ You are here" : "Check In"}
-        </button>
-      </div>
-    `;
-    document.getElementById("venueContent").appendChild(div);
-  }
-
-  function checkIntoVenue(placeId, name, distance) {
-    if (distance > 75) return alert("You must be physically at this venue to check in.");
-    if (getCooldown()) return alert("Please wait before checking in again.");
-
-    // Save to localStorage
-    localStorage.setItem(checkedInKey, Date.now().toString());
-
-    // TODO: Firebase write — store user's currentVenueId and timestamp
-    console.log("✅ Checked into", name);
-
-    alert(`You are now checked in to ${name}!`);
-    document.getElementById("venueContent").innerHTML = "";
-    searchVenues(); // refresh view
-  }
-
-  function getCooldown() {
-    const last = parseInt(localStorage.getItem(checkedInKey) || "0");
-    const now = Date.now();
-    return now - last < 10 * 60 * 1000; // 10 minutes
-  }
-
-  function getVenueEmoji(types = []) {
-    if (types.includes("bar")) return venueIcons["bar"];
-    if (types.includes("restaurant")) return venueIcons["restaurant"];
-    if (types.includes("cafe")) return venueIcons["cafe"];
-    if (types.includes("night_club")) return venueIcons["nightclub"];
-    if (types.includes("bakery")) return venueIcons["ice cream"];
-    return "📍";
-  }
-
-  // Load venues when venue tab opens
-  document.querySelector(".bottom-nav .nav-item:last-child").addEventListener("click", () => {
-    document.getElementById("venueContent").innerHTML = "";
-    initVenueSearch();
-  });
-</script>
-<!-- Firebase Setup -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-<script>
-  // Replace with your Firebase config
-  const firebaseConfig = {
-    apiKey: "YOUR_KEY",
-    authDomain: "YOUR_APP.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_APP.appspot.com",
-    messagingSenderId: "YOUR_MSG_ID",
-    appId: "YOUR_APP_ID"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  // Check-In Firestore Sync
-  async function checkIntoVenue(placeId, name, distance) {
-    if (distance > 75) return alert("You must be physically at this venue to check in.");
-    if (getCooldown()) return alert("Please wait before checking in again.");
-    const uid = currentUser.uid;
-
-    localStorage.setItem(checkedInKey, Date.now().toString());
-
-    try {
-      await db.collection("checkins").doc(placeId).collection("users").doc(uid).set({
-        userId: uid,
-        name: currentUser.name,
-        archetype: currentUser.archetype,
-        username: currentUser.username,
-        profilePic: currentUser.profilePic || 'profile.jpg',
-        mode: currentUser.mode,
-        chocolate: currentUser.chocolate || false,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      await db.collection("users").doc(uid).set({
-        currentVenueId: placeId,
-        lastCheckIn: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
-
-      alert(`✅ Checked into ${name}`);
-      document.getElementById("venueContent").innerHTML = "";
-      searchVenues();
-
-    } catch (err) {
-      console.error("Check-in failed:", err);
-      alert("Check-in failed. Try again.");
-    }
-  }
-
-  // Load daters checked into venue
-  async function loadVenueDaters(placeId) {
-    const container = document.getElementById("venueContent");
-    const snapshot = await db.collection("checkins").doc(placeId).collection("users").get();
-    if (snapshot.empty) {
-      container.innerHTML += "<p style='margin-top:10px;'>No one is currently checked in.</p>";
-      return;
-    }
-
-    snapshot.forEach(doc => {
-      const user = doc.data();
-      if (!currentUser.visibleTo.includes(user.mode)) return;
-
-      const bg =
-        user.archetypeColor === "blue" ? "blue-bg" :
-        user.archetypeColor === "green" ? "green-bg" : "red-bg";
-
-      const div = document.createElement("div");
-      div.className = `dater-card ${bg}`;
-      div.setAttribute("onclick", `openCheckedInProfile('${user.userId}')`);
-      div.innerHTML = `
-        <img src="${user.profilePic}" alt="${user.name}">
-        <div class="dater-info">
-          <div class="name">${user.name} ${user.chocolate ? "🍫" : ""}</div>
-          <div class="bio">${user.archetype}</div>
-        </div>
-      `;
-      container.appendChild(div);
-    });
-  }
-
-  // When venue modal opens
-  function openVenue(placeId, name, thumb) {
-    document.getElementById("venueContent").innerHTML = `
-      <img src="${thumb}" style="width:100px;height:100px;border-radius:8px;margin:10px 0;">
-      <h3>${name}</h3>
-      <p>Users at this venue:</p>
-    `;
-    document.getElementById("venueModal").style.display = "flex";
-    loadVenueDaters(placeId);
-  }
-
-  // Load full profile from Firestore
-  async function openCheckedInProfile(userId) {
-    const doc = await db.collection("users").doc(userId).get();
-    const user = doc.data();
-    if (!user) return alert("Profile not found.");
-
-    const content = document.getElementById('profileContent');
-    content.innerHTML = `
-      <span class="close-btn" onclick="closeModal('profileModal')">×</span>
-      <h2 class="section-title">${user.name}</h2>
-      <img src="${user.profilePic}" alt="${user.name}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:10px;">
-      <p><strong>Username:</strong> @${user.username}</p>
-      <p><strong>Archetype:</strong> ${user.archetype}</p>
-      ${user.chocolate ? '<p><strong>Sugar Dynamic:</strong> 🍫 Open</p>' : ''}
-    `;
-    document.getElementById('profileModal').style.display = 'flex';
-  }
-</script>
