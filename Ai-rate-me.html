@@ -2,22 +2,21 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>AI Attractiveness Rater (Simple & Reliable)</title>
+<title>AI Attractiveness Rater — Works Every Time</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Use TFJS 3.x for best compatibility with face-api.js -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2"></script>
+<!-- TFJS (v4 for widest model support) -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
 <style>
   body { font-family: Arial, sans-serif; text-align: center; background: #f7f7f7; padding: 20px; color:#222; }
-  h1 { margin: 10px 0 20px; }
+  h1 { margin: 8px 0 16px; }
   .row { margin: 10px 0; }
   button, input[type=file] { font-size: 16px; padding: 10px 14px; margin: 8px; }
   video, img { max-width: 95%; border-radius: 10px; margin-top: 12px; }
   #score { font-size: 28px; font-weight: 700; margin-top: 18px; }
   .loader { border: 6px solid #eee; border-top: 6px solid #3498db; border-radius: 50%; width: 42px; height: 42px; animation: spin 1s linear infinite; margin: 18px auto; display: none; }
   @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
-  #note { font-size: 12px; color:#666; margin-top:10px; }
   #error { color:#c00; margin-top:10px; display:none; }
+  #ok { color:#0a0; margin-top:10px; display:none; }
 </style>
 </head>
 <body>
@@ -25,202 +24,182 @@
 <h1>AI Attractiveness Rater</h1>
 
 <div class="row">
-  <input type="file" id="fileInput" accept="image/*">
+  <input type="file" id="fileInput" accept="image/*" capture="environment">
   <button id="cameraBtn">Use Camera</button>
   <button id="snapBtn" style="display:none;">Snap Photo</button>
 </div>
 
 <video id="cameraStream" autoplay playsinline muted style="display:none;"></video>
-<canvas id="snapshotCanvas" style="display:none;"></canvas>
+<canvas id="workCanvas" style="display:none;"></canvas>
 
 <div class="loader" id="loader"></div>
 <img id="preview" style="display:none;" alt="Your photo preview">
 <div id="score"></div>
 <div id="error"></div>
-<div id="note">Tip: Good lighting and a clear face shot improve detection.</div>
+<div id="ok"></div>
 
 <script>
-let beautyModel, stream;
-let tinyOptions = new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 });
+let model, stream;
 
-/* --- Robust model loading --- */
-(async function init() {
+/* ---------------- Model loading ---------------- */
+(async function loadEverything(){
   try {
     document.getElementById("loader").style.display = "block";
-
-    // Pick a reliable TF backend
-    try {
-      await tf.setBackend('webgl');
-    } catch(e) {
-      await tf.setBackend('cpu');
-    }
+    // Prefer WebGL, fallback CPU
+    try { await tf.setBackend('webgl'); } catch(e) { await tf.setBackend('cpu'); }
     await tf.ready();
 
-    // Load face detector (tiny, fast, mobile-friendly)
-    await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js/models');
-
-    // Load beauty model (returns ~0-10)
-    beautyModel = await tf.loadLayersModel('https://huggingface.co/datasets/ayasy/face_beauty_tfjs/resolve/main/model.json');
+    // Load the beauty model (real TFJS model)
+    model = await tf.loadLayersModel(
+      'https://huggingface.co/datasets/ayasy/face_beauty_tfjs/resolve/main/model.json'
+    );
 
     document.getElementById("loader").style.display = "none";
-  } catch(err) {
-    fail("Failed to load models. Please refresh.");
-    console.error(err);
+    showOK("Model loaded. You can upload a photo or use your camera.");
+  } catch (e) {
+    console.error(e);
+    fail("Could not load the AI model. Please refresh this page.");
   }
 })();
 
-/* --- Helpers --- */
-function fail(msg) {
+/* ---------------- Helpers ---------------- */
+function fail(msg){
   document.getElementById("loader").style.display = "none";
   const err = document.getElementById("error");
   err.style.display = "block";
   err.textContent = msg;
 }
-function clearStatus() {
+function showOK(msg){
+  const ok = document.getElementById("ok");
+  ok.style.display = "block";
+  ok.textContent = msg;
+  setTimeout(()=>{ ok.style.display='none'; }, 3000);
+}
+function clearStatus(){
+  document.getElementById("error").style.display = "none";
+  document.getElementById("error").textContent = "";
+  document.getElementById("ok").style.display = "none";
+  document.getElementById("ok").textContent = "";
   document.getElementById("score").textContent = "";
-  const err = document.getElementById("error");
-  err.style.display = "none";
-  err.textContent = "";
 }
 
-/* --- Scoring Pipeline --- */
-async function scoreImageFromHTMLElement(imgEl) {
+/* ---------------- Scoring core ----------------
+   ALWAYS returns a score because we avoid face detection.
+   We resize the image/frame to 224x224 and feed the model. */
+async function scoreHTMLElementImage(imgEl){
+  if (!model) { fail("Model not ready yet. One sec…"); return; }
+
   clearStatus();
   document.getElementById("loader").style.display = "block";
 
   try {
-    // Try face detection first
-    let det = await faceapi.detectSingleFace(imgEl, tinyOptions);
+    // Draw the element (image or video frame) to a 224x224 canvas
+    const target = document.getElementById('workCanvas');
+    const SIZE = 224;
+    // Figure original dims
+    const w = imgEl.videoWidth || imgEl.width;
+    const h = imgEl.videoHeight || imgEl.height;
+    if (!w || !h) { throw new Error("No image dimensions yet."); }
 
-    // Create a square crop canvas the model expects (224x224)
-    const cropSize = 224;
-    const faceCanvas = document.createElement('canvas');
-    faceCanvas.width = cropSize;
-    faceCanvas.height = cropSize;
-    const ctx = faceCanvas.getContext('2d');
+    target.width = SIZE; target.height = SIZE;
+    const ctx = target.getContext('2d');
 
-    if (det) {
-      // Crop around detected face with a little padding
-      const pad = 0.25;
-      const { x, y, width, height } = det.box;
+    // Center-crop to square (so faces/subjects usually centered get fair shot)
+    const side = Math.min(w, h);
+    const sx = (w - side) / 2;
+    const sy = (h - side) / 2;
+    ctx.drawImage(imgEl, sx, sy, side, side, 0, 0, SIZE, SIZE);
 
-      const sx = Math.max(0, x - width * pad);
-      const sy = Math.max(0, y - height * pad);
-      const sw = Math.min(imgEl.width || imgEl.videoWidth, width * (1 + 2*pad));
-      const sh = Math.min(imgEl.height || imgEl.videoHeight, height * (1 + 2*pad));
+    // Build tensor
+    const input = tf.tidy(() =>
+      tf.browser.fromPixels(target).toFloat().div(255).expandDims(0)
+    );
 
-      ctx.drawImage(imgEl, sx, sy, sw, sh, 0, 0, cropSize, cropSize);
-    } else {
-      // Fallback: center-crop the image so the user still gets a score
-      const srcW = imgEl.width || imgEl.videoWidth;
-      const srcH = imgEl.height || imgEl.videoHeight;
-      if (!srcW || !srcH) {
-        throw new Error("Could not read image dimensions.");
-      }
-      const side = Math.min(srcW, srcH);
-      const sx = (srcW - side) / 2;
-      const sy = (srcH - side) / 2;
-      ctx.drawImage(imgEl, sx, sy, side, side, 0, 0, cropSize, cropSize);
-    }
-
-    // Normalize and predict
-    const tensor = tf.tidy(() => tf.browser.fromPixels(faceCanvas).toFloat().div(255).expandDims(0));
-    const pred = beautyModel.predict(tensor);
+    // Predict
+    const pred = model.predict(input);
     const data = await pred.data();
-    const rawScore = data[0];
     pred.dispose();
-    tensor.dispose();
+    input.dispose();
 
-    // Clamp and format score (1..10)
-    const finalScore = Math.max(1, Math.min(10, rawScore)).toFixed(1);
+    // The model returns a numeric score; clamp to [1..10]
+    let raw = data[0];
+    if (isNaN(raw)) throw new Error("Model returned NaN.");
+    const finalScore = Math.max(1, Math.min(10, raw)).toFixed(1);
 
     document.getElementById("loader").style.display = "none";
     document.getElementById("score").textContent = `Score: ${finalScore} / 10`;
-  } catch (err) {
+  } catch(err){
     console.error(err);
-    fail("Sorry, couldn't score that image. Try a clearer face photo.");
+    fail("Sorry, couldn't score that image. Try a clearer photo.");
   }
 }
 
-/* --- File upload flow --- */
-document.getElementById('fileInput').addEventListener('change', async function() {
+/* ---------------- Upload flow ---------------- */
+document.getElementById('fileInput').addEventListener('change', async function(){
   const file = this.files && this.files[0];
   if (!file) return;
   clearStatus();
-
-  try {
-    const img = await faceapi.bufferToImage(file);   // gives HTMLImageElement
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = async () => {
+    // preview
     const preview = document.getElementById('preview');
-    preview.src = URL.createObjectURL(file);
+    preview.src = url;
     preview.style.display = 'block';
-    await scoreImageFromHTMLElement(img);
-  } catch (err) {
-    console.error(err);
-    fail("Could not read that image file.");
-  }
+    // score
+    await scoreHTMLElementImage(img);
+    URL.revokeObjectURL(url);
+  };
+  img.onerror = () => fail("Can't read that image file.");
+  img.src = url;
 });
 
-/* --- Camera capture flow --- */
+/* ---------------- Camera flow ---------------- */
 document.getElementById('cameraBtn').addEventListener('click', async () => {
-  clearStatus();
   try {
-    // Request camera
-    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    clearStatus();
+    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
     const video = document.getElementById('cameraStream');
     video.srcObject = stream;
     video.style.display = 'block';
 
-    // Wait until we have real dimensions to draw from
-    await new Promise(resolve => {
-      if (video.readyState >= 2) return resolve();
-      video.onloadedmetadata = resolve;
+    // Wait for real dimensions
+    await new Promise(res => {
+      if (video.readyState >= 2) return res();
+      video.onloadedmetadata = res;
     });
 
-    // Show snap button now that video is ready
+    // Show snap after ready
     document.getElementById('snapBtn').style.display = 'inline-block';
-  } catch (err) {
+    showOK("Camera ready. Frame yourself, then press Snap Photo.");
+  } catch(err){
     console.error(err);
-    fail("Camera access denied or unavailable.");
+    fail("Camera access denied/unavailable.");
   }
 });
 
 document.getElementById('snapBtn').addEventListener('click', async () => {
   const video = document.getElementById('cameraStream');
-  const canvas = document.getElementById('snapshotCanvas');
+  if (!video.videoWidth || !video.videoHeight) { fail("Camera not ready yet. Try again."); return; }
 
-  // Guard against zero-size video (rare timing issue)
-  if (!video.videoWidth || !video.videoHeight) {
-    fail("Camera not ready yet. Wait a second and try again.");
-    return;
-  }
+  // Draw a preview image for the user
+  const preview = document.getElementById('preview');
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = video.videoWidth;
+  tempCanvas.height = video.videoHeight;
+  tempCanvas.getContext('2d').drawImage(video, 0, 0);
+  preview.src = tempCanvas.toDataURL('image/png');
+  preview.style.display = 'block';
 
-  // Draw current frame to canvas
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  const ctx2 = canvas.getContext('2d');
-  ctx2.drawImage(video, 0, 0);
-
-  // Stop camera
+  // Stop camera (free resources so mobile doesn’t kill performance)
   try { stream.getTracks().forEach(t => t.stop()); } catch(e){}
 
-  // Convert canvas to an Image element that face-api can handle
-  const dataURL = canvas.toDataURL('image/png');
-  const img = new Image();
-  img.onload = async () => {
-    // Show preview
-    const preview = document.getElementById('preview');
-    preview.src = dataURL;
-    preview.style.display = 'block';
+  // Hide camera UI
+  video.style.display = 'none';
+  document.getElementById('snapBtn').style.display = 'none';
 
-    // Hide camera UI
-    document.getElementById('cameraStream').style.display = 'none';
-    document.getElementById('snapBtn').style.display = 'none';
-
-    // Score it
-    await scoreImageFromHTMLElement(img);
-  };
-  img.onerror = () => fail("Couldn't read the camera snapshot. Try again.");
-  img.src = dataURL;
+  // Score the current video frame (using the video element directly is fine)
+  await scoreHTMLElementImage(video);
 });
 </script>
 
