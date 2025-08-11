@@ -52,6 +52,10 @@
     color: white;
     cursor: pointer;
   }
+  @keyframes glowPulse {
+    from { text-shadow: 0 0 5px #fff, 0 0 10px #ff4d6d; }
+    to { text-shadow: 0 0 15px #fff, 0 0 25px #ff4d6d; }
+  }
 </style>
 </head>
 <body>
@@ -63,6 +67,7 @@
   <div id="vibeText"></div>
   <div id="typeText"></div>
   <div id="badgeText"></div>
+  <div id="rankText"></div>
   <div class="shareButtons" id="shareSection"></div>
 </div>
 
@@ -84,6 +89,7 @@ const roastTypes = [
   "Men who post gym selfies with captions about 'the grind' 💪"
 ];
 const badges = ["Certified Heartbreaker 💔","Main Character Energy 🎬","Dangerously Hot 🔥","Chaos in Human Form 🌪️","Too Hot to Handle 🚫🔥"];
+function randomRank(){ return `Top ${Math.floor(Math.random()*50)+1}% of uploads today`; }
 
 async function loadModels() {
   await faceapi.nets.ssdMobilenetv1.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js/models');
@@ -97,15 +103,10 @@ async function initCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
   video.srcObject = stream;
 
+  // Recording overlay + camera
   const combinedStream = new MediaStream();
-  canvas = document.getElementById('overlay');
-  ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
   const videoTrack = canvas.captureStream(30).getVideoTracks()[0];
   combinedStream.addTrack(videoTrack);
-
   mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm; codecs=vp9' });
   mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
   mediaRecorder.onstop = uploadRecording;
@@ -160,6 +161,7 @@ async function scoreSequence() {
   document.getElementById("vibeText").innerText = `Vibe: ${vibes[Math.floor(Math.random()*vibes.length)]}`;
   document.getElementById("typeText").innerText = `Type: ${roastTypes[Math.floor(Math.random()*roastTypes.length)]}`;
   document.getElementById("badgeText").innerText = `🏆 ${badges[Math.floor(Math.random()*badges.length)]}`;
+  document.getElementById("rankText").innerText = randomRank();
   document.getElementById("resultsPanel").style.opacity = 1;
 
   confetti();
@@ -173,7 +175,7 @@ async function animateTicker(finalScore) {
     const step = finalScore / 40;
     const intv = setInterval(()=>{
       tickerScore += step * direction;
-      if (Math.random() < 0.1) direction *= -1;
+      if (Math.random() < 0.1) direction *= -1; // suspense fake-out
       if (tickerScore >= finalScore && direction > 0) {
         tickerScore = finalScore;
         clearInterval(intv);
@@ -217,6 +219,10 @@ function showShareButtons(link) {
 (async ()=>{
   await loadModels();
   await initCamera();
+  canvas = document.getElementById('overlay');
+  ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   detectFrame();
   setTimeout(scoreSequence, 2000);
 })();
