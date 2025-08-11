@@ -1,112 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>🔥 Hot or Not AI 🔥</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🔥 Hot or Not AI 🔥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"></script>
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Models & Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    color: white;
-    text-align: center;
-  }
-  @keyframes gradientBG {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
-  }
-  h1 { margin-top: 30px; }
-  button {
-    padding: 15px 30px;
-    background: rgba(255,255,255,0.1);
-    border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 12px;
-    color: white;
-    backdrop-filter: blur(10px);
-    cursor: pointer;
-    font-size: 18px;
-    transition: all 0.3s ease;
-  }
-  button:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
-  #resultCard {
-    display: none;
-    margin-top: 20px;
-    padding: 20px;
-    border-radius: 15px;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(12px);
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-  }
-  .score { font-size: 26px; font-weight: bold; margin: 10px 0; }
-  .glow { animation: glowPulse 1s infinite alternate; }
-  @keyframes glowPulse {
-    from { text-shadow: 0 0 5px #fff, 0 0 10px #ff4d6d; }
-    to { text-shadow: 0 0 15px #fff, 0 0 25px #ff4d6d; }
-  }
-  .vibe, .type, .badge, .rank {
-    font-size: 18px; margin-top: 10px; opacity: 0; transition: opacity 1s ease;
-  }
-  img { max-width: 100%; border-radius: 10px; margin-top: 15px; }
-  .loader {
-    display: none;
-    border: 6px solid rgba(255,255,255,0.1);
-    border-top: 6px solid #ff4d6d;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-  }
-  @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
-  #modal {
-    display: none;
-    position: fixed;
-    top:0; left:0; right:0; bottom:0;
-    background: rgba(0,0,0,0.7);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-  }
-  .modalContent {
-    background: rgba(255,255,255,0.1);
-    padding: 30px;
-    border-radius: 20px;
-    backdrop-filter: blur(15px);
-    text-align: center;
-  }
-  .flash { animation: flashRainbow 0.5s ease; }
-  @keyframes flashRainbow {
-    0% { background: red; }
-    20% { background: orange; }
-    40% { background: yellow; }
-    60% { background: green; }
-    80% { background: blue; }
-    100% { background: purple; }
-  }
-  .shake { animation: shakeAnim 0.4s ease; }
-  @keyframes shakeAnim {
-    0% { transform: translate(0,0); }
-    25% { transform: translate(-5px, 5px); }
-    50% { transform: translate(5px, -5px); }
-    75% { transform: translate(-5px, -5px); }
-    100% { transform: translate(0,0); }
-  }
-</style>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: white;
+      text-align: center;
+    }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    h1 { margin-top: 30px; }
+    button {
+      padding: 15px 30px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      color: white;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.3s ease;
+    }
+    button:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+    #resultCard {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+    .score { font-size: 26px; font-weight: bold; margin: 10px 0; }
+    .glow { animation: glowPulse 1s infinite alternate; }
+    @keyframes glowPulse {
+      from { text-shadow: 0 0 5px #fff, 0 0 10px #ff4d6d; }
+      to { text-shadow: 0 0 15px #fff, 0 0 25px #ff4d6d; }
+    }
+    .vibe, .type, .badge, .rank {
+      font-size: 18px; margin-top: 10px; opacity: 0; transition: opacity 1s ease;
+    }
+    img { max-width: 100%; border-radius: 10px; margin-top: 15px; }
+    .loader {
+      display: none;
+      border: 6px solid rgba(255,255,255,0.1);
+      border-top: 6px solid #ff4d6d;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+    #modal {
+      display: none;
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+    .modalContent {
+      background: rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      text-align: center;
+    }
+    .flash {
+      animation: flashRainbow 0.5s ease;
+    }
+    @keyframes flashRainbow {
+      0% { background: red; }
+      20% { background: orange; }
+      40% { background: yellow; }
+      60% { background: green; }
+      80% { background: blue; }
+      100% { background: purple; }
+    }
+    .shake {
+      animation: shakeAnim 0.4s ease;
+    }
+    @keyframes shakeAnim {
+      0% { transform: translate(0,0); }
+      25% { transform: translate(-5px, 5px); }
+      50% { transform: translate(5px, -5px); }
+      75% { transform: translate(-5px, -5px); }
+      100% { transform: translate(0,0); }
+    }
+  </style>
 </head>
 <body>
 
@@ -141,6 +144,7 @@
 
 <script>
 let faceModel, bodyModel, detector;
+
 const vibes = ["Confident Charmer 😎","Playful Energy 😜","Mysterious Allure 🖤","Romantic Dreamer 💖","Adventurous Spirit 🌍","Life of the Party 🎉"];
 const roastTypes = [
   "People who treat red flags as decorative lights 🚩",
@@ -148,7 +152,11 @@ const roastTypes = [
   "Guys who think foreplay is playing Xbox before bed 🎮",
   "People who ghost but still watch your stories 👻",
   "Women who have 4 exes and they’re all DJs 🎧",
-  "Men who post gym selfies with captions about 'the grind' 💪"
+  "Men who post gym selfies with captions about 'the grind' 💪",
+  "People who take personality tests to decide who to dump 🧠💔",
+  "Those who have an Amazon cart full of chaos 🛒",
+  "People who think AirPods are a personality trait 🎧",
+  "Hot introverts who think eye contact is a marriage proposal 👀"
 ];
 const badges = ["Certified Heartbreaker 💔","Main Character Energy 🎬","Dangerously Hot 🔥","Chaos in Human Form 🌪️","Too Hot to Handle 🚫🔥"];
 function randomRank(){ return `Top ${Math.floor(Math.random()*50)+1}% of uploads today`; }
@@ -161,7 +169,6 @@ async function loadModels() {
   detector = await poseDetection.createDetector(poseDetection.SupportedModels.BlazePose, { runtime: 'tfjs', modelType: 'full' });
   document.getElementById("loader").style.display = "none";
 }
-
 function openModal(){ document.getElementById('modal').style.display = 'flex'; }
 function closeModal(){ document.getElementById('modal').style.display = 'none'; }
 
@@ -199,14 +206,12 @@ async function detectPeople(img) {
   });
   return detections;
 }
-
 async function predictScore(canvas, model) {
   const t = tf.browser.fromPixels(canvas).resizeBilinear([224,224]).toFloat().div(tf.scalar(255)).expandDims(0);
   const p = model.predict(t), s = await p.data();
   t.dispose(); p.dispose();
   return Math.max(1, Math.min(10, s[0])).toFixed(1);
 }
-
 function animateScore(elId, finalScore, cb) {
   let current = 0.0, step = finalScore/40;
   const el = document.getElementById(elId);
@@ -224,7 +229,6 @@ function animateScore(elId, finalScore, cb) {
     el.innerText = `${elId==='faceScore'?'Face':'Body'} Score: ${current.toFixed(1)}/10`;
   },50);
 }
-
 async function processImage(img) {
   document.getElementById("loader").style.display = "block";
   const detections = await detectPeople(img);
@@ -250,7 +254,6 @@ async function processImage(img) {
     });
   });
 }
-
 document.getElementById('shareBtn').addEventListener('click', async () => {
   if (navigator.share) await navigator.share({ title: 'Hot or Not AI', text: 'Check my AI score!', url: window.location.href });
 });
@@ -262,7 +265,6 @@ document.getElementById('fileInput').addEventListener('change', async e => {
   const img = await faceapi.bufferToImage(file);
   processImage(img);
 });
-
 loadModels();
 </script>
 </body>
