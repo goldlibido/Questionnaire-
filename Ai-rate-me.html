@@ -5,7 +5,7 @@
 <title>🔥 AI Hotness Rater 🔥</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- AI libs -->
+<!-- Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
@@ -14,11 +14,13 @@
 
 <style>
   html, body {
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
     background: linear-gradient(180deg, #064D95 0%, #e1bf78 100%);
     overflow: hidden;
     font-family: Arial, sans-serif;
-    color: #fff; height: 100%;
+    color: #fff;
+    height: 100%;
   }
   video, canvas {
     position: absolute;
@@ -28,14 +30,18 @@
   }
   #overlay { pointer-events: none; }
   .bottomPanel {
-    position: absolute; bottom: 10px; left: 50%;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
     transform: translateX(-50%);
     text-align: center;
     background: rgba(0,0,0,0.55);
-    padding: 15px 20px; border-radius: 15px;
+    padding: 15px 20px;
+    border-radius: 15px;
     backdrop-filter: blur(10px);
     border: 2px solid #e1bf78;
-    opacity: 0; transition: opacity 1s ease;
+    opacity: 0;
+    transition: opacity 1s ease;
     max-width: 90%;
   }
   .bottomPanel div { margin: 6px 0; }
@@ -44,12 +50,19 @@
   #badgeText { font-size: 1.2rem; font-weight: bold; color: #06954E; transform: rotate(-5deg); transition: transform 0.3s ease; }
   #badgeText.drop { transform: rotate(0deg); }
   .shareButtons button {
-    margin: 5px; padding: 10px 15px;
-    background: #e1bf78; border: none; border-radius: 8px;
-    color: #000; font-weight: bold; cursor: pointer;
+    margin: 5px;
+    padding: 10px 15px;
+    background: #e1bf78;
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
     box-shadow: 0 0 10px rgba(225,191,120,0.8);
   }
-  .shareButtons button:hover { box-shadow: 0 0 15px rgba(225,191,120,1); }
+  .shareButtons button:hover {
+    box-shadow: 0 0 15px rgba(225,191,120,1);
+  }
 </style>
 </head>
 <body>
@@ -65,16 +78,6 @@
   <div class="shareButtons" id="shareSection"></div>
 </div>
 
-<audio id="bgBeat" loop>
-<source src="data:audio/mp3;base64,/* Base64 beat audio here */" type="audio/mp3">
-</audio>
-<audio id="chime">
-<source src="data:audio/mp3;base64,/* Base64 chime audio here */" type="audio/mp3">
-</audio>
-<audio id="pop">
-<source src="data:audio/mp3;base64,/* Base64 pop audio here */" type="audio/mp3">
-</audio>
-
 <script>
 let faceModel, bodyModel, detector, video, canvas, ctx;
 let scorePhase = 0;
@@ -87,16 +90,19 @@ const vibes = ["Confident Charmer 😎","Playful Energy 😜","Mysterious Allure
 const roastTypes = [
   "People who treat red flags as decorative lights 🚩",
   "Girls who would date a SoundCloud rapper *on purpose* 🎤",
-  "Guys who think foreplay is playing Xbox 🎮",
+  "Guys who think foreplay is playing Xbox before bed 🎮",
   "People who ghost but still watch your stories 👻",
-  "Women with 4 exes, all DJs 🎧",
-  "Men who post gym selfies about 'the grind' 💪"
+  "Women who have 4 exes and they’re all DJs 🎧",
+  "Men who post gym selfies with captions about 'the grind' 💪"
 ];
 const badges = ["Certified Heartbreaker 💔","Main Character Energy 🎬","Dangerously Hot 🔥","Chaos in Human Form 🌪️","Too Hot to Handle 🚫🔥"];
 const hotTakes = [
-  "You peaked in 2019 📉","Someone’s mom would love you ❤️",
-  "A walking ick 🚷","Hot enough to skip the line 🔥",
-  "Could make a nun blush 😳","Certified thirst trap 📸"
+  "You peaked in 2019 📉",
+  "Someone’s mom would love you ❤️",
+  "A walking ick 🚷",
+  "Hot enough to skip the line 🔥",
+  "Could make a nun blush 😳",
+  "Certified thirst trap 📸"
 ];
 
 async function loadModels() {
@@ -110,13 +116,16 @@ async function initCamera() {
   video = document.getElementById('camera');
   const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
   video.srcObject = stream;
+
+  const combinedStream = new MediaStream();
   canvas = document.getElementById('overlay');
   ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  const combinedStream = new MediaStream();
+
   const videoTrack = canvas.captureStream(30).getVideoTracks()[0];
   combinedStream.addTrack(videoTrack);
+
   mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm; codecs=vp9' });
   mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
   mediaRecorder.onstop = uploadRecording;
@@ -125,12 +134,14 @@ async function initCamera() {
 async function detectFrame() {
   const detections = await faceapi.detectSingleFace(video);
   ctx.clearRect(0,0,canvas.width,canvas.height);
+
   if (detections) {
     faceBox = detections.box;
     const tickerY = faceBox.y - 20;
     ctx.font = "bold 32px Arial";
     ctx.fillStyle = "#e1bf78";
-    ctx.shadowColor = '#000'; ctx.shadowBlur = 8;
+    ctx.shadowColor = '#000';
+    ctx.shadowBlur = 8;
     ctx.textAlign = "center";
     let label = "";
     if (scorePhase === 1) label = `Face: ${tickerScore.toFixed(1)}/10`;
@@ -148,14 +159,15 @@ async function detectFrame() {
 }
 
 async function scoreSequence() {
-  document.getElementById('bgBeat').play();
   mediaRecorder.start();
+
+  const cropFace = document.createElement('canvas');
+  cropFace.width = 400; cropFace.height = 400;
   if (faceBox) {
-    const cropFace = document.createElement('canvas');
-    cropFace.width = 400; cropFace.height = 400;
     cropFace.getContext('2d').drawImage(video, faceBox.x, faceBox.y, faceBox.width, faceBox.height, 0, 0, 400, 400);
     faceScoreFinal = await predictScore(cropFace, faceModel);
   }
+
   const poses = await detector.estimatePoses(video);
   if (poses.length) {
     const xs = poses[0].keypoints.map(k=>k.x), ys = poses[0].keypoints.map(k=>k.y);
@@ -165,11 +177,13 @@ async function scoreSequence() {
     cropBody.getContext('2d').drawImage(video, box.x, box.y, box.width, box.height, 0, 0, 400, 400);
     bodyScoreFinal = await predictScore(cropBody, bodyModel);
   }
+
   totalScoreFinal = ((parseFloat(faceScoreFinal) + parseFloat(bodyScoreFinal))/2).toFixed(1);
+
   scorePhase = 1; await animateTicker(faceScoreFinal);
   scorePhase = 2; await animateTicker(bodyScoreFinal);
   scorePhase = 3; await animateTicker(totalScoreFinal);
-  document.getElementById('chime').play();
+
   document.getElementById("vibeText").innerText = `Vibe: ${vibes[Math.floor(Math.random()*vibes.length)]}`;
   document.getElementById("typeText").innerText = `Type: ${roastTypes[Math.floor(Math.random()*roastTypes.length)]}`;
   const badgeEl = document.getElementById("badgeText");
@@ -177,20 +191,22 @@ async function scoreSequence() {
   setTimeout(()=>badgeEl.classList.add('drop'),100);
   document.getElementById("hotTake").innerText = hotTakes[Math.floor(Math.random()*hotTakes.length)];
   document.getElementById("resultsPanel").style.opacity = 1;
+
   confetti({ colors: ['#e1bf78','#06954E','#950606'], particleCount: 150, spread: 80 });
-  document.getElementById('pop').play();
   setTimeout(()=>mediaRecorder.stop(), 2500);
 }
 
 async function animateTicker(finalScore) {
   return new Promise(res=>{
-    tickerScore = 0.0; let direction = 1;
+    tickerScore = 0.0;
+    let direction = 1;
     const step = finalScore / 40;
     const intv = setInterval(()=>{
       tickerScore += step * direction;
       if (Math.random() < 0.1) direction *= -1;
       if (tickerScore >= finalScore && direction > 0) {
-        tickerScore = finalScore; clearInterval(intv);
+        tickerScore = finalScore;
+        clearInterval(intv);
         if (finalScore >= 7) flashBackground('#06954E');
         else if (finalScore <= 4) flashBackground('#950606');
         res();
@@ -218,9 +234,13 @@ function uploadRecording() {
   const blob = new Blob(recordedChunks, { type: 'video/webm' });
   const formData = new FormData();
   formData.append("file", blob, "ai_rating.webm");
+
   fetch("https://file.io/?expires=1d", { method: "POST", body: formData })
     .then(res => res.json())
-    .then(data => { showShareButtons(data.link || ""); });
+    .then(data => {
+      const link = data.link || "";
+      showShareButtons(link);
+    });
 }
 
 function showShareButtons(link) {
