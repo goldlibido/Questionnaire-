@@ -1,3 +1,11 @@
+<!-- 
+To deploy on GitHub Pages:
+1. Create a new GitHub repository.
+2. Add this file as hot-or-not-ai.html in the root of the repository.
+3. Go to repository settings > Pages > Select main branch and root directory.
+4. Access via https://<username>.github.io/<repo>/hot-or-not-ai.html (not the raw file URL).
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,6 +55,7 @@
   </div>
   <canvas id="canvas" style="display: none;"></canvas>
 
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
   <script>
     const video = document.getElementById('video');
     const snapBtn = document.getElementById('snap');
@@ -71,142 +80,65 @@
       errorDiv.innerText = '';
     }
 
-    function init() {
+    async function init() {
       showLoader(true);
-      console.log('Initializing at', new Date().toISOString());
-      setTimeout(() => {
-        showLoader(false);
-        console.log('Initialization complete');
-      }, 100); // Simulate async init for consistency
-    }
-
-    function computeScore(imageData) {
-      const data = imageData.data;
-      let rSum = 0, gSum = 0, bSum = 0;
-      let brightnessSum = 0, brightnessSquaredSum = 0;
-      const pixelCount = data.length / 4;
-
-      // Calculate brightness (grayscale) and color sums
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i] / 255;
-        const g = data[i + 1] / 255;
-        const b = data[i + 2] / 255;
-        const brightness = (r * 0.299 + g * 0.587 + b * 0.114); // Luminance formula
-        brightnessSum += brightness;
-        brightnessSquaredSum += brightness * brightness;
-        rSum += r;
-        gSum += g;
-        bSum += b;
-      }
-
-      // Compute metrics
-      const avgBrightness = brightnessSum / pixelCount;
-      const brightnessVariance = (brightnessSquaredSum / pixelCount) - (avgBrightness * avgBrightness);
-      const contrast = Math.sqrt(brightnessVariance);
-      const avgR = rSum / pixelCount;
-      const avgG = gSum / pixelCount;
-      const avgB = bSum / pixelCount;
-      const colorBalance = 1 - Math.max(Math.abs(avgR - avgG), Math.abs(avgG - avgB), Math.abs(avgB - avgR));
-
-      // Heuristic score: combine contrast and color balance
-      const rawScore = (contrast * 7 + colorBalance * 3) * 10; // Weighted sum, scaled to 0-10
-      let score = Math.max(1, Math.min(10, rawScore)).toFixed(1);
-      console.log(`Brightness: ${avgBrightness}, Contrast: ${contrast}, ColorBalance: ${colorBalance}, Score: ${score}`);
-
-      // Ensure valid score
-      if (isNaN(score) || score < 1 || score > 10) {
-        console.warn('Invalid score, using fallback');
-        score = (Math.random() * 4 + 3).toFixed(1); // Fallback: 3.0-7.0
-      }
-
-      return score;
-    }
-
-    async function processImage(input) {
-      showLoader(true);
-      clearError();
-      scoreDiv.innerText = '';
-      preview.style.display = 'block';
-      preview.src = input.src || input.toDataURL();
-      console.log('Processing image at', new Date().toISOString());
-
       try {
-        // Resize image to 224x224 for processing
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = 224;
-        tempCanvas.height = 224;
-        const ctx = tempCanvas.getContext('2d');
-        ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, 224, 224);
-        const imageData = ctx.getImageData(0, 0, 224, 224);
-
-        // Compute score based on image properties
-        const score = computeScore(imageData);
-        scoreDiv.innerText = `Score: ${score} / 10`;
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
+          faceapi.nets.faceLandmark68Net.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights')
+        ]);
+        console.log('Face API models loaded');
       } catch (e) {
-        console.error('Error processing image:', e);
-        showError('Error processing image, using estimated score.');
-        const score = (Math.random() * 4 + 3).toFixed(1); // Fallback: 3.0-7.0
-        scoreDiv.innerText = `Score: ${score} / 10`;
+        showError('Failed to load face models: ' + e.message);
       }
       showLoader(false);
     }
 
-    cameraBtn.onclick = async () => {
-      clearError();
-      preview.style.display = 'none';
-      scoreDiv.innerText = '';
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-        video.style.display = 'block';
-        video.onloadedmetadata = () => {
-          if (video.videoWidth > 0 && video.videoHeight > 0) {
-            snapBtn.style.display = 'block';
-            console.log('Camera ready at', new Date().toISOString());
-          } else {
-            showError('Camera metadata not loaded properly.');
-          }
-        };
-      } catch (e) {
-        showError('Camera access error: ' + e.message);
-        console.error('Camera error:', e);
-      }
-    };
+    function dist(p1, p2) {
+      return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+    }
 
-    snapBtn.onclick = () => {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-      video.srcObject.getTracks().forEach(track => track.stop());
-      video.style.display = 'none';
-      snapBtn.style.display = 'none';
-      console.log('Photo snapped at', new Date().toISOString());
-      processImage(canvas);
-    };
+    function computeScientificScore(landmarks) {
+      if (!landmarks) return null;
 
-    upload.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        clearError();
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const image = new Image();
-          image.onload = () => {
-            if (image.width > 0 && image.height > 0) {
-              console.log('Image uploaded at', new Date().toISOString());
-              processImage(image);
-            } else {
-              showError('Invalid image.');
-              console.error('Invalid image dimensions');
-            }
-          };
-          image.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    };
+      const positions = landmarks.positions;
 
-    init();
-  </script>
-</body>
-</html>
+      // Symmetry: Measure differences between left and right sides
+      const leftEye = positions[36]; // Left eye outer
+      const rightEye = positions[45]; // Right eye outer
+      const leftMouth = positions[48]; // Left mouth corner
+      const rightMouth = positions[54]; // Right mouth corner
+      const noseTip = positions[30]; // Nose tip
+
+      const symmetryDevEyes = Math.abs(dist(noseTip, leftEye) - dist(noseTip, rightEye)) / dist(leftEye, rightEye);
+      const symmetryDevMouth = Math.abs(dist(noseTip, leftMouth) - dist(noseTip, rightMouth)) / dist(leftMouth, rightMouth);
+      const symmetryScore = 1 - ((symmetryDevEyes + symmetryDevMouth) / 2); // 0-1 scale
+
+      // Golden Ratio Proportions
+      const faceWidth = dist(positions[0], positions[16]); // Cheek to cheek
+      const faceLength = dist(positions[8], positions[27]); // Chin to forehead
+      const interOcular = dist(positions[36], positions[45]); // Eye outer to outer
+      const noseWidth = dist(positions[31], positions[35]);
+      const mouthWidth = dist(positions[48], positions[54]);
+      const eyeMouthDist = dist(positions[27], positions[8]) / 3; // Approximate 1/3 face for eye-mouth
+
+      const ratioFace = faceLength / faceWidth;
+      const ratioInterOcular = interOcular / faceWidth;
+      const ratioMouthNose = mouthWidth / noseWidth;
+      const golden = 1.618;
+      const devFace = Math.abs(ratioFace - golden) / golden;
+      const devInter = Math.abs(ratioInterOcular - 0.46); // Ideal ~0.46
+      const devMouth = Math.abs(ratioMouthNose - golden) / golden;
+      const goldenScore = 1 - ((devFace + devInter + devMouth) / 3);
+
+      // Neoclassical Canons (simplified)
+      const canon1 = noseWidth / interOcular; // Ideal ~1
+      const canon2 = faceLength / 3 / eyeMouthDist; // Ideal ~1
+      const canonsScore = 1 - (Math.abs(canon1 - 1) + Math.abs(canon2 - 1)) / 2;
+
+      // Averageness/Health (proxy via landmark uniformity)
+      const avgDev = (devFace + devInter + devMouth) / 3;
+      const averagenessScore = 1 - avgDev;
+
+      // Overall: Weighted as per method (symmetry 40%, golden 30%, canons 20%, averageness 10%)
+      const rawScore = (0.4 * symmetryScore +
