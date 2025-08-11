@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>🔥 AI Hotness Rater 🔥</title>
+<title>🔥 Hot or Not AI 🔥</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
@@ -32,26 +31,18 @@
   }
   .bottomPanel {
     position: absolute;
-    bottom: 10px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.4);
     padding: 15px 20px;
     border-radius: 15px;
     backdrop-filter: blur(10px);
     opacity: 0;
     transition: opacity 1s ease;
   }
-  .shareButtons button {
-    margin: 5px;
-    padding: 10px 15px;
-    background: #ff4d6d;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-  }
+  .glow { animation: glowPulse 1s infinite alternate; }
   @keyframes glowPulse {
     from { text-shadow: 0 0 5px #fff, 0 0 10px #ff4d6d; }
     to { text-shadow: 0 0 15px #fff, 0 0 25px #ff4d6d; }
@@ -68,17 +59,14 @@
   <div id="typeText"></div>
   <div id="badgeText"></div>
   <div id="rankText"></div>
-  <div class="shareButtons" id="shareSection"></div>
 </div>
 
 <script>
 let faceModel, bodyModel, detector, video, canvas, ctx;
-let scorePhase = 0;
+let scorePhase = 0; // 0=waiting, 1=face, 2=body, 3=done
 let faceScoreFinal = 0, bodyScoreFinal = 0;
 let tickerScore = 0;
 let faceBox = null;
-let mediaRecorder, recordedChunks = [];
-
 const vibes = ["Confident Charmer 😎","Playful Energy 😜","Mysterious Allure 🖤","Romantic Dreamer 💖","Adventurous Spirit 🌍","Life of the Party 🎉"];
 const roastTypes = [
   "People who treat red flags as decorative lights 🚩",
@@ -100,28 +88,21 @@ async function loadModels() {
 
 async function initCamera() {
   video = document.getElementById('camera');
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
   video.srcObject = stream;
-
-  // Recording overlay + camera
-  const combinedStream = new MediaStream();
-  const videoTrack = canvas.captureStream(30).getVideoTracks()[0];
-  combinedStream.addTrack(videoTrack);
-  mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm; codecs=vp9' });
-  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
-  mediaRecorder.onstop = uploadRecording;
+  await new Promise(res => video.onloadedmetadata = res);
 }
 
 async function detectFrame() {
   const detections = await faceapi.detectSingleFace(video);
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
   if (detections) {
     faceBox = detections.box;
     ctx.strokeStyle = 'rgba(255,255,255,0.7)';
     ctx.lineWidth = 2;
     ctx.strokeRect(faceBox.x, faceBox.y, faceBox.width, faceBox.height);
 
+    // Draw ticker above head
     const tickerY = faceBox.y - 20;
     ctx.font = "28px Arial";
     ctx.fillStyle = "#ff4d6d";
@@ -135,15 +116,12 @@ async function detectFrame() {
 }
 
 async function scoreSequence() {
-  mediaRecorder.start();
-
   const cropFace = document.createElement('canvas');
   cropFace.width = 400; cropFace.height = 400;
   if (faceBox) {
     cropFace.getContext('2d').drawImage(video, faceBox.x, faceBox.y, faceBox.width, faceBox.height, 0, 0, 400, 400);
     faceScoreFinal = await predictScore(cropFace, faceModel);
   }
-
   const poses = await detector.estimatePoses(video);
   if (poses.length) {
     const xs = poses[0].keypoints.map(k=>k.x), ys = poses[0].keypoints.map(k=>k.y);
@@ -153,30 +131,29 @@ async function scoreSequence() {
     cropBody.getContext('2d').drawImage(video, box.x, box.y, box.width, box.height, 0, 0, 400, 400);
     bodyScoreFinal = await predictScore(cropBody, bodyModel);
   }
-
-  scorePhase = 1; await animateTicker(faceScoreFinal);
-  scorePhase = 2; await animateTicker(bodyScoreFinal);
-
+  // Animate Face
+  scorePhase = 1;
+  await animateTicker(faceScoreFinal);
+  // Animate Body
+  scorePhase = 2;
+  await animateTicker(bodyScoreFinal);
+  // Show final panel
   scorePhase = 3;
   document.getElementById("vibeText").innerText = `Vibe: ${vibes[Math.floor(Math.random()*vibes.length)]}`;
   document.getElementById("typeText").innerText = `Type: ${roastTypes[Math.floor(Math.random()*roastTypes.length)]}`;
   document.getElementById("badgeText").innerText = `🏆 ${badges[Math.floor(Math.random()*badges.length)]}`;
   document.getElementById("rankText").innerText = randomRank();
   document.getElementById("resultsPanel").style.opacity = 1;
-
   confetti();
-  setTimeout(()=>mediaRecorder.stop(), 2500);
 }
 
 async function animateTicker(finalScore) {
   return new Promise(res=>{
     tickerScore = 0.0;
-    let direction = 1;
     const step = finalScore / 40;
     const intv = setInterval(()=>{
-      tickerScore += step * direction;
-      if (Math.random() < 0.1) direction *= -1; // suspense fake-out
-      if (tickerScore >= finalScore && direction > 0) {
+      tickerScore += step;
+      if (tickerScore >= finalScore) {
         tickerScore = finalScore;
         clearInterval(intv);
         res();
@@ -192,39 +169,15 @@ async function predictScore(canvas, model) {
   return Math.max(1, Math.min(10, s[0])).toFixed(1);
 }
 
-function uploadRecording() {
-  const blob = new Blob(recordedChunks, { type: 'video/webm' });
-  const formData = new FormData();
-  formData.append("file", blob, "ai_rating.webm");
-
-  fetch("https://file.io/?expires=1d", { method: "POST", body: formData })
-    .then(res => res.json())
-    .then(data => {
-      const link = data.link || "";
-      showShareButtons(link);
-    });
-}
-
-function showShareButtons(link) {
-  const s = document.getElementById("shareSection");
-  s.innerHTML = `
-    <button onclick="window.open('https://www.tiktok.com/upload?url=${encodeURIComponent(link)}','_blank')">TikTok</button>
-    <button onclick="window.open('https://twitter.com/intent/tweet?text=${encodeURIComponent('My AI hotness score is out!')}%20${encodeURIComponent(link)}','_blank')">Twitter</button>
-    <button onclick="window.open('https://api.whatsapp.com/send?text=${encodeURIComponent('My AI hotness score is out! ' + link)}','_blank')">WhatsApp</button>
-    <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}','_blank')">Facebook</button>
-    <button onclick="navigator.clipboard.writeText('${link}')">Copy Link</button>
-  `;
-}
-
 (async ()=>{
   await loadModels();
   await initCamera();
   canvas = document.getElementById('overlay');
   ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
   detectFrame();
-  setTimeout(scoreSequence, 2000);
+  setTimeout(scoreSequence, 2000); // Give time for camera to settle
 })();
 </script>
 
