@@ -13,43 +13,43 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
-html, body {
-  margin: 0; padding: 0;
-  background: linear-gradient(180deg, #064D95 0%, #e1bf78 100%);
-  overflow: hidden;
-  font-family: Arial, sans-serif;
-  color: #fff; height: 100%;
-}
-video, canvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-}
-#overlay { pointer-events: none; }
-.bottomPanel {
-  position: absolute; bottom: 10px; left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  background: rgba(0,0,0,0.55);
-  padding: 15px 20px; border-radius: 15px;
-  backdrop-filter: blur(10px);
-  border: 2px solid #e1bf78;
-  opacity: 0; transition: opacity 1s ease;
-  max-width: 90%;
-}
-.bottomPanel div { margin: 6px 0; }
-#vibeText { font-size: 1.2rem; color: #e1bf78; }
-#typeText { font-size: 1.1rem; color: #950606; }
-#badgeText { font-size: 1.2rem; font-weight: bold; color: #06954E; transform: rotate(-5deg); transition: transform 0.3s ease; }
-#badgeText.drop { transform: rotate(0deg); }
-.shareButtons button {
-  margin: 5px; padding: 10px 15px;
-  background: #e1bf78; border: none; border-radius: 8px;
-  color: #000; font-weight: bold; cursor: pointer;
-  box-shadow: 0 0 10px rgba(225,191,120,0.8);
-}
-.shareButtons button:hover { box-shadow: 0 0 15px rgba(225,191,120,1); }
+  html, body {
+    margin: 0; padding: 0;
+    background: linear-gradient(180deg, #064D95 0%, #e1bf78 100%);
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: #fff; height: 100%;
+  }
+  video, canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  #overlay { pointer-events: none; }
+  .bottomPanel {
+    position: absolute; bottom: 10px; left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    background: rgba(0,0,0,0.55);
+    padding: 15px 20px; border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 2px solid #e1bf78;
+    opacity: 0; transition: opacity 1s ease;
+    max-width: 90%;
+  }
+  .bottomPanel div { margin: 6px 0; }
+  #vibeText { font-size: 1.2rem; color: #e1bf78; }
+  #typeText { font-size: 1.1rem; color: #950606; }
+  #badgeText { font-size: 1.2rem; font-weight: bold; color: #06954E; transform: rotate(-5deg); transition: transform 0.3s ease; }
+  #badgeText.drop { transform: rotate(0deg); }
+  .shareButtons button {
+    margin: 5px; padding: 10px 15px;
+    background: #e1bf78; border: none; border-radius: 8px;
+    color: #000; font-weight: bold; cursor: pointer;
+    box-shadow: 0 0 10px rgba(225,191,120,0.8);
+  }
+  .shareButtons button:hover { box-shadow: 0 0 15px rgba(225,191,120,1); }
 </style>
 </head>
 <body>
@@ -65,90 +65,181 @@ video, canvas {
   <div class="shareButtons" id="shareSection"></div>
 </div>
 
-<!-- Embedded Base64 Audio (minimized) -->
 <audio id="bgBeat" loop>
-<source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAA..." type="audio/mp3">
+<source src="data:audio/mp3;base64,/* Base64 beat audio here */" type="audio/mp3">
 </audio>
 <audio id="chime">
-<source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAA..." type="audio/mp3">
+<source src="data:audio/mp3;base64,/* Base64 chime audio here */" type="audio/mp3">
 </audio>
 <audio id="pop">
-<source src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAA..." type="audio/mp3">
+<source src="data:audio/mp3;base64,/* Base64 pop audio here */" type="audio/mp3">
 </audio>
 
 <script>
-const vibeList = [
-  "Dangerously charming", "CEO of bad decisions", "Hot but allergic to commitment",
-  "Too sexy for small talk", "Professional heartbreaker", "Mysterious trouble"
+let faceModel, bodyModel, detector, video, canvas, ctx;
+let scorePhase = 0;
+let faceScoreFinal = 0, bodyScoreFinal = 0, totalScoreFinal = 0;
+let tickerScore = 0;
+let faceBox = null;
+let mediaRecorder, recordedChunks = [];
+
+const vibes = ["Confident Charmer 😎","Playful Energy 😜","Mysterious Allure 🖤","Romantic Dreamer 💖","Adventurous Spirit 🌍","Life of the Party 🎉"];
+const roastTypes = [
+  "People who treat red flags as decorative lights 🚩",
+  "Girls who would date a SoundCloud rapper *on purpose* 🎤",
+  "Guys who think foreplay is playing Xbox 🎮",
+  "People who ghost but still watch your stories 👻",
+  "Women with 4 exes, all DJs 🎧",
+  "Men who post gym selfies about 'the grind' 💪"
 ];
-const typeList = [
-  "Gym rat with daddy issues", "Tattooed poet who ghosted you",
-  "Trust fund surfer", "Crypto bro with a yacht", "Barista in a punk band",
-  "Divorced millionaire", "Your therapist’s ex"
-];
-const hotTakeList = [
-  "You peaked in your profile picture", "Hot enough to start drama",
-  "Looks like trouble, feels like vacation", "Too good for dating apps",
-  "Your DMs are a warzone", "At least 3 people stalk your Instagram daily"
+const badges = ["Certified Heartbreaker 💔","Main Character Energy 🎬","Dangerously Hot 🔥","Chaos in Human Form 🌪️","Too Hot to Handle 🚫🔥"];
+const hotTakes = [
+  "You peaked in 2019 📉","Someone’s mom would love you ❤️",
+  "A walking ick 🚷","Hot enough to skip the line 🔥",
+  "Could make a nun blush 😳","Certified thirst trap 📸"
 ];
 
-let video = document.getElementById('camera');
-let overlay = document.getElementById('overlay');
-let ctx = overlay.getContext('2d');
-let resultsPanel = document.getElementById('resultsPanel');
+async function loadModels() {
+  await faceapi.nets.ssdMobilenetv1.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js/models');
+  faceModel = await tf.loadLayersModel('https://huggingface.co/datasets/ayasy/face_beauty_tfjs/resolve/main/model.json');
+  bodyModel = faceModel;
+  detector = await poseDetection.createDetector(poseDetection.SupportedModels.BlazePose, { runtime: 'tfjs', modelType: 'full' });
+}
 
-async function init() {
-  await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js/models');
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+async function initCamera() {
+  video = document.getElementById('camera');
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
   video.srcObject = stream;
-  video.onloadedmetadata = () => { overlay.width = video.videoWidth; overlay.height = video.videoHeight; startTicker(); };
+  canvas = document.getElementById('overlay');
+  ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const combinedStream = new MediaStream();
+  const videoTrack = canvas.captureStream(30).getVideoTracks()[0];
+  combinedStream.addTrack(videoTrack);
+  mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm; codecs=vp9' });
+  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+  mediaRecorder.onstop = uploadRecording;
 }
 
-function startTicker() {
-  const bgBeat = document.getElementById('bgBeat');
-  bgBeat.play();
-  let score = 0;
-  let targetScore = Math.floor(Math.random()*10)+1;
-  const tickerInterval = setInterval(() => {
-    ctx.clearRect(0,0,overlay.width, overlay.height);
-    ctx.font = "bold 48px Arial";
+async function detectFrame() {
+  const detections = await faceapi.detectSingleFace(video);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if (detections) {
+    faceBox = detections.box;
+    const tickerY = faceBox.y - 20;
+    ctx.font = "bold 32px Arial";
     ctx.fillStyle = "#e1bf78";
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 8;
     ctx.textAlign = "center";
-    ctx.fillText(score, overlay.width/2, overlay.height/4);
-    score++;
-    if(score>targetScore) {
-      clearInterval(tickerInterval);
-      revealScore(targetScore);
+    let label = "";
+    if (scorePhase === 1) label = `Face: ${tickerScore.toFixed(1)}/10`;
+    if (scorePhase === 2) label = `Body: ${tickerScore.toFixed(1)}/10`;
+    if (scorePhase === 3) label = `Total: ${tickerScore.toFixed(1)}/10`;
+    if (label) {
+      ctx.save();
+      ctx.translate(faceBox.x + faceBox.width/2, tickerY);
+      ctx.scale(1 + Math.sin(Date.now()/150)*0.05, 1 + Math.sin(Date.now()/150)*0.05);
+      ctx.fillText(label, 0, 0);
+      ctx.restore();
     }
-  }, 200);
+  }
+  requestAnimationFrame(detectFrame);
 }
 
-function revealScore(finalScore) {
-  document.getElementById('bgBeat').pause();
+async function scoreSequence() {
+  document.getElementById('bgBeat').play();
+  mediaRecorder.start();
+  if (faceBox) {
+    const cropFace = document.createElement('canvas');
+    cropFace.width = 400; cropFace.height = 400;
+    cropFace.getContext('2d').drawImage(video, faceBox.x, faceBox.y, faceBox.width, faceBox.height, 0, 0, 400, 400);
+    faceScoreFinal = await predictScore(cropFace, faceModel);
+  }
+  const poses = await detector.estimatePoses(video);
+  if (poses.length) {
+    const xs = poses[0].keypoints.map(k=>k.x), ys = poses[0].keypoints.map(k=>k.y);
+    const box = { x: Math.min(...xs), y: Math.min(...ys), width: Math.max(...xs)-Math.min(...xs), height: Math.max(...ys)-Math.min(...ys) };
+    const cropBody = document.createElement('canvas');
+    cropBody.width = 400; cropBody.height = 400;
+    cropBody.getContext('2d').drawImage(video, box.x, box.y, box.width, box.height, 0, 0, 400, 400);
+    bodyScoreFinal = await predictScore(cropBody, bodyModel);
+  }
+  totalScoreFinal = ((parseFloat(faceScoreFinal) + parseFloat(bodyScoreFinal))/2).toFixed(1);
+  scorePhase = 1; await animateTicker(faceScoreFinal);
+  scorePhase = 2; await animateTicker(bodyScoreFinal);
+  scorePhase = 3; await animateTicker(totalScoreFinal);
   document.getElementById('chime').play();
-  confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#e1bf78','#06954E','#950606'] });
-  ctx.font = "bold 64px Arial";
-  ctx.fillStyle = finalScore > 6 ? "#06954E" : "#950606";
-  ctx.fillText(finalScore+"/10", overlay.width/2, overlay.height/4);
-  resultsPanel.style.opacity = 1;
-  document.getElementById('vibeText').innerText = vibeList[Math.floor(Math.random()*vibeList.length)];
-  document.getElementById('typeText').innerText = "Your type: "+typeList[Math.floor(Math.random()*typeList.length)];
-  document.getElementById('badgeText').innerText = "🏆 "+(finalScore>7 ? "Certified Hot" : "Dangerously Average");
-  document.getElementById('hotTake').innerText = hotTakeList[Math.floor(Math.random()*hotTakeList.length)];
-  setShareButtons(finalScore);
+  document.getElementById("vibeText").innerText = `Vibe: ${vibes[Math.floor(Math.random()*vibes.length)]}`;
+  document.getElementById("typeText").innerText = `Type: ${roastTypes[Math.floor(Math.random()*roastTypes.length)]}`;
+  const badgeEl = document.getElementById("badgeText");
+  badgeEl.innerText = `🏆 ${badges[Math.floor(Math.random()*badges.length)]}`;
+  setTimeout(()=>badgeEl.classList.add('drop'),100);
+  document.getElementById("hotTake").innerText = hotTakes[Math.floor(Math.random()*hotTakes.length)];
+  document.getElementById("resultsPanel").style.opacity = 1;
+  confetti({ colors: ['#e1bf78','#06954E','#950606'], particleCount: 150, spread: 80 });
+  document.getElementById('pop').play();
+  setTimeout(()=>mediaRecorder.stop(), 2500);
 }
 
-function setShareButtons(score) {
-  const shareSection = document.getElementById('shareSection');
-  shareSection.innerHTML = '';
-  const text = `I got rated ${score}/10 on AI Hotness Rater 🔥 Try it here: ${window.location.href}`;
-  const btn = document.createElement('button');
-  btn.innerText = "Copy Link";
-  btn.onclick = () => { navigator.clipboard.writeText(text); alert("Copied!"); };
-  shareSection.appendChild(btn);
+async function animateTicker(finalScore) {
+  return new Promise(res=>{
+    tickerScore = 0.0; let direction = 1;
+    const step = finalScore / 40;
+    const intv = setInterval(()=>{
+      tickerScore += step * direction;
+      if (Math.random() < 0.1) direction *= -1;
+      if (tickerScore >= finalScore && direction > 0) {
+        tickerScore = finalScore; clearInterval(intv);
+        if (finalScore >= 7) flashBackground('#06954E');
+        else if (finalScore <= 4) flashBackground('#950606');
+        res();
+      }
+    },50);
+  });
 }
 
-init();
+async function predictScore(canvas, model) {
+  const t = tf.browser.fromPixels(canvas).resizeBilinear([224,224]).toFloat().div(tf.scalar(255)).expandDims(0);
+  const p = model.predict(t), s = await p.data();
+  t.dispose(); p.dispose();
+  return Math.max(1, Math.min(10, s[0])).toFixed(1);
+}
+
+function flashBackground(color) {
+  document.body.style.transition = 'background 0.3s ease';
+  document.body.style.background = color;
+  setTimeout(()=>{
+    document.body.style.background = 'linear-gradient(180deg, #064D95 0%, #e1bf78 100%)';
+  }, 400);
+}
+
+function uploadRecording() {
+  const blob = new Blob(recordedChunks, { type: 'video/webm' });
+  const formData = new FormData();
+  formData.append("file", blob, "ai_rating.webm");
+  fetch("https://file.io/?expires=1d", { method: "POST", body: formData })
+    .then(res => res.json())
+    .then(data => { showShareButtons(data.link || ""); });
+}
+
+function showShareButtons(link) {
+  const s = document.getElementById("shareSection");
+  s.innerHTML = `
+    <button onclick="window.open('https://www.tiktok.com/upload?url=${encodeURIComponent(link)}','_blank')">TikTok</button>
+    <button onclick="window.open('https://twitter.com/intent/tweet?text=${encodeURIComponent('Bet you can’t beat my hotness score!')}%20${encodeURIComponent(link)}','_blank')">Twitter</button>
+    <button onclick="window.open('https://api.whatsapp.com/send?text=${encodeURIComponent('Bet you can’t beat my hotness score! ' + link)}','_blank')">WhatsApp</button>
+    <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}','_blank')">Facebook</button>
+    <button onclick="navigator.clipboard.writeText('${link}')">Copy Link</button>
+  `;
+}
+
+(async ()=>{
+  await loadModels();
+  await initCamera();
+  detectFrame();
+  setTimeout(scoreSequence, 2000);
+})();
 </script>
 
 </body>
