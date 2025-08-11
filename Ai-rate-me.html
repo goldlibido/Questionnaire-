@@ -16,11 +16,10 @@
   html, body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(180deg, #064D95 0%, #e1bf78 100%);
+    background: black;
     overflow: hidden;
     font-family: Arial, sans-serif;
-    color: #fff;
-    height: 100%;
+    color: white;
   }
   video, canvas {
     position: absolute;
@@ -28,40 +27,30 @@
     width: 100%; height: 100%;
     object-fit: cover;
   }
-  #overlay { pointer-events: none; }
+  #overlay {
+    pointer-events: none;
+  }
   .bottomPanel {
     position: absolute;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.6);
     padding: 15px 20px;
     border-radius: 15px;
     backdrop-filter: blur(10px);
-    border: 2px solid #e1bf78;
     opacity: 0;
     transition: opacity 1s ease;
-    max-width: 90%;
   }
-  .bottomPanel div { margin: 6px 0; }
-  #vibeText { font-size: 1.2rem; color: #e1bf78; }
-  #typeText { font-size: 1.1rem; color: #950606; }
-  #badgeText { font-size: 1.2rem; font-weight: bold; color: #06954E; transform: rotate(-5deg); transition: transform 0.3s ease; }
-  #badgeText.drop { transform: rotate(0deg); }
   .shareButtons button {
     margin: 5px;
     padding: 10px 15px;
-    background: #e1bf78;
+    background: #ff4d6d;
     border: none;
     border-radius: 8px;
-    color: #000;
-    font-weight: bold;
+    color: white;
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(225,191,120,0.8);
-  }
-  .shareButtons button:hover {
-    box-shadow: 0 0 15px rgba(225,191,120,1);
   }
 </style>
 </head>
@@ -74,14 +63,13 @@
   <div id="vibeText"></div>
   <div id="typeText"></div>
   <div id="badgeText"></div>
-  <div id="hotTake"></div>
   <div class="shareButtons" id="shareSection"></div>
 </div>
 
 <script>
 let faceModel, bodyModel, detector, video, canvas, ctx;
 let scorePhase = 0;
-let faceScoreFinal = 0, bodyScoreFinal = 0, totalScoreFinal = 0;
+let faceScoreFinal = 0, bodyScoreFinal = 0;
 let tickerScore = 0;
 let faceBox = null;
 let mediaRecorder, recordedChunks = [];
@@ -96,14 +84,6 @@ const roastTypes = [
   "Men who post gym selfies with captions about 'the grind' 💪"
 ];
 const badges = ["Certified Heartbreaker 💔","Main Character Energy 🎬","Dangerously Hot 🔥","Chaos in Human Form 🌪️","Too Hot to Handle 🚫🔥"];
-const hotTakes = [
-  "You peaked in 2019 📉",
-  "Someone’s mom would love you ❤️",
-  "A walking ick 🚷",
-  "Hot enough to skip the line 🔥",
-  "Could make a nun blush 😳",
-  "Certified thirst trap 📸"
-];
 
 async function loadModels() {
   await faceapi.nets.ssdMobilenetv1.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js/models');
@@ -137,23 +117,18 @@ async function detectFrame() {
 
   if (detections) {
     faceBox = detections.box;
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(faceBox.x, faceBox.y, faceBox.width, faceBox.height);
+
     const tickerY = faceBox.y - 20;
-    ctx.font = "bold 32px Arial";
-    ctx.fillStyle = "#e1bf78";
-    ctx.shadowColor = '#000';
-    ctx.shadowBlur = 8;
+    ctx.font = "28px Arial";
+    ctx.fillStyle = "#ff4d6d";
     ctx.textAlign = "center";
     let label = "";
     if (scorePhase === 1) label = `Face: ${tickerScore.toFixed(1)}/10`;
     if (scorePhase === 2) label = `Body: ${tickerScore.toFixed(1)}/10`;
-    if (scorePhase === 3) label = `Total: ${tickerScore.toFixed(1)}/10`;
-    if (label) {
-      ctx.save();
-      ctx.translate(faceBox.x + faceBox.width/2, tickerY);
-      ctx.scale(1 + Math.sin(Date.now()/150)*0.05, 1 + Math.sin(Date.now()/150)*0.05);
-      ctx.fillText(label, 0, 0);
-      ctx.restore();
-    }
+    if (label) ctx.fillText(label, faceBox.x + faceBox.width/2, tickerY);
   }
   requestAnimationFrame(detectFrame);
 }
@@ -178,21 +153,16 @@ async function scoreSequence() {
     bodyScoreFinal = await predictScore(cropBody, bodyModel);
   }
 
-  totalScoreFinal = ((parseFloat(faceScoreFinal) + parseFloat(bodyScoreFinal))/2).toFixed(1);
-
   scorePhase = 1; await animateTicker(faceScoreFinal);
   scorePhase = 2; await animateTicker(bodyScoreFinal);
-  scorePhase = 3; await animateTicker(totalScoreFinal);
 
+  scorePhase = 3;
   document.getElementById("vibeText").innerText = `Vibe: ${vibes[Math.floor(Math.random()*vibes.length)]}`;
   document.getElementById("typeText").innerText = `Type: ${roastTypes[Math.floor(Math.random()*roastTypes.length)]}`;
-  const badgeEl = document.getElementById("badgeText");
-  badgeEl.innerText = `🏆 ${badges[Math.floor(Math.random()*badges.length)]}`;
-  setTimeout(()=>badgeEl.classList.add('drop'),100);
-  document.getElementById("hotTake").innerText = hotTakes[Math.floor(Math.random()*hotTakes.length)];
+  document.getElementById("badgeText").innerText = `🏆 ${badges[Math.floor(Math.random()*badges.length)]}`;
   document.getElementById("resultsPanel").style.opacity = 1;
 
-  confetti({ colors: ['#e1bf78','#06954E','#950606'], particleCount: 150, spread: 80 });
+  confetti();
   setTimeout(()=>mediaRecorder.stop(), 2500);
 }
 
@@ -207,8 +177,6 @@ async function animateTicker(finalScore) {
       if (tickerScore >= finalScore && direction > 0) {
         tickerScore = finalScore;
         clearInterval(intv);
-        if (finalScore >= 7) flashBackground('#06954E');
-        else if (finalScore <= 4) flashBackground('#950606');
         res();
       }
     },50);
@@ -220,14 +188,6 @@ async function predictScore(canvas, model) {
   const p = model.predict(t), s = await p.data();
   t.dispose(); p.dispose();
   return Math.max(1, Math.min(10, s[0])).toFixed(1);
-}
-
-function flashBackground(color) {
-  document.body.style.transition = 'background 0.3s ease';
-  document.body.style.background = color;
-  setTimeout(()=>{
-    document.body.style.background = 'linear-gradient(180deg, #064D95 0%, #e1bf78 100%)';
-  }, 400);
 }
 
 function uploadRecording() {
@@ -247,8 +207,8 @@ function showShareButtons(link) {
   const s = document.getElementById("shareSection");
   s.innerHTML = `
     <button onclick="window.open('https://www.tiktok.com/upload?url=${encodeURIComponent(link)}','_blank')">TikTok</button>
-    <button onclick="window.open('https://twitter.com/intent/tweet?text=${encodeURIComponent('Bet you can’t beat my hotness score!')}%20${encodeURIComponent(link)}','_blank')">Twitter</button>
-    <button onclick="window.open('https://api.whatsapp.com/send?text=${encodeURIComponent('Bet you can’t beat my hotness score! ' + link)}','_blank')">WhatsApp</button>
+    <button onclick="window.open('https://twitter.com/intent/tweet?text=${encodeURIComponent('My AI hotness score is out!')}%20${encodeURIComponent(link)}','_blank')">Twitter</button>
+    <button onclick="window.open('https://api.whatsapp.com/send?text=${encodeURIComponent('My AI hotness score is out! ' + link)}','_blank')">WhatsApp</button>
     <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}','_blank')">Facebook</button>
     <button onclick="navigator.clipboard.writeText('${link}')">Copy Link</button>
   `;
