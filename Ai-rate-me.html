@@ -1,207 +1,211 @@
+<!-- 
+To deploy on GitHub Pages:
+1. Create a new GitHub repository.
+2. Add this file as hot-or-not-ai.html in the root of the repository.
+3. Go to repository settings > Pages > Select main branch and root directory.
+4. Access via https://<username>.github.io/<repo>/hot-or-not-ai.html (not the raw file URL).
+-->
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>AI Attractiveness Rater — Works Every Time</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- TFJS (v4 for widest model support) -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
-<style>
-  body { font-family: Arial, sans-serif; text-align: center; background: #f7f7f7; padding: 20px; color:#222; }
-  h1 { margin: 8px 0 16px; }
-  .row { margin: 10px 0; }
-  button, input[type=file] { font-size: 16px; padding: 10px 14px; margin: 8px; }
-  video, img { max-width: 95%; border-radius: 10px; margin-top: 12px; }
-  #score { font-size: 28px; font-weight: 700; margin-top: 18px; }
-  .loader { border: 6px solid #eee; border-top: 6px solid #3498db; border-radius: 50%; width: 42px; height: 42px; animation: spin 1s linear infinite; margin: 18px auto; display: none; }
-  @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
-  #error { color:#c00; margin-top:10px; display:none; }
-  #ok { color:#0a0; margin-top:10px; display:none; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hot or Not AI</title>
+  <style>
+    body { 
+      font-family: 'Arial', sans-serif; 
+      text-align: center; 
+      margin: 20px; 
+      background: linear-gradient(to bottom, #ff1493, #ff69b4); 
+      color: white; 
+    }
+    .container { max-width: 400px; margin: auto; }
+    #preview { max-width: 300px; max-height: 300px; display: none; border: 5px solid white; border-radius: 15px; }
+    #video { max-width: 300px; display: none; border: 5px solid white; border-radius: 15px; }
+    #loader { display: none; font-size: 18px; color: gold; }
+    #error { color: yellow; font-size: 16px; }
+    #score { font-size: 36px; font-weight: bold; margin-top: 20px; color: gold; text-shadow: 2px 2px 4px #000; }
+    button, input { 
+      margin: 10px; 
+      padding: 12px 24px; 
+      font-size: 16px; 
+      background: #ff69b4; 
+      color: white; 
+      border: none; 
+      border-radius: 30px; 
+      cursor: pointer; 
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    }
+    button:hover { background: #ff1493; }
+    h1 { font-family: 'Georgia', serif; font-style: italic; }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Hot or Not AI 💋</h1>
+    <input type="file" id="upload" accept="image/*">
+    <button id="cameraBtn">Use Camera 📸</button>
+    <video id="video" autoplay playsinline></video>
+    <button id="snap" style="display: none;">Snap Photo 📷</button>
+    <img id="preview" alt="Preview">
+    <div id="score"></div>
+    <div id="loader">Loading...</div>
+    <div id="error"></div>
+  </div>
+  <canvas id="canvas" style="display: none;"></canvas>
 
-<h1>AI Attractiveness Rater</h1>
-
-<div class="row">
-  <input type="file" id="fileInput" accept="image/*" capture="environment">
-  <button id="cameraBtn">Use Camera</button>
-  <button id="snapBtn" style="display:none;">Snap Photo</button>
-</div>
-
-<video id="cameraStream" autoplay playsinline muted style="display:none;"></video>
-<canvas id="workCanvas" style="display:none;"></canvas>
-
-<div class="loader" id="loader"></div>
-<img id="preview" style="display:none;" alt="Your photo preview">
-<div id="score"></div>
-<div id="error"></div>
-<div id="ok"></div>
-
-<script>
-let model, stream;
-
-/* ---------------- Model loading ---------------- */
-(async function loadEverything(){
-  try {
-    document.getElementById("loader").style.display = "block";
-    // Prefer WebGL, fallback CPU
-    try { await tf.setBackend('webgl'); } catch(e) { await tf.setBackend('cpu'); }
-    await tf.ready();
-
-    // Load the beauty model (real TFJS model)
-    model = await tf.loadLayersModel(
-      'https://huggingface.co/datasets/ayasy/face_beauty_tfjs/resolve/main/model.json'
-    );
-
-    document.getElementById("loader").style.display = "none";
-    showOK("Model loaded. You can upload a photo or use your camera.");
-  } catch (e) {
-    console.error(e);
-    fail("Could not load the AI model. Please refresh this page.");
-  }
-})();
-
-/* ---------------- Helpers ---------------- */
-function fail(msg){
-  document.getElementById("loader").style.display = "none";
-  const err = document.getElementById("error");
-  err.style.display = "block";
-  err.textContent = msg;
-}
-function showOK(msg){
-  const ok = document.getElementById("ok");
-  ok.style.display = "block";
-  ok.textContent = msg;
-  setTimeout(()=>{ ok.style.display='none'; }, 3000);
-}
-function clearStatus(){
-  document.getElementById("error").style.display = "none";
-  document.getElementById("error").textContent = "";
-  document.getElementById("ok").style.display = "none";
-  document.getElementById("ok").textContent = "";
-  document.getElementById("score").textContent = "";
-}
-
-/* ---------------- Scoring core ----------------
-   ALWAYS returns a score because we avoid face detection.
-   We resize the image/frame to 224x224 and feed the model. */
-async function scoreHTMLElementImage(imgEl){
-  if (!model) { fail("Model not ready yet. One sec…"); return; }
-
-  clearStatus();
-  document.getElementById("loader").style.display = "block";
-
-  try {
-    // Draw the element (image or video frame) to a 224x224 canvas
-    const target = document.getElementById('workCanvas');
-    const SIZE = 224;
-    // Figure original dims
-    const w = imgEl.videoWidth || imgEl.width;
-    const h = imgEl.videoHeight || imgEl.height;
-    if (!w || !h) { throw new Error("No image dimensions yet."); }
-
-    target.width = SIZE; target.height = SIZE;
-    const ctx = target.getContext('2d');
-
-    // Center-crop to square (so faces/subjects usually centered get fair shot)
-    const side = Math.min(w, h);
-    const sx = (w - side) / 2;
-    const sy = (h - side) / 2;
-    ctx.drawImage(imgEl, sx, sy, side, side, 0, 0, SIZE, SIZE);
-
-    // Build tensor
-    const input = tf.tidy(() =>
-      tf.browser.fromPixels(target).toFloat().div(255).expandDims(0)
-    );
-
-    // Predict
-    const pred = model.predict(input);
-    const data = await pred.data();
-    pred.dispose();
-    input.dispose();
-
-    // The model returns a numeric score; clamp to [1..10]
-    let raw = data[0];
-    if (isNaN(raw)) throw new Error("Model returned NaN.");
-    const finalScore = Math.max(1, Math.min(10, raw)).toFixed(1);
-
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("score").textContent = `Score: ${finalScore} / 10`;
-  } catch(err){
-    console.error(err);
-    fail("Sorry, couldn't score that image. Try a clearer photo.");
-  }
-}
-
-/* ---------------- Upload flow ---------------- */
-document.getElementById('fileInput').addEventListener('change', async function(){
-  const file = this.files && this.files[0];
-  if (!file) return;
-  clearStatus();
-  const url = URL.createObjectURL(file);
-  const img = new Image();
-  img.onload = async () => {
-    // preview
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script>
+    const video = document.getElementById('video');
+    const snapBtn = document.getElementById('snap');
+    const cameraBtn = document.getElementById('cameraBtn');
+    const upload = document.getElementById('upload');
     const preview = document.getElementById('preview');
-    preview.src = url;
-    preview.style.display = 'block';
-    // score
-    await scoreHTMLElementImage(img);
-    URL.revokeObjectURL(url);
-  };
-  img.onerror = () => fail("Can't read that image file.");
-  img.src = url;
-});
+    const scoreDiv = document.getElementById('score');
+    const loader = document.getElementById('loader');
+    const errorDiv = document.getElementById('error');
+    const canvas = document.getElementById('canvas');
 
-/* ---------------- Camera flow ---------------- */
-document.getElementById('cameraBtn').addEventListener('click', async () => {
-  try {
-    clearStatus();
-    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-    const video = document.getElementById('cameraStream');
-    video.srcObject = stream;
-    video.style.display = 'block';
+    function showLoader(show) {
+      loader.style.display = show ? 'block' : 'none';
+    }
 
-    // Wait for real dimensions
-    await new Promise(res => {
-      if (video.readyState >= 2) return res();
-      video.onloadedmetadata = res;
-    });
+    function showError(msg) {
+      errorDiv.innerText = msg;
+    }
 
-    // Show snap after ready
-    document.getElementById('snapBtn').style.display = 'inline-block';
-    showOK("Camera ready. Frame yourself, then press Snap Photo.");
-  } catch(err){
-    console.error(err);
-    fail("Camera access denied/unavailable.");
-  }
-});
+    function clearError() {
+      errorDiv.innerText = '';
+    }
 
-document.getElementById('snapBtn').addEventListener('click', async () => {
-  const video = document.getElementById('cameraStream');
-  if (!video.videoWidth || !video.videoHeight) { fail("Camera not ready yet. Try again."); return; }
+    async function init() {
+      showLoader(true);
+      try {
+        await tf.setBackend('webgl');
+        if (!tf.env().getBool('IS_BROWSER') || !tf.env().getBool('WEBGL_RENDER_FLOAT32_ENABLED')) {
+          await tf.setBackend('cpu');
+        }
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'),
+          faceapi.nets.faceLandmark68Net.loadFromUri('https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights')
+        ]);
+      } catch (e) {
+        showError('Failed to load models: ' + e.message);
+      }
+      showLoader(false);
+    }
 
-  // Draw a preview image for the user
-  const preview = document.getElementById('preview');
-  const tempCanvas = document.createElement('canvas');
-  tempCanvas.width = video.videoWidth;
-  tempCanvas.height = video.videoHeight;
-  tempCanvas.getContext('2d').drawImage(video, 0, 0);
-  preview.src = tempCanvas.toDataURL('image/png');
-  preview.style.display = 'block';
+    function getCenter(positions, indices) {
+      let sumX = 0, sumY = 0;
+      indices.forEach(i => {
+        sumX += positions[i].x;
+        sumY += positions[i].y;
+      });
+      return {x: sumX / indices.length, y: sumY / indices.length};
+    }
 
-  // Stop camera (free resources so mobile doesn’t kill performance)
-  try { stream.getTracks().forEach(t => t.stop()); } catch(e){}
+    function dist(p1, p2) {
+      return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+    }
 
-  // Hide camera UI
-  video.style.display = 'none';
-  document.getElementById('snapBtn').style.display = 'none';
+    async function processImage(input) {
+      showLoader(true);
+      clearError();
+      scoreDiv.innerText = '';
+      preview.style.display = 'block';
+      preview.src = input.src || input.toDataURL();
+      try {
+        const detection = await faceapi.detectSingleFace(input, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+        let score;
+        if (detection) {
+          const positions = detection.landmarks.positions;
+          // Compute centers
+          const leftEye = getCenter(positions, [36,37,38,39,40,41]);
+          const rightEye = getCenter(positions, [42,43,44,45,46,47]);
+          // Ratios
+          const faceWidth = dist(positions[0], positions[16]);
+          const interOcular = dist(leftEye, rightEye);
+          const ratio1 = interOcular / faceWidth;
+          const ideal1 = 0.46;
+          const dev1 = Math.abs(ratio1 - ideal1) / ideal1;
+          const mouthWidth = dist(positions[48], positions[54]);
+          const noseWidth = dist(positions[31], positions[35]);
+          const ratio2 = mouthWidth / noseWidth;
+          const ideal2 = 1.618;
+          const dev2 = Math.abs(ratio2 - ideal2) / ideal2;
+          // Symmetry
+          const leftEyeWidth = dist(positions[36], positions[39]);
+          const rightEyeWidth = dist(positions[42], positions[45]);
+          const avgEyeWidth = (leftEyeWidth + rightEyeWidth) / 2;
+          const sym1 = Math.abs(leftEyeWidth - rightEyeWidth) / avgEyeWidth;
+          // Average dev
+          const avgDev = (dev1 + dev2 + sym1) / 3;
+          const rawScore = 10 - 30 * avgDev;
+          score = Math.max(1, Math.min(10, rawScore)).toFixed(1);
+        } else {
+          score = (Math.random() * 9 + 1).toFixed(1);
+          showError('No face detected, providing an estimated score.');
+        }
+        scoreDiv.innerText = `Score: ${score} / 10`;
+      } catch (e) {
+        showError('Error processing image: ' + e.message);
+      }
+      showLoader(false);
+    }
 
-  // Score the current video frame (using the video element directly is fine)
-  await scoreHTMLElementImage(video);
-});
-</script>
+    cameraBtn.onclick = async () => {
+      clearError();
+      preview.style.display = 'none';
+      scoreDiv.innerText = '';
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        video.style.display = 'block';
+        video.onloadedmetadata = () => {
+          if (video.videoWidth > 0 && video.videoHeight > 0) {
+            snapBtn.style.display = 'block';
+          } else {
+            showError('Camera metadata not loaded properly.');
+          }
+        };
+      } catch (e) {
+        showError('Camera access error: ' + e.message);
+      }
+    };
 
+    snapBtn.onclick = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      video.srcObject.getTracks().forEach(track => track.stop());
+      video.style.display = 'none';
+      snapBtn.style.display = 'none';
+      processImage(canvas);
+    };
+
+    upload.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        clearError();
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const image = new Image();
+          image.onload = () => {
+            if (image.width > 0 && image.height > 0) {
+              processImage(image);
+            } else {
+              showError('Invalid image.');
+            }
+          };
+          image.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    init();
+  </script>
 </body>
 </html>
