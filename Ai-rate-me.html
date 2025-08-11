@@ -1,3 +1,11 @@
+<!-- 
+To deploy on GitHub Pages:
+1. Create a new GitHub repository.
+2. Add this file as hot-or-not-ai.html in the root of the repository.
+3. Go to repository settings > Pages > Select main branch and root directory.
+4. Access via https://<username>.github.io/<repo>/hot-or-not-ai.html (not the raw file URL).
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,7 +55,6 @@
   </div>
   <canvas id="canvas" style="display: none;"></canvas>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
   <script>
     const video = document.getElementById('video');
     const snapBtn = document.getElementById('snap');
@@ -72,19 +79,55 @@
       errorDiv.innerText = '';
     }
 
-    async function init() {
+    function init() {
       showLoader(true);
-      try {
-        await tf.setBackend('webgl');
-        if (!tf.env().getBool('IS_BROWSER') || !tf.env().getBool('WEBGL_RENDER_FLOAT32_ENABLED')) {
-          console.warn('WebGL unavailable, falling back to CPU');
-          await tf.setBackend('cpu');
-        }
-        console.log('TensorFlow.js initialized');
-      } catch (e) {
-        showError('Failed to initialize TensorFlow.js: ' + e.message);
+      console.log('Initializing at', new Date().toISOString());
+      setTimeout(() => {
+        showLoader(false);
+        console.log('Initialization complete');
+      }, 100); // Simulate async init for consistency
+    }
+
+    function computeScore(imageData) {
+      const data = imageData.data;
+      let rSum = 0, gSum = 0, bSum = 0;
+      let brightnessSum = 0, brightnessSquaredSum = 0;
+      const pixelCount = data.length / 4;
+
+      // Calculate brightness (grayscale) and color sums
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i] / 255;
+        const g = data[i + 1] / 255;
+        const b = data[i + 2] / 255;
+        const brightness = (r * 0.299 + g * 0.587 + b * 0.114); // Luminance formula
+        brightnessSum += brightness;
+        brightnessSquaredSum += brightness * brightness;
+        rSum += r;
+        gSum += g;
+        bSum += b;
       }
-      showLoader(false);
+
+      // Compute metrics
+      const avgBrightness = brightnessSum / pixelCount;
+      const brightnessVariance = (brightnessSquaredSum / pixelCount) - (avgBrightness * avgBrightness);
+      const contrast = Math.sqrt(brightnessVariance);
+      const avgR = rSum / pixelCount;
+      const avgG = gSum / pixelCount;
+      const avgB = bSum / pixelCount;
+      const colorBalance = 1 - Math.max(Math.abs(avgR - avgG), Math.abs(avgG - avgB), Math.abs(avgB - avgR));
+
+      // Heuristic score: combine contrast and color balance
+      const rawScore = (contrast * 7 + colorBalance * 3) * 10; // Weighted sum, scaled to 0-10
+      let score = Math.max(1, Math.min(10, rawScore)).toFixed(1);
+      console.log(`Brightness: ${avgBrightness}, Contrast: ${contrast}, ColorBalance: ${colorBalance}, Score: ${score}`);
+
+      // Ensure valid score
+      if (isNaN(score) || score < 1 || score > 10) {
+        console.warn('Invalid score, using fallback');
+        score = (Math.random() * 4 + 3).toFixed(1); // Fallback: 3.0-7.0
+      }
+
+      return score;
     }
 
     async function processImage(input) {
@@ -93,7 +136,7 @@
       scoreDiv.innerText = '';
       preview.style.display = 'block';
       preview.src = input.src || input.toDataURL();
-      console.log('Processing image...');
+      console.log('Processing image at', new Date().toISOString());
 
       try {
         // Resize image to 224x224 for processing
@@ -102,22 +145,15 @@
         tempCanvas.height = 224;
         const ctx = tempCanvas.getContext('2d');
         ctx.drawImage(input, 0, 0, input.width, input.height, 0, 0, 224, 224);
-        const tensor = tf.browser.fromPixels(tempCanvas).toFloat().div(255.0).expandDims();
+        const imageData = ctx.getImageData(0, 0, 224, 224);
 
-        // Simple heuristic: analyze pixel variance as a proxy for facial features
-        const mean = tensor.mean();
-        const variance = tensor.sub(mean).square().mean();
-        const rawScore = variance.dataSync()[0] * 10; // Scale variance to score
-        tensor.dispose();
-
-        // Clamp score to 1-10
-        const score = Math.max(1, Math.min(10, rawScore)).toFixed(1);
-        console.log(`Computed score: ${score}`);
+        // Compute score based on image properties
+        const score = computeScore(imageData);
         scoreDiv.innerText = `Score: ${score} / 10`;
       } catch (e) {
         console.error('Error processing image:', e);
-        showError('Error processing image, using fallback score.');
-        const score = (Math.random() * 3 + 4).toFixed(1); // Fallback: 4.0-7.0
+        showError('Error processing image, using estimated score.');
+        const score = (Math.random() * 4 + 3).toFixed(1); // Fallback: 3.0-7.0
         scoreDiv.innerText = `Score: ${score} / 10`;
       }
       showLoader(false);
@@ -134,13 +170,14 @@
         video.onloadedmetadata = () => {
           if (video.videoWidth > 0 && video.videoHeight > 0) {
             snapBtn.style.display = 'block';
-            console.log('Camera ready');
+            console.log('Camera ready at', new Date().toISOString());
           } else {
             showError('Camera metadata not loaded properly.');
           }
         };
       } catch (e) {
         showError('Camera access error: ' + e.message);
+        console.error('Camera error:', e);
       }
     };
 
@@ -151,7 +188,7 @@
       video.srcObject.getTracks().forEach(track => track.stop());
       video.style.display = 'none';
       snapBtn.style.display = 'none';
-      console.log('Photo snapped');
+      console.log('Photo snapped at', new Date().toISOString());
       processImage(canvas);
     };
 
@@ -164,10 +201,11 @@
           const image = new Image();
           image.onload = () => {
             if (image.width > 0 && image.height > 0) {
-              console.log('Image uploaded');
+              console.log('Image uploaded at', new Date().toISOString());
               processImage(image);
             } else {
               showError('Invalid image.');
+              console.error('Invalid image dimensions');
             }
           };
           image.src = event.target.result;
