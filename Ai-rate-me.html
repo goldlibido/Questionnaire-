@@ -74,6 +74,7 @@ async function processImage(img) {
   prediction.dispose();
 }
 
+// Upload from file
 document.getElementById('fileInput').addEventListener('change', async function(){
   const file = this.files[0];
   if (!file) return;
@@ -83,6 +84,7 @@ document.getElementById('fileInput').addEventListener('change', async function()
   processImage(img);
 });
 
+// Camera capture
 document.getElementById('cameraBtn').addEventListener('click', async () => {
   stream = await navigator.mediaDevices.getUserMedia({ video: true });
   const video = document.getElementById('cameraStream');
@@ -98,9 +100,11 @@ document.getElementById('snapBtn').addEventListener('click', () => {
   canvas.height = video.videoHeight;
   canvas.getContext('2d').drawImage(video, 0, 0);
   stream.getTracks().forEach(track => track.stop());
+
   const img = new Image();
   img.src = canvas.toDataURL();
   img.onload = () => processImage(img);
+
   document.getElementById('preview').src = img.src;
   document.getElementById('preview').style.display = 'block';
   document.getElementById('cameraStream').style.display = 'none';
