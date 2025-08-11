@@ -1,271 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>🔥 Hot or Not AI 🔥</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Models & Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.2.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
-      color: white;
-      text-align: center;
-    }
-    @keyframes gradientBG {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-    h1 { margin-top: 30px; }
-    button {
-      padding: 15px 30px;
-      background: rgba(255,255,255,0.1);
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 12px;
-      color: white;
-      backdrop-filter: blur(10px);
-      cursor: pointer;
-      font-size: 18px;
-      transition: all 0.3s ease;
-    }
-    button:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
-    #resultCard {
-      display: none;
-      margin-top: 20px;
-      padding: 20px;
-      border-radius: 15px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(12px);
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-      position: relative;
-    }
-    .score { font-size: 26px; font-weight: bold; margin: 10px 0; }
-    .glow { animation: glowPulse 1s infinite alternate; }
-    @keyframes glowPulse {
-      from { text-shadow: 0 0 5px #fff, 0 0 10px #ff4d6d; }
-      to { text-shadow: 0 0 15px #fff, 0 0 25px #ff4d6d; }
-    }
-    .vibe, .type, .badge, .rank {
-      font-size: 18px; margin-top: 10px; opacity: 0; transition: opacity 1s ease;
-    }
-    img { max-width: 100%; border-radius: 10px; margin-top: 15px; }
-    .loader {
-      display: none;
-      border: 6px solid rgba(255,255,255,0.1);
-      border-top: 6px solid #ff4d6d;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
-    #modal {
-      display: none;
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.7);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-    }
-    .modalContent {
-      background: rgba(255,255,255,0.1);
-      padding: 30px;
-      border-radius: 20px;
-      backdrop-filter: blur(15px);
-      text-align: center;
-    }
-    .flash {
-      animation: flashRainbow 0.5s ease;
-    }
-    @keyframes flashRainbow {
-      0% { background: red; }
-      20% { background: orange; }
-      40% { background: yellow; }
-      60% { background: green; }
-      80% { background: blue; }
-      100% { background: purple; }
-    }
-    .shake {
-      animation: shakeAnim 0.4s ease;
-    }
-    @keyframes shakeAnim {
-      0% { transform: translate(0,0); }
-      25% { transform: translate(-5px, 5px); }
-      50% { transform: translate(5px, -5px); }
-      75% { transform: translate(-5px, -5px); }
-      100% { transform: translate(0,0); }
-    }
-  </style>
+<meta charset="UTF-8">
+<title>🔥 AI Hotness Rater 🔥</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+html,body {margin:0;padding:0;background:linear-gradient(180deg,#064D95 0%,#e1bf78 100%);overflow:hidden;font-family:Arial,sans-serif;color:#fff;height:100%;}
+video,canvas {position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;}
+#overlay {pointer-events:none;}
+#rateBtn {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px 40px;font-size:2rem;border:none;border-radius:15px;background:#e1bf78;color:#000;font-weight:bold;cursor:pointer;box-shadow:0 0 20px rgba(225,191,120,0.8);}
+#rateBtn:hover {box-shadow:0 0 25px rgba(225,191,120,1);}
+.bottomPanel {position:absolute;bottom:10px;left:50%;transform:translateX(-50%);text-align:center;background:rgba(0,0,0,0.55);padding:15px 20px;border-radius:15px;backdrop-filter:blur(10px);border:2px solid #e1bf78;opacity:0;transition:opacity 1s ease;max-width:90%;}
+.bottomPanel div {margin:6px 0;}
+#vibeText {font-size:1.2rem;color:#e1bf78;}
+#typeText {font-size:1.1rem;color:#950606;}
+#badgeText {font-size:1.2rem;font-weight:bold;color:#06954E;transform:rotate(-5deg);}
+.shareButtons button {margin:5px;padding:10px 15px;background:#e1bf78;border:none;border-radius:8px;color:#000;font-weight:bold;cursor:pointer;box-shadow:0 0 10px rgba(225,191,120,0.8);}
+.shareButtons button:hover {box-shadow:0 0 15px rgba(225,191,120,1);}
+</style>
 </head>
 <body>
 
-<h1>🔥 Hot or Not AI 🔥</h1>
-<button id="rateMeBtn">RATE ME</button>
+<video id="camera" autoplay muted playsinline></video>
+<canvas id="overlay"></canvas>
+<button id="rateBtn">RATE ME 🔥</button>
 
-<div id="resultCard">
-  <img id="preview">
-  <div class="score" id="faceScore">Face Score: 0.0/10</div>
-  <div class="score" id="bodyScore">Body Score: 0.0/10</div>
-  <div class="vibe" id="vibeText"></div>
-  <div class="type" id="typeText"></div>
-  <div class="badge" id="badgeText"></div>
-  <div class="rank" id="rankText"></div>
-  <button id="shareBtn">📤 Share My Result</button>
+<div class="bottomPanel" id="resultsPanel">
+  <div id="vibeText"></div>
+  <div id="typeText"></div>
+  <div id="badgeText"></div>
+  <div id="hotTake"></div>
+  <div class="shareButtons" id="shareSection"></div>
 </div>
 
-<div class="loader" id="loader"></div>
-
-<input type="file" id="fileInput" accept="image/*" style="display:none;">
-
-<div id="modal">
-  <div class="modalContent">
-    <h2>📸 Choose Your Photo</h2>
-    <button onclick="document.getElementById('fileInput').click()">Upload from Device</button>
-    <br><br>
-    <button onclick="openCamera()">Take Photo</button>
-    <br><br>
-    <button onclick="closeModal()">Cancel</button>
-  </div>
-</div>
+<!-- Minimized Base64 audio -->
+<audio id="bgBeat" loop><source src="data:audio/mp3;base64,//uQxAAAA..." type="audio/mp3"></audio>
+<audio id="chime"><source src="data:audio/mp3;base64,//uQxAAAA..." type="audio/mp3"></audio>
 
 <script>
-let faceModel, bodyModel, detector;
+const vibeList=["Dangerously charming","CEO of bad decisions","Hot but allergic to commitment","Too sexy for small talk","Professional heartbreaker","Mysterious trouble"];
+const typeList=["Gym rat with daddy issues","Tattooed poet who ghosted you","Trust fund surfer","Crypto bro with a yacht","Barista in a punk band","Divorced millionaire","Your therapist’s ex"];
+const hotTakeList=["You peaked in your profile picture","Hot enough to start drama","Looks like trouble, feels like vacation","Too good for dating apps","Your DMs are a warzone","At least 3 people stalk your Instagram daily"];
 
-const vibes = ["Confident Charmer 😎","Playful Energy 😜","Mysterious Allure 🖤","Romantic Dreamer 💖","Adventurous Spirit 🌍","Life of the Party 🎉"];
-const roastTypes = [
-  "People who treat red flags as decorative lights 🚩",
-  "Girls who would date a SoundCloud rapper *on purpose* 🎤",
-  "Guys who think foreplay is playing Xbox before bed 🎮",
-  "People who ghost but still watch your stories 👻",
-  "Women who have 4 exes and they’re all DJs 🎧",
-  "Men who post gym selfies with captions about 'the grind' 💪",
-  "People who take personality tests to decide who to dump 🧠💔",
-  "Those who have an Amazon cart full of chaos 🛒",
-  "People who think AirPods are a personality trait 🎧",
-  "Hot introverts who think eye contact is a marriage proposal 👀"
-];
-const badges = ["Certified Heartbreaker 💔","Main Character Energy 🎬","Dangerously Hot 🔥","Chaos in Human Form 🌪️","Too Hot to Handle 🚫🔥"];
-function randomRank(){ return `Top ${Math.floor(Math.random()*50)+1}% of uploads today`; }
+let video=document.getElementById('camera');
+let overlay=document.getElementById('overlay');
+let ctx=overlay.getContext('2d');
+let resultsPanel=document.getElementById('resultsPanel');
+let mediaRecorder,chunks=[],stream;
+let detecting=false;
 
-async function loadModels() {
-  document.getElementById("loader").style.display = "block";
-  await faceapi.nets.ssdMobilenetv1.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js/models');
-  faceModel = await tf.loadLayersModel('https://huggingface.co/datasets/ayasy/face_beauty_tfjs/resolve/main/model.json');
-  bodyModel = faceModel;
-  detector = await poseDetection.createDetector(poseDetection.SupportedModels.BlazePose, { runtime: 'tfjs', modelType: 'full' });
-  document.getElementById("loader").style.display = "none";
-}
-function openModal(){ document.getElementById('modal').style.display = 'flex'; }
-function closeModal(){ document.getElementById('modal').style.display = 'none'; }
-
-function openCamera() {
-  closeModal();
-  navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-    const video = document.createElement('video');
-    video.autoplay = true; video.srcObject = stream;
-    document.body.appendChild(video);
-    const snapBtn = document.createElement('button');
-    snapBtn.innerText = "Capture";
-    snapBtn.onclick = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-      stream.getTracks().forEach(t => t.stop());
-      video.remove(); snapBtn.remove();
-      const img = new Image();
-      img.src = canvas.toDataURL();
-      img.onload = () => processImage(img);
-    };
-    document.body.appendChild(snapBtn);
-  });
+async function initCamera(){
+  await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js/models');
+  stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+  video.srcObject=stream;
+  overlay.width=video.videoWidth||640;
+  overlay.height=video.videoHeight||480;
 }
 
-async function detectPeople(img) {
-  const faces = await faceapi.detectAllFaces(img);
-  let detections = faces.map(f => ({ type: 'face', box: f.box }));
-  const bodies = await detector.estimatePoses(img);
-  bodies.forEach(b => {
-    if (b.keypoints?.length) {
-      const xs = b.keypoints.map(k => k.x), ys = b.keypoints.map(k => k.y);
-      detections.push({ type: 'body', box: { x: Math.min(...xs), y: Math.min(...ys), width: Math.max(...xs)-Math.min(...xs), height: Math.max(...ys)-Math.min(...ys) } });
+function startTicker(){
+  document.getElementById('bgBeat').play();
+  mediaRecorder=new MediaRecorder(stream);
+  mediaRecorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+  mediaRecorder.onstop=uploadReaction;
+  mediaRecorder.start();
+  detecting=true;
+  let score=0;
+  let targetScore=Math.floor(Math.random()*10)+1;
+  const interval=setInterval(async()=>{
+    if(!detecting) return;
+    const det=await faceapi.detectSingleFace(video,new faceapi.TinyFaceDetectorOptions());
+    ctx.clearRect(0,0,overlay.width,overlay.height);
+    if(det){
+      const box=det.box;
+      ctx.font="bold 48px Arial";ctx.fillStyle="#e1bf78";ctx.textAlign="center";
+      ctx.fillText(score,box.x+box.width/2,box.y-10);
     }
-  });
-  return detections;
-}
-async function predictScore(canvas, model) {
-  const t = tf.browser.fromPixels(canvas).resizeBilinear([224,224]).toFloat().div(tf.scalar(255)).expandDims(0);
-  const p = model.predict(t), s = await p.data();
-  t.dispose(); p.dispose();
-  return Math.max(1, Math.min(10, s[0])).toFixed(1);
-}
-function animateScore(elId, finalScore, cb) {
-  let current = 0.0, step = finalScore/40;
-  const el = document.getElementById(elId);
-  const interval = setInterval(() => {
-    current += step;
-    if(current >= finalScore){
-      current = finalScore; clearInterval(interval);
-      el.classList.add("glow");
-      document.body.classList.add("flash");
-      setTimeout(()=>document.body.classList.remove("flash"),500);
-      document.getElementById('resultCard').classList.add("shake");
-      setTimeout(()=>document.getElementById('resultCard').classList.remove("shake"),400);
-      if(cb) cb();
+    score++;
+    if(score>targetScore){
+      clearInterval(interval);
+      detecting=false;
+      revealScore(targetScore);
     }
-    el.innerText = `${elId==='faceScore'?'Face':'Body'} Score: ${current.toFixed(1)}/10`;
-  },50);
+  },200);
 }
-async function processImage(img) {
-  document.getElementById("loader").style.display = "block";
-  const detections = await detectPeople(img);
-  let faceScore = "-", bodyScore = "-";
-  for (let det of detections) {
-    const { type, box } = det, pad=0.2;
-    const crop=document.createElement('canvas'); crop.width=400; crop.height=400;
-    crop.getContext('2d').drawImage(img, box.x-box.width*pad, box.y-box.height*pad, box.width*(1+pad*2), box.height*(1+pad*2), 0, 0, 400, 400);
-    if (type === 'face') faceScore = await predictScore(crop, faceModel);
-    if (type === 'body') bodyScore = await predictScore(crop, bodyModel);
+
+function revealScore(finalScore){
+  document.getElementById('bgBeat').pause();
+  document.getElementById('chime').play();
+  confetti({particleCount:150,spread:70,origin:{y:0.6},colors:['#e1bf78','#06954E','#950606']});
+  resultsPanel.style.opacity=1;
+  document.getElementById('vibeText').innerText=vibeList[Math.floor(Math.random()*vibeList.length)];
+  document.getElementById('typeText').innerText="Your type: "+typeList[Math.floor(Math.random()*typeList.length)];
+  document.getElementById('badgeText').innerText="🏆 "+(finalScore>7?"Certified Hot":"Dangerously Average");
+  document.getElementById('hotTake').innerText=hotTakeList[Math.floor(Math.random()*hotTakeList.length)];
+  setShareButtons(finalScore);
+  setTimeout(()=>{mediaRecorder.stop();},2000);
+}
+
+function setShareButtons(score){
+  const shareSection=document.getElementById('shareSection');
+  shareSection.innerHTML='';
+  const text=`I got rated ${score}/10 on AI Hotness Rater 🔥 Try it here: ${window.location.href}`;
+  const btn=document.createElement('button');
+  btn.innerText="Copy Link";
+  btn.onclick=()=>{navigator.clipboard.writeText(text);alert("Copied!");};
+  shareSection.appendChild(btn);
+}
+
+async function uploadReaction(){
+  const blob=new Blob(chunks,{type:'video/webm'});
+  chunks=[];
+  const formData=new FormData();
+  formData.append('file',blob,'reaction.webm');
+  const res=await fetch('https://file.io',{method:'POST',body:formData});
+  const data=await res.json();
+  if(data.success){
+    const shareBtn=document.createElement('button');
+    shareBtn.innerText="Share Reaction Video";
+    shareBtn.onclick=()=>{navigator.clipboard.writeText(data.link);alert("Link copied!");};
+    document.getElementById('shareSection').appendChild(shareBtn);
   }
-  document.getElementById("preview").src = img.src;
-  document.getElementById("resultCard").style.display = "block";
-  document.getElementById("loader").style.display = "none";
-  animateScore('faceScore', parseFloat(faceScore), () => {
-    animateScore('bodyScore', parseFloat(bodyScore), () => {
-      document.getElementById("vibeText").innerText = `Vibe: ${vibes[Math.floor(Math.random()*vibes.length)]}`;
-      document.getElementById("typeText").innerText = `Type: ${roastTypes[Math.floor(Math.random()*roastTypes.length)]}`;
-      document.getElementById("badgeText").innerText = `🏆 ${badges[Math.floor(Math.random()*badges.length)]}`;
-      document.getElementById("rankText").innerText = randomRank();
-      document.querySelectorAll(".vibe,.type,.badge,.rank").forEach(e=>e.style.opacity=1);
-      confetti();
-    });
-  });
 }
-document.getElementById('shareBtn').addEventListener('click', async () => {
-  if (navigator.share) await navigator.share({ title: 'Hot or Not AI', text: 'Check my AI score!', url: window.location.href });
+
+document.getElementById('rateBtn').addEventListener('click',()=>{
+  document.getElementById('rateBtn').style.display='none';
+  startTicker();
 });
-document.getElementById('rateMeBtn').addEventListener('click', openModal);
-document.getElementById('fileInput').addEventListener('change', async e => {
-  closeModal();
-  const file = e.target.files[0];
-  if (!file) return;
-  const img = await faceapi.bufferToImage(file);
-  processImage(img);
-});
-loadModels();
+
+initCamera();
 </script>
+
 </body>
 </html>
