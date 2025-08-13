@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Will you GET LUCKY tonight?</title>
+
+<!-- Font (brand standard) -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    /* Brand colors (your hex codes) */
+    --gold: #e1bf78;
+    --blue: #064D95;
+    --green: #06954E;
+    --red: #950606;
+
+    /* Slip styling */
+    --overlay: rgba(0,0,0,.55);
+    --paper:#efe3c7;
+    --paper-edge:#7c7c7c;
+    --tab:#6e7580;         /* sampled blue from your photo corners */
+    --text-blue:#6e7580;   /* fortune text color to match tabs */
+  }
+
+  /* Page frame */
+  html,body { height:100%; }
+  body{
+    margin:0;
+    font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:var(--green);                  /* thin outer green border effect */
+    display:grid;
+    place-items:center;
+  }
+  .wrap{
+    background:var(--red);
+    border:4px solid var(--green);            /* thin green border around red bg */
+    width:min(980px,96vw);
+    padding:22px 18px 26px;
+    text-align:center;
+    box-sizing:border-box;
+  }
+
+  /* Header */
+  .logo{
+    max-width:120px;
+    width:120px;
+    height:auto;
+    display:block;
+    margin:0 auto 10px auto;
+  }
+  h1{
+    color:var(--gold);
+    font-weight:800;
+    font-size:clamp(22px,4.6vw,42px);
+    margin:8px 0 16px;
+    letter-spacing:.3px;
+  }
+
+  /* Stage (button-like) */
+  .stage{
+    position:relative;
+    width:min(560px,88vw);
+    aspect-ratio:1/1;
+    display:grid;
+    place-items:center;
+    margin:0 auto;
+    border:4px solid var(--blue);             /* blue border to read like a button */
+    border-radius:10px;
+    cursor:pointer;
+    background:transparent;
+    transition:transform .08s ease;
+  }
+  .stage:active{ transform:scale(.99); }
+  .stage img{
+    max-width:100%;
+    width:100%;
+    height:auto;
+    user-select:none;
+    filter: drop-shadow(0 6px 18px rgba(0,0,0,.25));
+  }
+
+  /* Caption */
+  .caption{
+    margin-top:12px;
+    font-size:clamp(14px,2.8vw,18px);
+    color:var(--gold);
+    font-weight:700;
+  }
+
+  /* Fortune overlay styled as paper slip */
+  .overlay{position:fixed;inset:0;background:var(--overlay);display:none;align-items:center;justify-content:center;padding:24px;z-index:50;}
+  .overlay.show{display:flex;}
+  .modal-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+
+  .slip{
+    position:relative;
+    background:
+      linear-gradient(0deg, rgba(0,0,0,.03), transparent),           /* subtle grain */
+      linear-gradient(90deg, rgba(255,255,255,.25), transparent 60%),
+      var(--paper);
+    border:2px solid var(--paper-edge);
+    border-radius:6px;
+    box-shadow:0 12px 40px rgba(0,0,0,.45);
+    padding:12px 22px;
+    max-width:min(860px,96vw);
+    min-width:min(760px,92vw);
+    height:clamp(58px,12vw,90px);   /* long, low strip */
+    display:flex;align-items:center;justify-content:center;
+    transform:rotate(-1.2deg);
+    overflow:hidden;
+  }
+  /* corner tabs */
+  .slip::before,.slip::after{content:"";position:absolute;width:16px;height:12px;background:var(--tab);}
+  .slip::before{left:-2px;top:-2px;}
+  .slip::after{right:-2px;bottom:-2px;}
+  .tab-tr,.tab-bl{position:absolute;width:16px;height:12px;background:var(--tab);}
+  .tab-tr{right:-2px;top:-2px;}
+  .tab-bl{left:-2px;bottom:-2px;}
+
+  .fortune{
+    color:var(--text-blue);
+    font-family:"Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif; /* matches real fortune look */
+    font-weight:700;
+    font-size:clamp(18px,2.4vw,28px);
+    line-height:1.18;
+    text-align:center;
+    letter-spacing:.2px;
+    text-shadow:0 1px 0 rgba(255,255,255,.35);
+    padding-inline:6px;
+  }
+
+  /* Close button (brand gold) */
+  .btn{
+    background:var(--gold); color:#222;
+    border:none; border-radius:8px;
+    padding:10px 16px; font-weight:800; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
+    <h1>Will you GET LUCKY tonight?</h1>
+
+    <div class="stage" id="cookieStage" aria-live="polite">
+      <img id="cookieFrame" alt="Tap to crack the fortune cookie" />
+    </div>
+
+    <div class="caption">
+      Pop that fortune cookie to reveal your sexy fortune and start dating
+    </div>
+  </div>
+
+  <!-- Fortune slip modal -->
+  <div class="overlay" id="fortuneOverlay" role="dialog" aria-modal="true" aria-labelledby="fortuneText">
+    <div class="modal-wrap">
+      <div class="slip">
+        <div class="tab-tr" aria-hidden="true"></div>
+        <div class="tab-bl" aria-hidden="true"></div>
+        <div class="fortune" id="fortuneText">Your fortune goes here.</div>
+      </div>
+      <button class="btn" id="closeFortune">Close</button>
+    </div>
+  </div>
+
+<script>
+(() => {
+  /* If this file sits beside your /cookie folder, these paths work as-is. 
+     NOTE: case-sensitive .PNG extensions per your repo. */
+  const imgs = [
+    "cookie/cookie-1.PNG",
+    "cookie/cookie-2.PNG",
+    "cookie/cookie-3.PNG",
+    "cookie/cookie-4.PNG",
+    "cookie/cookie-5.PNG",
+    "cookie/cookie-6.PNG"
+  ];
+
+  /* Replace with your final list */
+  const FORTUNES = [
+    "Your entrepreneurial spirit will lead to great financial success and wealth.",
+    "Someone bold will choose you tonight.",
+    "Say yes to the next invitation.",
+    "A spark becomes a scene-stealing fire.",
+    "Your curiosity opens the right door."
+  ];
+
+  const frameEl   = document.getElementById("cookieFrame");
+  const stageEl   = document.getElementById("cookieStage");
+  const overlayEl = document.getElementById("fortuneOverlay");
+  const fortuneEl = document.getElementById("fortuneText");
+  const closeBtn  = document.getElementById("closeFortune");
+
+  // Preload frames for smooth animation
+  const cache = []; let loaded = 0;
+  imgs.forEach(src => {
+    const im = new Image();
+    im.onload = () => { if (++loaded === imgs.length) frameEl.src = imgs[0]; };
+    im.src = src;
+    cache.push(im);
+  });
+
+  const FRAME_MS = 140;  // tweak 100–160 for snappier/slower
+  let playing = false, i = 0, timer = null;
+
+  // Play once, stop on last frame, then show fortune
+  function startOnce(){
+    if (playing) return;
+    playing = true; i = 0;
+    timer = setInterval(() => {
+      i++;
+      if (i < imgs.length) frameEl.src = imgs[i];
+      if (i === imgs.length - 1) {
+        clearInterval(timer); timer = null;
+        setTimeout(showFortune, 180); // small settle pause
+      }
+    }, FRAME_MS);
+  }
+
+  function showFortune(){
+    const pick = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
+    fortuneEl.textContent = pick;
+    overlayEl.classList.add("show");
+    frameEl.style.pointerEvents = "none"; // prevent re-trigger
+  }
+
+  // Close only hides the slip; final frame remains visible (no looping)
+  closeBtn.addEventListener("click", () => overlayEl.classList.remove("show"));
+
+  // Start on click/tap or keyboard
+  stageEl.addEventListener("click", startOnce);
+  stageEl.tabIndex = 0;
+  stageEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startOnce(); }
+  });
+})();
+</script>
+</body>
+</html>
