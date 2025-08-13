@@ -7,22 +7,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* Brand */
     --gold:#e1bf78;
     --blue:#064D95;
     --green:#06954E;
     --red:#950606;
 
-    /* Slip + overlay */
     --overlay:rgba(0,0,0,.55);
     --paper:#efe3c7;
     --paper-edge:#7c7c7c;
-    --tab:#6e7580;      /* sampled corner tab blue */
+    --tab:#6e7580;
     --text-blue:#6e7580;
 
-    /* Layout tweaks */
-    --gradient-border: 8px;   /* thicker gradient border */
-    --cookie-nudge: 14px;     /* move cookie frames slightly right; tweak as needed */
+    --gradient-border: 8px;
+    --cookie-nudge: 14px;
   }
 
   html,body{height:100%}
@@ -33,7 +30,6 @@
     display:grid; place-items:center;
   }
 
-  /* Red card with green→blue gradient border that goes to its edges */
   .wrap{
     border: var(--gradient-border) solid transparent;
     border-radius:10px;
@@ -57,11 +53,10 @@
   .pulse{ display:inline-block; animation:pulse 1.25s ease-in-out infinite; transform-origin:center; }
   @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
 
-  /* Stage + caption grouped so caption sits directly under images */
   .stageBlock{
     display:grid;
     justify-items:center;
-    gap:10px;              /* small gap between image and caption */
+    gap:6px;
     margin:0 auto;
     width:min(560px,88vw);
   }
@@ -77,8 +72,6 @@
     transition:transform .08s ease;
   }
   .stage:active{ transform:scale(.99); }
-
-  /* Nudge the cookie frames slightly right to visually center them */
   .stage img{
     max-width:100%;
     width:100%;
@@ -89,23 +82,23 @@
   }
 
   .caption{
-    font-size:clamp(14px,2.8vw,18px);
+    font-size:clamp(20px,3.4vw,30px);
     color:var(--gold);
-    font-style:italic;     /* requested italic */
-    font-weight:700;
+    font-style:italic;
+    font-weight:800;
+    margin-top:2px;
   }
 
-  /* Fortune slip modal (lowered slightly) */
   .overlay{
     position:fixed; inset:0; background:var(--overlay);
-    display:none; align-items:flex-start; justify-content:center;
+    display:none; align-items:center; justify-content:center;
     padding:24px; z-index:50;
   }
   .overlay.show{ display:flex; }
 
   .modal-wrap{
     display:flex; flex-direction:column; align-items:center; gap:12px;
-    margin-top: 28px; /* lower the slip a bit */
+    margin-top:0;
   }
 
   .slip{
@@ -146,8 +139,11 @@
 
   .btn{
     background:var(--gold); color:#222;
-    border:none; border-radius:8px;
-    padding:10px 16px; font-weight:800; cursor:pointer;
+    border:none; border-radius:10px;
+    padding:16px 28px;
+    font-weight:900;
+    font-size:clamp(18px,3.2vw,28px);
+    cursor:pointer;
   }
 </style>
 </head>
@@ -157,12 +153,10 @@
     <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
     <h1>Will you <span class="pulse">GET LUCKY</span> tonight?</h1>
 
-    <!-- Stage + Caption grouped together -->
     <div class="stageBlock">
       <div class="stage" id="cookieStage" aria-live="polite" title="Pop the cookie">
         <img id="cookieFrame" alt="Tap to crack the fortune cookie" />
       </div>
-
       <div class="caption">
         Pop that fortune cookie to reveal your sexy fortune and start dating
       </div>
@@ -225,7 +219,6 @@
   const fortuneEl = document.getElementById("fortuneText");
   const closeBtn  = document.getElementById("closeFortune");
 
-  // Preload frames
   const cache = []; let loaded = 0;
   imgs.forEach(src => {
     const im = new Image();
@@ -235,7 +228,7 @@
     cache.push(im);
   });
 
-  const FRAME_MS = 140;  // speed per frame
+  const FRAME_MS = 140;
   let playing = false, i = 0, timer = null;
 
   function startOnce(){
@@ -255,10 +248,9 @@
     const pick = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
     fortuneEl.textContent = pick;
     overlayEl.classList.add("show");
-    frameEl.style.pointerEvents = "none"; // prevent retrigger
+    frameEl.style.pointerEvents = "none";
   }
 
-  // DATE NOW → go to your secret invite page
   closeBtn.addEventListener("click", () => {
     window.location.href = "secret-invite.html";
   });
