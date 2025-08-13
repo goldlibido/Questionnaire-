@@ -56,7 +56,7 @@
   .stageBlock{
     display:grid;
     justify-items:center;
-    gap:2px;                               /* caption closer to image */
+    gap:2px;
     margin:0 auto;
     width:min(560px,88vw);
     padding-inline:12px;
@@ -76,12 +76,12 @@
   .stage:active{ transform:scale(.99); }
 
   .stage img{
-    max-width:108%;                        /* slightly larger */
+    max-width:108%;
     width:108%;
     height:auto;
     user-select:none;
     filter:drop-shadow(0 6px 18px rgba(0,0,0,.25));
-    transform: translateX(calc(var(--cookie-nudge) - 4px)); /* nudge left */
+    transform: translateX(calc(var(--cookie-nudge) - 4px));
   }
 
   .caption{
@@ -93,7 +93,7 @@
     text-align:center;
     text-wrap:balance;
     max-width:92%;
-    margin-top:0;                          /* directly under image */
+    margin-top:0;
   }
 
   .overlay{
@@ -145,12 +145,21 @@
   }
 
   .btn{
-    background:var(--gold); color:#222;
-    border:none; border-radius:10px;
+    background:var(--gold);
+    color:#222;
+    border:none;
+    border-radius:10px;
     padding:16px 28px;
     font-weight:900;
     font-size:clamp(18px,3.2vw,28px);
     cursor:pointer;
+    animation:btnPulse 1.4s ease-in-out infinite;
+    transform-origin:center;
+  }
+
+  @keyframes btnPulse {
+    0%, 100% { transform: scale(1); box-shadow:0 0 0 rgba(225,191,120,0); }
+    50% { transform: scale(1.08); box-shadow:0 0 20px rgba(225,191,120,0.7); }
   }
 </style>
 </head>
