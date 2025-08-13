@@ -19,7 +19,6 @@
     --text-blue:#6e7580;
 
     --gradient-border: 8px;
-    --cookie-nudge: 14px;
   }
 
   html,body{height:100%}
@@ -48,52 +47,51 @@
     color:var(--gold);
     font-weight:800;
     font-size:clamp(28px,6.2vw,56px);
-    margin:8px 0 16px; letter-spacing:.3px;
+    margin:8px 0 10px;
   }
-  .pulse{ display:inline-block; animation:pulse 1.25s ease-in-out infinite; transform-origin:center; }
+  .pulse{ animation:pulse 1.25s ease-in-out infinite; transform-origin:center; display:inline-block; }
   @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
 
   .stageBlock{
     display:grid;
     justify-items:center;
-    gap:2px;
+    gap:6px;
     margin:0 auto;
     width:min(560px,88vw);
-    padding-inline:12px;
-    box-sizing:border-box;
   }
 
   .stage{
     position:relative;
     width:100%;
     aspect-ratio:1/1;
-    display:grid; place-items:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     border-radius:10px;
     cursor:pointer;
     background:transparent;
-    transition:transform .08s ease;
   }
-  .stage:active{ transform:scale(.99); }
-
   .stage img{
-    max-width:108%;
-    width:108%;
+    max-width:100%;
     height:auto;
-    user-select:none;
+    transform: translateY(0);
+    animation:idleBob 3.5s ease-in-out infinite;
     filter:drop-shadow(0 6px 18px rgba(0,0,0,.25));
-    transform: translateX(calc(var(--cookie-nudge) - 4px));
+  }
+  @keyframes idleBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
   }
 
   .caption{
     color:var(--gold);
     font-style:italic;
     font-weight:800;
-    font-size:clamp(18px,3vw,24px);
-    line-height:1.25;
+    font-size:clamp(18px,3vw,22px);
+    line-height:1.3;
     text-align:center;
-    text-wrap:balance;
-    max-width:92%;
-    margin-top:0;
+    max-width:90%;
+    margin:0;
   }
 
   .overlay{
@@ -104,16 +102,12 @@
   .overlay.show{ display:flex; }
 
   .modal-wrap{
-    display:flex; flex-direction:column; align-items:center; gap:12px;
-    margin-top:0;
+    display:flex; flex-direction:column; align-items:center; gap:16px;
+    animation:fadeIn 0.3s ease;
   }
 
   .slip{
-    position:relative;
-    background:
-      linear-gradient(0deg, rgba(0,0,0,.03), transparent),
-      linear-gradient(90deg, rgba(255,255,255,.25), transparent 60%),
-      var(--paper);
+    background:var(--paper);
     border:2px solid var(--paper-edge);
     border-radius:6px;
     box-shadow:0 12px 40px rgba(0,0,0,.45);
@@ -122,26 +116,24 @@
     min-width:min(760px,92vw);
     height:clamp(58px,12vw,90px);
     display:flex; align-items:center; justify-content:center;
-    transform:rotate(-1.2deg);
     overflow:hidden;
+    animation:slideUp 0.6s ease forwards;
+    transform:translateY(40px);
   }
-  .slip::before,.slip::after{content:"";position:absolute;width:16px;height:12px;background:var(--tab);}
-  .slip::before{left:-2px;top:-2px;}
-  .slip::after{right:-2px;bottom:-2px;}
-  .tab-tr,.tab-bl{position:absolute;width:16px;height:12px;background:var(--tab);}
-  .tab-tr{right:-2px;top:-2px;}
-  .tab-bl{left:-2px;bottom:-2px;}
+  @keyframes slideUp {
+    to { transform:translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+  }
 
   .fortune{
     color:var(--text-blue);
-    font-family:"Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight:700;
     font-size:clamp(18px,2.4vw,28px);
-    line-height:1.18;
     text-align:center;
-    letter-spacing:.2px;
-    text-shadow:0 1px 0 rgba(255,255,255,.35);
-    padding-inline:6px;
   }
 
   .btn{
@@ -153,13 +145,19 @@
     font-weight:900;
     font-size:clamp(18px,3.2vw,28px);
     cursor:pointer;
-    animation:btnPulse 1.4s ease-in-out infinite;
+    animation:btnPulse 1.6s ease-in-out infinite;
     transform-origin:center;
   }
-
+  .btn:hover{
+    animation:btnPulseFast 0.9s ease-in-out infinite;
+  }
   @keyframes btnPulse {
     0%, 100% { transform: scale(1); box-shadow:0 0 0 rgba(225,191,120,0); }
     50% { transform: scale(1.08); box-shadow:0 0 20px rgba(225,191,120,0.7); }
+  }
+  @keyframes btnPulseFast {
+    0%, 100% { transform: scale(1); box-shadow:0 0 0 rgba(225,191,120,0); }
+    50% { transform: scale(1.12); box-shadow:0 0 25px rgba(225,191,120,0.9); }
   }
 </style>
 </head>
@@ -170,7 +168,7 @@
     <h1>Will you <span class="pulse">GET LUCKY</span> tonight?</h1>
 
     <div class="stageBlock">
-      <div class="stage" id="cookieStage" aria-live="polite" title="Pop the cookie">
+      <div class="stage" id="cookieStage">
         <img id="cookieFrame" alt="Tap to crack the fortune cookie" />
       </div>
       <div class="caption">
@@ -179,11 +177,9 @@
     </div>
   </div>
 
-  <div class="overlay" id="fortuneOverlay" role="dialog" aria-modal="true" aria-labelledby="fortuneText">
+  <div class="overlay" id="fortuneOverlay">
     <div class="modal-wrap">
       <div class="slip">
-        <div class="tab-tr" aria-hidden="true"></div>
-        <div class="tab-bl" aria-hidden="true"></div>
         <div class="fortune" id="fortuneText">Your fortune goes here.</div>
       </div>
       <button class="btn" id="closeFortune">DATE NOW</button>
@@ -219,14 +215,7 @@
     "Your patience will lead to unexpected love.",
     "You will have the best orgasm of your life tonight.",
     "You will cum so hard tonight you’ll be louder than you thought possible.",
-    "Express your sexuality in your unique way and you’ll feel hotter than ever.",
-    "Your dirty talk will make someone melt tonight.",
-    "Tonight, your hands will wander and your body will thank you.",
-    "Someone will crave your touch more than dessert tonight.",
-    "Foreplay will last longer than you expect… and you’ll love every second.",
-    "Your bedroom skills will leave someone speechless.",
-    "You’ll discover a kink you didn’t know you had.",
-    "If you flirt just right, they won’t be able to keep their hands off you."
+    "Express your sexuality in your unique way and you’ll feel hotter than ever."
   ];
 
   const frameEl   = document.getElementById("cookieFrame");
@@ -235,11 +224,11 @@
   const fortuneEl = document.getElementById("fortuneText");
   const closeBtn  = document.getElementById("closeFortune");
 
+  // Preload images
   const cache = []; let loaded = 0;
   imgs.forEach(src => {
     const im = new Image();
     im.onload = () => { if (++loaded === imgs.length) frameEl.src = imgs[0]; };
-    im.onerror = () => { console.warn("Image failed to load:", src); };
     im.src = src;
     cache.push(im);
   });
@@ -250,21 +239,20 @@
   function startOnce(){
     if (playing) return;
     playing = true; i = 0;
+    frameEl.style.animation = "none"; // stop idle bob
     timer = setInterval(() => {
       i++;
       if (i < imgs.length) frameEl.src = imgs[i];
       if (i === imgs.length - 1) {
-        clearInterval(timer); timer = null;
+        clearInterval(timer);
         setTimeout(showFortune, 180);
       }
     }, FRAME_MS);
   }
 
   function showFortune(){
-    const pick = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
-    fortuneEl.textContent = pick;
+    fortuneEl.textContent = FORTUNES[Math.floor(Math.random()*FORTUNES.length)];
     overlayEl.classList.add("show");
-    frameEl.style.pointerEvents = "none";
   }
 
   closeBtn.addEventListener("click", () => {
@@ -272,10 +260,6 @@
   });
 
   stageEl.addEventListener("click", startOnce);
-  stageEl.tabIndex = 0;
-  stageEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startOnce(); }
-  });
 })();
 </script>
 </body>
