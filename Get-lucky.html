@@ -23,17 +23,22 @@
   body{
     margin:0;
     font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    background:var(--green);                     /* thin green border effect */
+    /* thin gradient frame lives on the inner container now */
+    background:#0b0b0b;
     display:grid; place-items:center;
   }
 
   .wrap{
-    background:var(--red);
-    border:2px solid var(--green);               /* thinner green border */
+    /* red card with GRADIENT BORDER around it (green -> blue) */
+    border:2px solid transparent;
+    background:
+      linear-gradient(var(--red), var(--red)) padding-box,
+      linear-gradient(90deg, var(--green), var(--blue)) border-box;
     width:min(980px,96vw);
     padding:22px 18px 26px;
     text-align:center;
     box-sizing:border-box;
+    border-radius:8px;
   }
 
   .logo{ max-width:120px;width:120px;height:auto;display:block;margin:0 auto 10px; }
@@ -41,7 +46,7 @@
   h1{
     color:var(--gold);
     font-weight:800;
-    font-size:clamp(28px,6.2vw,56px);           /* bigger title */
+    font-size:clamp(28px,6.2vw,56px);
     margin:8px 0 16px; letter-spacing:.3px;
   }
   .pulse{ display:inline-block; animation:pulse 1.25s ease-in-out infinite; transform-origin:center; }
@@ -53,14 +58,12 @@
     aspect-ratio:1/1;
     display:grid; place-items:center;
     margin:0 auto;
-    border:4px solid var(--blue);                /* blue “button” frame */
+    /* ❌ removed blue border */
     border-radius:10px;
     cursor:pointer;
     background:transparent;
-    transition:transform .08s ease, box-shadow .2s ease;
-    box-shadow:0 0 0 0 rgba(6,77,149,0);
+    transition:transform .08s ease;
   }
-  .stage:hover{ box-shadow:0 0 0 4px rgba(6,77,149,.25); }
   .stage:active{ transform:scale(.99); }
   .stage img{ max-width:100%;width:100%;height:auto;user-select:none;filter:drop-shadow(0 6px 18px rgba(0,0,0,.25)); }
 
@@ -68,14 +71,17 @@
     margin-top:12px;
     font-size:clamp(14px,2.8vw,18px);
     color:var(--gold);
-    font-style:italic;                           /* italic caption */
+    font-style:italic;
     font-weight:700;
   }
 
   /* Fortune slip modal */
   .overlay{position:fixed;inset:0;background:var(--overlay);display:none;align-items:center;justify-content:center;padding:24px;z-index:50;}
   .overlay.show{display:flex;}
-  .modal-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+  .modal-wrap{
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+    transform: translateY(22px); /* ↓ lowered slightly */
+  }
 
   .slip{
     position:relative;
@@ -113,7 +119,11 @@
     padding-inline:6px;
   }
 
-  .btn{ background:var(--gold);color:#222;border:none;border-radius:8px;padding:10px 16px;font-weight:800;cursor:pointer; }
+  .btn{
+    background:var(--gold); color:#222;
+    border:none; border-radius:8px;
+    padding:10px 16px; font-weight:800; cursor:pointer;
+  }
 </style>
 </head>
 <body>
@@ -138,13 +148,12 @@
         <div class="tab-bl" aria-hidden="true"></div>
         <div class="fortune" id="fortuneText">Your fortune goes here.</div>
       </div>
-      <button class="btn" id="closeFortune">Close</button>
+      <button class="btn" id="closeFortune">DATE NOW</button>
     </div>
   </div>
 
 <script>
 (() => {
-  /* Frame paths (case-sensitive) */
   const imgs = [
     "cookie/cookie-1.PNG",
     "cookie/cookie-2.PNG",
@@ -154,7 +163,6 @@
     "cookie/cookie-6.PNG"
   ];
 
-  /* Your fortunes (cleaned + expanded) */
   const FORTUNES = [
     "You’re gonna get lucky tonight.",
     "Someone’s having a naughty dream about you tonight.",
@@ -199,10 +207,9 @@
     cache.push(im);
   });
 
-  const FRAME_MS = 140;  // speed per frame
+  const FRAME_MS = 140;
   let playing = false, i = 0, timer = null;
 
-  // Play once, stop on last frame, then show the fortune slip
   function startOnce(){
     if (playing) return;
     playing = true; i = 0;
@@ -220,10 +227,15 @@
     const pick = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
     fortuneEl.textContent = pick;
     overlayEl.classList.add("show");
-    frameEl.style.pointerEvents = "none"; // prevent retrigger
+    frameEl.style.pointerEvents = "none";
   }
 
-  closeBtn.addEventListener("click", () => overlayEl.classList.remove("show"));
+  // "DATE NOW" could link to your dating page. Add URL here if desired:
+  closeBtn.addEventListener("click", () => {
+    overlayEl.classList.remove("show");
+    // window.location.href = "/dating-app.html"; // <— uncomment & set your path
+  });
+
   stageEl.addEventListener("click", startOnce);
   stageEl.tabIndex = 0;
   stageEl.addEventListener("keydown", (e) => {
