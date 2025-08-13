@@ -19,7 +19,7 @@
     --text-blue:#6e7580;
 
     --gradient-border: 8px;
-    --cookie-nudge: 14px; /* keeps cookie visually centered */
+    --cookie-nudge: 14px;
   }
 
   html,body{height:100%}
@@ -30,7 +30,6 @@
     display:grid; place-items:center;
   }
 
-  /* Red card with thicker green→blue gradient border to the edges */
   .wrap{
     border: var(--gradient-border) solid transparent;
     border-radius:10px;
@@ -54,14 +53,13 @@
   .pulse{ display:inline-block; animation:pulse 1.25s ease-in-out infinite; transform-origin:center; }
   @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
 
-  /* Stage + caption block with inner padding to keep text off the edges */
   .stageBlock{
     display:grid;
     justify-items:center;
-    gap:6px;                            /* small gap between image and caption */
+    gap:2px;                               /* caption closer to image */
     margin:0 auto;
     width:min(560px,88vw);
-    padding-inline:12px;                /* ← new gutter so caption never kisses border */
+    padding-inline:12px;
     box-sizing:border-box;
   }
 
@@ -78,28 +76,26 @@
   .stage:active{ transform:scale(.99); }
 
   .stage img{
-    max-width:100%;
-    width:100%;
+    max-width:108%;                        /* slightly larger */
+    width:108%;
     height:auto;
     user-select:none;
     filter:drop-shadow(0 6px 18px rgba(0,0,0,.25));
-    transform: translateX(var(--cookie-nudge)); /* keep cookie’s visual centering */
+    transform: translateX(calc(var(--cookie-nudge) - 4px)); /* nudge left */
   }
 
-  /* ⬇️ Caption fixes: smaller, centered, balanced wrap, safe max width */
   .caption{
     color:var(--gold);
     font-style:italic;
     font-weight:800;
-    font-size:clamp(18px,3vw,24px);     /* a touch smaller so it doesn’t crowd */
+    font-size:clamp(18px,3vw,24px);
     line-height:1.25;
     text-align:center;
-    text-wrap:balance;                   /* prettier multi-line break (modern browsers) */
-    max-width:92%;                       /* never exceeds the padded block */
-    margin:2px auto 0;
+    text-wrap:balance;
+    max-width:92%;
+    margin-top:0;                          /* directly under image */
   }
 
-  /* Centered fortune slip modal + larger DATE NOW kept from prior version */
   .overlay{
     position:fixed; inset:0; background:var(--overlay);
     display:none; align-items:center; justify-content:center;
@@ -230,7 +226,6 @@
   const fortuneEl = document.getElementById("fortuneText");
   const closeBtn  = document.getElementById("closeFortune");
 
-  // Preload frames
   const cache = []; let loaded = 0;
   imgs.forEach(src => {
     const im = new Image();
@@ -263,7 +258,6 @@
     frameEl.style.pointerEvents = "none";
   }
 
-  // DATE NOW → secret invite
   closeBtn.addEventListener("click", () => {
     window.location.href = "secret-invite.html";
   });
