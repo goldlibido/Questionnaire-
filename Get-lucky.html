@@ -7,30 +7,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --gold:#e1bf78;  /* brand */
+    /* Brand */
+    --gold:#e1bf78;
     --blue:#064D95;
     --green:#06954E;
     --red:#950606;
 
+    /* Slip + overlay */
     --overlay:rgba(0,0,0,.55);
     --paper:#efe3c7;
     --paper-edge:#7c7c7c;
-    --tab:#6e7580;     /* corner-tab blue sampled */
+    --tab:#6e7580;      /* sampled corner tab blue */
     --text-blue:#6e7580;
+
+    /* Layout tweaks */
+    --gradient-border: 8px;   /* thicker gradient border */
+    --cookie-nudge: 14px;     /* move cookie frames slightly right; tweak as needed */
   }
 
   html,body{height:100%}
   body{
     margin:0;
     font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    /* thin gradient frame lives on the inner container now */
     background:#0b0b0b;
     display:grid; place-items:center;
   }
 
+  /* Red card with green→blue gradient border that goes to its edges */
   .wrap{
-    /* red card with GRADIENT BORDER around it (green -> blue) */
-    border:2px solid transparent;
+    border: var(--gradient-border) solid transparent;
+    border-radius:10px;
     background:
       linear-gradient(var(--red), var(--red)) padding-box,
       linear-gradient(90deg, var(--green), var(--blue)) border-box;
@@ -38,7 +44,6 @@
     padding:22px 18px 26px;
     text-align:center;
     box-sizing:border-box;
-    border-radius:8px;
   }
 
   .logo{ max-width:120px;width:120px;height:auto;display:block;margin:0 auto 10px; }
@@ -52,35 +57,55 @@
   .pulse{ display:inline-block; animation:pulse 1.25s ease-in-out infinite; transform-origin:center; }
   @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
 
+  /* Stage + caption grouped so caption sits directly under images */
+  .stageBlock{
+    display:grid;
+    justify-items:center;
+    gap:10px;              /* small gap between image and caption */
+    margin:0 auto;
+    width:min(560px,88vw);
+  }
+
   .stage{
     position:relative;
-    width:min(560px,88vw);
+    width:100%;
     aspect-ratio:1/1;
     display:grid; place-items:center;
-    margin:0 auto;
-    /* ❌ removed blue border */
     border-radius:10px;
     cursor:pointer;
     background:transparent;
     transition:transform .08s ease;
   }
   .stage:active{ transform:scale(.99); }
-  .stage img{ max-width:100%;width:100%;height:auto;user-select:none;filter:drop-shadow(0 6px 18px rgba(0,0,0,.25)); }
+
+  /* Nudge the cookie frames slightly right to visually center them */
+  .stage img{
+    max-width:100%;
+    width:100%;
+    height:auto;
+    user-select:none;
+    filter:drop-shadow(0 6px 18px rgba(0,0,0,.25));
+    transform: translateX(var(--cookie-nudge));
+  }
 
   .caption{
-    margin-top:12px;
     font-size:clamp(14px,2.8vw,18px);
     color:var(--gold);
-    font-style:italic;
+    font-style:italic;     /* requested italic */
     font-weight:700;
   }
 
-  /* Fortune slip modal */
-  .overlay{position:fixed;inset:0;background:var(--overlay);display:none;align-items:center;justify-content:center;padding:24px;z-index:50;}
-  .overlay.show{display:flex;}
+  /* Fortune slip modal (lowered slightly) */
+  .overlay{
+    position:fixed; inset:0; background:var(--overlay);
+    display:none; align-items:flex-start; justify-content:center;
+    padding:24px; z-index:50;
+  }
+  .overlay.show{ display:flex; }
+
   .modal-wrap{
-    display:flex;flex-direction:column;align-items:center;gap:12px;
-    transform: translateY(22px); /* ↓ lowered slightly */
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+    margin-top: 28px; /* lower the slip a bit */
   }
 
   .slip{
@@ -96,7 +121,7 @@
     max-width:min(860px,96vw);
     min-width:min(760px,92vw);
     height:clamp(58px,12vw,90px);
-    display:flex;align-items:center;justify-content:center;
+    display:flex; align-items:center; justify-content:center;
     transform:rotate(-1.2deg);
     overflow:hidden;
   }
@@ -132,12 +157,15 @@
     <img src="golden-le-libido-logo.png" alt="Le Libido Logo" class="logo" />
     <h1>Will you <span class="pulse">GET LUCKY</span> tonight?</h1>
 
-    <div class="stage" id="cookieStage" aria-live="polite" title="Pop the cookie">
-      <img id="cookieFrame" alt="Tap to crack the fortune cookie" />
-    </div>
+    <!-- Stage + Caption grouped together -->
+    <div class="stageBlock">
+      <div class="stage" id="cookieStage" aria-live="polite" title="Pop the cookie">
+        <img id="cookieFrame" alt="Tap to crack the fortune cookie" />
+      </div>
 
-    <div class="caption">
-      Pop that fortune cookie to reveal your sexy fortune and start dating
+      <div class="caption">
+        Pop that fortune cookie to reveal your sexy fortune and start dating
+      </div>
     </div>
   </div>
 
@@ -207,7 +235,7 @@
     cache.push(im);
   });
 
-  const FRAME_MS = 140;
+  const FRAME_MS = 140;  // speed per frame
   let playing = false, i = 0, timer = null;
 
   function startOnce(){
@@ -227,13 +255,12 @@
     const pick = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
     fortuneEl.textContent = pick;
     overlayEl.classList.add("show");
-    frameEl.style.pointerEvents = "none";
+    frameEl.style.pointerEvents = "none"; // prevent retrigger
   }
 
-  // "DATE NOW" could link to your dating page. Add URL here if desired:
+  // DATE NOW → go to your secret invite page
   closeBtn.addEventListener("click", () => {
-    overlayEl.classList.remove("show");
-    // window.location.href = "/dating-app.html"; // <— uncomment & set your path
+    window.location.href = "secret-invite.html";
   });
 
   stageEl.addEventListener("click", startOnce);
