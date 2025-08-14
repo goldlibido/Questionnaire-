@@ -441,7 +441,7 @@
   import { auth, storage } from './firebase-config.js';
   import { signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
   import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
-  import './libido-backend.js';
+  import './le-libido-backend.js';
 
   // 1) Lightweight session (anonymous auth) so rules allow writes
   signInAnonymously(auth).catch((error) => console.error("Anonymous sign-in failed:", error));
