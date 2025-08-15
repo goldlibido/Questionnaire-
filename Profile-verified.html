@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verified Profile – Le Libido</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --gold: #e1bf78;
@@ -20,9 +21,9 @@
       background-color: #0d0d0d;
     }
 
-    body.blue { background-color: #064D95; }
+    body.blue  { background-color: #064D95; }
     body.green { background-color: #06954E; }
-    body.red { background-color: #950606; }
+    body.red   { background-color: #950606; }
 
     .header-banner {
       background-color: var(--gold);
@@ -40,13 +41,13 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: conic-gradient(var(--black) 0% 33%, transparent 0% 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 0.8rem;
       color: var(--white);
       font-weight: bold;
+      background: conic-gradient(var(--gold) 0% 0%, rgba(255,255,255,0.15) 0% 100%);
     }
 
     .logo {
@@ -108,6 +109,7 @@
       font-size: 1rem;
       max-width: 500px;
       width: 100%;
+      position: relative; /* for overlay */
     }
 
     .field label {
@@ -131,7 +133,21 @@
 
     .field select {
       appearance: none;
-      cursor: pointer; /* helps on iOS/Android */
+      cursor: pointer;
+      position: relative;
+      z-index: 1; /* below overlay */
+    }
+
+    /* Invisible overlay that guarantees first-tap opens the picker */
+    .field[data-open-on-tap] .tap-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
     }
 
     .divider {
@@ -154,7 +170,7 @@
 
   <div class="header-banner">
     <div>Verified Mode</div>
-    <div class="progress-circle" id="progressCircle">33%</div>
+    <div class="progress-circle" id="progressCircle">0%</div>
   </div>
 
   <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo"/>
@@ -180,7 +196,7 @@
 
   <div class="section-label">Basic Info</div>
 
-  <div class="field" data-open-on-tap>
+  <div class="field">
     <label for="name">Name</label>
     <input type="text" id="name" placeholder="First & Last Name" />
   </div>
@@ -437,284 +453,259 @@
     ">Save Profile</button>
   </div>
 
-<script>
-  // ---------- Archetype → page theming & initial data ----------
-  document.addEventListener("DOMContentLoaded", function () {
-    const stored = localStorage.getItem("archetype") || "Mood Multiplier";
+  <script>
+    // ===== Archetype theming & initial population =====
+    document.addEventListener("DOMContentLoaded", function () {
+      // Read archetype from localStorage; handle both slug and title forms
+      const raw = localStorage.getItem("archetype") || "Mood Multiplier";
 
-    const slugToTitle = {
-      "devoted_darling": "Devoted Darling",
-      "mood_multiplier": "Mood Multiplier",
-      "tender_protector": "Tender Protector",
-      "heatwave": "Heatwave",
-      "promiscuous_plaything": "Promiscuous Plaything",
-      "generous_giver": "Generous Giver",
-      "bedroom_adventurer": "Bedroom Adventurer",
-      "charmer_in_charge": "Charmer in Charge",
-      "punish_me": "Punish Me",
-      "provoker": "Provoker",
-      "dungeon_master": "Dungeon Master",
-      "claimed_and_trained": "Claimed & Trained"
-    };
+      const slugToTitle = {
+        "devoted_darling": "Devoted Darling",
+        "mood_multiplier": "Mood Multiplier",
+        "tender_protector": "Tender Protector",
+        "heatwave": "Heatwave",
+        "promiscuous_plaything": "Promiscuous Plaything",
+        "generous_giver": "Generous Giver",
+        "bedroom_adventurer": "Bedroom Adventurer",
+        "charmer_in_charge": "Charmer in Charge",
+        "punish_me": "Punish Me",
+        "provoker": "Provoker",
+        "dungeon_master": "Dungeon Master",
+        "claimed_and_trained": "Claimed & Trained"
+      };
 
-    const title = slugToTitle[stored] || stored;
+      const title = slugToTitle[raw] || raw;
 
-    const roomMap = {
-      "Tender Protector": "blue",
-      "Devoted Darling": "blue",
-      "Mood Multiplier": "blue",
-      "Heatwave": "blue",
-      "Promiscuous Plaything": "green",
-      "Generous Giver": "green",
-      "Bedroom Adventurer": "green",
-      "Charmer in Charge": "green",
-      "Dungeon Master": "red",
-      "Provoker": "red",
-      "Punish Me": "red",
-      "Claimed & Trained": "red"
-    };
+      const roomMap = {
+        "Tender Protector": "blue",
+        "Devoted Darling": "blue",
+        "Mood Multiplier": "blue",
+        "Heatwave": "blue",
+        "Promiscuous Plaything": "green",
+        "Generous Giver": "green",
+        "Bedroom Adventurer": "green",
+        "Charmer in Charge": "green",
+        "Dungeon Master": "red",
+        "Provoker": "red",
+        "Punish Me": "red",
+        "Claimed & Trained": "red"
+      };
 
-    const formatSlug = (name) =>
-      name === "Claimed & Trained"
-        ? "claimed_and_trained"
-        : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+      const formatSlug = (name) =>
+        name === "Claimed & Trained"
+          ? "claimed_and_trained"
+          : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
 
-    // Apply background based on archetype
-    document.body.classList.add(roomMap[title] || "blue");
+      // Apply background color based on archetype
+      document.body.classList.add(roomMap[title] || "blue");
 
-    // Set displayed archetype name
-    const nameDiv = document.getElementById("archetypeName");
-    if (nameDiv) nameDiv.textContent = title;
+      // Show archetype name
+      const nameDiv = document.getElementById("archetypeName");
+      if (nameDiv) nameDiv.textContent = title;
 
-    // Set profile link
-    const blueprintLink = document.getElementById("blueprintLink");
-    if (blueprintLink) {
-      blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
-    }
-
-    // Populate age
-    const ageSelect = document.getElementById("age");
-    if (ageSelect && ageSelect.options.length <= 1) {
-      for (let i = 18; i <= 80; i++) {
-        const opt = document.createElement("option");
-        opt.value = i;
-        opt.textContent = i;
-        ageSelect.appendChild(opt);
+      // Profile link
+      const blueprintLink = document.getElementById("blueprintLink");
+      if (blueprintLink) {
+        blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
       }
-    }
 
-    // Populate height
-    const heightSelect = document.getElementById("height");
-    if (heightSelect && heightSelect.options.length <= 1) {
-      for (let ft = 4; ft <= 7; ft++) {
-        for (let inch = 0; inch < 12; inch++) {
-          if (ft === 7 && inch > 0) continue;
-          const label = `${ft}'${inch}"`;
+      // Populate Age
+      const ageSelect = document.getElementById("age");
+      if (ageSelect && ageSelect.options.length <= 1) {
+        for (let i = 18; i <= 80; i++) {
           const opt = document.createElement("option");
-          opt.value = label;
-          opt.textContent = label;
-          heightSelect.appendChild(opt);
+          opt.value = i;
+          opt.textContent = i;
+          ageSelect.appendChild(opt);
         }
       }
-    }
 
-    // Make selects open on first tap (label or field)
-    attachInstantOpenToSelects();
+      // Populate Height
+      const heightSelect = document.getElementById("height");
+      if (heightSelect && heightSelect.options.length <= 1) {
+        for (let ft = 4; ft <= 7; ft++) {
+          for (let inch = 0; inch < 12; inch++) {
+            if (ft === 7 && inch > 0) continue;
+            const label = `${ft}'${inch}"`;
+            const opt = document.createElement("option");
+            opt.value = label;
+            opt.textContent = label;
+            heightSelect.appendChild(opt);
+          }
+        }
+      }
 
-    // Initialize progress once
-    updateProgress();
-  });
+      // Add first‑tap overlays on selects (after options are in place)
+      attachFirstTapOverlays();
 
-  // ---------- Instant preview for photos (same as anon page) ----------
-  function handlePhotoUpload(event, index) {
-    const file = event.target.files && event.target.files[0];
-    if (!file) return;
+      // Initialize progress
+      updateProgress();
+    });
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const photoUpload = event.target.closest(".photo-upload");
-      photoUpload.innerHTML = "";
+    // ===== Instant photo preview =====
+    function handlePhotoUpload(event, index) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
 
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      img.style.width = "100%";
-      img.style.height = "100%";
-      img.style.objectFit = "cover";
-      img.style.borderRadius = "6px";
-      photoUpload.appendChild(img);
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const tile = event.target.closest(".photo-upload");
+        if (!tile) return;
 
-      const deleteBtn = document.createElement("button");
-      deleteBtn.innerHTML = "×";
-      deleteBtn.style.position = "absolute";
-      deleteBtn.style.top = "5px";
-      deleteBtn.style.right = "5px";
-      deleteBtn.style.width = "20px";
-      deleteBtn.style.height = "20px";
-      deleteBtn.style.borderRadius = "50%";
-      deleteBtn.style.border = "none";
-      deleteBtn.style.background = "rgba(0,0,0,0.7)";
-      deleteBtn.style.color = "white";
-      deleteBtn.style.cursor = "pointer";
-      deleteBtn.style.fontSize = "14px";
-      deleteBtn.style.display = "flex";
-      deleteBtn.style.alignItems = "center";
-      deleteBtn.style.justifyContent = "center";
+        tile.innerHTML = "";
 
-      deleteBtn.onclick = function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        photoUpload.innerHTML = `
-          <span class="plus">+</span>
-          ${index === 0 ? "<span>Profile Pic</span>" : ""}
-          <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
-        `;
-        if (index === 0) photoUpload.classList.add("required");
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "6px";
+        tile.appendChild(img);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = "×";
+        deleteBtn.style.position = "absolute";
+        deleteBtn.style.top = "5px";
+        deleteBtn.style.right = "5px";
+        deleteBtn.style.width = "22px";
+        deleteBtn.style.height = "22px";
+        deleteBtn.style.borderRadius = "50%";
+        deleteBtn.style.border = "none";
+        deleteBtn.style.background = "rgba(0,0,0,0.7)";
+        deleteBtn.style.color = "white";
+        deleteBtn.style.cursor = "pointer";
+        deleteBtn.style.fontSize = "14px";
+        deleteBtn.style.display = "flex";
+        deleteBtn.style.alignItems = "center";
+        deleteBtn.style.justifyContent = "center";
+        deleteBtn.onclick = function (e2) {
+          e2.preventDefault();
+          e2.stopPropagation();
+          tile.innerHTML = `
+            <span class="plus">+</span>
+            ${index === 0 ? "<span>Profile Pic</span>" : ""}
+            <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
+          `;
+          if (index === 0) tile.classList.add("required");
+          updateProgress();
+        };
+
+        tile.appendChild(deleteBtn);
+        tile.style.position = "relative";
+        if (index === 0) tile.classList.remove("required");
         updateProgress();
       };
 
-      photoUpload.appendChild(deleteBtn);
-      photoUpload.style.position = "relative";
-      if (index === 0) photoUpload.classList.remove("required");
-      updateProgress();
-    };
-
-    reader.readAsDataURL(file);
-  }
-
-  // ---------- Progress circle (lightweight) ----------
-  function isFilled(el){
-    if (!el) return false;
-    if (el.tagName === "SELECT") return el.value !== "" && el.value != null;
-    return !!el.value && el.value.trim() !== "";
-  }
-
-  function updateProgress(){
-    const checklist = [
-      isFilled(document.getElementById("bio")),
-      // treat having *any* image inside first tile as filled
-      !!document.querySelector(".photo-grid .photo-upload:nth-child(1) img"),
-      isFilled(document.getElementById("name")),
-      isFilled(document.getElementById("age")),
-      isFilled(document.getElementById("height")),
-      isFilled(document.getElementById("orientation")),
-      isFilled(document.getElementById("loveLanguage")),
-      isFilled(document.getElementById("turnOnVocab")),
-      isFilled(document.getElementById("tyle")),
-      isFilled(document.getElementById("tylePersonality")),
-      isFilled(document.getElementById("fantasies")),
-      isFilled(document.getElementById("lookingFor")),
-      isFilled(document.getElementById("sugarDynamic")),
-      isFilled(document.getElementById("threesome")),
-      isFilled(document.getElementById("drinks")),
-      isFilled(document.getElementById("smokes")),
-      isFilled(document.getElementById("weed")),
-      isFilled(document.getElementById("drugs")),
-      isFilled(document.getElementById("hasKids")),
-      isFilled(document.getElementById("wantsKids")),
-      isFilled(document.getElementById("job")),
-      isFilled(document.getElementById("education")),
-      isFilled(document.getElementById("religion")),
-      isFilled(document.getElementById("showReligionMatchOnly")),
-      isFilled(document.getElementById("politics")),
-      isFilled(document.getElementById("notifyWantsYou")),
-      isFilled(document.getElementById("notifyChecksYouOut")),
-      isFilled(document.getElementById("allowMessagesFrom")),
-      isFilled(document.getElementById("visibility"))
-    ];
-    const total = checklist.length;
-    const done = checklist.filter(Boolean).length;
-    const pct = Math.round((done / total) * 100);
-
-    const circle = document.getElementById("progressCircle");
-    if (circle){
-      circle.textContent = `${pct}%`;
-      circle.style.background = `conic-gradient(var(--gold) 0% ${pct}%, rgba(255,255,255,0.15) ${pct}% 100%)`;
+      reader.readAsDataURL(file);
     }
-  }
+    window.handlePhotoUpload = handlePhotoUpload;
 
-  // Recalculate progress on input/select changes
-  document.addEventListener('change', (e)=>{
-    if (e.target.closest('.field')) updateProgress();
-  });
-  document.addEventListener('input', (e)=>{
-    if (e.target.closest('.field')) updateProgress();
-  });
+    // ===== Progress circle =====
+    function isFilled(el){
+      if (!el) return false;
+      if (el.tagName === "SELECT") return el.value !== "" && el.value != null && el.selectedIndex > 0;
+      return !!el.value && el.value.trim() !== "";
+    }
 
-  // ---------- Single-tap open for selects ----------
-  function openSelect(select){
-    try {
-      // Chrome/Edge/Android + Safari TP
-      if (typeof select.showPicker === 'function') {
-        select.showPicker();
-        return;
+    function updateProgress(){
+      const checklist = [
+        isFilled(document.getElementById("bio")),
+        !!document.querySelector(".photo-grid .photo-upload:nth-child(1) img"),
+        isFilled(document.getElementById("name")),
+        isFilled(document.getElementById("age")),
+        isFilled(document.getElementById("height")),
+        isFilled(document.getElementById("orientation")),
+        isFilled(document.getElementById("loveLanguage")),
+        isFilled(document.getElementById("turnOnVocab")),
+        isFilled(document.getElementById("tyle")),
+        isFilled(document.getElementById("tylePersonality")),
+        isFilled(document.getElementById("fantasies")),
+        isFilled(document.getElementById("lookingFor")),
+        isFilled(document.getElementById("sugarDynamic")),
+        isFilled(document.getElementById("threesome")),
+        isFilled(document.getElementById("drinks")),
+        isFilled(document.getElementById("smokes")),
+        isFilled(document.getElementById("weed")),
+        isFilled(document.getElementById("drugs")),
+        isFilled(document.getElementById("hasKids")),
+        isFilled(document.getElementById("wantsKids")),
+        isFilled(document.getElementById("job")),
+        isFilled(document.getElementById("education")),
+        isFilled(document.getElementById("religion")),
+        isFilled(document.getElementById("showReligionMatchOnly")),
+        isFilled(document.getElementById("politics")),
+        isFilled(document.getElementById("notifyWantsYou")),
+        isFilled(document.getElementById("notifyChecksYouOut")),
+        isFilled(document.getElementById("allowMessagesFrom")),
+        isFilled(document.getElementById("visibility"))
+      ];
+      const total = checklist.length;
+      const done  = checklist.filter(Boolean).length;
+      const pct   = Math.round((done / total) * 100);
+
+      const circle = document.getElementById("progressCircle");
+      if (circle){
+        circle.textContent = `${pct}%`;
+        circle.style.background = `conic-gradient(var(--gold) 0% ${pct}%, rgba(255,255,255,0.15) ${pct}% 100%)`;
       }
-    } catch(_) {}
-    // Fallback that works widely
-    select.focus({preventScroll:false});
-    select.click();
-  }
+    }
 
-  function attachInstantOpenToSelects(){
-    // When tapping label or anywhere in the .field (except directly on a control),
-    // open the select immediately.
-    document.querySelectorAll('.field[data-open-on-tap]').forEach(field=>{
-      const select = field.querySelector('select');
-      if (!select) return;
-
-      // Open when the label is tapped
-      const label = field.querySelector('label');
-      if (label) {
-        label.addEventListener('click', (e)=>{
-          e.preventDefault();
-          openSelect(select);
-        });
-        label.addEventListener('touchend', (e)=>{
-          e.preventDefault();
-          openSelect(select);
-        }, {passive:false});
-      }
-
-      // Open when empty area of the field is tapped
-      field.addEventListener('click', (e)=>{
-        if (e.target === field || e.target === label) {
-          e.preventDefault();
-          openSelect(select);
-        }
-      });
-
-      field.addEventListener('touchend', (e)=>{
-        const withinControl = e.target === select || e.target.tagName === 'OPTION';
-        if (!withinControl) {
-          e.preventDefault();
-          openSelect(select);
-        }
-      }, {passive:false});
+    document.addEventListener('change', (e)=>{
+      if (e.target.closest('.field')) updateProgress();
     });
-  }
+    document.addEventListener('input', (e)=>{
+      if (e.target.closest('.field')) updateProgress();
+    });
 
-  // ---------- Save flow (stays front-end for now) ----------
-  function saveProfile() {
-    alert("Profile saved! Click Close to start dating");
-    window.location.href = '/secret-invite.html';
-  }
-  window.saveProfile = saveProfile;
-</script>
-
-<script type="module">
-  import { auth } from './firebase-config.js';
-  import { signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-
-  // Lightweight session; doesn't change UX
-  signInAnonymously(auth).catch((error) => {
-    console.error("Anonymous sign-in failed:", error);
-  });
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("Logged in as UID:", user.uid);
-      localStorage.setItem("uid", user.uid);
+    // ===== One‑tap open for all selects (overlay trick) =====
+    function openNativePicker(select) {
+      try {
+        if (typeof select.showPicker === 'function') {
+          select.showPicker();
+          return;
+        }
+      } catch (_) {}
+      // Fallback for iOS/older Android
+      setTimeout(() => {
+        select.focus({ preventScroll: false });
+        select.click();
+      }, 0);
     }
-  });
-</script>
+
+    function attachFirstTapOverlays() {
+      document.querySelectorAll('.field[data-open-on-tap]').forEach(field => {
+        const select = field.querySelector('select');
+        if (!select) return;
+        if (field.querySelector('.tap-overlay')) return; // already added
+
+        const overlay = document.createElement('button');
+        overlay.type = 'button';
+        overlay.className = 'tap-overlay';
+        overlay.setAttribute('aria-label', 'Open options');
+
+        const trigger = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openNativePicker(select);
+        };
+
+        // Use pointer + click to cover iOS/Android/desktop
+        overlay.addEventListener('pointerup', trigger, { passive: false });
+        overlay.addEventListener('click', trigger, { passive: false });
+
+        // If the user actually hits the select directly, let it behave natively.
+        select.addEventListener('click', () => { /* no-op */ });
+
+        field.appendChild(overlay);
+      });
+    }
+
+    // ===== Save → go to secret-invite =====
+    function saveProfile() {
+      alert("Profile saved! Click Close to start dating!");
+      window.location.href = '/secret-invite.html';
+    }
+    window.saveProfile = saveProfile;
+  </script>
 </body>
 </html>
