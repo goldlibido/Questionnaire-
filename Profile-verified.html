@@ -109,7 +109,7 @@
       font-size: 1rem;
       max-width: 500px;
       width: 100%;
-      position: relative; /* for overlay */
+      position: relative;
     }
 
     .field label {
@@ -135,10 +135,10 @@
       appearance: none;
       cursor: pointer;
       position: relative;
-      z-index: 1; /* below overlay */
+      z-index: 1;
     }
 
-    /* Invisible overlay that guarantees first-tap opens the picker */
+    /* First-tap overlay (ensures the very first tap opens picker) */
     .field[data-open-on-tap] .tap-overlay {
       position: absolute;
       inset: 0;
@@ -148,6 +148,7 @@
       padding: 0;
       margin: 0;
       cursor: pointer;
+      /* We'll toggle pointer-events in JS to allow subsequent taps to hit the select */
     }
 
     .divider {
@@ -456,7 +457,6 @@
   <script>
     // ===== Archetype theming & initial population =====
     document.addEventListener("DOMContentLoaded", function () {
-      // Read archetype from localStorage; handle both slug and title forms
       const raw = localStorage.getItem("archetype") || "Mood Multiplier";
 
       const slugToTitle = {
@@ -496,14 +496,11 @@
           ? "claimed_and_trained"
           : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
 
-      // Apply background color based on archetype
       document.body.classList.add(roomMap[title] || "blue");
 
-      // Show archetype name
       const nameDiv = document.getElementById("archetypeName");
       if (nameDiv) nameDiv.textContent = title;
 
-      // Profile link
       const blueprintLink = document.getElementById("blueprintLink");
       if (blueprintLink) {
         blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
@@ -535,10 +532,9 @@
         }
       }
 
-      // Add first‑tap overlays on selects (after options are in place)
+      // Add first-tap overlays after options exist
       attachFirstTapOverlays();
 
-      // Initialize progress
       updateProgress();
     });
 
@@ -657,46 +653,72 @@
       if (e.target.closest('.field')) updateProgress();
     });
 
-    // ===== One‑tap open for all selects (overlay trick) =====
+    // ===== One-tap open for selects (iOS/Chrome iOS safe) =====
     function openNativePicker(select) {
+      // 1) Preferred: showPicker (supported iOS 16.4+, modern Chrome)
       try {
         if (typeof select.showPicker === 'function') {
           select.showPicker();
-          return;
+          return true;
         }
       } catch (_) {}
-      // Fallback for iOS/older Android
-      setTimeout(() => {
+
+      // 2) Fallback: focus + click (must be within a user gesture)
+      try {
         select.focus({ preventScroll: false });
         select.click();
-      }, 0);
+        return true;
+      } catch (_) {}
+
+      return false;
     }
 
     function attachFirstTapOverlays() {
       document.querySelectorAll('.field[data-open-on-tap]').forEach(field => {
         const select = field.querySelector('select');
         if (!select) return;
-        if (field.querySelector('.tap-overlay')) return; // already added
 
-        const overlay = document.createElement('button');
-        overlay.type = 'button';
-        overlay.className = 'tap-overlay';
-        overlay.setAttribute('aria-label', 'Open options');
+        // If overlay exists, reuse it
+        let overlay = field.querySelector('.tap-overlay');
+        if (!overlay) {
+          overlay = document.createElement('button');
+          overlay.type = 'button';
+          overlay.className = 'tap-overlay';
+          overlay.setAttribute('aria-label', 'Open options');
+          field.appendChild(overlay);
+        }
 
         const trigger = (e) => {
+          // make sure this is treated as a user gesture
           e.preventDefault();
           e.stopPropagation();
-          openNativePicker(select);
+
+          // Temporarily disable overlay so subsequent interactions go to the select
+          overlay.style.pointerEvents = 'none';
+
+          // Try to open the native control
+          const opened = openNativePicker(select);
+
+          // If not opened for any reason, re-enable overlay quickly to allow retry
+          if (!opened) {
+            setTimeout(() => { overlay.style.pointerEvents = 'auto'; }, 150);
+          } else {
+            // When the native picker closes (blur/change), re-enable the overlay after a tick
+            const reenable = () => {
+              setTimeout(() => { overlay.style.pointerEvents = 'auto'; }, 100);
+              select.removeEventListener('blur', reenable);
+              select.removeEventListener('change', reenable);
+            };
+            select.addEventListener('blur', reenable, { once: true });
+            select.addEventListener('change', reenable, { once: true });
+          }
         };
 
-        // Use pointer + click to cover iOS/Android/desktop
-        overlay.addEventListener('pointerup', trigger, { passive: false });
-        overlay.addEventListener('click', trigger, { passive: false });
-
-        // If the user actually hits the select directly, let it behave natively.
-        select.addEventListener('click', () => { /* no-op */ });
-
-        field.appendChild(overlay);
+        // Use earliest possible gesture event to satisfy iOS
+        overlay.addEventListener('pointerdown', trigger, { passive: false });
+        overlay.addEventListener('touchstart',  trigger, { passive: false });
+        // Keep click as a backup for desktops
+        overlay.addEventListener('click',       trigger, { passive: false });
       });
     }
 
