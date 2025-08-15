@@ -12,9 +12,7 @@
       --black: #000000;
     }
 
-    html, body {
-      height: 100%;
-    }
+    html, body { height: 100%; }
 
     body {
       margin: 0;
@@ -96,7 +94,8 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      touch-action: manipulation; /* keep taps responsive */
+      /* keep taps responsive but let the browser handle selects natively */
+      touch-action: manipulation;
     }
 
     .photo-upload input { display: none; }
@@ -143,27 +142,15 @@
       color: var(--white);
       background-color: rgba(255,255,255,0.1);
       outline: none;
-      -webkit-appearance: none;
-      appearance: none;
-      touch-action: manipulation; /* don't capture scroll gestures */
     }
 
-    /* Add a subtle dropdown caret */
+    /* IMPORTANT: use native menulist appearance so iOS opens on first tap */
     .field select {
-      background-image:
-        linear-gradient(45deg, transparent 50%, var(--gold) 50%),
-        linear-gradient(135deg, var(--gold) 50%, transparent 50%),
-        linear-gradient(to right, rgba(255,255,255,0.15), rgba(255,255,255,0.15));
-      background-position:
-        calc(100% - 18px) calc(1.2em),
-        calc(100% - 13px) calc(1.2em),
-        calc(100% - 2.4rem) 0.5rem;
-      background-size:
-        6px 6px,
-        6px 6px,
-        1px 60%;
-      background-repeat: no-repeat;
-      padding-right: 2.8rem;
+      -webkit-appearance: menulist;
+      appearance: menulist;
+      background-image: none;       /* remove custom caret to avoid iOS quirks */
+      cursor: default;
+      touch-action: auto;            /* allow natural scrolling/interaction */
     }
 
     .divider {
@@ -515,15 +502,20 @@
           ? "claimed_and_trained"
           : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
 
+      // Theme by archetype
       document.body.classList.add(roomMap[title] || "blue");
 
+      // Show archetype text
       const nameDiv = document.getElementById("archetypeName");
       if (nameDiv) nameDiv.textContent = title;
 
+      // Blueprint link
       const blueprintLink = document.getElementById("blueprintLink");
-      if (blueprintLink) blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
+      if (blueprintLink) {
+        blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
+      }
 
-      // Populate Age
+      // Populate Age once
       const ageSelect = document.getElementById("age");
       if (ageSelect && ageSelect.options.length <= 1) {
         for (let i = 18; i <= 80; i++) {
@@ -534,7 +526,7 @@
         }
       }
 
-      // Populate Height
+      // Populate Height once
       const heightSelect = document.getElementById("height");
       if (heightSelect && heightSelect.options.length <= 1) {
         for (let ft = 4; ft <= 7; ft++) {
@@ -549,8 +541,13 @@
         }
       }
 
-      // Attach first-tap helpers on the SELECT itself (no overlays)
-      enableOneTapSelects();
+      // Wire progress updates
+      document.addEventListener('change', (e)=>{
+        if (e.target.closest('.field')) updateProgress();
+      });
+      document.addEventListener('input', (e)=>{
+        if (e.target.closest('.field')) updateProgress();
+      });
 
       updateProgress();
     });
@@ -661,50 +658,6 @@
         circle.textContent = `${pct}%`;
         circle.style.background = `conic-gradient(var(--gold) 0% ${pct}%, rgba(255,255,255,0.15) ${pct}% 100%)`;
       }
-    }
-
-    document.addEventListener('change', (e)=>{
-      if (e.target.closest('.field')) updateProgress();
-    });
-    document.addEventListener('input', (e)=>{
-      if (e.target.closest('.field')) updateProgress();
-    });
-
-    // ========= One-tap open on the SELECT itself + on the LABEL =========
-    function openPickerIfPossible(selectEl) {
-      if (!selectEl) return;
-      // Try to use showPicker if present; do NOT preventDefault.
-      try {
-        if (typeof selectEl.showPicker === 'function') {
-          selectEl.showPicker();
-        }
-      } catch (_) {
-        // Fallback to focusing + clicking (still within native gesture)
-        try { selectEl.focus(); } catch(_){}
-        try { selectEl.click(); } catch(_){}
-      }
-    }
-
-    function enableOneTapSelects() {
-      const pairs = [];
-      document.querySelectorAll('.field select').forEach(select => {
-        const id = select.id;
-        const label = id ? document.querySelector(`label[for="${id}"]`) : null;
-        pairs.push([label, select]);
-
-        // On iOS/Chrome iOS, opening on pointerdown reliably triggers picker
-        select.addEventListener('pointerdown', function(){
-          openPickerIfPossible(select);
-        }, { passive: true });
-
-        // Also make label taps open the picker immediately
-        if (label) {
-          label.addEventListener('pointerdown', function(e){
-            e.preventDefault(); // avoid just focusing without opening
-            openPickerIfPossible(select);
-          }, { passive: false });
-        }
-      });
     }
 
     // ========= Save → go to secret-invite =========
