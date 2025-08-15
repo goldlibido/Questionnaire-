@@ -40,13 +40,13 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: conic-gradient(var(--black) 0% 0%, transparent 0% 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 0.8rem;
       color: var(--white);
       font-weight: bold;
+      background: conic-gradient(var(--gold) 0% 0%, rgba(255,255,255,0.15) 0% 100%);
     }
 
     .logo {
@@ -87,14 +87,8 @@
       overflow: hidden;
     }
 
-    .photo-upload input {
-      display: none;
-    }
-
-    .photo-upload .plus {
-      font-size: 1.5rem;
-      margin-bottom: 4px;
-    }
+    .photo-upload input { display: none; }
+    .photo-upload .plus { font-size: 1.5rem; margin-bottom: 4px; }
 
     .photo-upload.required::after {
       content: "Required";
@@ -107,10 +101,6 @@
       padding: 2px 6px;
       border-radius: 4px;
       font-weight: bold;
-    }
-
-    .upload-preview {
-      pointer-events: none;
     }
 
     .field {
@@ -138,23 +128,17 @@
       background-color: rgba(255,255,255,0.1);
     }
 
-    .field select {
-      appearance: none;
-    }
+    .field select { appearance: none; }
 
     .divider {
       border-top: 1px solid rgba(255,255,255,0.15);
       margin: 30px 0 10px;
     }
 
-    .locked {
-      opacity: 0.5;
-      pointer-events: none;
-    }
+    .locked { opacity: 0.5; pointer-events: none; }
 
     @media (min-width: 768px) {
-      .photo-grid,
-      .field {
+      .photo-grid, .field {
         max-width: 500px;
         margin-left: auto;
         margin-right: auto;
@@ -436,38 +420,36 @@
     ">Save Profile</button>
   </div>
 
-<!-- FINAL SCRIPT (single module) -->
-<script type="module">
-  import { auth, storage } from './firebase-config.js';
-  import { signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-  import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
-  import './le-libido-backend.js';
+  <!-- Load backend FIRST so window.LibidoBackend is ready -->
+  <script type="module" src="./le-libido-backend.js"></script>
 
-  // 1) Lightweight session (anonymous auth) so rules allow writes
-  signInAnonymously(auth).catch((error) => console.error("Anonymous sign-in failed:", error));
-  onAuthStateChanged(auth, (user) => { if (user) localStorage.setItem("uid", user.uid); });
+  <!-- Main logic -->
+  <script type="module">
+    import { auth, storage } from './firebase-config.js';
+    import { signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-  // 2) Archetype mapping + initial UI: background & blueprint link
-  const slugToTitle = {
-    "devoted_darling": "Devoted Darling",
-    "mood_multiplier": "Mood Multiplier",
-    "tender_protector": "Tender Protector",
-    "heatwave": "Heatwave",
-    "promiscuous_plaything": "Promiscuous Plaything",
-    "generous_giver": "Generous Giver",
-    "bedroom_adventurer": "Bedroom Adventurer",
-    "charmer_in_charge": "Charmer in Charge",
-    "punish_me": "Punish Me",
-    "provoker": "Provoker",
-    "dungeon_master": "Dungeon Master",
-    "claimed_and_trained": "Claimed & Trained"
-  };
-  const formatSlug = (name) =>
-    name === "Claimed & Trained" ? "claimed_and_trained" : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+    // 1) Lightweight session (anonymous auth) so rules allow writes
+    signInAnonymously(auth).catch((e)=>console.error("Anonymous sign-in failed:", e));
+    onAuthStateChanged(auth, (user)=>{ if (user) localStorage.setItem("uid", user.uid); });
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const stored = (localStorage.getItem("archetype") || "mood_multiplier");
-    const title = slugToTitle[stored] || stored;
+    // 2) Archetype mapping + initial UI
+    const slugToTitle = {
+      "devoted_darling": "Devoted Darling",
+      "mood_multiplier": "Mood Multiplier",
+      "tender_protector": "Tender Protector",
+      "heatwave": "Heatwave",
+      "promiscuous_plaything": "Promiscuous Plaything",
+      "generous_giver": "Generous Giver",
+      "bedroom_adventurer": "Bedroom Adventurer",
+      "charmer_in_charge": "Charmer in Charge",
+      "punish_me": "Punish Me",
+      "provoker": "Provoker",
+      "dungeon_master": "Dungeon Master",
+      "claimed_and_trained": "Claimed & Trained"
+    };
+    const formatSlug = (name) =>
+      name === "Claimed & Trained" ? "claimed_and_trained" : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
 
     const roomMap = {
       "Tender Protector": "blue",
@@ -484,248 +466,249 @@
       "Claimed & Trained": "red"
     };
 
-    document.body.classList.add(roomMap[title] || "blue");
+    document.addEventListener("DOMContentLoaded", () => {
+      const stored = (localStorage.getItem("archetype") || "mood_multiplier");
+      const title = slugToTitle[stored] || stored;
+      const color = roomMap[title] || window.LibidoBackend.archetypeToColor(title) || "blue";
 
-    const nameDiv = document.getElementById("archetypeName");
-    if (nameDiv) nameDiv.textContent = title;
+      // Background color by archetype
+      document.body.classList.add(color);
 
-    const blueprintLink = document.getElementById("blueprintLink");
-    if (blueprintLink) blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
+      // Title text
+      const nameDiv = document.getElementById("archetypeName");
+      if (nameDiv) nameDiv.textContent = title;
 
-    // Populate selects
-    const ageSelect = document.getElementById("age");
-    if (ageSelect && ageSelect.options.length <= 2) {
-      for (let i = 18; i <= 80; i++) {
-        const opt = document.createElement("option");
-        opt.value = i; opt.textContent = i; ageSelect.appendChild(opt);
-      }
-    }
-    const heightSelect = document.getElementById("height");
-    if (heightSelect && heightSelect.options.length <= 2) {
-      for (let ft = 4; ft <= 7; ft++) {
-        for (let inch = 0; inch < 12; inch++) {
-          if (ft === 7 && inch > 0) continue;
-          const label = `${ft}'${inch}"`;
+      // Blueprint link
+      const blueprintLink = document.getElementById("blueprintLink");
+      if (blueprintLink) blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
+
+      // Populate selects
+      const ageSelect = document.getElementById("age");
+      if (ageSelect && ageSelect.options.length === 1) {
+        for (let i = 18; i <= 80; i++) {
           const opt = document.createElement("option");
-          opt.value = label; opt.textContent = label; heightSelect.appendChild(opt);
+          opt.value = i; opt.textContent = i; ageSelect.appendChild(opt);
         }
       }
-    }
+      const heightSelect = document.getElementById("height");
+      if (heightSelect && heightSelect.options.length === 1) {
+        for (let ft = 4; ft <= 7; ft++) {
+          for (let inch = 0; inch < 12; inch++) {
+            if (ft === 7 && inch > 0) continue;
+            const label = `${ft}'${inch}"`;
+            const opt = document.createElement("option");
+            opt.value = label; opt.textContent = label; heightSelect.appendChild(opt);
+          }
+        }
+      }
 
-    // Hook progress computation to inputs
-    attachProgressListeners();
-    updateProgress();
-  });
+      // Progress listeners
+      attachProgressListeners();
+      updateProgress();
+    });
 
-  // 3) Photo upload with real progress per tile (kept your markup)
-  window.profilePhotoURLs = Array(6).fill(null);
-  window.profilePhotoPaths = Array(6).fill(null);
+    // 3) Photo uploads (with progress)
+    window.profilePhotoURLs = Array(6).fill(null);
+    window.profilePhotoPaths = Array(6).fill(null);
 
-  window.handlePhotoUpload = async function (event, index) {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    window.handlePhotoUpload = async function (event, index) {
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-    const tile = event.target.closest(".photo-upload");
-    if (!tile) return;
+      const tile = event.target.closest(".photo-upload");
+      if (!tile) return;
 
-    // Show preview + progress bar
-    const objectURL = URL.createObjectURL(file);
-    tile.innerHTML = `
-      <div style="position:relative;width:100%;height:100%;">
-        <img src="${objectURL}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;" />
-        <div class="upload-preview" style="position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:stretch;background:rgba(0,0,0,0.25);">
-          <div style="width:100%;height:8px;background:rgba(255,255,255,0.25);margin:10px;border-radius:6px;overflow:hidden;">
+      const objectURL = URL.createObjectURL(file);
+      // Preview + progress bar
+      tile.innerHTML = `
+        <div style="position:relative;width:100%;height:100%;">
+          <img src="${objectURL}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;" />
+          <div class="upload-preview" style="position:absolute;left:0;right:0;bottom:0;height:10px;background:rgba(255,255,255,0.25);">
             <div id="bar-${index}" style="width:0%;height:100%;background:#e1bf78;"></div>
           </div>
         </div>
-      </div>
-    `;
-
-    try {
-      const userId = localStorage.getItem("uid");
-      const extRaw = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
-      const safeExt = ['jpg','jpeg','png','webp','gif','heic','heif','bmp','tif','tiff'].includes(extRaw) ? extRaw : 'jpg';
-      const path = `users/${userId}/photos/verified/${String(index)}.${safeExt}`;
-      const ref = storageRef(storage, path);
-      const task = uploadBytesResumable(ref, file, { contentType: file.type || `image/${safeExt}` });
-
-      task.on('state_changed', (snap) => {
-        const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-        const bar = document.getElementById(`bar-${index}`);
-        if (bar) bar.style.width = pct + '%';
-      });
-
-      await new Promise((resolve, reject) => task.on('state_changed', null, reject, resolve));
-      const url = await getDownloadURL(ref);
-
-      window.profilePhotoURLs[index] = url;
-      window.profilePhotoPaths[index] = path;
-
-      // Replace overlay with a delete button
-      tile.innerHTML = `
-        <img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;" />
-        <button type="button" aria-label="Remove" title="Remove photo" style="position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,0.7);color:#fff;font-size:16px;cursor:pointer;">×</button>
       `;
-      tile.style.position = "relative";
 
-      const del = tile.querySelector('button');
-      del.addEventListener('click', async (e) => {
-        e.preventDefault();
-        try { await deleteObject(storageRef(storage, window.profilePhotoPaths[index])); } catch(e){}
-        window.profilePhotoURLs[index] = null;
-        window.profilePhotoPaths[index] = null;
+      try {
+        const uid = localStorage.getItem("uid");
+        const extRaw = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
+        const safeExt = ['jpg','jpeg','png','webp','gif','heic','heif','bmp','tif','tiff'].includes(extRaw) ? extRaw : 'jpg';
+        const path = `users/${uid}/photos/verified/${String(index)}.${safeExt}`;
+        const ref = storageRef(storage, path);
+        const task = uploadBytesResumable(ref, file, { contentType: file.type || `image/${safeExt}` });
+
+        task.on('state_changed', (snap) => {
+          const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+          const bar = document.getElementById(`bar-${index}`);
+          if (bar) bar.style.width = pct + '%';
+        });
+
+        await new Promise((resolve, reject) => task.on('state_changed', null, reject, resolve));
+        const url = await getDownloadURL(ref);
+
+        window.profilePhotoURLs[index] = url;
+        window.profilePhotoPaths[index] = path;
+
+        tile.innerHTML = `
+          <img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;" />
+          <button type="button" aria-label="Remove" title="Remove photo" style="position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,0.7);color:#fff;font-size:16px;cursor:pointer;">×</button>
+        `;
+        tile.style.position = "relative";
+
+        const del = tile.querySelector('button');
+        del.addEventListener('click', async (e) => {
+          e.preventDefault();
+          try { await deleteObject(storageRef(storage, window.profilePhotoPaths[index])); } catch(e){}
+          window.profilePhotoURLs[index] = null;
+          window.profilePhotoPaths[index] = null;
+          tile.innerHTML = `
+            <span class="plus">+</span>
+            ${index === 0 ? "<span>Profile Pic</span>" : ""}
+            <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
+          `;
+          if (index === 0) tile.classList.add("required");
+          updateProgress();
+        });
+
+        if (index === 0) tile.classList.remove("required");
+        updateProgress();
+      } catch (err) {
+        console.error("Upload failed:", err);
+        alert("Upload failed. Please try another image.");
         tile.innerHTML = `
           <span class="plus">+</span>
           ${index === 0 ? "<span>Profile Pic</span>" : ""}
           <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
         `;
         if (index === 0) tile.classList.add("required");
-        updateProgress();
+      } finally {
+        URL.revokeObjectURL(objectURL);
+      }
+    };
+
+    // 4) Progress circle
+    function attachProgressListeners(){
+      const ids = [
+        "bio","name","age","height","orientation","loveLanguage","turnOnVocab",
+        "tyle","tylePersonality","fantasies","lookingFor","sugarDynamic","threesome",
+        "drinks","smokes","weed","drugs","hasKids","wantsKids","job","education",
+        "religion","showReligionMatchOnly","politics","notifyWantsYou","notifyChecksYouOut",
+        "allowMessagesFrom","visibility"
+      ];
+      ids.forEach(id=>{
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("change", updateProgress);
+        el.addEventListener("input", updateProgress);
       });
-
-      if (index === 0) tile.classList.remove("required");
-      updateProgress();
-    } catch (err) {
-      console.error("Upload failed:", err);
-      alert("Upload failed. Please try another image.");
-      tile.innerHTML = `
-        <span class="plus">+</span>
-        ${index === 0 ? "<span>Profile Pic</span>" : ""}
-        <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
-      `;
-      if (index === 0) tile.classList.add("required");
-    } finally {
-      URL.revokeObjectURL(objectURL);
     }
-  };
 
-  // 4) Progress circle (percentage of completion)
-  function attachProgressListeners(){
-    const ids = [
-      "bio","name","age","height","orientation","loveLanguage","turnOnVocab",
-      "tyle","tylePersonality","fantasies","lookingFor","sugarDynamic","threesome",
-      "drinks","smokes","weed","drugs","hasKids","wantsKids","job","education",
-      "religion","showReligionMatchOnly","politics","notifyWantsYou","notifyChecksYouOut",
-      "allowMessagesFrom","visibility"
-    ];
-    ids.forEach(id=>{
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.addEventListener("change", updateProgress);
-      el.addEventListener("input", updateProgress);
-    });
-  }
-
-  function isFilled(el){
-    if (!el) return false;
-    if (el.tagName === "SELECT") return !!el.value && el.value !== "" && !el.options[0]?.selected;
-    return !!el.value && el.value.trim() !== "";
-  }
-
-  function updateProgress(){
-    // Define which items count towards completion
-    const checklist = [
-      isFilled(document.getElementById("bio")),
-      !!(window.profilePhotoURLs && window.profilePhotoURLs[0]), // main photo uploaded
-      isFilled(document.getElementById("name")),
-      isFilled(document.getElementById("age")),
-      isFilled(document.getElementById("height")),
-      isFilled(document.getElementById("orientation")),
-      isFilled(document.getElementById("loveLanguage")),
-      isFilled(document.getElementById("turnOnVocab")),
-      isFilled(document.getElementById("tyle")),
-      isFilled(document.getElementById("tylePersonality")),
-      isFilled(document.getElementById("fantasies")),
-      isFilled(document.getElementById("lookingFor")),
-      isFilled(document.getElementById("sugarDynamic")),
-      isFilled(document.getElementById("threesome")),
-      isFilled(document.getElementById("drinks")),
-      isFilled(document.getElementById("smokes")),
-      isFilled(document.getElementById("weed")),
-      isFilled(document.getElementById("drugs")),
-      isFilled(document.getElementById("hasKids")),
-      isFilled(document.getElementById("wantsKids")),
-      isFilled(document.getElementById("job")),
-      isFilled(document.getElementById("education")),
-      isFilled(document.getElementById("religion")),
-      isFilled(document.getElementById("showReligionMatchOnly")),
-      isFilled(document.getElementById("politics")),
-      isFilled(document.getElementById("notifyWantsYou")),
-      isFilled(document.getElementById("notifyChecksYouOut")),
-      isFilled(document.getElementById("allowMessagesFrom")),
-      isFilled(document.getElementById("visibility"))
-    ];
-    const total = checklist.length;
-    const done = checklist.filter(Boolean).length;
-    const pct = Math.round((done / total) * 100);
-
-    const circle = document.getElementById("progressCircle");
-    if (circle){
-      circle.textContent = `${pct}%`;
-      // Fill from 0 to pct using gold, rest transparent over black
-      circle.style.background = `conic-gradient(#000 0% 0%, transparent 0% 100%), conic-gradient(var(--black) 0% 100%)`;
-      // Fancy: gold sweep from 0 to pct on top of black ring
-      circle.style.background = `conic-gradient(var(--black) 0% ${100-pct}%, transparent ${100-pct}% 100%), conic-gradient(var(--gold) 0% ${pct}%, transparent ${pct}% 100%)`;
+    function isFilled(el){
+      if (!el) return false;
+      if (el.tagName === "SELECT") return !!el.value && el.value !== "";
+      return !!el.value && el.value.trim() !== "";
     }
-  }
 
-  // 5) Save profile to Firestore (/profiles/{uid}), set localStorage for door
-  window.saveProfile = async function () {
-    try {
-      const stored = (localStorage.getItem("archetype") || "mood_multiplier");
-      const title  = slugToTitle[stored] || stored;
-      const color  = window.LibidoBackend.archetypeToColor(title) || "blue";
+    function updateProgress(){
+      const checklist = [
+        isFilled(document.getElementById("bio")),
+        !!(window.profilePhotoURLs && window.profilePhotoURLs[0]), // main photo
+        isFilled(document.getElementById("name")),
+        isFilled(document.getElementById("age")),
+        isFilled(document.getElementById("height")),
+        isFilled(document.getElementById("orientation")),
+        isFilled(document.getElementById("loveLanguage")),
+        isFilled(document.getElementById("turnOnVocab")),
+        isFilled(document.getElementById("tyle")),
+        isFilled(document.getElementById("tylePersonality")),
+        isFilled(document.getElementById("fantasies")),
+        isFilled(document.getElementById("lookingFor")),
+        isFilled(document.getElementById("sugarDynamic")),
+        isFilled(document.getElementById("threesome")),
+        isFilled(document.getElementById("drinks")),
+        isFilled(document.getElementById("smokes")),
+        isFilled(document.getElementById("weed")),
+        isFilled(document.getElementById("drugs")),
+        isFilled(document.getElementById("hasKids")),
+        isFilled(document.getElementById("wantsKids")),
+        isFilled(document.getElementById("job")),
+        isFilled(document.getElementById("education")),
+        isFilled(document.getElementById("religion")),
+        isFilled(document.getElementById("showReligionMatchOnly")),
+        isFilled(document.getElementById("politics")),
+        isFilled(document.getElementById("notifyWantsYou")),
+        isFilled(document.getElementById("notifyChecksYouOut")),
+        isFilled(document.getElementById("allowMessagesFrom")),
+        isFilled(document.getElementById("visibility"))
+      ];
+      const total = checklist.length;
+      const done = checklist.filter(Boolean).length;
+      const pct = Math.round((done / total) * 100);
 
-      localStorage.setItem("profileMode", "verified");
-      localStorage.setItem("archetypeColor", color);
-
-      const data = {
-        archetypeTitle: title,
-        archetypeSlug: window.LibidoBackend.toSlug(title),
-        archetypeColor: color,
-
-        bio: document.getElementById("bio")?.value || "",
-        name: document.getElementById("name")?.value || "",
-        age: document.getElementById("age")?.value || "",
-        height: document.getElementById("height")?.value || "",
-        orientation: document.getElementById("orientation")?.value || "",
-        loveLanguage: document.getElementById("loveLanguage")?.value || "",
-        turnOnVocab: document.getElementById("turnOnVocab")?.value || "",
-        typeLooks: document.getElementById("tyle")?.value || "",
-        typePersonality: document.getElementById("tylePersonality")?.value || "",
-        fantasies: document.getElementById("fantasies")?.value || "",
-        lookingFor: document.getElementById("lookingFor")?.value || "",
-        sugarDynamic: document.getElementById("sugarDynamic")?.value || "",
-        threesome: document.getElementById("threesome")?.value || "",
-        drinks: document.getElementById("drinks")?.value || "",
-        smokes: document.getElementById("smokes")?.value || "",
-        weed: document.getElementById("weed")?.value || "",
-        drugs: document.getElementById("drugs")?.value || "",
-        hasKids: document.getElementById("hasKids")?.value || "",
-        wantsKids: document.getElementById("wantsKids")?.value || "",
-        job: document.getElementById("job")?.value || "",
-        education: document.getElementById("education")?.value || "",
-        religion: document.getElementById("religion")?.value || "",
-        showReligionMatchOnly: document.getElementById("showReligionMatchOnly")?.value || "",
-        politics: document.getElementById("politics")?.value || "",
-        notifyWantsYou: document.getElementById("notifyWantsYou")?.value || "yes",
-        notifyChecksYouOut: document.getElementById("notifyChecksYouOut")?.value || "yes",
-        allowMessagesFrom: document.getElementById("allowMessagesFrom")?.value || "verified",
-        visibility: document.getElementById("visibility")?.value || "verified",
-
-        photoURLs: (window.profilePhotoURLs || []).filter(Boolean),
-        createdAt: Date.now()
-      };
-
-      await window.LibidoBackend.saveProfileToFirestore("verified", data);
-
-      alert("Profile saved! Click Close to start dating!");
-      window.location.href = '/get-lucky.html';
-    } catch (e) {
-      console.error(e);
-      alert("Failed to save profile. Please try again.");
+      const circle = document.getElementById("progressCircle");
+      if (circle){
+        circle.textContent = `${pct}%`;
+        circle.style.background = `conic-gradient(var(--gold) 0% ${pct}%, rgba(255,255,255,0.15) ${pct}% 100%)`;
+      }
     }
-  };
-</script>
+
+    // 5) Save profile → Firestore (/profiles/{uid}) & redirect
+    window.saveProfile = async function () {
+      try {
+        const stored = (localStorage.getItem("archetype") || "mood_multiplier");
+        const title  = slugToTitle[stored] || stored;
+        const color  = window.LibidoBackend.archetypeToColor(title) || "blue";
+
+        localStorage.setItem("profileMode", "verified");
+        localStorage.setItem("archetypeColor", color);
+
+        const data = {
+          archetypeTitle: title,
+          archetypeSlug: window.LibidoBackend.toSlug(title),
+          archetypeColor: color,
+
+          bio: document.getElementById("bio")?.value || "",
+          name: document.getElementById("name")?.value || "",
+          age: document.getElementById("age")?.value || "",
+          height: document.getElementById("height")?.value || "",
+          orientation: document.getElementById("orientation")?.value || "",
+          loveLanguage: document.getElementById("loveLanguage")?.value || "",
+          turnOnVocab: document.getElementById("turnOnVocab")?.value || "",
+          typeLooks: document.getElementById("tyle")?.value || "",
+          typePersonality: document.getElementById("tylePersonality")?.value || "",
+          fantasies: document.getElementById("fantasies")?.value || "",
+          lookingFor: document.getElementById("lookingFor")?.value || "",
+          sugarDynamic: document.getElementById("sugarDynamic")?.value || "",
+          threesome: document.getElementById("threesome")?.value || "",
+          drinks: document.getElementById("drinks")?.value || "",
+          smokes: document.getElementById("smokes")?.value || "",
+          weed: document.getElementById("weed")?.value || "",
+          drugs: document.getElementById("drugs")?.value || "",
+          hasKids: document.getElementById("hasKids")?.value || "",
+          wantsKids: document.getElementById("wantsKids")?.value || "",
+          job: document.getElementById("job")?.value || "",
+          education: document.getElementById("education")?.value || "",
+          religion: document.getElementById("religion")?.value || "",
+          showReligionMatchOnly: document.getElementById("showReligionMatchOnly")?.value || "",
+          politics: document.getElementById("politics")?.value || "",
+          notifyWantsYou: document.getElementById("notifyWantsYou")?.value || "yes",
+          notifyChecksYouOut: document.getElementById("notifyChecksYouOut")?.value || "yes",
+          allowMessagesFrom: document.getElementById("allowMessagesFrom")?.value || "verified",
+          visibility: document.getElementById("visibility")?.value || "verified",
+
+          photoURLs: (window.profilePhotoURLs || []).filter(Boolean),
+          createdAt: Date.now()
+        };
+
+        await window.LibidoBackend.saveProfileToFirestore("verified", data);
+
+        alert("Profile saved! Click Close to start dating!");
+        window.location.href = '/secret-invite.html';
+      } catch (e) {
+        console.error(e);
+        alert("Failed to save profile. Please try again.");
+      }
+    };
+  </script>
 </body>
 </html>
