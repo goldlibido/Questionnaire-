@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verified Profile – Le Libido</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --gold: #e1bf78;
       --white: #ffffff;
       --black: #000000;
+    }
+
+    html, body {
+      height: 100%;
     }
 
     body {
@@ -19,6 +22,9 @@
       color: var(--white);
       padding: 20px;
       background-color: #0d0d0d;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body.blue  { background-color: #064D95; }
@@ -35,6 +41,9 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
     }
 
     .progress-circle {
@@ -48,6 +57,7 @@
       color: var(--white);
       font-weight: bold;
       background: conic-gradient(var(--gold) 0% 0%, rgba(255,255,255,0.15) 0% 100%);
+      flex: 0 0 auto;
     }
 
     .logo {
@@ -86,6 +96,7 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      touch-action: manipulation; /* keep taps responsive */
     }
 
     .photo-upload input { display: none; }
@@ -109,7 +120,7 @@
       font-size: 1rem;
       max-width: 500px;
       width: 100%;
-      position: relative; /* for overlay */
+      position: relative;
     }
 
     .field label {
@@ -117,37 +128,42 @@
       margin-bottom: 4px;
       font-weight: 600;
       cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .field input, .field select {
       max-width: 100%;
       width: 100%;
       box-sizing: border-box;
-      padding: 10px;
+      padding: 12px 10px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 1rem;
       color: var(--white);
       background-color: rgba(255,255,255,0.1);
-    }
-
-    .field select {
+      outline: none;
+      -webkit-appearance: none;
       appearance: none;
-      cursor: pointer;
-      position: relative;
-      z-index: 1; /* below overlay */
+      touch-action: manipulation; /* don't capture scroll gestures */
     }
 
-    /* Invisible overlay that guarantees first-tap opens the picker */
-    .field[data-open-on-tap] .tap-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      background: transparent;
-      border: 0;
-      padding: 0;
-      margin: 0;
-      cursor: pointer;
+    /* Add a subtle dropdown caret */
+    .field select {
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--gold) 50%),
+        linear-gradient(135deg, var(--gold) 50%, transparent 50%),
+        linear-gradient(to right, rgba(255,255,255,0.15), rgba(255,255,255,0.15));
+      background-position:
+        calc(100% - 18px) calc(1.2em),
+        calc(100% - 13px) calc(1.2em),
+        calc(100% - 2.4rem) 0.5rem;
+      background-size:
+        6px 6px,
+        6px 6px,
+        1px 60%;
+      background-repeat: no-repeat;
+      padding-right: 2.8rem;
     }
 
     .divider {
@@ -201,17 +217,17 @@
     <input type="text" id="name" placeholder="First & Last Name" />
   </div>
 
-  <div class="field" data-open-on-tap>
+  <div class="field">
     <label for="age">Age</label>
     <select id="age"><option disabled selected>Select your age</option></select>
   </div>
 
-  <div class="field" data-open-on-tap>
+  <div class="field">
     <label for="height">Height</label>
     <select id="height"><option disabled selected>Select your height</option></select>
   </div>
 
-  <div class="field" data-open-on-tap>
+  <div class="field">
     <label for="orientation">Sexual Orientation</label>
     <select id="orientation">
       <option value="" disabled selected>Select your preference</option>
@@ -240,8 +256,8 @@
     </a>
   </div>
 
-  <div class="field" data-open-on-tap>
-    <label>Love Language</label>
+  <div class="field">
+    <label for="loveLanguage">Love Language</label>
     <select id="loveLanguage">
       <option value="" disabled selected>Select your preference</option>
       <option value="words">Words of affirmation</option>
@@ -252,8 +268,8 @@
     </select>
   </div>
 
-  <div class="field" data-open-on-tap>
-    <label>Turn-On Vocabulary</label>
+  <div class="field">
+    <label for="turnOnVocab">Turn-On Vocabulary</label>
     <select id="turnOnVocab">
       <option value="" disabled selected>Select your preference</option>
       <option value="prefer">Prefer not to say</option>
@@ -269,8 +285,8 @@
     </select>
   </div>
 
-  <div class="field" data-open-on-tap>
-    <label>My Type (Looks)</label>
+  <div class="field">
+    <label for="tyle">My Type (Looks)</label>
     <select id="tyle">
       <option value="" disabled selected>Select your preference</option>
       <option value="prefer">Prefer not to say</option>
@@ -292,8 +308,8 @@
     </select>
   </div>
 
-  <div class="field" data-open-on-tap>
-    <label>My Type (Personality)</label>
+  <div class="field">
+    <label for="tylePersonality">My Type (Personality)</label>
     <select id="tylePersonality">
       <option value="" disabled selected>Select your preference</option>
       <option value="prefer">Prefer not to say</option>
@@ -309,8 +325,8 @@
     </select>
   </div>
 
-  <div class="field" data-open-on-tap>
-    <label>Fantasies</label>
+  <div class="field">
+    <label for="fantasies">Fantasies</label>
     <select id="fantasies">
       <option value="" disabled selected>Select your preference</option>
       <option value="prefer">Prefer not to say</option>
@@ -327,8 +343,8 @@
     </select>
   </div>
 
-  <div class="field" data-open-on-tap>
-    <label>Looking For</label>
+  <div class="field">
+    <label for="lookingFor">Looking For</label>
     <select id="lookingFor">
       <option value="" disabled selected>Select your preference</option>
       <option value="love">Love / Long-Term</option>
@@ -337,8 +353,8 @@
     </select>
   </div>
 
-  <div class="field" data-open-on-tap>
-    <label>Open to Sugar Dynamic?</label>
+  <div class="field">
+    <label for="sugarDynamic">Open to Sugar Dynamic?</label>
     <select id="sugarDynamic">
       <option value="" disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
@@ -347,8 +363,8 @@
     </select>
   </div>
 
-  <div class="field" data-open-on-tap>
-    <label>Open to Threesome?</label>
+  <div class="field">
+    <label for="threesome">Open to Threesome?</label>
     <select id="threesome">
       <option value="" disabled selected>Select your preference</option>
       <option value="hell_yes">Hell yes, the more the merrier</option>
@@ -360,20 +376,20 @@
   <div class="divider"></div>
   <div class="section-label">Lifestyle</div>
 
-  <div class="field" data-open-on-tap><label>Do you drink alcohol?</label><select id="drinks"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
-  <div class="field" data-open-on-tap><label>Do you smoke cigarettes/vape?</label><select id="smokes"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
-  <div class="field" data-open-on-tap><label>Do you smoke weed?</label><select id="weed"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
-  <div class="field" data-open-on-tap><label>Do you use drugs?</label><select id="drugs"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="field"><label for="drinks">Do you drink alcohol?</label><select id="drinks"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="field"><label for="smokes">Do you smoke cigarettes/vape?</label><select id="smokes"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="field"><label for="weed">Do you smoke weed?</label><select id="weed"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="field"><label for="drugs">Do you use drugs?</label><select id="drugs"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
 
   <div class="divider"></div>
   <div class="section-label">Beliefs & Values</div>
 
-  <div class="field" data-open-on-tap><label>Do you have children?</label><select id="hasKids"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
-  <div class="field" data-open-on-tap><label>Would you like to have children?</label><select id="wantsKids"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="field"><label for="hasKids">Do you have children?</label><select id="hasKids"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div class="field"><label for="wantsKids">Would you like to have children?</label><select id="wantsKids"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
   <div class="field"><label for="job">Job Title</label><input type="text" id="job" placeholder="Enter job title" /></div>
   <div class="field"><label for="education">Education</label><input type="text" id="education" placeholder="School name" /></div>
-  <div class="field" data-open-on-tap>
-    <label>Religion</label>
+  <div class="field">
+    <label for="religion">Religion</label>
     <select id="religion">
       <option value="" disabled selected>Select your preference</option>
       <option value="atheist">Atheist</option>
@@ -385,16 +401,16 @@
       <option value="other">Other</option>
     </select>
   </div>
-  <div class="field" data-open-on-tap>
-    <label>Only show my religion to others with same religion?</label>
+  <div class="field">
+    <label for="showReligionMatchOnly">Only show my religion to others with same religion?</label>
     <select id="showReligionMatchOnly">
       <option value="" disabled selected>Select your preference</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
     </select>
   </div>
-  <div class="field" data-open-on-tap>
-    <label>Political Views</label>
+  <div class="field">
+    <label for="politics">Political Views</label>
     <select id="politics">
       <option value="" disabled selected>Select your preference</option>
       <option value="conservative">Conservative</option>
@@ -409,31 +425,35 @@
   <div class="divider"></div>
   <div class="section-label">Notifications & Visibility</div>
 
-  <div class="field" data-open-on-tap>
-    <label>Get notified when someone wants you?</label>
+  <div class="field">
+    <label for="notifyWantsYou">Get notified when someone wants you?</label>
     <select id="notifyWantsYou">
+      <option value="" disabled selected>Select your preference</option>
       <option value="yes" selected>Yes</option>
       <option value="no">No</option>
     </select>
   </div>
-  <div class="field" data-open-on-tap>
-    <label>Get notified when someone checks you out?</label>
+  <div class="field">
+    <label for="notifyChecksYouOut">Get notified when someone checks you out?</label>
     <select id="notifyChecksYouOut">
+      <option value="" disabled selected>Select your preference</option>
       <option value="yes" selected>Yes</option>
       <option value="no">No</option>
     </select>
   </div>
-  <div class="field" data-open-on-tap>
-    <label>Allow messages from:</label>
+  <div class="field">
+    <label for="allowMessagesFrom">Allow messages from:</label>
     <select id="allowMessagesFrom">
+      <option value="" disabled selected>Select your preference</option>
       <option value="verified" selected>Verified Only</option>
       <option value="anonymous">Anonymous Only</option>
       <option value="both">Both</option>
     </select>
   </div>
-  <div class="field" data-open-on-tap>
-    <label>Show profile to:</label>
+  <div class="field">
+    <label for="visibility">Show profile to:</label>
     <select id="visibility">
+      <option value="" disabled selected>Select your preference</option>
       <option value="verified" selected>Verified Only</option>
       <option value="anonymous">Anonymous Only</option>
       <option value="both">Both</option>
@@ -454,9 +474,8 @@
   </div>
 
   <script>
-    // ===== Archetype theming & initial population =====
+    // ========= Archetype theming, blueprint link, and option population =========
     document.addEventListener("DOMContentLoaded", function () {
-      // Read archetype from localStorage; handle both slug and title forms
       const raw = localStorage.getItem("archetype") || "Mood Multiplier";
 
       const slugToTitle = {
@@ -496,18 +515,13 @@
           ? "claimed_and_trained"
           : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
 
-      // Apply background color based on archetype
       document.body.classList.add(roomMap[title] || "blue");
 
-      // Show archetype name
       const nameDiv = document.getElementById("archetypeName");
       if (nameDiv) nameDiv.textContent = title;
 
-      // Profile link
       const blueprintLink = document.getElementById("blueprintLink");
-      if (blueprintLink) {
-        blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
-      }
+      if (blueprintLink) blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
 
       // Populate Age
       const ageSelect = document.getElementById("age");
@@ -535,14 +549,13 @@
         }
       }
 
-      // Add first‑tap overlays on selects (after options are in place)
-      attachFirstTapOverlays();
+      // Attach first-tap helpers on the SELECT itself (no overlays)
+      enableOneTapSelects();
 
-      // Initialize progress
       updateProgress();
     });
 
-    // ===== Instant photo preview =====
+    // ========= Photo preview =========
     function handlePhotoUpload(event, index) {
       const file = event.target.files && event.target.files[0];
       if (!file) return;
@@ -600,7 +613,7 @@
     }
     window.handlePhotoUpload = handlePhotoUpload;
 
-    // ===== Progress circle =====
+    // ========= Progress circle =========
     function isFilled(el){
       if (!el) return false;
       if (el.tagName === "SELECT") return el.value !== "" && el.value != null && el.selectedIndex > 0;
@@ -657,50 +670,44 @@
       if (e.target.closest('.field')) updateProgress();
     });
 
-    // ===== One‑tap open for all selects (overlay trick) =====
-    function openNativePicker(select) {
+    // ========= One-tap open on the SELECT itself + on the LABEL =========
+    function openPickerIfPossible(selectEl) {
+      if (!selectEl) return;
+      // Try to use showPicker if present; do NOT preventDefault.
       try {
-        if (typeof select.showPicker === 'function') {
-          select.showPicker();
-          return;
+        if (typeof selectEl.showPicker === 'function') {
+          selectEl.showPicker();
         }
-      } catch (_) {}
-      // Fallback for iOS/older Android
-      setTimeout(() => {
-        select.focus({ preventScroll: false });
-        select.click();
-      }, 0);
+      } catch (_) {
+        // Fallback to focusing + clicking (still within native gesture)
+        try { selectEl.focus(); } catch(_){}
+        try { selectEl.click(); } catch(_){}
+      }
     }
 
-    function attachFirstTapOverlays() {
-      document.querySelectorAll('.field[data-open-on-tap]').forEach(field => {
-        const select = field.querySelector('select');
-        if (!select) return;
-        if (field.querySelector('.tap-overlay')) return; // already added
+    function enableOneTapSelects() {
+      const pairs = [];
+      document.querySelectorAll('.field select').forEach(select => {
+        const id = select.id;
+        const label = id ? document.querySelector(`label[for="${id}"]`) : null;
+        pairs.push([label, select]);
 
-        const overlay = document.createElement('button');
-        overlay.type = 'button';
-        overlay.className = 'tap-overlay';
-        overlay.setAttribute('aria-label', 'Open options');
+        // On iOS/Chrome iOS, opening on pointerdown reliably triggers picker
+        select.addEventListener('pointerdown', function(){
+          openPickerIfPossible(select);
+        }, { passive: true });
 
-        const trigger = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          openNativePicker(select);
-        };
-
-        // Use pointer + click to cover iOS/Android/desktop
-        overlay.addEventListener('pointerup', trigger, { passive: false });
-        overlay.addEventListener('click', trigger, { passive: false });
-
-        // If the user actually hits the select directly, let it behave natively.
-        select.addEventListener('click', () => { /* no-op */ });
-
-        field.appendChild(overlay);
+        // Also make label taps open the picker immediately
+        if (label) {
+          label.addEventListener('pointerdown', function(e){
+            e.preventDefault(); // avoid just focusing without opening
+            openPickerIfPossible(select);
+          }, { passive: false });
+        }
       });
     }
 
-    // ===== Save → go to secret-invite =====
+    // ========= Save → go to secret-invite =========
     function saveProfile() {
       alert("Profile saved! Click Close to start dating!");
       window.location.href = '/secret-invite.html';
