@@ -6,11 +6,7 @@
   <title>Verified Profile – Le Libido</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --gold: #e1bf78;
-      --white: #ffffff;
-      --black: #000000;
-    }
+    :root { --gold:#e1bf78; --white:#ffffff; --black:#000000; }
 
     body {
       margin: 0;
@@ -19,7 +15,6 @@
       padding: 20px;
       background-color: #0d0d0d;
     }
-
     body.blue { background-color: #064D95; }
     body.green { background-color: #06954E; }
     body.red { background-color: #950606; }
@@ -40,51 +35,25 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 0.8rem;
-      color: var(--white);
-      font-weight: bold;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 0.8rem; color: var(--white); font-weight: bold;
       background: conic-gradient(var(--gold) 0% 0%, rgba(255,255,255,0.15) 0% 100%);
     }
 
-    .logo {
-      max-width: 140px;
-      margin: 20px auto;
-      display: block;
-    }
+    .logo { max-width: 140px; margin: 20px auto; display: block; }
 
-    .section-label {
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin: 30px 0 10px;
-      padding-bottom: 6px;
-      color: var(--gold);
-    }
+    .section-label { font-weight: bold; font-size: 1.2rem; margin: 30px 0 10px; padding-bottom: 6px; color: var(--gold); }
 
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+    .photo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
 
     .photo-upload {
-      width: 100%;
-      aspect-ratio: 1;
+      width: 100%; aspect-ratio: 1;
       background-color: rgba(255,255,255,0.1);
       border: 2px dashed var(--gold);
       border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--gold);
-      font-size: 0.8rem;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--gold); font-size: 0.8rem; cursor: pointer; position: relative; overflow: hidden;
+      touch-action: manipulation;
     }
 
     .photo-upload input { display: none; }
@@ -92,57 +61,26 @@
 
     .photo-upload.required::after {
       content: "Required";
-      font-size: 0.7rem;
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      background-color: var(--gold);
-      color: var(--black);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: bold;
+      font-size: 0.7rem; position: absolute; top: 6px; right: 6px;
+      background-color: var(--gold); color: var(--black);
+      padding: 2px 6px; border-radius: 4px; font-weight: bold;
     }
 
-    .field {
-      margin: 12px auto;
-      font-size: 1rem;
-      max-width: 500px;
-      width: 100%;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-
+    .field { margin: 12px auto; font-size: 1rem; max-width: 500px; width: 100%; }
+    .field label { display: block; margin-bottom: 4px; font-weight: 600; }
     .field input, .field select {
-      max-width: 100%;
-      width: 100%;
-      box-sizing: border-box;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      font-size: 1rem;
-      color: var(--white);
+      max-width: 100%; width: 100%; box-sizing: border-box; padding: 10px;
+      border: none; border-radius: 4px; font-size: 1rem; color: var(--white);
       background-color: rgba(255,255,255,0.1);
+      touch-action: manipulation;
     }
-
     .field select { appearance: none; }
 
-    .divider {
-      border-top: 1px solid rgba(255,255,255,0.15);
-      margin: 30px 0 10px;
-    }
-
+    .divider { border-top: 1px solid rgba(255,255,255,0.15); margin: 30px 0 10px; }
     .locked { opacity: 0.5; pointer-events: none; }
 
-    @media (min-width: 768px) {
-      .photo-grid, .field {
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-      }
+    @media (min-width:768px) {
+      .photo-grid, .field { max-width: 500px; margin-left: auto; margin-right: auto; }
     }
   </style>
 </head>
@@ -155,9 +93,9 @@
 
   <img src="https://raw.githubusercontent.com/goldlibido/Questionnaire-/refs/heads/main/golden-le-libido-logo.png" alt="Le Libido Logo" class="logo"/>
 
-  <div class="field" style="text-align: center;">
+  <div class="field" style="text-align:center;">
     <label for="bio">Flirty First Impression</label>
-    <input type="text" id="bio" placeholder="e.g. Catch me before I change my mind…" />
+    <input type="text" id="bio" placeholder="e.g. Catch me before I change my mind…"/>
   </div>
 
   <div class="section-label">Upload Photos</div>
@@ -176,7 +114,7 @@
 
   <div class="section-label">Basic Info</div>
 
-  <div class="field"><label for="name">Name</label><input type="text" id="name" placeholder="First & Last Name" /></div>
+  <div class="field"><label for="name">Name</label><input type="text" id="name" placeholder="First & Last Name"/></div>
   <div class="field"><label for="age">Age</label><select id="age"><option disabled selected>Select your age</option></select></div>
   <div class="field"><label for="height">Height</label><select id="height"><option disabled selected>Select your height</option></select></div>
   <div class="field">
@@ -184,7 +122,7 @@
     <select id="orientation">
       <option value="" disabled selected>Select your preference</option>
       <option value="Straight men">Man into Women</option>
-      <option value="Straight women">Women into Men </option>
+      <option value="Straight women">Women into Men</option>
       <option value="Gay man">Man into men</option>
       <option value="Gay woman">Women into women</option>
       <option value="Bisexual man">Man into all</option>
@@ -197,13 +135,11 @@
 
   <div class="field locked">
     <label>Your Sexual Archetype</label>
-    <div id="archetypeName" style="font-weight: bold;">Mood Multiplier</div>
+    <div id="archetypeName" style="font-weight:bold;">Mood Multiplier</div>
   </div>
 
-  <div class="field" style="margin-top: 8px; text-align: center;">
-    <a id="blueprintLink"
-       target="_blank"
-       style="display: inline-block; margin-top: 6px; color: var(--gold); font-weight: bold; text-decoration: underline;">
+  <div class="field" style="margin-top:8px;text-align:center;">
+    <a id="blueprintLink" target="_blank" style="display:inline-block;margin-top:6px;color:var(--gold);font-weight:bold;text-decoration:underline;">
       → View Your Full Sexual Profile
     </a>
   </div>
@@ -271,22 +207,22 @@
       <option value="flirty">Flirty & provocative</option>
       <option value="extroverted">Extroverted & friendly</option>
       <option value="introverted">Introverted & thoughtful</option>
-      <option value="athletic">Athletic & sporty </option>
+      <option value="athletic">Athletic & sporty</option>
       <option value="organize">Organized & orderly</option>
       <option value="silly">Silly & goofy</option>
     </select>
   </div>
-      
+
   <div class="field">
     <label>Fantasies</label>
     <select id="fantasies">
       <option value="" disabled selected>Select your preference</option>
       <option value="prefer">Prefer not to say</option>
-      <option value="beach">Sex on the beach </option>
+      <option value="beach">Sex on the beach</option>
       <option value="bath">Candlelit bath with a partner</option>
       <option value="massage">Erotic massage</option>
       <option value="mile">Joining the Mile High Club</option>
-      <option value="dipping">Skinny dipping </option>
+      <option value="dipping">Skinny dipping</option>
       <option value="role-play">Role-play</option>
       <option value="bondage">Light bondage or restraints</option>
       <option value="sensory">Sensory play</option>
@@ -304,6 +240,7 @@
       <option value="let_it_evolve">Let it evolve</option>
     </select>
   </div>
+
   <div class="field">
     <label>Open to Sugar Dynamic?</label>
     <select id="sugarDynamic">
@@ -337,8 +274,8 @@
 
   <div class="field"><label>Do you have children?</label><select id="hasKids"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
   <div class="field"><label>Would you like to have children?</label><select id="wantsKids"><option value="" disabled selected>Select your preference</option><option value="yes">Yes</option><option value="no">No</option></select></div>
-  <div class="field"><label for="job">Job Title</label><input type="text" id="job" placeholder="Enter job title" /></div>
-  <div class="field"><label for="education">Education</label><input type="text" id="education" placeholder="School name" /></div>
+  <div class="field"><label for="job">Job Title</label><input type="text" id="job" placeholder="Enter job title"/></div>
+  <div class="field"><label for="education">Education</label><input type="text" id="education" placeholder="School name"/></div>
   <div class="field">
     <label>Religion</label>
     <select id="religion">
@@ -407,33 +344,29 @@
     </select>
   </div>
 
-  <div style="margin-top: 40px;">
-    <button onclick="saveProfile()" style="
-      background-color: #e1bf78;
-      color: #000;
-      font-size: 1.2rem;
-      font-weight: bold;
-      padding: 14px 32px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-    ">Save Profile</button>
+  <div style="margin-top:40px;">
+    <button onclick="saveProfile()" style="background-color:#e1bf78;color:#000;font-size:1.2rem;font-weight:bold;padding:14px 32px;border-radius:10px;border:none;cursor:pointer;">
+      Save Profile
+    </button>
   </div>
 
-  <!-- Load backend FIRST so window.LibidoBackend is ready -->
+  <!-- Backend: must be a pure module file (no <script> tags inside) -->
   <script type="module" src="./le-libido-backend.js"></script>
 
-  <!-- Main logic -->
+  <!-- Main logic (defensive, won’t crash if backend isn’t ready yet) -->
   <script type="module">
     import { auth, storage } from './firebase-config.js';
     import { signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
 
-    // 1) Lightweight session (anonymous auth) so rules allow writes
-    signInAnonymously(auth).catch((e)=>console.error("Anonymous sign-in failed:", e));
-    onAuthStateChanged(auth, (user)=>{ if (user) localStorage.setItem("uid", user.uid); });
+    // Ensure selects & tiles respond on first tap (iOS Safari quirks)
+    // (CSS touch-action already added; no JS needed here)
 
-    // 2) Archetype mapping + initial UI
+    // Anonymous session so Firestore/Storage rules allow writes
+    signInAnonymously(auth).catch(e => console.error('Anonymous sign-in failed:', e));
+    onAuthStateChanged(auth, (user) => { if (user) localStorage.setItem('uid', user.uid); });
+
+    // Archetype mapping
     const slugToTitle = {
       "devoted_darling": "Devoted Darling",
       "mood_multiplier": "Mood Multiplier",
@@ -448,8 +381,6 @@
       "dungeon_master": "Dungeon Master",
       "claimed_and_trained": "Claimed & Trained"
     };
-    const formatSlug = (name) =>
-      name === "Claimed & Trained" ? "claimed_and_trained" : name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
 
     const roomMap = {
       "Tender Protector": "blue",
@@ -466,74 +397,93 @@
       "Claimed & Trained": "red"
     };
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const stored = (localStorage.getItem("archetype") || "mood_multiplier");
-      const title = slugToTitle[stored] || stored;
-      const color = roomMap[title] || window.LibidoBackend.archetypeToColor(title) || "blue";
+    const formatSlug = (name) => name === "Claimed & Trained"
+      ? "claimed_and_trained"
+      : (name||"").toLowerCase().replace(/[^a-z0-9]+/g,"_");
 
-      // Background color by archetype
-      document.body.classList.add(color);
+    // Init UI guarded (no hard fails)
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const stored = localStorage.getItem('archetype') || 'mood_multiplier';
+        const title = slugToTitle[stored] || stored;
 
-      // Title text
-      const nameDiv = document.getElementById("archetypeName");
-      if (nameDiv) nameDiv.textContent = title;
+        const color = roomMap[title]
+          || (window.LibidoBackend?.archetypeToColor?.(title))
+          || 'blue';
 
-      // Blueprint link
-      const blueprintLink = document.getElementById("blueprintLink");
-      if (blueprintLink) blueprintLink.href = `/premium/erotic-blueprint_${formatSlug(title)}.html`;
+        document.body.classList.add(color);
 
-      // Populate selects
-      const ageSelect = document.getElementById("age");
-      if (ageSelect && ageSelect.options.length === 1) {
-        for (let i = 18; i <= 80; i++) {
-          const opt = document.createElement("option");
-          opt.value = i; opt.textContent = i; ageSelect.appendChild(opt);
+        const nameDiv = document.getElementById('archetypeName');
+        if (nameDiv) nameDiv.textContent = title;
+
+        const blueprintLink = document.getElementById('blueprintLink');
+        if (blueprintLink) {
+          const slug = window.LibidoBackend?.toSlug?.(title) || formatSlug(title);
+          blueprintLink.href = `/premium/erotic-blueprint_${slug}.html`;
         }
-      }
-      const heightSelect = document.getElementById("height");
-      if (heightSelect && heightSelect.options.length === 1) {
-        for (let ft = 4; ft <= 7; ft++) {
-          for (let inch = 0; inch < 12; inch++) {
-            if (ft === 7 && inch > 0) continue;
-            const label = `${ft}'${inch}"`;
-            const opt = document.createElement("option");
-            opt.value = label; opt.textContent = label; heightSelect.appendChild(opt);
+
+        const ageSelect = document.getElementById('age');
+        if (ageSelect && ageSelect.options.length === 1) {
+          for (let i = 18; i <= 80; i++) {
+            const opt = document.createElement('option');
+            opt.value = i; opt.textContent = i;
+            ageSelect.appendChild(opt);
           }
         }
-      }
+        const heightSelect = document.getElementById('height');
+        if (heightSelect && heightSelect.options.length === 1) {
+          for (let ft = 4; ft <= 7; ft++) {
+            for (let inch = 0; inch < 12; inch++) {
+              if (ft === 7 && inch > 0) continue;
+              const label = `${ft}'${inch}"`;
+              const opt = document.createElement('option');
+              opt.value = label; opt.textContent = label;
+              heightSelect.appendChild(opt);
+            }
+          }
+        }
 
-      // Progress listeners
-      attachProgressListeners();
-      updateProgress();
+        attachProgressListeners();
+        updateProgress();
+      } catch (e) {
+        console.error('Init failed:', e);
+      }
     });
 
-    // 3) Photo uploads (with progress)
+    // Photo uploads (preview immediately; upload when UID available)
     window.profilePhotoURLs = Array(6).fill(null);
     window.profilePhotoPaths = Array(6).fill(null);
 
     window.handlePhotoUpload = async function (event, index) {
       const file = event.target.files?.[0];
       if (!file) return;
-
-      const tile = event.target.closest(".photo-upload");
+      const tile = event.target.closest('.photo-upload');
       if (!tile) return;
 
       const objectURL = URL.createObjectURL(file);
-      // Preview + progress bar
       tile.innerHTML = `
         <div style="position:relative;width:100%;height:100%;">
           <img src="${objectURL}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;" />
-          <div class="upload-preview" style="position:absolute;left:0;right:0;bottom:0;height:10px;background:rgba(255,255,255,0.25);">
+          <div style="position:absolute;left:0;right:0;bottom:0;height:8px;background:rgba(255,255,255,0.25);">
             <div id="bar-${index}" style="width:0%;height:100%;background:#e1bf78;"></div>
           </div>
         </div>
       `;
 
+      // wait briefly for UID if needed
+      let uid = localStorage.getItem('uid');
+      if (!uid) { await new Promise(r=>setTimeout(r,300)); uid = localStorage.getItem('uid'); }
+
+      if (!uid) { // keep preview; skip upload gracefully
+        console.warn('UID not ready; image preview shown but not uploaded yet.');
+        return;
+      }
+
       try {
-        const uid = localStorage.getItem("uid");
         const extRaw = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
         const safeExt = ['jpg','jpeg','png','webp','gif','heic','heif','bmp','tif','tiff'].includes(extRaw) ? extRaw : 'jpg';
         const path = `users/${uid}/photos/verified/${String(index)}.${safeExt}`;
+
         const ref = storageRef(storage, path);
         const task = uploadBytesResumable(ref, file, { contentType: file.type || `image/${safeExt}` });
 
@@ -551,14 +501,19 @@
 
         tile.innerHTML = `
           <img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;" />
-          <button type="button" aria-label="Remove" title="Remove photo" style="position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,0.7);color:#fff;font-size:16px;cursor:pointer;">×</button>
+          <button type="button" aria-label="Remove" title="Remove photo"
+            style="position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,0.7);color:#fff;font-size:16px;cursor:pointer;">×</button>
         `;
-        tile.style.position = "relative";
+        tile.style.position = 'relative';
+        if (index === 0) tile.classList.remove('required');
 
-        const del = tile.querySelector('button');
-        del.addEventListener('click', async (e) => {
+        tile.querySelector('button').addEventListener('click', async (e) => {
           e.preventDefault();
-          try { await deleteObject(storageRef(storage, window.profilePhotoPaths[index])); } catch(e){}
+          try {
+            if (window.profilePhotoPaths[index]) {
+              await deleteObject(storageRef(storage, window.profilePhotoPaths[index]));
+            }
+          } catch(_) {}
           window.profilePhotoURLs[index] = null;
           window.profilePhotoPaths[index] = null;
           tile.innerHTML = `
@@ -566,27 +521,26 @@
             ${index === 0 ? "<span>Profile Pic</span>" : ""}
             <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
           `;
-          if (index === 0) tile.classList.add("required");
+          if (index === 0) tile.classList.add('required');
           updateProgress();
         });
 
-        if (index === 0) tile.classList.remove("required");
         updateProgress();
       } catch (err) {
-        console.error("Upload failed:", err);
-        alert("Upload failed. Please try another image.");
+        console.error('Upload failed:', err);
+        alert('Upload failed. Please try another image.');
         tile.innerHTML = `
           <span class="plus">+</span>
           ${index === 0 ? "<span>Profile Pic</span>" : ""}
           <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index})">
         `;
-        if (index === 0) tile.classList.add("required");
+        if (index === 0) tile.classList.add('required');
       } finally {
         URL.revokeObjectURL(objectURL);
       }
     };
 
-    // 4) Progress circle
+    // Progress circle
     function attachProgressListeners(){
       const ids = [
         "bio","name","age","height","orientation","loveLanguage","turnOnVocab",
@@ -595,118 +549,117 @@
         "religion","showReligionMatchOnly","politics","notifyWantsYou","notifyChecksYouOut",
         "allowMessagesFrom","visibility"
       ];
-      ids.forEach(id=>{
+      ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("change", updateProgress);
-        el.addEventListener("input", updateProgress);
+        el.addEventListener('change', updateProgress, { passive:true });
+        el.addEventListener('input', updateProgress, { passive:true });
       });
     }
 
     function isFilled(el){
       if (!el) return false;
-      if (el.tagName === "SELECT") return !!el.value && el.value !== "";
-      return !!el.value && el.value.trim() !== "";
+      if (el.tagName === 'SELECT') return !!el.value && el.value !== '';
+      return !!el.value && el.value.trim() !== '';
     }
 
     function updateProgress(){
       const checklist = [
-        isFilled(document.getElementById("bio")),
-        !!(window.profilePhotoURLs && window.profilePhotoURLs[0]), // main photo
-        isFilled(document.getElementById("name")),
-        isFilled(document.getElementById("age")),
-        isFilled(document.getElementById("height")),
-        isFilled(document.getElementById("orientation")),
-        isFilled(document.getElementById("loveLanguage")),
-        isFilled(document.getElementById("turnOnVocab")),
-        isFilled(document.getElementById("tyle")),
-        isFilled(document.getElementById("tylePersonality")),
-        isFilled(document.getElementById("fantasies")),
-        isFilled(document.getElementById("lookingFor")),
-        isFilled(document.getElementById("sugarDynamic")),
-        isFilled(document.getElementById("threesome")),
-        isFilled(document.getElementById("drinks")),
-        isFilled(document.getElementById("smokes")),
-        isFilled(document.getElementById("weed")),
-        isFilled(document.getElementById("drugs")),
-        isFilled(document.getElementById("hasKids")),
-        isFilled(document.getElementById("wantsKids")),
-        isFilled(document.getElementById("job")),
-        isFilled(document.getElementById("education")),
-        isFilled(document.getElementById("religion")),
-        isFilled(document.getElementById("showReligionMatchOnly")),
-        isFilled(document.getElementById("politics")),
-        isFilled(document.getElementById("notifyWantsYou")),
-        isFilled(document.getElementById("notifyChecksYouOut")),
-        isFilled(document.getElementById("allowMessagesFrom")),
-        isFilled(document.getElementById("visibility"))
+        isFilled(document.getElementById('bio')),
+        !!(window.profilePhotoURLs && window.profilePhotoURLs[0]),
+        isFilled(document.getElementById('name')),
+        isFilled(document.getElementById('age')),
+        isFilled(document.getElementById('height')),
+        isFilled(document.getElementById('orientation')),
+        isFilled(document.getElementById('loveLanguage')),
+        isFilled(document.getElementById('turnOnVocab')),
+        isFilled(document.getElementById('tyle')),
+        isFilled(document.getElementById('tylePersonality')),
+        isFilled(document.getElementById('fantasies')),
+        isFilled(document.getElementById('lookingFor')),
+        isFilled(document.getElementById('sugarDynamic')),
+        isFilled(document.getElementById('threesome')),
+        isFilled(document.getElementById('drinks')),
+        isFilled(document.getElementById('smokes')),
+        isFilled(document.getElementById('weed')),
+        isFilled(document.getElementById('drugs')),
+        isFilled(document.getElementById('hasKids')),
+        isFilled(document.getElementById('wantsKids')),
+        isFilled(document.getElementById('job')),
+        isFilled(document.getElementById('education')),
+        isFilled(document.getElementById('religion')),
+        isFilled(document.getElementById('showReligionMatchOnly')),
+        isFilled(document.getElementById('politics')),
+        isFilled(document.getElementById('notifyWantsYou')),
+        isFilled(document.getElementById('notifyChecksYouOut')),
+        isFilled(document.getElementById('allowMessagesFrom')),
+        isFilled(document.getElementById('visibility'))
       ];
       const total = checklist.length;
       const done = checklist.filter(Boolean).length;
       const pct = Math.round((done / total) * 100);
-
-      const circle = document.getElementById("progressCircle");
+      const circle = document.getElementById('progressCircle');
       if (circle){
         circle.textContent = `${pct}%`;
         circle.style.background = `conic-gradient(var(--gold) 0% ${pct}%, rgba(255,255,255,0.15) ${pct}% 100%)`;
       }
     }
 
-    // 5) Save profile → Firestore (/profiles/{uid}) & redirect
+    // Save → Firestore via backend (matches your rules), then redirect
     window.saveProfile = async function () {
       try {
-        const stored = (localStorage.getItem("archetype") || "mood_multiplier");
-        const title  = slugToTitle[stored] || stored;
-        const color  = window.LibidoBackend.archetypeToColor(title) || "blue";
+        const stored = localStorage.getItem('archetype') || 'mood_multiplier';
+        const title = slugToTitle[stored] || stored;
+        const color = (window.LibidoBackend?.archetypeToColor?.(title)) || 'blue';
+        const slug  = (window.LibidoBackend?.toSlug?.(title)) || formatSlug(title);
 
-        localStorage.setItem("profileMode", "verified");
-        localStorage.setItem("archetypeColor", color);
+        localStorage.setItem('profileMode','verified');
+        localStorage.setItem('archetypeColor', color);
 
         const data = {
           archetypeTitle: title,
-          archetypeSlug: window.LibidoBackend.toSlug(title),
+          archetypeSlug: slug,
           archetypeColor: color,
-
-          bio: document.getElementById("bio")?.value || "",
-          name: document.getElementById("name")?.value || "",
-          age: document.getElementById("age")?.value || "",
-          height: document.getElementById("height")?.value || "",
-          orientation: document.getElementById("orientation")?.value || "",
-          loveLanguage: document.getElementById("loveLanguage")?.value || "",
-          turnOnVocab: document.getElementById("turnOnVocab")?.value || "",
-          typeLooks: document.getElementById("tyle")?.value || "",
-          typePersonality: document.getElementById("tylePersonality")?.value || "",
-          fantasies: document.getElementById("fantasies")?.value || "",
-          lookingFor: document.getElementById("lookingFor")?.value || "",
-          sugarDynamic: document.getElementById("sugarDynamic")?.value || "",
-          threesome: document.getElementById("threesome")?.value || "",
-          drinks: document.getElementById("drinks")?.value || "",
-          smokes: document.getElementById("smokes")?.value || "",
-          weed: document.getElementById("weed")?.value || "",
-          drugs: document.getElementById("drugs")?.value || "",
-          hasKids: document.getElementById("hasKids")?.value || "",
-          wantsKids: document.getElementById("wantsKids")?.value || "",
-          job: document.getElementById("job")?.value || "",
-          education: document.getElementById("education")?.value || "",
-          religion: document.getElementById("religion")?.value || "",
-          showReligionMatchOnly: document.getElementById("showReligionMatchOnly")?.value || "",
-          politics: document.getElementById("politics")?.value || "",
-          notifyWantsYou: document.getElementById("notifyWantsYou")?.value || "yes",
-          notifyChecksYouOut: document.getElementById("notifyChecksYouOut")?.value || "yes",
-          allowMessagesFrom: document.getElementById("allowMessagesFrom")?.value || "verified",
-          visibility: document.getElementById("visibility")?.value || "verified",
-
+          bio: document.getElementById('bio')?.value || '',
+          name: document.getElementById('name')?.value || '',
+          age: document.getElementById('age')?.value || '',
+          height: document.getElementById('height')?.value || '',
+          orientation: document.getElementById('orientation')?.value || '',
+          loveLanguage: document.getElementById('loveLanguage')?.value || '',
+          turnOnVocab: document.getElementById('turnOnVocab')?.value || '',
+          typeLooks: document.getElementById('tyle')?.value || '',
+          typePersonality: document.getElementById('tylePersonality')?.value || '',
+          fantasies: document.getElementById('fantasies')?.value || '',
+          lookingFor: document.getElementById('lookingFor')?.value || '',
+          sugarDynamic: document.getElementById('sugarDynamic')?.value || '',
+          threesome: document.getElementById('threesome')?.value || '',
+          drinks: document.getElementById('drinks')?.value || '',
+          smokes: document.getElementById('smokes')?.value || '',
+          weed: document.getElementById('weed')?.value || '',
+          drugs: document.getElementById('drugs')?.value || '',
+          hasKids: document.getElementById('hasKids')?.value || '',
+          wantsKids: document.getElementById('wantsKids')?.value || '',
+          job: document.getElementById('job')?.value || '',
+          education: document.getElementById('education')?.value || '',
+          religion: document.getElementById('religion')?.value || '',
+          showReligionMatchOnly: document.getElementById('showReligionMatchOnly')?.value || '',
+          politics: document.getElementById('politics')?.value || '',
+          notifyWantsYou: document.getElementById('notifyWantsYou')?.value || 'yes',
+          notifyChecksYouOut: document.getElementById('notifyChecksYouOut')?.value || 'yes',
+          allowMessagesFrom: document.getElementById('allowMessagesFrom')?.value || 'verified',
+          visibility: document.getElementById('visibility')?.value || 'verified',
           photoURLs: (window.profilePhotoURLs || []).filter(Boolean),
           createdAt: Date.now()
         };
 
-        await window.le-libido-backend.saveProfileToFirestore("verified", data);
+        // Use your backend’s saver (must write to /profiles/{uid})
+        await window.LibidoBackend?.saveProfileToFirestore?.('verified', data);
 
-        alert("Profile saved! Click Close to start dating!");
+        alert('Profile saved! Click Close to start dating!');
         window.location.href = '/secret-invite.html';
       } catch (e) {
         console.error(e);
-        alert("Failed to save profile. Please try again.");
+        alert('Failed to save profile. Please try again.');
       }
     };
   </script>
