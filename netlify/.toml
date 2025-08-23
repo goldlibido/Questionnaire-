@@ -1,0 +1,7 @@
+[build]
+# If your HTML is in the repo root, keep "."
+publish = "."
+
+[functions]
+directory = "netlify/functions"
+node_bundler = "esbuild"
