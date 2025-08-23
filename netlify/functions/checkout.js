@@ -1,4 +1,4 @@
-// CommonJS (Netlify default)
+// /netlify/functions/checkout.js
 const Stripe = require('stripe');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' });
 
@@ -10,7 +10,6 @@ exports.handler = async (event) => {
     const isAll = tier === 'all';
     const amount = isAll ? 300 : 200; // cents
 
-    // Build session with inline price_data (no external Price IDs needed)
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: [{
