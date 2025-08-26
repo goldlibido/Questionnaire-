@@ -92,7 +92,7 @@
   }
   .ghost{background:transparent;color:var(--gold)}
 
-  /* ROI calc */
+  /* Sections */
   .section{
     max-width:var(--max);margin:40px auto 26px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:20px
   }
@@ -102,17 +102,10 @@
   }
   .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
   label{font-size:13px;color:#d6d6d6;margin-bottom:6px;display:block}
-  input[type="number"], input[type="text"], input[type="email"], select{
+  input[type="text"], input[type="email"], select{
     width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--card-edge);background:#0a0a0b;color:var(--white)
   }
   .hint{font-size:12px;color:var(--muted);margin-top:4px}
-  .result{
-    border:1px dashed var(--gold);border-radius:12px;padding:14px;background:#0e0e10;margin-top:10px
-  }
-  .kpi{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0}
-  .kpi div{min-width:160px}
-  .kpi .num{font-size:22px;font-weight:800}
-  .explain{font-size:13px;color:#d0d0d0;margin-top:8px}
 
   /* Onboard form */
   .onboard .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -144,6 +137,11 @@
       <p class="sub">
         The most expensive thing in hospitality is an empty seat. We fill empty seats, keep guests longer, and make visits more fun so they spend more and come back sooner. When you integrate your business with <strong>Le Libido</strong>, you increase revenue. Guaranteed.
       </p>
+      <div class="value-props">
+        <div class="chip">We put asses in empty seats</div>
+        <div class="chip">We keep those asses sat longer</div>
+        <div class="chip">We boost repeat visits with a better experience</div>
+      </div>
     </section>
 
     <!-- Pricing (Stripe) -->
@@ -197,53 +195,22 @@
       </div>
     </section>
 
-    <!-- ROI Calculator -->
-    <section class="section" id="roi">
-      <h4>ROI Calculator</h4>
-      <p class="small">Your formula: <strong>W</strong> = added customers, <strong>X</strong> = avg spend, <strong>Y%</strong> = uplift from longer stays & fun, <strong>Z</strong> = added revenue, <strong>A</strong> = your plan price.</p>
-      <div class="grid">
+    <!-- Persuasion section (no calculator) -->
+    <section class="section">
+      <h4>What levers can you pull to make more money?</h4>
+      <div class="grid-3">
         <div>
-          <label for="w">W — Added customers per week</label>
-          <input type="number" id="w" min="0" step="1" value="40">
-          <div class="hint">Covers seated via Le Libido per week</div>
+          <label>1) Fill empty seats</label>
+          <div class="hint">We route qualified guests to you on the right nights.</div>
         </div>
         <div>
-          <label for="x">X — Average customer spend ($)</label>
-          <input type="number" id="x" min="0" step="1" value="38">
-          <div class="hint">Ticket + drinks, before uplift</div>
+          <label>2) Increase average spend</label>
+          <div class="hint">Guests stay longer when the vibe is fun & flirty.</div>
         </div>
         <div>
-          <label for="y">Y — Uplift (%)</label>
-          <input type="number" id="y" min="0" step="1" value="15">
-          <div class="hint">From longer dwell time + better vibe</div>
+          <label>3) Drive repeat visits</label>
+          <div class="hint">Better nights create regulars. Regulars create stability.</div>
         </div>
-        <div>
-          <label for="plan">Plan</label>
-          <select id="plan">
-            <option value="starter" data-price="99">Starter — $99/mo</option>
-            <option value="scene" data-price="499" selected>Scene Maker — $499/mo</option>
-            <option value="hotspot" data-price="899">Hotspot — $899/mo</option>
-          </select>
-          <div class="hint">A — Monthly investment</div>
-        </div>
-      </div>
-
-      <div class="result" id="resultBox">
-        <div class="kpi">
-          <div>
-            <div class="num" id="z">$0</div>
-            <div class="small">Z — Added monthly revenue</div>
-          </div>
-          <div>
-            <div class="num" id="roi">0%</div>
-            <div class="small">ROI = (Z − A) / A</div>
-          </div>
-          <div>
-            <div class="num" id="breakeven">0</div>
-            <div class="small">Covers to break even / month</div>
-          </div>
-        </div>
-        <div class="explain" id="explain"></div>
       </div>
     </section>
 
@@ -316,6 +283,9 @@
  * Implement a Netlify function at /.netlify/functions/checkout-b2b
  * that creates a Checkout Session in subscription mode and returns {url}
  * ============== */
+let selectedTier = null; // will be set when a pricing CTA is clicked
+let selectedPriceId = null;
+
 async function startB2BCheckout(priceId, tier){
   try{
     const payload = {
@@ -339,67 +309,20 @@ async function startB2BCheckout(priceId, tier){
 document.querySelectorAll('.cta[data-price-id]').forEach(btn=>{
   btn.addEventListener('click', (e)=>{
     e.preventDefault();
-    const priceId = btn.getAttribute('data-price-id');
-    const tier = btn.getAttribute('data-tier');
-    if(!priceId){ alert('Missing Stripe price ID.'); return; }
-    startB2BCheckout(priceId, tier);
+    selectedPriceId = btn.getAttribute('data-price-id');
+    selectedTier = btn.getAttribute('data-tier'); // "starter" | "scene" | "hotspot"
+    if(!selectedPriceId){ alert('Missing Stripe price ID.'); return; }
+    startB2BCheckout(selectedPriceId, selectedTier);
   });
 });
 
 /** ==============
- * ROI Calculator
- * Z (monthly) = W (per week) * 4.33 * X * (1 + Y/100)
- * A = plan price per month
- * Break-even covers = ceil(A / (X * (1 + Y/100)))
+ * Venue Onboarding
+ * Implement /.netlify/functions/onboard-venue to accept JSON:
+ * { venue, area, address, maps, contact, time, prefDays, site, tier }
  * ============== */
 const $ = (id)=>document.getElementById(id);
-const fields = ['w','x','y','plan'];
-fields.forEach(id=> $(id).addEventListener('input', calc));
-function number(val){ const n = parseFloat(val); return isNaN(n)?0:n; }
-function priceOf(plan){
-  const sel = $('plan');
-  const opt = sel.options[sel.selectedIndex];
-  return number(opt?.dataset?.price || 0);
-}
-function fmtUsd(n){ return n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); }
-function pct(n){ return (n*100).toFixed(0)+'%'; }
 
-function calc(){
-  const W = Math.max(0, Math.floor(number($('w').value)));
-  const X = Math.max(0, number($('x').value));
-  const Y = Math.max(0, number($('y').value))/100;
-  const A = priceOf($('plan').value);
-
-  const weeksPerMonth = 4.33;
-  const Z = W * weeksPerMonth * X * (1 + Y);                 // monthly added revenue
-  const ROI = A>0 ? (Z - A) / A : 0;
-  const breakEvenCovers = X>0 ? Math.ceil(A / (X * (1 + Y))) : 0;
-
-  $('z').textContent = fmtUsd(Z);
-  $('roi').textContent = pct(ROI);
-  $('breakeven').textContent = breakEvenCovers.toLocaleString();
-  $('explain').textContent =
-    `At ${W} added customers/week spending ${fmtUsd(X)} each with a ${Math.round(Y*100)}% uplift, you add ${fmtUsd(Z)} per month. ` +
-    `Your plan is ${fmtUsd(A)}, so your ROI is ${pct(ROI)} and you break even after ~${breakEvenCovers} covers each month.`;
-}
-calc();
-
-/** ==============
- * Venue Onboarding
- * Implement /.netlify/functions/onboard-venue to accept JSON body:
- * { venue, area, address, maps, contact, time, prefDays, site, tier }
- *
- * The function should:
- *  1) Validate input & verify active Stripe subscription for contact or account.
- *  2) Create/Upsert venue record in your DB with plan "tier".
- *  3) Assign prime-day weighting by tier:
- *     starter: {fri:0.15, sat:0.15, thu:0.25, other:0.10}
- *     scene:   {fri:0.45, sat:0.50, thu:0.35, other:0.20}
- *     hotspot: {fri:0.95, sat:0.95, thu:0.60, other:0.35}
- *     (ensure all tiers retain some chance on Fri/Sat for fairness)
- *  4) Make venue eligible for your front-end map & door flow immediately.
- *  5) Return { ok:true }.
- * ============== */
 $('submitOnboard').addEventListener('click', async ()=>{
   const venue = $('venue').value.trim();
   const area = $('area').value;
@@ -409,22 +332,26 @@ $('submitOnboard').addEventListener('click', async ()=>{
   const time = $('time').value.trim() || '7:30 PM';
   const site = $('site').value.trim();
   const prefDays = Array.from($('prefDays').selectedOptions).map(o=>o.value);
-  // Take the currently highlighted pricing select as the intended tier for weighting preview
-  const tier = $('plan').value; // "starter" | "scene" | "hotspot"
 
   if(!venue || !address || !maps || !contact){
-    alert('Please fill venue name, address, maps link, and contact email.'); return;
+    alert('Please fill venue name, address, maps link, and contact email.');
+    return;
   }
+  if(!selectedTier){
+    alert('Please choose a plan above first, then submit your venue details.');
+    return;
+  }
+
   try{
     const res = await fetch('/.netlify/functions/onboard-venue', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ venue, area, address, maps, contact, time, site, prefDays, tier })
+      body: JSON.stringify({ venue, area, address, maps, contact, time, site, prefDays, tier: selectedTier })
     });
     if(!res.ok){ throw new Error('Onboarding failed'); }
     const data = await res.json();
-    if(data?.ok){ 
+    if(data?.ok){
       $('onboardNote').textContent = 'Thanks! Your venue is queued and will appear as soon as your subscription is confirmed.';
-      alert('Submitted. We’ll activate you right after subscription confirmation.'); 
+      alert('Submitted. We’ll activate you right after subscription confirmation.');
     } else {
       alert('Could not complete onboarding. Please try again.');
     }
