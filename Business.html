@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Le Libido – Partner With Us</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#e1bf78;
+    --black:#0d0d0d;
+    --white:#ffffff;
+    --muted:#b9b9b9;
+    --green:#06954E;
+    --blue:#064D95;
+    --red:#950606;
+    --card:#111214;
+    --card-edge:#1b1b1d;
+    --shadow: 0 20px 60px rgba(0,0,0,.5);
+    --thin: 2px;
+    --max: 1100px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--black);
+    color:var(--white);
+    font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  .wrap{
+    min-height:100svh;
+    padding:28px 18px 60px;
+    border:var(--thin) solid var(--gold);
+  }
+  header{
+    display:flex;align-items:center;justify-content:center;margin-bottom:22px
+  }
+  .logo{
+    display:block;width:120px;height:auto;margin:0 auto;cursor:pointer
+  }
+
+  .hero{
+    max-width:var(--max);margin:0 auto 24px;text-align:center
+  }
+  .eyebrow{
+    display:inline-block;
+    font-size:12px;letter-spacing:.35em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--card-edge);
+    padding:7px 12px;border-radius:999px;margin-bottom:12px
+  }
+  h1{
+    margin:6px 0 10px;font-size:clamp(28px,4.6vw,44px);line-height:1.15;
+    font-weight:800;letter-spacing:.2px;text-shadow:0 0 6px rgba(225,191,120,.18)
+  }
+  .sub{
+    margin:0 auto 22px;max-width:840px;color:#d8d8d8;font-size:16px;line-height:1.6
+  }
+
+  .value-props{
+    max-width:var(--max);margin:24px auto;display:grid;gap:14px;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .chip{
+    border:1px solid var(--gold);border-radius:12px;padding:14px;background:linear-gradient(180deg,#101012, #0b0b0b);
+    box-shadow:var(--shadow);font-weight:600;text-align:center
+  }
+
+  /* Pricing */
+  .pricing{
+    max-width:var(--max);margin:34px auto 24px;display:grid;gap:16px;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .plan{
+    border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:22px;position:relative;
+    box-shadow:var(--shadow)
+  }
+  .plan.popular{transform:translateY(-4px);box-shadow:0 26px 80px rgba(225,191,120,.18)}
+  .tag{
+    position:absolute;top:12px;right:12px;border:1px solid var(--gold);color:var(--gold);padding:6px 10px;border-radius:999px;font-size:12px
+  }
+  .plan h3{margin:6px 0 0;font-size:22px;letter-spacing:.2px}
+  .price{font-size:34px;font-weight:800;margin:6px 0 14px}
+  .period{font-size:13px;color:var(--muted)}
+  .feat{margin:10px 0 16px;padding:0;list-style:none}
+  .feat li{
+    margin:10px 0;color:#dbdbdb;font-size:15px;display:flex;gap:10px;align-items:flex-start
+  }
+  .feat li::before{content:"✓"; color:var(--gold); margin-top:2px}
+  .cta{
+    display:block;text-align:center;font-weight:800;text-decoration:none;
+    padding:12px 14px;border-radius:12px;border:1px solid var(--gold);color:#111;background:var(--gold)
+  }
+  .ghost{background:transparent;color:var(--gold)}
+
+  /* ROI calc */
+  .section{
+    max-width:var(--max);margin:40px auto 26px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:20px
+  }
+  .section h4{margin:0 0 8px;font-size:20px}
+  .grid{
+    display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+  .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  label{font-size:13px;color:#d6d6d6;margin-bottom:6px;display:block}
+  input[type="number"], input[type="text"], input[type="email"], select{
+    width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--card-edge);background:#0a0a0b;color:var(--white)
+  }
+  .hint{font-size:12px;color:var(--muted);margin-top:4px}
+  .result{
+    border:1px dashed var(--gold);border-radius:12px;padding:14px;background:#0e0e10;margin-top:10px
+  }
+  .kpi{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0}
+  .kpi div{min-width:160px}
+  .kpi .num{font-size:22px;font-weight:800}
+  .explain{font-size:13px;color:#d0d0d0;margin-top:8px}
+
+  /* Onboard form */
+  .onboard .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .onboard .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .small{font-size:12px;color:var(--muted)}
+
+  /* Footer */
+  footer{max-width:var(--max);margin:28px auto 0;text-align:center;color:#b8b8b8;font-size:12px}
+
+  /* Responsive */
+  @media (max-width:1000px){
+    .value-props, .pricing{grid-template-columns:1fr}
+    .plan.popular{transform:none}
+    .grid, .grid-3{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a href="/about.html" aria-label="About Le Libido">
+        <img src="/golden-le-libido-logo.png" alt="Le Libido" class="logo" loading="lazy">
+      </a>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">For Venue Owners & GMs</span>
+      <h1>Turn Slow Nights into <span style="color:var(--gold)">Sold-Out Nights</span></h1>
+      <p class="sub">
+        The most expensive thing in hospitality is an empty seat. We fill empty seats, keep guests longer, and make visits more fun — so they spend more and come back sooner. When you integrate your business with <strong>Le Libido</strong>, you increase revenue. Guaranteed.
+      </p>
+      <div class="value-props">
+        <div class="chip">We put asses in empty seats</div>
+        <div class="chip">We keep those asses sat longer</div>
+        <div class="chip">We boost repeat visits with a better experience</div>
+      </div>
+    </section>
+
+    <!-- Pricing (Stripe) -->
+    <section class="pricing" id="pricing">
+      <!-- Starter -->
+      <div class="plan" data-plan="starter">
+        <span class="tag">Entry</span>
+        <h3>Social Starter</h3>
+        <div class="price">$99 <span class="period">/month</span></div>
+        <ul class="feat">
+          <li>Listed in Le Libido map + color door flow</li>
+          <li>Eligible for prime-day features (Fri/Sat): <strong>10–20%</strong> chance</li>
+          <li>Standard placement on other days</li>
+          <li>Basic insights dashboard</li>
+        </ul>
+        <a href="#" class="cta"
+           data-price-id="PRICE_ID_STARTER"
+           data-tier="starter">Activate Starter</a>
+        <p class="small">Great for building baseline foot traffic.</p>
+      </div>
+
+      <!-- Decoy (Popular visually but less value / price close to top) -->
+      <div class="plan popular" data-plan="scene">
+        <span class="tag">Most Chosen</span>
+        <h3>Scene Maker</h3>
+        <div class="price">$499 <span class="period">/month</span></div>
+        <ul class="feat">
+          <li>All Starter benefits</li>
+          <li>Prime-day feature probability: <strong>35–50%</strong></li>
+          <li>Enhanced placement & boosted visibility</li>
+          <li>Guest experience toolkit + promo assets</li>
+        </ul>
+        <a href="#" class="cta"
+           data-price-id="PRICE_ID_SCENE"
+           data-tier="scene">Upgrade to Scene Maker</a>
+        <p class="small">Decoy pricing calibrated to make Hotspot irresistible.</p>
+      </div>
+
+      <!-- Top -->
+      <div class="plan" data-plan="hotspot">
+        <span class="tag">Premium</span>
+        <h3>Hotspot</h3>
+        <div class="price">$899 <span class="period">/month</span></div>
+        <ul class="feat">
+          <li>Everything in Scene Maker</li>
+          <li><strong>Priority</strong> placement across all days</li>
+          <li>Prime-day features (Fri/Sat): <strong>80–100%</strong> with guaranteed rotation</li>
+          <li>Dedicated success support + quarterly playbook</li>
+        </ul>
+        <a href="#" class="cta"
+           data-price-id="PRICE_ID_HOTSPOT"
+           data-tier="hotspot">Make Us Your Hotspot</a>
+        <p class="small">Own Fridays & Saturdays with premium positioning.</p>
+      </div>
+    </section>
+
+    <!-- ROI Calculator -->
+    <section class="section" id="roi">
+      <h4>ROI Calculator</h4>
+      <p class="small">Your formula: <strong>W</strong> = added customers, <strong>X</strong> = avg spend, <strong>Y%</strong> = uplift from longer stays & fun, <strong>Z</strong> = added revenue, <strong>A</strong> = your plan price.</p>
+      <div class="grid">
+        <div>
+          <label for="w">W — Added customers per week</label>
+          <input type="number" id="w" min="0" step="1" value="40">
+          <div class="hint">Covers seated via Le Libido per week</div>
+        </div>
+        <div>
+          <label for="x">X — Average customer spend ($)</label>
+          <input type="number" id="x" min="0" step="1" value="38">
+          <div class="hint">Ticket + drinks, before uplift</div>
+        </div>
+        <div>
+          <label for="y">Y — Uplift (%)</label>
+          <input type="number" id="y" min="0" step="1" value="15">
+          <div class="hint">From longer dwell time + better vibe</div>
+        </div>
+        <div>
+          <label for="plan">Plan</label>
+          <select id="plan">
+            <option value="starter" data-price="99">Starter — $99/mo</option>
+            <option value="scene" data-price="499" selected>Scene Maker — $499/mo</option>
+            <option value="hotspot" data-price="899">Hotspot — $899/mo</option>
+          </select>
+          <div class="hint">A — Monthly investment</div>
+        </div>
+      </div>
+
+      <div class="result" id="resultBox">
+        <div class="kpi">
+          <div>
+            <div class="num" id="z">$0</div>
+            <div class="small">Z — Added monthly revenue</div>
+          </div>
+          <div>
+            <div class="num" id="roi">0%</div>
+            <div class="small">ROI = (Z − A) / A</div>
+          </div>
+          <div>
+            <div class="num" id="breakeven">0</div>
+            <div class="small">Covers to break even / month</div>
+          </div>
+        </div>
+        <div class="explain" id="explain"></div>
+      </div>
+    </section>
+
+    <!-- Narrative persuasion -->
+    <section class="section">
+      <h4>What levers can you pull to make more money?</h4>
+      <div class="grid-3">
+        <div>
+          <label>1) Fill empty seats</label>
+          <div class="hint">We route qualified guests to you on the right nights.</div>
+        </div>
+        <div>
+          <label>2) Increase average spend</label>
+          <div class="hint">Guests stay longer when the vibe is fun & flirty.</div>
+        </div>
+        <div>
+          <label>3) Drive repeat visits</label>
+          <div class="hint">Better nights create regulars. Regulars create stability.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Onboarding form -->
+    <section class="section onboard" id="onboard">
+      <h4>Become a Featured Venue</h4>
+      <p class="small">Complete this quick setup and choose a plan. We’ll add your venue and weighting into the color-door map immediately after checkout.</p>
+      <div class="grid">
+        <div>
+          <label for="venue">Venue name</label>
+          <input type="text" id="venue" placeholder="Ex: Metropolitan Cafe" required>
+        </div>
+        <div>
+          <label for="area">Area</label>
+          <select id="area">
+            <option value="central-nj">Central New Jersey</option>
+            <!-- add more as you expand -->
+          </select>
+        </div>
+        <div>
+          <label for="address">Street address</label>
+          <input type="text" id="address" placeholder="8 E Main St, Freehold, NJ 07728" required>
+        </div>
+        <div>
+          <label for="maps">Google Maps link</label>
+          <input type="text" id="maps" placeholder="https://www.google.com/maps/..." required>
+        </div>
+        <div>
+          <label for="contact">Contact email</label>
+          <input type="email" id="contact" placeholder="gm@yourvenue.com" required>
+        </div>
+        <div>
+          <label for="time">Start time label (displayed)</label>
+          <input type="text" id="time" placeholder="7:30 PM" value="7:30 PM">
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="prefDays">Preferred prime days</label>
+          <select id="prefDays" multiple>
+            <option value="fri" selected>Friday</option>
+            <option value="sat" selected>Saturday</option>
+            <option value="thu">Thursday</option>
+          </select>
+          <div class="hint">We’ll weight these based on your plan.</div>
+        </div>
+        <div>
+          <label for="site">Website (optional)</label>
+          <input type="text" id="site" placeholder="https://yourvenue.com">
+        </div>
+      </div>
+
+      <div class="actions">
+        <a href="#pricing" class="cta ghost">1) Choose a Plan Above</a>
+        <button id="submitOnboard" class="cta" type="button">2) Submit Venue Details</button>
+      </div>
+      <p class="small" id="onboardNote">After your subscription, we mark you active immediately and your venue becomes eligible in the door flow based on your plan’s weighting.</p>
+    </section>
+
+    <footer>
+      © <span id="year"></span> Le Libido • Luxury IRL Discovery for Adults
+    </footer>
+  </div>
+
+<script>
+/** ==============
+ * Stripe Checkout (Subscriptions)
+ * Replace PRICE_ID_* with your real Stripe Price IDs.
+ * Implement a Netlify function at /.netlify/functions/checkout-b2b
+ * that creates a Checkout Session in subscription mode and returns {url}
+ * ============== */
+async function startB2BCheckout(priceId, tier){
+  try{
+    const payload = {
+      priceId,
+      tier,                  // "starter" | "scene" | "hotspot"
+      successBase: location.origin + location.pathname
+    };
+    const res = await fetch('/.netlify/functions/checkout-b2b', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok){ throw new Error('Checkout function failed'); }
+    const { url } = await res.json();
+    if(url){ location.href = url; } else { alert('Could not start checkout.'); }
+  }catch(e){
+    console.error(e);
+    alert('Checkout unavailable right now. Please try again.');
+  }
+}
+
+document.querySelectorAll('.cta[data-price-id]').forEach(btn=>{
+  btn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const priceId = btn.getAttribute('data-price-id');
+    const tier = btn.getAttribute('data-tier');
+    if(!priceId){ alert('Missing Stripe price ID.'); return; }
+    startB2BCheckout(priceId, tier);
+  });
+});
+
+/** ==============
+ * ROI Calculator
+ * Z (monthly) = W (per week) * 4.33 * X * (1 + Y/100)
+ * A = plan price per month
+ * Break-even covers = ceil(A / (X * (1 + Y/100)))
+ * ============== */
+const $ = (id)=>document.getElementById(id);
+const fields = ['w','x','y','plan'];
+fields.forEach(id=> $(id).addEventListener('input', calc));
+function number(val){ const n = parseFloat(val); return isNaN(n)?0:n; }
+function priceOf(plan){
+  const sel = $('plan');
+  const opt = sel.options[sel.selectedIndex];
+  return number(opt?.dataset?.price || 0);
+}
+function fmtUsd(n){ return n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); }
+function pct(n){ return (n*100).toFixed(0)+'%'; }
+
+function calc(){
+  const W = Math.max(0, Math.floor(number($('w').value)));
+  const X = Math.max(0, number($('x').value));
+  const Y = Math.max(0, number($('y').value))/100;
+  const A = priceOf($('plan').value);
+
+  const weeksPerMonth = 4.33;
+  const Z = W * weeksPerMonth * X * (1 + Y);                 // monthly added revenue
+  const ROI = A>0 ? (Z - A) / A : 0;
+  const breakEvenCovers = X>0 ? Math.ceil(A / (X * (1 + Y))) : 0;
+
+  $('z').textContent = fmtUsd(Z);
+  $('roi').textContent = pct(ROI);
+  $('breakeven').textContent = breakEvenCovers.toLocaleString();
+  $('explain').textContent =
+    `At ${W} added customers/week spending ${fmtUsd(X)} each with a ${Math.round(Y*100)}% uplift, you add ${fmtUsd(Z)} per month. ` +
+    `Your plan is ${fmtUsd(A)}, so your ROI is ${pct(ROI)} and you break even after ~${breakEvenCovers} covers each month.`;
+}
+calc();
+
+/** ==============
+ * Venue Onboarding
+ * Implement /.netlify/functions/onboard-venue to accept JSON body:
+ * { venue, area, address, maps, contact, time, prefDays, site, tier }
+ *
+ * The function should:
+ *  1) Validate input & verify active Stripe subscription for contact or account.
+ *  2) Create/Upsert venue record in your DB with plan "tier".
+ *  3) Assign prime-day weighting by tier:
+ *     starter: {fri:0.15, sat:0.15, thu:0.25, other:0.10}
+ *     scene:   {fri:0.45, sat:0.50, thu:0.35, other:0.20}
+ *     hotspot: {fri:0.95, sat:0.95, thu:0.60, other:0.35}
+ *     (ensure all tiers retain some chance on Fri/Sat for fairness)
+ *  4) Make venue eligible for your front-end map & door flow immediately.
+ *  5) Return { ok:true }.
+ * ============== */
+$('submitOnboard').addEventListener('click', async ()=>{
+  const venue = $('venue').value.trim();
+  const area = $('area').value;
+  const address = $('address').value.trim();
+  const maps = $('maps').value.trim();
+  const contact = $('contact').value.trim();
+  const time = $('time').value.trim() || '7:30 PM';
+  const site = $('site').value.trim();
+  const prefDays = Array.from($('prefDays').selectedOptions).map(o=>o.value);
+  // Take the currently highlighted pricing select as the intended tier for weighting preview
+  const tier = $('plan').value; // "starter" | "scene" | "hotspot"
+
+  if(!venue || !address || !maps || !contact){
+    alert('Please fill venue name, address, maps link, and contact email.'); return;
+  }
+  try{
+    const res = await fetch('/.netlify/functions/onboard-venue', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ venue, area, address, maps, contact, time, site, prefDays, tier })
+    });
+    if(!res.ok){ throw new Error('Onboarding failed'); }
+    const data = await res.json();
+    if(data?.ok){ 
+      $('onboardNote').textContent = 'Thanks! Your venue is queued and will appear as soon as your subscription is confirmed.';
+      alert('Submitted. We’ll activate you right after subscription confirmation.'); 
+    } else {
+      alert('Could not complete onboarding. Please try again.');
+    }
+  }catch(e){
+    console.error(e);
+    alert('Server temporarily unavailable.');
+  }
+});
+
+/** ==============
+ * Footer year
+ * ============== */
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
