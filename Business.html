@@ -7,119 +7,65 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --gold:#e1bf78;
-    --black:#0d0d0d;
-    --white:#ffffff;
-    --muted:#b9b9b9;
-    --green:#06954E;
-    --blue:#064D95;
-    --red:#950606;
-    --card:#111214;
-    --card-edge:#1b1b1d;
-    --shadow: 0 20px 60px rgba(0,0,0,.5);
-    --thin: 2px;
-    --max: 1100px;
+    --gold:#e1bf78; --black:#0d0d0d; --white:#ffffff; --muted:#b9b9b9;
+    --card:#111214; --card-edge:#1b1b1d; --shadow:0 20px 60px rgba(0,0,0,.5);
+    --thin:2px; --max:1100px;
   }
   *{box-sizing:border-box}
-  body{
-    margin:0;
-    background:var(--black);
-    color:var(--white);
-    font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
-  }
-  .wrap{
-    min-height:100svh;
-    padding:28px 18px 60px;
-    border:var(--thin) solid var(--gold);
-  }
-  header{
-    display:flex;align-items:center;justify-content:center;margin-bottom:22px
-  }
-  .logo{
-    display:block;width:120px;height:auto;margin:0 auto;cursor:pointer
-  }
+  body{margin:0;background:var(--black);color:var(--white);font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif}
+  .wrap{min-height:100svh;padding:28px 18px 60px;border:var(--thin) solid var(--gold)}
+  header{display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+  .logo{display:block;width:120px;height:auto;margin:0 auto;cursor:pointer}
 
-  .hero{
-    max-width:var(--max);margin:0 auto 24px;text-align:center
-  }
-  .eyebrow{
-    display:inline-block;
-    font-size:12px;letter-spacing:.35em;text-transform:uppercase;
-    color:var(--muted);border:1px solid var(--card-edge);
-    padding:7px 12px;border-radius:999px;margin-bottom:12px
-  }
-  h1{
-    margin:6px 0 10px;font-size:clamp(28px,4.6vw,44px);line-height:1.15;
-    font-weight:800;letter-spacing:.2px;text-shadow:0 0 6px rgba(225,191,120,.18)
-  }
-  .sub{
-    margin:0 auto 22px;max-width:840px;color:#d8d8d8;font-size:16px;line-height:1.6
-  }
+  .hero{max-width:var(--max);margin:0 auto 8px;text-align:center}
+  .eyebrow{display:inline-block;font-size:12px;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);border:1px solid var(--card-edge);padding:7px 12px;border-radius:999px;margin-bottom:12px}
+  h1{margin:6px 0 10px;font-size:clamp(28px,4.6vw,44px);line-height:1.15;font-weight:800;letter-spacing:.2px;text-shadow:0 0 6px rgba(225,191,120,.18)}
+  .sub{margin:0 auto 14px;max-width:840px;color:#d8d8d8;font-size:16px;line-height:1.6}
+  .scarcity{display:inline-flex;gap:10px;align-items:center;border:1px solid var(--gold);border-radius:999px;padding:8px 12px;background:linear-gradient(180deg,#101012,#0b0b0b);margin-top:8px;font-weight:700}
 
-  .value-props{
-    max-width:var(--max);margin:24px auto;display:grid;gap:14px;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
-  .chip{
-    border:1px solid var(--gold);border-radius:12px;padding:14px;background:linear-gradient(180deg,#101012, #0b0b0b);
-    box-shadow:var(--shadow);font-weight:600;text-align:center
-  }
+  .value-props{max-width:var(--max);margin:18px auto;display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .chip{border:1px solid var(--gold);border-radius:12px;padding:14px;background:linear-gradient(180deg,#101012,#0b0b0b);box-shadow:var(--shadow);font-weight:600;text-align:center}
+
+  /* Billing toggle */
+  .billing{max-width:var(--max);margin:18px auto 8px;display:flex;justify-content:center;align-items:center;gap:10px}
+  .toggle{display:inline-flex;border:1px solid var(--gold);border-radius:999px;overflow:hidden}
+  .toggle button{border:none;background:transparent;color:var(--white);padding:10px 16px;cursor:pointer;font-weight:700}
+  .toggle button.active{background:var(--gold);color:#111}
+  .save{font-size:12px;color:#e9e3d6;border:1px solid var(--gold);border-radius:999px;padding:6px 10px}
 
   /* Pricing */
-  .pricing{
-    max-width:var(--max);margin:34px auto 24px;display:grid;gap:16px;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
-  .plan{
-    border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:22px;position:relative;
-    box-shadow:var(--shadow)
-  }
+  .pricing{max-width:var(--max);margin:18px auto;display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .plan{border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:22px;position:relative;box-shadow:var(--shadow)}
   .plan.popular{transform:translateY(-4px);box-shadow:0 26px 80px rgba(225,191,120,.18)}
-  .tag{
-    position:absolute;top:12px;right:12px;border:1px solid var(--gold);color:var(--gold);padding:6px 10px;border-radius:999px;font-size:12px
-  }
+  .tag{position:absolute;top:12px;right:12px;border:1px solid var(--gold);color:var(--gold);padding:6px 10px;border-radius:999px;font-size:12px}
   .plan h3{margin:6px 0 0;font-size:22px;letter-spacing:.2px}
-  .price{font-size:34px;font-weight:800;margin:6px 0 14px}
+  .price{font-size:34px;font-weight:800;margin:6px 0 4px}
   .period{font-size:13px;color:var(--muted)}
-  .feat{margin:10px 0 16px;padding:0;list-style:none}
-  .feat li{
-    margin:10px 0;color:#dbdbdb;font-size:15px;display:flex;gap:10px;align-items:flex-start
-  }
-  .feat li::before{content:"✓"; color:var(--gold); margin-top:2px}
-  .cta{
-    display:block;text-align:center;font-weight:800;text-decoration:none;
-    padding:12px 14px;border-radius:12px;border:1px solid var(--gold);color:#111;background:var(--gold)
-  }
-  .ghost{background:transparent;color:var(--gold)}
+  .feat{margin:10px 0 12px;padding:0;list-style:none}
+  .feat li{margin:10px 0;color:#dbdbdb;font-size:15px;display:flex;gap:10px;align-items:flex-start}
+  .feat li::before{content:"✓";color:var(--gold);margin-top:2px}
+  .cta{display:block;text-align:center;font-weight:800;text-decoration:none;padding:12px 14px;border-radius:12px;border:1px solid var(--gold);color:#111;background:var(--gold)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
 
   /* Sections */
-  .section{
-    max-width:var(--max);margin:40px auto 26px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:20px
-  }
+  .section{max-width:var(--max);margin:24px auto 22px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:20px}
   .section h4{margin:0 0 8px;font-size:20px}
-  .grid{
-    display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))
-  }
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
   .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
   label{font-size:13px;color:#d6d6d6;margin-bottom:6px;display:block}
-  input[type="text"], input[type="email"], select{
-    width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--card-edge);background:#0a0a0b;color:var(--white)
-  }
-  .hint{font-size:12px;color:var(--muted);margin-top:4px}
+  input[type="text"], input[type="email"], select, textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--card-edge);background:#0a0a0b;color:#fff}
+  textarea{min-height:100px}
+  .small{font-size:12px;color:#9b9b9b}
 
-  /* Onboard form */
-  .onboard .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .onboard .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  .small{font-size:12px;color:var(--muted)}
+  .admin-box{margin-top:12px;border:1px dashed var(--gold);border-radius:12px;padding:12px;background:#0e0e10}
+  pre{white-space:pre-wrap;word-break:break-word;background:#0a0a0b;border:1px solid var(--card-edge);padding:10px;border-radius:10px}
 
-  /* Footer */
   footer{max-width:var(--max);margin:28px auto 0;text-align:center;color:#b8b8b8;font-size:12px}
 
-  /* Responsive */
   @media (max-width:1000px){
-    .value-props, .pricing{grid-template-columns:1fr}
+    .value-props,.pricing{grid-template-columns:1fr}
     .plan.popular{transform:none}
-    .grid, .grid-3{grid-template-columns:1fr}
+    .grid,.grid-3{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -137,64 +83,87 @@
       <p class="sub">
         The most expensive thing in hospitality is an empty seat. We fill empty seats, keep guests longer, and make visits more fun so they spend more and come back sooner. When you integrate your business with <strong>Le Libido</strong>, you increase revenue. Guaranteed.
       </p>
+      <div class="scarcity">Only <strong>12 total</strong> active venues per Area at a time.</div>
     </section>
 
-    <!-- Pricing (Stripe) -->
+    <!-- Billing toggle -->
+    <div class="billing">
+      <div class="toggle" role="tablist" aria-label="Billing period">
+        <button id="billMonthly" class="active" aria-selected="true">Monthly</button>
+        <button id="billAnnual" aria-selected="false">Annual</button>
+      </div>
+      <span class="save">Annual: save ~2 months</span>
+    </div>
+
+    <!-- Pricing (Stripe Payment Links) -->
     <section class="pricing" id="pricing">
       <!-- Starter -->
       <div class="plan" data-plan="starter">
         <span class="tag">Entry</span>
         <h3>Social Starter</h3>
-        <div class="price">$99 <span class="period">/month</span></div>
+        <div class="price"><span class="amt" data-monthly="$99" data-annual="$999">$99</span> <span class="period">/<span class="unit">month</span></span></div>
         <ul class="feat">
           <li>Listed in Le Libido map + color door flow</li>
           <li>Prime-day feature probability: <strong>10–20%</strong></li>
           <li>Standard placement on other days</li>
           <li>Basic insights dashboard</li>
         </ul>
-        <a href="#" class="cta"
-           data-price-id="PRICE_ID_STARTER"
-           data-tier="starter">Activate Starter</a>
+        <a class="cta paylink"
+           data-tier="starter"
+           data-link-monthly="https://buy.stripe.com/STARTER_MONTHLY"
+           data-link-annual="https://buy.stripe.com/STARTER_ANNUAL"
+           href="#">Activate Starter</a>
+        <p class="note">Auto-renews monthly or annually until cancelled by email.</p>
       </div>
 
-      <!-- Decoy (Popular visually but less value / price close to top) -->
+      <!-- Middle (decoy) -->
       <div class="plan popular" data-plan="scene">
         <span class="tag">Most Chosen</span>
         <h3>Scene Maker</h3>
-        <div class="price">$499 <span class="period">/month</span></div>
+        <div class="price"><span class="amt" data-monthly="$499" data-annual="$4,999">$499</span> <span class="period">/<span class="unit">month</span></span></div>
         <ul class="feat">
           <li>All Starter benefits</li>
           <li>Prime-day feature probability: <strong>35–50%</strong></li>
           <li>Enhanced placement & boosted visibility</li>
           <li>Guest experience toolkit + promo assets</li>
         </ul>
-        <a href="#" class="cta"
-           data-price-id="PRICE_ID_SCENE"
-           data-tier="scene">Upgrade to Scene Maker</a>
+        <a class="cta paylink"
+           data-tier="scene"
+           data-link-monthly="https://buy.stripe.com/SCENE_MONTHLY"
+           data-link-annual="https://buy.stripe.com/SCENE_ANNUAL"
+           href="#">Upgrade to Scene Maker</a>
+        <p class="note">High demand on Fri/Sat — limited slots kept per Area.</p>
       </div>
 
       <!-- Top -->
       <div class="plan" data-plan="hotspot">
         <span class="tag">Premium</span>
         <h3>Hotspot</h3>
-        <div class="price">$899 <span class="period">/month</span></div>
+        <div class="price"><span class="amt" data-monthly="$899" data-annual="$8,999">$899</span> <span class="period">/<span class="unit">month</span></span></div>
         <ul class="feat">
           <li>Everything in Scene Maker</li>
           <li><strong>Priority</strong> placement across all days</li>
-          <li>Prime-day features (Fri/Sat): <strong>60–90%</strong> with guaranteed rotation</li>
+          <li>Prime-day features (Fri/Sat): <strong>80–100%</strong> with rotation</li>
           <li>Dedicated success support + quarterly playbook</li>
         </ul>
-        <a href="#" class="cta"
-           data-price-id="PRICE_ID_HOTSPOT"
-           data-tier="hotspot">Make Us Your Hotspot</a>
+        <a class="cta paylink"
+           data-tier="hotspot"
+           data-link-monthly="https://buy.stripe.com/HOTSPOT_MONTHLY"
+           data-link-annual="https://buy.stripe.com/HOTSPOT_ANNUAL"
+           href="#">Make Us Your Hotspot</a>
+        <p class="note">We cap Hotspots to protect exclusivity.</p>
       </div>
     </section>
 
-    <!-- Onboarding form -->
-    <section class="section onboard" id="onboard">
-      <h4>Become a Featured Venue</h4>
-      <p class="small">Complete this quick setup and choose a plan. We’ll add your venue and weighting into the color-door map immediately after checkout.</p>
-      <div class="grid">
+    <!-- Onboarding (mailto only; email is hidden/obfuscated) -->
+    <section class="section" id="onboard">
+      <h4>Submit Your Venue Details</h4>
+      <p class="small">After you purchase a plan, send us your info below so we can add you to the map. We currently feature up to <strong>12 venues per Area</strong> at a time.</p>
+
+      <form id="venueForm" class="grid" onsubmit="return false;">
+        <input type="hidden" id="tierField" value="">
+        <input type="hidden" id="billingField" value="monthly">
+
         <div>
           <label for="venue">Venue name</label>
           <input type="text" id="venue" placeholder="Ex: Metropolitan Cafe" required>
@@ -215,16 +184,25 @@
           <input type="text" id="maps" placeholder="https://www.google.com/maps/..." required>
         </div>
         <div>
-          <label for="contact">Contact email</label>
-          <input type="email" id="contact" placeholder="gm@yourvenue.com" required>
+          <label for="email">Contact email</label>
+          <input type="email" id="email" placeholder="gm@yourvenue.com" required>
         </div>
         <div>
-          <label for="time">Start time label (displayed)</label>
+          <label for="time">Start time label (shown to guests)</label>
           <input type="text" id="time" placeholder="7:30 PM" value="7:30 PM">
         </div>
-      </div>
-
-      <div class="grid">
+        <div>
+          <label for="instagram">Instagram (optional)</label>
+          <input type="text" id="instagram" placeholder="@yourvenue or URL">
+        </div>
+        <div>
+          <label for="tiktok">TikTok (optional)</label>
+          <input type="text" id="tiktok" placeholder="@yourvenue or URL">
+        </div>
+        <div>
+          <label for="website">Website (optional)</label>
+          <input type="text" id="website" placeholder="https://yourvenue.com">
+        </div>
         <div>
           <label for="prefDays">Preferred prime days</label>
           <select id="prefDays" multiple>
@@ -232,19 +210,34 @@
             <option value="sat" selected>Saturday</option>
             <option value="thu">Thursday</option>
           </select>
-          <div class="hint">We’ll weight these based on your plan.</div>
         </div>
-        <div>
-          <label for="site">Website (optional)</label>
-          <input type="text" id="site" placeholder="https://yourvenue.com">
-        </div>
-      </div>
 
-      <div class="actions">
-        <a href="#pricing" class="cta ghost">1) Choose a Plan Above</a>
-        <button id="submitOnboard" class="cta" type="button">2) Submit Venue Details</button>
+        <div style="grid-column:1/-1">
+          <label for="notes">Anything else we should know? (optional)</label>
+          <textarea id="notes" placeholder="Special requests, seating constraints, etc."></textarea>
+        </div>
+
+        <div style="grid-column:1/-1; display:flex; gap:10px; flex-wrap:wrap; align-items:center">
+          <button class="cta" id="mailtoBtn" type="button">Send to Le Libido</button>
+          <span class="small">We’ll place you according to your tier & this month’s curation (max 12 per Area).</span>
+        </div>
+      </form>
+
+      <!-- Admin helper: builds a JSON snippet for your doors page -->
+      <div class="admin-box">
+        <div class="small">Admin helper: after you receive a submission, paste this snippet into your “doors” page config.</div>
+        <pre id="adminSnippet">// Will appear after you click “Build Admin Snippet”</pre>
+        <button class="cta" id="buildSnippet">Build Admin Snippet</button>
       </div>
-      <p class="small" id="onboardNote">After your subscription, we mark you active immediately and your venue becomes eligible in the door flow based on your plan’s weighting.</p>
+    </section>
+
+    <!-- Cancellation policy (email-only; email hidden) -->
+    <section class="section">
+      <h4>Manage or Cancel</h4>
+      <p class="small">Monthly subscriptions auto-renew each month; annual subscriptions auto-renew yearly. To cancel, please email our team. We’ll ask for quick feedback and then confirm cancellation. Cancellations are handled via email only.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="cta" id="requestCancel" type="button">Request Cancellation</button>
+      </div>
     </section>
 
     <footer>
@@ -253,93 +246,158 @@
   </div>
 
 <script>
-/** ==============
- * Stripe Checkout (Subscriptions)
- * Replace PRICE_ID_* with your real Stripe Price IDs.
- * Implement a Netlify function at /.netlify/functions/checkout-b2b
- * that creates a Checkout Session in subscription mode and returns {url}
- * ============== */
-let selectedTier = null; // will be set when a pricing CTA is clicked
-let selectedPriceId = null;
+/* ========= FRONT-END ONLY (no DB, no server) ========= */
 
-async function startB2BCheckout(priceId, tier){
-  try{
-    const payload = {
-      priceId,
-      tier,                  // "starter" | "scene" | "hotspot"
-      successBase: location.origin + location.pathname
-    };
-    const res = await fetch('/.netlify/functions/checkout-b2b', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    if(!res.ok){ throw new Error('Checkout function failed'); }
-    const { url } = await res.json();
-    if(url){ location.href = url; } else { alert('Could not start checkout.'); }
-  }catch(e){
-    console.error(e);
-    alert('Checkout unavailable right now. Please try again.');
-  }
+const $ = (s)=>document.querySelector(s);
+
+/* 1) Billing toggle + price labels */
+let billing = 'monthly';
+function syncPrices(){
+  document.querySelectorAll('.amt').forEach(el=>{
+    el.textContent = billing==='annual' ? el.dataset.annual : el.dataset.monthly;
+  });
+  document.querySelectorAll('.unit').forEach(el=> el.textContent = billing==='annual' ? 'year' : 'month');
+  $('#billingField').value = billing;
 }
+$('#billMonthly').addEventListener('click', ()=>{
+  billing='monthly';
+  $('#billMonthly').classList.add('active'); $('#billMonthly').setAttribute('aria-selected','true');
+  $('#billAnnual').classList.remove('active'); $('#billAnnual').setAttribute('aria-selected','false');
+  syncPrices();
+});
+$('#billAnnual').addEventListener('click', ()=>{
+  billing='annual';
+  $('#billAnnual').classList.add('active'); $('#billAnnual').setAttribute('aria-selected','true');
+  $('#billMonthly').classList.remove('active'); $('#billMonthly').setAttribute('aria-selected','false');
+  syncPrices();
+});
+syncPrices();
 
-document.querySelectorAll('.cta[data-price-id]').forEach(btn=>{
-  btn.addEventListener('click', (e)=>{
+/* 2) Stripe Payment Links (open in new tab) */
+let selectedTier = '';
+document.querySelectorAll('.paylink').forEach(a=>{
+  a.addEventListener('click', (e)=>{
     e.preventDefault();
-    selectedPriceId = btn.getAttribute('data-price-id');
-    selectedTier = btn.getAttribute('data-tier'); // "starter" | "scene" | "hotspot"
-    if(!selectedPriceId){ alert('Missing Stripe price ID.'); return; }
-    startB2BCheckout(selectedPriceId, selectedTier);
+    selectedTier = a.dataset.tier || '';
+    $('#tierField').value = selectedTier;
+    const url = billing==='annual' ? a.dataset.linkAnnual : a.dataset.linkMonthly;
+    if(!url || url.includes('stripe.com/')) {
+      window.open(url, '_blank', 'noopener');
+    } else {
+      alert('Please replace the Payment Link placeholders with your Stripe URLs.');
+    }
   });
 });
 
-/** ==============
- * Venue Onboarding
- * Implement /.netlify/functions/onboard-venue to accept JSON:
- * { venue, area, address, maps, contact, time, prefDays, site, tier }
- * ============== */
-const $ = (id)=>document.getElementById(id);
+/* 3) Mailto for venue details — email is hidden/obfuscated */
+function obfuscatedEmail(chars){ return String.fromCharCode(...chars); }
+// spencer@lelibido.com → char codes (kept out of HTML)
+const SUBMIT_TO = obfuscatedEmail([115,112,101,110,99,101,114,64,108,101,108,105,98,105,100,111,46,99,111,109]);
+// cancel@lelibido.com (for cancellations)
+const CANCEL_TO = obfuscatedEmail([99,97,110,99,101,108,64,108,101,108,105,98,105,100,111,46,99,111,109]);
 
-$('submitOnboard').addEventListener('click', async ()=>{
-  const venue = $('venue').value.trim();
-  const area = $('area').value;
-  const address = $('address').value.trim();
-  const maps = $('maps').value.trim();
-  const contact = $('contact').value.trim();
-  const time = $('time').value.trim() || '7:30 PM';
-  const site = $('site').value.trim();
-  const prefDays = Array.from($('prefDays').selectedOptions).map(o=>o.value);
+$('#mailtoBtn').addEventListener('click', ()=>{
+  const form = document.getElementById('venueForm');
+  const fields = {
+    tier: document.getElementById('tierField').value || '(select plan above)',
+    billing: document.getElementById('billingField').value || 'monthly',
+    venue: document.getElementById('venue').value.trim(),
+    area: document.getElementById('area').value,
+    address: document.getElementById('address').value.trim(),
+    maps: document.getElementById('maps').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    time: document.getElementById('time').value.trim(),
+    instagram: document.getElementById('instagram').value.trim(),
+    tiktok: document.getElementById('tiktok').value.trim(),
+    website: document.getElementById('website').value.trim(),
+    prefDays: Array.from(document.getElementById('prefDays').selectedOptions).map(o=>o.value),
+    notes: document.getElementById('notes').value.trim()
+  };
+  if(!fields.venue || !fields.address || !fields.maps || !fields.email){
+    alert('Please fill venue name, address, maps link, and contact email.'); return;
+  }
+  const lines = [
+    `Tier: ${fields.tier}`,
+    `Billing: ${fields.billing}`,
+    `Venue: ${fields.venue}`,
+    `Area: ${fields.area}`,
+    `Address: ${fields.address}`,
+    `Google Maps: ${fields.maps}`,
+    `Contact Email: ${fields.email}`,
+    `Start Time Label: ${fields.time||'7:30 PM'}`,
+    `Instagram: ${fields.instagram||'-'}`,
+    `TikTok: ${fields.tiktok||'-'}`,
+    `Website: ${fields.website||'-'}`,
+    `Preferred Days: ${fields.prefDays.join(', ')||'-'}`,
+    `Notes: ${fields.notes||'-'}`
+  ].join('\n');
 
-  if(!venue || !address || !maps || !contact){
-    alert('Please fill venue name, address, maps link, and contact email.');
-    return;
-  }
-  if(!selectedTier){
-    alert('Please choose a plan above first, then submit your venue details.');
-    return;
-  }
+  const subject = encodeURIComponent(`Venue Onboarding: ${fields.venue} (${fields.tier})`);
+  const body = encodeURIComponent(lines);
+  const mailto = `mailto:${SUBMIT_TO}?subject=${subject}&body=${body}`;
 
-  try{
-    const res = await fetch('/.netlify/functions/onboard-venue', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ venue, area, address, maps, contact, time, site, prefDays, tier: selectedTier })
-    });
-    if(!res.ok){ throw new Error('Onboarding failed'); }
-    const data = await res.json();
-    if(data?.ok){
-      $('onboardNote').textContent = 'Thanks! Your venue is queued and will appear as soon as your subscription is confirmed.';
-      alert('Submitted. We’ll activate you right after subscription confirmation.');
-    } else {
-      alert('Could not complete onboarding. Please try again.');
-    }
-  }catch(e){
-    console.error(e);
-    alert('Server temporarily unavailable.');
-  }
+  // open mail client in a new window (doesn't reveal email in DOM)
+  window.location.href = mailto;
 });
 
-/** ==============
- * Footer year
- * ============== */
+/* 4) Admin snippet generator: copy-paste JSON for your doors page */
+document.getElementById('buildSnippet').addEventListener('click', ()=>{
+  const v = document.getElementById('venue').value.trim();
+  const area = document.getElementById('area').value.trim();
+  const addr = document.getElementById('address').value.trim();
+  const maps = document.getElementById('maps').value.trim();
+  const contact = document.getElementById('email').value.trim();
+  const time = document.getElementById('time').value.trim() || '7:30 PM';
+  const ig = document.getElementById('instagram').value.trim();
+  const tk = document.getElementById('tiktok').value.trim();
+  const site = document.getElementById('website').value.trim();
+  const days = Array.from(document.getElementById('prefDays').selectedOptions).map(o=>o.value);
+  const tier = (document.getElementById('tierField').value || 'starter').toLowerCase();
+
+  if(!v || !addr || !maps || !contact){
+    alert('Please fill venue name, address, maps link, and contact email first.');
+    return;
+  }
+
+  const entry = {
+    name: v,
+    address: addr,
+    time,
+    maps,
+    contact,
+    instagram: ig,
+    tiktok: tk,
+    website: site,
+    area,
+    prefDays: days
+  };
+
+  const snippet =
+`// Paste into your doors page config
+const VENUES_${area.replace(/[^a-z0-9]/gi,'_').toUpperCase()} = {
+  starter: [
+${tier==='starter' ? '    '+JSON.stringify(entry,null,4)+',' : '    // '+v+' (add here if Starter)'}
+  ],
+  scene: [
+${tier==='scene' ? '    '+JSON.stringify(entry,null,4)+',' : '    // '+v+' (add here if Scene Maker)'}
+  ],
+  hotspot: [
+${tier==='hotspot' ? '    '+JSON.stringify(entry,null,4)+',' : '    // '+v+' (add here if Hotspot)'}
+  ]
+};`;
+
+  document.getElementById('adminSnippet').textContent = snippet;
+});
+
+/* 5) Cancellation: open a feedback prompt, then compose hidden mailto */
+document.getElementById('requestCancel').addEventListener('click', ()=>{
+  const reason = prompt('Quickly tell us why you want to cancel (optional):') || '';
+  const subject = encodeURIComponent('Subscription Cancellation Request');
+  const body = encodeURIComponent(`Reason:\n${reason}\n\nPlease cancel my subscription at the end of the current term.`);
+  window.location.href = `mailto:${CANCEL_TO}?subject=${subject}&body=${body}`;
+});
+
+/* Footer year */
 document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
