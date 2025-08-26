@@ -83,7 +83,7 @@
       <p class="sub">
         The most expensive thing in hospitality is an empty seat. We fill empty seats, keep guests longer, and make visits more fun so they spend more and come back sooner. When you integrate your business with <strong>Le Libido</strong>, you increase revenue. Guaranteed.
       </p>
-      <div class="scarcity">Only <strong>12 total</strong> active venues per Area at a time.</div>
+      <div class="scarcity">Only <strong>12</strong> openings remaining.</div>
     </section>
 
     <!-- Billing toggle -->
@@ -113,7 +113,6 @@
            data-link-monthly="https://buy.stripe.com/STARTER_MONTHLY"
            data-link-annual="https://buy.stripe.com/STARTER_ANNUAL"
            href="#">Activate Starter</a>
-        <p class="note">Auto-renews monthly or annually until cancelled by email.</p>
       </div>
 
       <!-- Middle (decoy) -->
@@ -132,7 +131,6 @@
            data-link-monthly="https://buy.stripe.com/SCENE_MONTHLY"
            data-link-annual="https://buy.stripe.com/SCENE_ANNUAL"
            href="#">Upgrade to Scene Maker</a>
-        <p class="note">High demand on Fri/Sat — limited slots kept per Area.</p>
       </div>
 
       <!-- Top -->
@@ -142,23 +140,22 @@
         <div class="price"><span class="amt" data-monthly="$899" data-annual="$8,999">$899</span> <span class="period">/<span class="unit">month</span></span></div>
         <ul class="feat">
           <li>Everything in Scene Maker</li>
-          <li><strong>Priority</strong> placement across all days</li>
-          <li>Prime-day features (Fri/Sat): <strong>80–100%</strong> with rotation</li>
+          <li><strong>Priority</strong>placement across all days</li>
+   <li>Prime-day feature probability: <strong>50–80%</strong></li>
           <li>Dedicated success support + quarterly playbook</li>
         </ul>
         <a class="cta paylink"
            data-tier="hotspot"
            data-link-monthly="https://buy.stripe.com/HOTSPOT_MONTHLY"
            data-link-annual="https://buy.stripe.com/HOTSPOT_ANNUAL"
-           href="#">Make Us Your Hotspot</a>
-        <p class="note">We cap Hotspots to protect exclusivity.</p>
+           href="#">Make your venue a Hotspot</a>
       </div>
     </section>
 
     <!-- Onboarding (mailto only; email is hidden/obfuscated) -->
     <section class="section" id="onboard">
       <h4>Submit Your Venue Details</h4>
-      <p class="small">After you purchase a plan, send us your info below so we can add you to the map. We currently feature up to <strong>12 venues per Area</strong> at a time.</p>
+      <p class="small">After you purchase a plan, send us your info below. We currently feature up to <strong>12 venues per Area</strong> at a time.</p>
 
       <form id="venueForm" class="grid" onsubmit="return false;">
         <input type="hidden" id="tierField" value="">
@@ -223,13 +220,6 @@
         </div>
       </form>
 
-      <!-- Admin helper: builds a JSON snippet for your doors page -->
-      <div class="admin-box">
-        <div class="small">Admin helper: after you receive a submission, paste this snippet into your “doors” page config.</div>
-        <pre id="adminSnippet">// Will appear after you click “Build Admin Snippet”</pre>
-        <button class="cta" id="buildSnippet">Build Admin Snippet</button>
-      </div>
-    </section>
 
     <!-- Cancellation policy (email-only; email hidden) -->
     <section class="section">
