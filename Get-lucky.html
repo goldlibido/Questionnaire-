@@ -216,11 +216,15 @@
   const fortuneEl = document.getElementById("fortuneText");
   const closeBtn  = document.getElementById("closeFortune");
 
-  // Preload frames & show first frame when ready
-  const cache = []; let loaded = 0;
+  // Always show a visible first frame immediately.
+  frameEl.src = imgs[0];
+
+  // Preload frames and track which ones succeeded.
+  const loadedSet = new Set([imgs[0]]);
+  const cache = [];
   imgs.forEach(src => {
     const im = new Image();
-    im.onload = () => { if (++loaded === imgs.length) frameEl.src = imgs[0]; };
+    im.onload = () => { loadedSet.add(src); };
     im.onerror = () => { console.warn("Image failed to load:", src); };
     im.src = src;
     cache.push(im);
@@ -229,13 +233,23 @@
   const FRAME_MS = 140;
   let playing = false, i = 0, timer = null;
 
+  function nextLoadedIndex(fromIdx) {
+    for (let j = fromIdx + 1; j < imgs.length; j++) {
+      if (loadedSet.has(imgs[j])) return j;
+    }
+    return -1;
+  }
+
   function startOnce(){
     if (playing) return;
     playing = true; i = 0;
+
     timer = setInterval(() => {
-      i++;
-      if (i < imgs.length) frameEl.src = imgs[i];
-      if (i === imgs.length - 1) {
+      const next = nextLoadedIndex(i);
+      if (next !== -1) {
+        i = next;
+        frameEl.src = imgs[i];
+      } else {
         clearInterval(timer);
         setTimeout(showFortune, 180);
       }
