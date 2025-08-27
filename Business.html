@@ -23,13 +23,9 @@
   .sub{margin:0 auto 14px;max-width:840px;color:#d8d8d8;font-size:16px;line-height:1.6}
   .scarcity{display:inline-flex;gap:10px;align-items:center;border:1px solid var(--gold);border-radius:999px;padding:8px 12px;background:linear-gradient(180deg,#101012,#0b0b0b);margin-top:8px;font-weight:700}
 
-  .billing{max-width:var(--max);margin:18px auto 8px;display:flex;justify-content:center;align-items:center;gap:10px}
-  .toggle{display:inline-flex;border:1px solid var(--gold);border-radius:999px;overflow:hidden}
-  .toggle button{border:none;background:transparent;color:var(--white);padding:10px 16px;cursor:pointer;font-weight:700}
-  .toggle button.active{background:var(--gold);color:#111}
-  .save{font-size:12px;color:#e9e3d6;border:1px solid var(--gold);border-radius:999px;padding:6px 10px}
+  /* (Removed the billing toggle per your request) */
 
-  .pricing{max-width:var(--max);margin:18px auto;display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .pricing{max-width:var(--max);margin:18px auto;display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
   .plan{border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:22px;position:relative;box-shadow:var(--shadow)}
   .plan.popular{transform:translateY(-4px);box-shadow:0 26px 80px rgba(225,191,120,.18)}
   .tag{position:absolute;top:12px;right:12px;border:1px solid var(--gold);color:var(--gold);padding:6px 10px;border-radius:999px;font-size:12px}
@@ -76,39 +72,13 @@
       <div class="scarcity">Only 12 openings remaining!</div>
     </section>
 
-    <!-- Billing toggle -->
-    <div class="billing">
-      <div class="toggle" role="tablist" aria-label="Billing period">
-        <button id="billMonthly" class="active" aria-selected="true">Monthly</button>
-        <button id="billAnnual" aria-selected="false">Annual</button>
-      </div>
-      <span class="save">Annual: save 2 months</span>
-    </div>
-
-    <!-- Pricing -->
+    <!-- Pricing: ONE tier in TWO containers -->
     <section class="pricing" id="pricing">
-      <!-- Listed -->
-      <div class="plan" data-plan="listed">
-        <span class="tag">Entry</span>
-        <h3>Listed Venue</h3>
-        <div class="price"><span class="amt" data-monthly="$99" data-annual="$999">$99</span> <span class="period">/<span class="unit">month</span></span></div>
-        <ul class="feat">
-          <li>Join the party — get listed in the map + color door flow</li>
-          <li>Prime-day feature probability: <strong>10–20%</strong></li>
-          <li>Standard placement on other days</li>
-        </ul>
-        <a class="cta paylink"
-           data-tier="listed"
-           data-link-monthly="https://buy.stripe.com/LISTED_MONTHLY"
-           data-link-annual="https://buy.stripe.com/LISTED_ANNUAL"
-           href="#">Subscribe to join the party</a>
-      </div>
-
-      <!-- Featured -->
-      <div class="plan popular" data-plan="featured">
+      <!-- FEATURED – MONTHLY -->
+      <div class="plan popular" data-plan="featured-monthly">
         <span class="tag">Most Chosen</span>
-        <h3>Featured Venue</h3>
-        <div class="price"><span class="amt" data-monthly="$499" data-annual="$4,999">$499</span> <span class="period">/<span class="unit">month</span></span></div>
+        <h3>Featured Venue — Monthly</h3>
+        <div class="price"><span class="amt">$499</span> <span class="period">/month</span></div>
         <ul class="feat">
           <li>Boost your venue’s visibility with enhanced placement</li>
           <li>Prime-day feature probability: <strong>35–50%</strong></li>
@@ -116,26 +86,27 @@
         </ul>
         <a class="cta paylink"
            data-tier="featured"
-           data-link-monthly="https://buy.stripe.com/FEATURED_MONTHLY"
-           data-link-annual="https://buy.stripe.com/FEATURED_ANNUAL"
-           href="#">Boost your venue’s visibility</a>
+           data-billing="monthly"
+           data-link="https://buy.stripe.com/FEATURED_MONTHLY"
+           href="#">Boost your venue’s visibility (Monthly)</a>
       </div>
 
-      <!-- Spotlighted -->
-      <div class="plan" data-plan="spotlighted">
-        <span class="tag">Premium</span>
-        <h3>Spotlighted Venue</h3>
-        <div class="price"><span class="amt" data-monthly="$899" data-annual="$8,999">$899</span> <span class="period">/<span class="unit">month</span></span></div>
+      <!-- FEATURED – ANNUAL -->
+      <div class="plan" data-plan="featured-annual">
+        <span class="tag">Best Value</span>
+        <h3>Featured Venue — Annual</h3>
+        <div class="price"><span class="amt">$4,999</span> <span class="period">/year</span></div>
         <ul class="feat">
-          <li>Stand above the rest with priority placement across all days</li>
-          <li>Prime-day feature probability: <strong>80–100%</strong> with rotation</li>
-          <li>Access to RSVP insights & quarterly playbook</li>
+          <li>Everything in Monthly, locked for 12 months</li>
+          <li><strong>Save 2 months</strong> vs. paying monthly</li>
+          <li>Priority to renew your slot next year</li>
         </ul>
         <a class="cta paylink"
-           data-tier="spotlighted"
-           data-link-monthly="https://buy.stripe.com/SPOTLIGHTED_MONTHLY"
-           data-link-annual="https://buy.stripe.com/SPOTLIGHTED_ANNUAL"
-           href="#">Stand above the rest</a>
+           data-tier="featured"
+           data-billing="annual"
+           data-link="https://buy.stripe.com/FEATURED_ANNUAL"
+           href="#">Boost your venue’s visibility (Annual)</a>
+        <p class="note">Annual: save 2 months</p>
       </div>
     </section>
 
@@ -145,8 +116,8 @@
       <p class="small">After you purchase a plan, send us your info below. We currently feature up to <strong>12 venues per Area</strong> at a time.</p>
 
       <form id="venueForm" class="grid" onsubmit="return false;">
-        <input type="hidden" id="tierField" value="">
-        <input type="hidden" id="billingField" value="monthly">
+        <input type="hidden" id="tierField" value="featured">
+        <input type="hidden" id="billingField" value="">
 
         <div>
           <label for="venue">Venue name</label>
@@ -224,64 +195,43 @@
 /* ========= FRONT-END ONLY (no DB, no server) ========= */
 const $ = (s)=>document.querySelector(s);
 
-/* 1) Billing toggle + price labels */
-let billing = 'monthly';
-function syncPrices(){
-  document.querySelectorAll('.amt').forEach(el=>{
-    el.textContent = billing==='annual' ? el.dataset.annual : el.dataset.monthly;
-  });
-  document.querySelectorAll('.unit').forEach(el=> el.textContent = billing==='annual' ? 'year' : 'month');
-  const billingField = $('#billingField'); if(billingField) billingField.value = billing;
-}
-$('#billMonthly').addEventListener('click', ()=>{
-  billing='monthly';
-  $('#billMonthly').classList.add('active'); $('#billMonthly').setAttribute('aria-selected','true');
-  $('#billAnnual').classList.remove('active'); $('#billAnnual').setAttribute('aria-selected','false');
-  syncPrices();
-});
-$('#billAnnual').addEventListener('click', ()=>{
-  billing='annual';
-  $('#billAnnual').classList.add('active'); $('#billAnnual').setAttribute('aria-selected','true');
-  $('#billMonthly').classList.remove('active'); $('#billMonthly').setAttribute('aria-selected','false');
-  syncPrices();
-});
-syncPrices();
-
-/* 2) Stripe Payment Links — block placeholders to avoid "Access denied" */
+/* Stripe Payment Links — block placeholders to avoid "Access denied" */
 function isPlaceholderLink(url){
   if(!url) return true;
   // Treat these as placeholders until you paste real Payment Links.
-  return /LISTED_|FEATURED_|SPOTLIGHTED_/i.test(url);
+  return /FEATURED_(MONTHLY|ANNUAL)/i.test(url);
 }
-let selectedTier = '';
+
+/* Each plan has its own link and billing in data- attributes */
 document.querySelectorAll('.paylink').forEach(a=>{
   a.addEventListener('click', (e)=>{
     e.preventDefault();
-    selectedTier = a.dataset.tier || '';
-    const tierField = $('#tierField'); if(tierField) tierField.value = selectedTier;
-    const url = billing==='annual' ? a.dataset.linkAnnual : a.dataset.linkMonthly;
+    const billing = a.dataset.billing || '';
+    const url = a.dataset.link || '';
+    const billingField = $('#billingField');
+    if (billingField) billingField.value = billing;
 
     if (isPlaceholderLink(url)) {
-      alert('Stripe link not set yet. Please replace the placeholder Payment Link URL for this tier/billing in the HTML.');
+      alert('Stripe link not set yet. Please replace the placeholder Payment Link URL for this billing option in the HTML.');
       return;
     }
     window.open(url, '_blank', 'noopener');
   });
 });
 
-/* 3) Mailto for venue details — email is hidden/obfuscated */
+/* Mailto for venue details — email is hidden/obfuscated */
 function obfuscatedEmail(chars){ return String.fromCharCode(...chars); }
 // spencer@lelibido.com → char codes (kept out of HTML)
 const SUBMIT_TO = obfuscatedEmail([115,112,101,110,99,101,114,64,108,101,108,105,98,105,100,111,46,99,111,109]);
-// cancel@lelibido.com for cancellations
-const CANCEL_TO = obfuscatedEmail([99,97,110,99,101,108,64,108,101,108,105,98,105,100,111,46,99,111,109]);
+// Send cancellations to the same address, per your request
+const CANCEL_TO = SUBMIT_TO;
 
 const mailBtn = $('#mailtoBtn');
 if (mailBtn) {
   mailBtn.addEventListener('click', ()=>{
     const fields = {
-      tier: ($('#tierField')?.value || '(select plan above)'),
-      billing: ($('#billingField')?.value || 'monthly'),
+      tier: ($('#tierField')?.value || 'featured'),
+      billing: ($('#billingField')?.value || '(not selected yet)'),
       venue: $('#venue')?.value.trim(),
       area: $('#area')?.value,
       address: $('#address')?.value.trim(),
@@ -313,14 +263,14 @@ if (mailBtn) {
       `Notes: ${fields.notes||'-'}`
     ].join('\n');
 
-    const subject = encodeURIComponent(`Venue Onboarding: ${fields.venue} (${fields.tier})`);
+    const subject = encodeURIComponent(`Venue Onboarding: ${fields.venue} (${fields.billing})`);
     const body = encodeURIComponent(lines);
     const mailto = `mailto:${SUBMIT_TO}?subject=${subject}&body=${body}`;
     window.location.href = mailto;
   });
 }
 
-/* 4) Cancellation: feedback prompt → email (works even if other optional blocks are missing) */
+/* Cancellation: feedback prompt → email to spencer@lelibido.com */
 const cancelBtn = $('#requestCancel');
 if (cancelBtn){
   cancelBtn.addEventListener('click', ()=>{
