@@ -23,17 +23,12 @@
   .sub{margin:0 auto 14px;max-width:840px;color:#d8d8d8;font-size:16px;line-height:1.6}
   .scarcity{display:inline-flex;gap:10px;align-items:center;border:1px solid var(--gold);border-radius:999px;padding:8px 12px;background:linear-gradient(180deg,#101012,#0b0b0b);margin-top:8px;font-weight:700}
 
-  .value-props{max-width:var(--max);margin:18px auto;display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr))}
-  .chip{border:1px solid var(--gold);border-radius:12px;padding:14px;background:linear-gradient(180deg,#101012,#0b0b0b);box-shadow:var(--shadow);font-weight:600;text-align:center}
-
-  /* Billing toggle */
   .billing{max-width:var(--max);margin:18px auto 8px;display:flex;justify-content:center;align-items:center;gap:10px}
   .toggle{display:inline-flex;border:1px solid var(--gold);border-radius:999px;overflow:hidden}
   .toggle button{border:none;background:transparent;color:var(--white);padding:10px 16px;cursor:pointer;font-weight:700}
   .toggle button.active{background:var(--gold);color:#111}
   .save{font-size:12px;color:#e9e3d6;border:1px solid var(--gold);border-radius:999px;padding:6px 10px}
 
-  /* Pricing */
   .pricing{max-width:var(--max);margin:18px auto;display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
   .plan{border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:22px;position:relative;box-shadow:var(--shadow)}
   .plan.popular{transform:translateY(-4px);box-shadow:0 26px 80px rgba(225,191,120,.18)}
@@ -47,25 +42,20 @@
   .cta{display:block;text-align:center;font-weight:800;text-decoration:none;padding:12px 14px;border-radius:12px;border:1px solid var(--gold);color:#111;background:var(--gold)}
   .note{font-size:12px;color:var(--muted);margin-top:6px}
 
-  /* Sections */
   .section{max-width:var(--max);margin:24px auto 22px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:20px}
   .section h4{margin:0 0 8px;font-size:20px}
   .grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
-  .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
   label{font-size:13px;color:#d6d6d6;margin-bottom:6px;display:block}
   input[type="text"], input[type="email"], select, textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--card-edge);background:#0a0a0b;color:#fff}
   textarea{min-height:100px}
   .small{font-size:12px;color:#9b9b9b}
 
-  .admin-box{margin-top:12px;border:1px dashed var(--gold);border-radius:12px;padding:12px;background:#0e0e10}
-  pre{white-space:pre-wrap;word-break:break-word;background:#0a0a0b;border:1px solid var(--card-edge);padding:10px;border-radius:10px}
-
   footer{max-width:var(--max);margin:28px auto 0;text-align:center;color:#b8b8b8;font-size:12px}
 
   @media (max-width:1000px){
-    .value-props,.pricing{grid-template-columns:1fr}
+    .pricing{grid-template-columns:1fr}
     .plan.popular{transform:none}
-    .grid,.grid-3{grid-template-columns:1fr}
+    .grid{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -95,15 +85,15 @@
       <span class="save">Annual: save 2 months</span>
     </div>
 
-    <!-- Pricing (Stripe Payment Links) -->
+    <!-- Pricing -->
     <section class="pricing" id="pricing">
-      <!-- Starter -->
-      <div class="plan" data-plan="starter">
+      <!-- Listed -->
+      <div class="plan" data-plan="listed">
         <span class="tag">Entry</span>
         <h3>Listed Venue</h3>
         <div class="price"><span class="amt" data-monthly="$99" data-annual="$999">$99</span> <span class="period">/<span class="unit">month</span></span></div>
         <ul class="feat">
-          <li>Become a listed venue</li>
+          <li>Join the party — get listed in the map + color door flow</li>
           <li>Prime-day feature probability: <strong>10–20%</strong></li>
           <li>Standard placement on other days</li>
         </ul>
@@ -114,33 +104,32 @@
            href="#">Subscribe to join the party</a>
       </div>
 
-      <!-- Middle (decoy) -->
-      <div class="plan popular" data-plan="scene">
+      <!-- Featured -->
+      <div class="plan popular" data-plan="featured">
         <span class="tag">Most Chosen</span>
         <h3>Featured Venue</h3>
         <div class="price"><span class="amt" data-monthly="$499" data-annual="$4,999">$499</span> <span class="period">/<span class="unit">month</span></span></div>
         <ul class="feat">
-          <li>Become a feautured venue</li>
-          <li>Prime-day feature probability: <strong>20–50%</strong></li>
-          <li>Enhanced placement & boosted visibility</li>
+          <li>Boost your venue’s visibility with enhanced placement</li>
+          <li>Prime-day feature probability: <strong>35–50%</strong></li>
+          <li>Promo assets & light guidance for themed nights</li>
         </ul>
         <a class="cta paylink"
-           data-tier="scene"
+           data-tier="featured"
            data-link-monthly="https://buy.stripe.com/FEATURED_MONTHLY"
            data-link-annual="https://buy.stripe.com/FEATURED_ANNUAL"
            href="#">Boost your venue’s visibility</a>
       </div>
 
-      <!-- Top -->
-      <div class="plan" data-plan="hotspot">
+      <!-- Spotlighted -->
+      <div class="plan" data-plan="spotlighted">
         <span class="tag">Premium</span>
         <h3>Spotlighted Venue</h3>
         <div class="price"><span class="amt" data-monthly="$899" data-annual="$8,999">$899</span> <span class="period">/<span class="unit">month</span></span></div>
         <ul class="feat">
-          <li>Everything in Scene Maker</li>
-          <li>Prime-day feature probability: <strong>50–80%</strong></li>
-          <li>Priority placement across all days</li>
-          <li>Gain access to customer RSVP data and in-depth reports</li>
+          <li>Stand above the rest with priority placement across all days</li>
+          <li>Prime-day feature probability: <strong>80–100%</strong> with rotation</li>
+          <li>Access to RSVP insights & quarterly playbook</li>
         </ul>
         <a class="cta paylink"
            data-tier="spotlighted"
@@ -167,7 +156,6 @@
           <label for="area">Area</label>
           <select id="area">
             <option value="central-nj">Central New Jersey</option>
-            <!-- add more as you expand -->
           </select>
         </div>
         <div>
@@ -216,6 +204,7 @@
           <button class="cta" id="mailtoBtn" type="button">Send to Le Libido</button>
         </div>
       </form>
+    </section>
 
     <!-- Cancellation policy (email-only; email hidden) -->
     <section class="section">
@@ -233,7 +222,6 @@
 
 <script>
 /* ========= FRONT-END ONLY (no DB, no server) ========= */
-
 const $ = (s)=>document.querySelector(s);
 
 /* 1) Billing toggle + price labels */
@@ -243,7 +231,7 @@ function syncPrices(){
     el.textContent = billing==='annual' ? el.dataset.annual : el.dataset.monthly;
   });
   document.querySelectorAll('.unit').forEach(el=> el.textContent = billing==='annual' ? 'year' : 'month');
-  $('#billingField').value = billing;
+  const billingField = $('#billingField'); if(billingField) billingField.value = billing;
 }
 $('#billMonthly').addEventListener('click', ()=>{
   billing='monthly';
@@ -259,19 +247,25 @@ $('#billAnnual').addEventListener('click', ()=>{
 });
 syncPrices();
 
-/* 2) Stripe Payment Links (open in new tab) */
+/* 2) Stripe Payment Links — block placeholders to avoid "Access denied" */
+function isPlaceholderLink(url){
+  if(!url) return true;
+  // Treat these as placeholders until you paste real Payment Links.
+  return /LISTED_|FEATURED_|SPOTLIGHTED_/i.test(url);
+}
 let selectedTier = '';
 document.querySelectorAll('.paylink').forEach(a=>{
   a.addEventListener('click', (e)=>{
     e.preventDefault();
     selectedTier = a.dataset.tier || '';
-    $('#tierField').value = selectedTier;
+    const tierField = $('#tierField'); if(tierField) tierField.value = selectedTier;
     const url = billing==='annual' ? a.dataset.linkAnnual : a.dataset.linkMonthly;
-    if(!url || url.includes('stripe.com/')) {
-      window.open(url, '_blank', 'noopener');
-    } else {
-      alert('Please replace the Payment Link placeholders with your Stripe URLs.');
+
+    if (isPlaceholderLink(url)) {
+      alert('Stripe link not set yet. Please replace the placeholder Payment Link URL for this tier/billing in the HTML.');
+      return;
     }
+    window.open(url, '_blank', 'noopener');
   });
 });
 
@@ -279,109 +273,63 @@ document.querySelectorAll('.paylink').forEach(a=>{
 function obfuscatedEmail(chars){ return String.fromCharCode(...chars); }
 // spencer@lelibido.com → char codes (kept out of HTML)
 const SUBMIT_TO = obfuscatedEmail([115,112,101,110,99,101,114,64,108,101,108,105,98,105,100,111,46,99,111,109]);
-// cancel@lelibido.com (for cancellations)
+// cancel@lelibido.com for cancellations
 const CANCEL_TO = obfuscatedEmail([99,97,110,99,101,108,64,108,101,108,105,98,105,100,111,46,99,111,109]);
 
-$('#mailtoBtn').addEventListener('click', ()=>{
-  const form = document.getElementById('venueForm');
-  const fields = {
-    tier: document.getElementById('tierField').value || '(select plan above)',
-    billing: document.getElementById('billingField').value || 'monthly',
-    venue: document.getElementById('venue').value.trim(),
-    area: document.getElementById('area').value,
-    address: document.getElementById('address').value.trim(),
-    maps: document.getElementById('maps').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    time: document.getElementById('time').value.trim(),
-    instagram: document.getElementById('instagram').value.trim(),
-    tiktok: document.getElementById('tiktok').value.trim(),
-    website: document.getElementById('website').value.trim(),
-    prefDays: Array.from(document.getElementById('prefDays').selectedOptions).map(o=>o.value),
-    notes: document.getElementById('notes').value.trim()
-  };
-  if(!fields.venue || !fields.address || !fields.maps || !fields.email){
-    alert('Please fill venue name, address, maps link, and contact email.'); return;
-  }
-  const lines = [
-    `Tier: ${fields.tier}`,
-    `Billing: ${fields.billing}`,
-    `Venue: ${fields.venue}`,
-    `Area: ${fields.area}`,
-    `Address: ${fields.address}`,
-    `Google Maps: ${fields.maps}`,
-    `Contact Email: ${fields.email}`,
-    `Start Time Label: ${fields.time||'7:30 PM'}`,
-    `Instagram: ${fields.instagram||'-'}`,
-    `TikTok: ${fields.tiktok||'-'}`,
-    `Website: ${fields.website||'-'}`,
-    `Preferred Days: ${fields.prefDays.join(', ')||'-'}`,
-    `Notes: ${fields.notes||'-'}`
-  ].join('\n');
+const mailBtn = $('#mailtoBtn');
+if (mailBtn) {
+  mailBtn.addEventListener('click', ()=>{
+    const fields = {
+      tier: ($('#tierField')?.value || '(select plan above)'),
+      billing: ($('#billingField')?.value || 'monthly'),
+      venue: $('#venue')?.value.trim(),
+      area: $('#area')?.value,
+      address: $('#address')?.value.trim(),
+      maps: $('#maps')?.value.trim(),
+      email: $('#email')?.value.trim(),
+      time: $('#time')?.value.trim(),
+      instagram: $('#instagram')?.value.trim(),
+      tiktok: $('#tiktok')?.value.trim(),
+      website: $('#website')?.value.trim(),
+      prefDays: Array.from(document.getElementById('prefDays').selectedOptions).map(o=>o.value),
+      notes: $('#notes')?.value.trim()
+    };
+    if(!fields.venue || !fields.address || !fields.maps || !fields.email){
+      alert('Please fill venue name, address, maps link, and contact email.'); return;
+    }
+    const lines = [
+      `Tier: ${fields.tier}`,
+      `Billing: ${fields.billing}`,
+      `Venue: ${fields.venue}`,
+      `Area: ${fields.area}`,
+      `Address: ${fields.address}`,
+      `Google Maps: ${fields.maps}`,
+      `Contact Email: ${fields.email}`,
+      `Start Time Label: ${fields.time||'7:30 PM'}`,
+      `Instagram: ${fields.instagram||'-'}`,
+      `TikTok: ${fields.tiktok||'-'}`,
+      `Website: ${fields.website||'-'}`,
+      `Preferred Days: ${fields.prefDays.join(', ')||'-'}`,
+      `Notes: ${fields.notes||'-'}`
+    ].join('\n');
 
-  const subject = encodeURIComponent(`Venue Onboarding: ${fields.venue} (${fields.tier})`);
-  const body = encodeURIComponent(lines);
-  const mailto = `mailto:${SUBMIT_TO}?subject=${subject}&body=${body}`;
+    const subject = encodeURIComponent(`Venue Onboarding: ${fields.venue} (${fields.tier})`);
+    const body = encodeURIComponent(lines);
+    const mailto = `mailto:${SUBMIT_TO}?subject=${subject}&body=${body}`;
+    window.location.href = mailto;
+  });
+}
 
-  // open mail client in a new window (doesn't reveal email in DOM)
-  window.location.href = mailto;
-});
-
-/* 4) Admin snippet generator: copy-paste JSON for your doors page */
-document.getElementById('buildSnippet').addEventListener('click', ()=>{
-  const v = document.getElementById('venue').value.trim();
-  const area = document.getElementById('area').value.trim();
-  const addr = document.getElementById('address').value.trim();
-  const maps = document.getElementById('maps').value.trim();
-  const contact = document.getElementById('email').value.trim();
-  const time = document.getElementById('time').value.trim() || '7:30 PM';
-  const ig = document.getElementById('instagram').value.trim();
-  const tk = document.getElementById('tiktok').value.trim();
-  const site = document.getElementById('website').value.trim();
-  const days = Array.from(document.getElementById('prefDays').selectedOptions).map(o=>o.value);
-  const tier = (document.getElementById('tierField').value || 'starter').toLowerCase();
-
-  if(!v || !addr || !maps || !contact){
-    alert('Please fill venue name, address, maps link, and contact email first.');
-    return;
-  }
-
-  const entry = {
-    name: v,
-    address: addr,
-    time,
-    maps,
-    contact,
-    instagram: ig,
-    tiktok: tk,
-    website: site,
-    area,
-    prefDays: days
-  };
-
-  const snippet =
-`// Paste into your doors page config
-const VENUES_${area.replace(/[^a-z0-9]/gi,'_').toUpperCase()} = {
-  starter: [
-${tier==='starter' ? '    '+JSON.stringify(entry,null,4)+',' : '    // '+v+' (add here if Starter)'}
-  ],
-  scene: [
-${tier==='scene' ? '    '+JSON.stringify(entry,null,4)+',' : '    // '+v+' (add here if Scene Maker)'}
-  ],
-  hotspot: [
-${tier==='hotspot' ? '    '+JSON.stringify(entry,null,4)+',' : '    // '+v+' (add here if Hotspot)'}
-  ]
-};`;
-
-  document.getElementById('adminSnippet').textContent = snippet;
-});
-
-/* 5) Cancellation: open a feedback prompt, then compose hidden mailto */
-document.getElementById('requestCancel').addEventListener('click', ()=>{
-  const reason = prompt('Quickly tell us why you want to cancel (optional):') || '';
-  const subject = encodeURIComponent('Subscription Cancellation Request');
-  const body = encodeURIComponent(`Reason:\n${reason}\n\nPlease cancel my subscription at the end of the current term.`);
-  window.location.href = `mailto:${CANCEL_TO}?subject=${subject}&body=${body}`;
-});
+/* 4) Cancellation: feedback prompt → email (works even if other optional blocks are missing) */
+const cancelBtn = $('#requestCancel');
+if (cancelBtn){
+  cancelBtn.addEventListener('click', ()=>{
+    const reason = prompt('Quickly tell us why you want to cancel (optional):') || '';
+    const subject = encodeURIComponent('Subscription Cancellation Request');
+    const body = encodeURIComponent(`Reason:\n${reason}\n\nPlease cancel my subscription at the end of the current term.`);
+    window.location.href = `mailto:${CANCEL_TO}?subject=${subject}&body=${body}`;
+  });
+}
 
 /* Footer year */
 document.getElementById('year').textContent = new Date().getFullYear();
