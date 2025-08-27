@@ -26,7 +26,7 @@
   .pricing{max-width:var(--max);margin:18px auto;display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
   .plan{border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:22px;position:relative;box-shadow:var(--shadow)}
   .plan.popular{transform:translateY(-4px);box-shadow:0 26px 80px rgba(225,191,120,.18)}
-  .tag{position:absolute;top:12px;right:12px;border:1px solid var(--gold);color:var(--gold);padding:6px 10px;border-radius:999px;font-size:12px}
+  .tag{position:absolute;top:12px;right:12px;border:1px solid var(--gold);color:var(--gold);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
   .plan h3{margin:6px 0 0;font-size:22px;letter-spacing:.2px}
   .price{font-size:34px;font-weight:800;margin:6px 0 4px}
   .period{font-size:13px;color:var(--muted)}
@@ -38,10 +38,6 @@
 
   .section{max-width:var(--max);margin:24px auto 22px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:20px}
   .section h4{margin:0 0 8px;font-size:20px}
-  .grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
-  label{font-size:13px;color:#d6d6d6;margin-bottom:6px;display:block}
-  input[type="text"], input[type="email"], select, textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--card-edge);background:#0a0a0b;color:#fff}
-  textarea{min-height:100px}
   .small{font-size:12px;color:#9b9b9b}
 
   footer{max-width:var(--max);margin:28px auto 0;text-align:center;color:#b8b8b8;font-size:12px}
@@ -49,7 +45,6 @@
   @media (max-width:1000px){
     .pricing{grid-template-columns:1fr}
     .plan.popular{transform:none}
-    .grid{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -70,25 +65,11 @@
       <div class="scarcity">Secure your spot! Only 12 openings remaining!</div>
     </section>
 
-    <!-- Pricing: ONE tier in TWO containers -->
+    <!-- Pricing: Annual first (Best Value), Monthly second -->
     <section class="pricing" id="pricing">
-      <!-- FEATURED – MONTHLY -->
-      <div class="plan popular" data-plan="featured-monthly">
-        <h3>Featured Venue: Monthly</h3>
-        <div class="price"><span class="amt">$499</span> <span class="period">/month</span></div>
-        <ul class="feat">
-          <li>Become a featured Le Libido pop-up dating event venue</li>
-          <li>Secure your business's spot for a month</li>
-        </ul>
-        <a class="cta paylink"
-           data-tier="featured"
-           data-billing="monthly"
-           data-link="https://buy.stripe.com/test_8x2cN7bkt6I9gQs2BifUQ05"
-           href="#">Subscribe Monthly</a>
-      </div>
-
       <!-- FEATURED – ANNUAL -->
       <div class="plan" data-plan="featured-annual">
+        <span class="tag">Best Value</span>
         <h3>Featured Venue: Annually</h3>
         <div class="price"><span class="amt">$4,999</span> <span class="period">/year</span></div>
         <ul class="feat">
@@ -97,65 +78,26 @@
           <li>Priority to renew your slot next year</li>
           <li>Receive quarterly reports with in-depth customer data</li>
         </ul>
-        <a class="cta paylink"
-           data-tier="featured"
-           data-billing="annual"
-           data-link="https://buy.stripe.com/test_00w3cx88hc2t57KdfWfUQ04"
-           href="#">Subscribe Annually</a>
+        <a class="cta"
+           href="https://buy.stripe.com/test_00w3cx88hc2t57KdfWfUQ04"
+           target="_blank" rel="noopener">Subscribe Annually</a>
+      </div>
+
+      <!-- FEATURED – MONTHLY -->
+      <div class="plan popular" data-plan="featured-monthly">
+        <h3>Featured Venue: Monthly</h3>
+        <div class="price"><span class="amt">$499</span> <span class="period">/month</span></div>
+        <ul class="feat">
+          <li>Become a featured Le Libido pop-up dating event venue</li>
+          <li>Secure your business's spot for a month</li>
+        </ul>
+        <a class="cta"
+           href="https://buy.stripe.com/test_8x2cN7bkt6I9gQs2BifUQ05"
+           target="_blank" rel="noopener">Subscribe Monthly</a>
       </div>
     </section>
 
-    <!-- Onboarding (mailto only; email is hidden/obfuscated) -->
-    <section class="section" id="onboard">
-      <h4>Submit Your Venue Details</h4>
-    
-      <form id="venueForm" class="grid" onsubmit="return false;">
-        <input type="hidden" id="tierField" value="featured">
-        <input type="hidden" id="billingField" value="">
-
-        <div>
-          <label for="venue">Venue name</label>
-          <input type="text" id="venue" placeholder="Ex: Metropolitan Cafe" required>
-        </div>
-        <div>
-          <label for="area">Area</label>
-          <select id="area">
-            <option value="central-nj">Central New Jersey</option>
-          </select>
-        </div>
-        <div>
-          <label for="address">Street address</label>
-          <input type="text" id="address" placeholder="8 E Main St, Freehold, NJ 07728" required>
-        </div>
-        <div>
-          <label for="email">Contact email</label>
-          <input type="email" id="email" placeholder="gm@yourvenue.com" required>
-        </div>
-        <div>
-          <label for="instagram">Instagram (optional)</label>
-          <input type="text" id="instagram" placeholder="@yourvenue or URL">
-        </div>
-        <div>
-          <label for="tiktok">TikTok (optional)</label>
-          <input type="text" id="tiktok" placeholder="@yourvenue or URL">
-        </div>
-        <div>
-          <label for="website">Website (optional)</label>
-          <input type="text" id="website" placeholder="https://yourvenue.com">
-        </div>
-
-        <div style="grid-column:1/-1">
-          <label for="notes">Anything else we should know? (optional)</label>
-          <textarea id="notes" placeholder="Special requests, seating constraints, etc."></textarea>
-        </div>
-
-        <div style="grid-column:1/-1; display:flex; gap:10px; flex-wrap:wrap; align-items:center">
-          <button class="cta" id="mailtoBtn" type="button">Send to Le Libido</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- Cancellation policy (email-only; email hidden) -->
+    <!-- Cancellation policy -->
     <section class="section">
       <h4>Manage or Cancel</h4>
       <p class="small">Monthly subscriptions auto-renew each month; annual subscriptions auto-renew yearly. To cancel, please email our team. We’ll ask for quick feedback and then confirm cancellation. Cancellations are handled via email only.</p>
@@ -170,69 +112,11 @@
   </div>
 
 <script>
-/* ========= FRONT-END ONLY (no DB, no server) ========= */
-const $ = (s)=>document.querySelector(s);
-
-/* Each plan has its own link and billing in data- attributes */
-document.querySelectorAll('.paylink').forEach(a=>{
-  a.addEventListener('click', (e)=>{
-    e.preventDefault();
-    const billing = a.dataset.billing || '';
-    const url = a.dataset.link || '';
-    const billingField = $('#billingField');
-    if (billingField) billingField.value = billing;
-    if (!url){ alert('Stripe link missing'); return; }
-    window.open(url, '_blank', 'noopener');
-  });
-});
-
-/* Mailto for venue details — email is hidden/obfuscated */
+/* Mailto for cancellations only */
 function obfuscatedEmail(chars){ return String.fromCharCode(...chars); }
-// spencer@lelibido.com → char codes (kept out of HTML)
-const SUBMIT_TO = obfuscatedEmail([115,112,101,110,99,101,114,64,108,101,108,105,98,105,100,111,46,99,111,109]);
-// Send cancellations to the same address
-const CANCEL_TO = SUBMIT_TO;
+const CANCEL_TO = obfuscatedEmail([115,112,101,110,99,101,114,64,108,101,108,105,98,105,100,111,46,99,111,109]);
 
-const mailBtn = $('#mailtoBtn');
-if (mailBtn) {
-  mailBtn.addEventListener('click', ()=>{
-    const fields = {
-      tier: ($('#tierField')?.value || 'featured'),
-      billing: ($('#billingField')?.value || '(not selected yet)'),
-      venue: $('#venue')?.value.trim(),
-      area: $('#area')?.value,
-      address: $('#address')?.value.trim(),
-      email: $('#email')?.value.trim(),
-      instagram: $('#instagram')?.value.trim(),
-      tiktok: $('#tiktok')?.value.trim(),
-      website: $('#website')?.value.trim(),
-      notes: $('#notes')?.value.trim()
-    };
-    if(!fields.venue || !fields.address || !fields.email){
-      alert('Please fill venue name, address, and contact email.'); return;
-    }
-    const lines = [
-      `Tier: ${fields.tier}`,
-      `Billing: ${fields.billing}`,
-      `Venue: ${fields.venue}`,
-      `Area: ${fields.area}`,
-      `Address: ${fields.address}`,
-      `Contact Email: ${fields.email}`,
-      `Instagram: ${fields.instagram||'-'}`,
-      `TikTok: ${fields.tiktok||'-'}`,
-      `Website: ${fields.website||'-'}`,
-      `Notes: ${fields.notes||'-'}`
-    ].join('\n');
-
-    const subject = encodeURIComponent(`Venue Onboarding: ${fields.venue} (${fields.billing})`);
-    const body = encodeURIComponent(lines);
-    const mailto = `mailto:${SUBMIT_TO}?subject=${subject}&body=${body}`;
-    window.location.href = mailto;
-  });
-}
-
-/* Cancellation: feedback prompt → email to spencer@lelibido.com */
-const cancelBtn = $('#requestCancel');
+const cancelBtn = document.getElementById('requestCancel');
 if (cancelBtn){
   cancelBtn.addEventListener('click', ()=>{
     const reason = prompt('Quickly tell us why you want to cancel (optional):') || '';
@@ -242,7 +126,6 @@ if (cancelBtn){
   });
 }
 
-/* Footer year */
 document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
