@@ -23,8 +23,6 @@
   .sub{margin:0 auto 14px;max-width:840px;color:#d8d8d8;font-size:16px;line-height:1.6}
   .scarcity{display:inline-flex;gap:10px;align-items:center;border:1px solid var(--gold);border-radius:999px;padding:8px 12px;background:linear-gradient(180deg,#101012,#0b0b0b);margin-top:8px;font-weight:700}
 
-  /* (Removed the billing toggle per your request) */
-
   .pricing{max-width:var(--max);margin:18px auto;display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}
   .plan{border:1px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,#141417,#0c0c0e);padding:22px;position:relative;box-shadow:var(--shadow)}
   .plan.popular{transform:translateY(-4px);box-shadow:0 26px 80px rgba(225,191,120,.18)}
@@ -85,7 +83,7 @@
         <a class="cta paylink"
            data-tier="featured"
            data-billing="monthly"
-           data-link="https://buy.stripe.com/FEATURED_MONTHLY"
+           data-link="https://buy.stripe.com/test_8x2cN7bkt6I9gQs2BifUQ05"
            href="#">Subscribe Monthly</a>
       </div>
 
@@ -102,7 +100,7 @@
         <a class="cta paylink"
            data-tier="featured"
            data-billing="annual"
-           data-link="https://buy.stripe.com/FEATURED_ANNUAL"
+           data-link="https://buy.stripe.com/test_00w3cx88hc2t57KdfWfUQ04"
            href="#">Subscribe Annually</a>
       </div>
     </section>
@@ -175,13 +173,6 @@
 /* ========= FRONT-END ONLY (no DB, no server) ========= */
 const $ = (s)=>document.querySelector(s);
 
-/* Stripe Payment Links — block placeholders to avoid "Access denied" */
-function isPlaceholderLink(url){
-  if(!url) return true;
-  // Treat these as placeholders until you paste real Payment Links.
-  return /FEATURED_(MONTHLY|ANNUAL)/i.test(url);
-}
-
 /* Each plan has its own link and billing in data- attributes */
 document.querySelectorAll('.paylink').forEach(a=>{
   a.addEventListener('click', (e)=>{
@@ -190,11 +181,7 @@ document.querySelectorAll('.paylink').forEach(a=>{
     const url = a.dataset.link || '';
     const billingField = $('#billingField');
     if (billingField) billingField.value = billing;
-
-    if (isPlaceholderLink(url)) {
-      alert('Stripe link not set yet. Please replace the placeholder Payment Link URL for this billing option in the HTML.');
-      return;
-    }
+    if (!url){ alert('Stripe link missing'); return; }
     window.open(url, '_blank', 'noopener');
   });
 });
@@ -203,7 +190,7 @@ document.querySelectorAll('.paylink').forEach(a=>{
 function obfuscatedEmail(chars){ return String.fromCharCode(...chars); }
 // spencer@lelibido.com → char codes (kept out of HTML)
 const SUBMIT_TO = obfuscatedEmail([115,112,101,110,99,101,114,64,108,101,108,105,98,105,100,111,46,99,111,109]);
-// Send cancellations to the same address, per your request
+// Send cancellations to the same address
 const CANCEL_TO = SUBMIT_TO;
 
 const mailBtn = $('#mailtoBtn');
@@ -215,17 +202,14 @@ if (mailBtn) {
       venue: $('#venue')?.value.trim(),
       area: $('#area')?.value,
       address: $('#address')?.value.trim(),
-      maps: $('#maps')?.value.trim(),
       email: $('#email')?.value.trim(),
-      time: $('#time')?.value.trim(),
       instagram: $('#instagram')?.value.trim(),
       tiktok: $('#tiktok')?.value.trim(),
       website: $('#website')?.value.trim(),
-      prefDays: Array.from(document.getElementById('prefDays').selectedOptions).map(o=>o.value),
       notes: $('#notes')?.value.trim()
     };
-    if(!fields.venue || !fields.address || !fields.maps || !fields.email){
-      alert('Please fill venue name, address, maps link, and contact email.'); return;
+    if(!fields.venue || !fields.address || !fields.email){
+      alert('Please fill venue name, address, and contact email.'); return;
     }
     const lines = [
       `Tier: ${fields.tier}`,
@@ -233,13 +217,10 @@ if (mailBtn) {
       `Venue: ${fields.venue}`,
       `Area: ${fields.area}`,
       `Address: ${fields.address}`,
-      `Google Maps: ${fields.maps}`,
       `Contact Email: ${fields.email}`,
-      `Start Time Label: ${fields.time||'7:30 PM'}`,
       `Instagram: ${fields.instagram||'-'}`,
       `TikTok: ${fields.tiktok||'-'}`,
       `Website: ${fields.website||'-'}`,
-      `Preferred Days: ${fields.prefDays.join(', ')||'-'}`,
       `Notes: ${fields.notes||'-'}`
     ].join('\n');
 
