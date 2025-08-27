@@ -160,8 +160,8 @@
     <h1>Will you <span class="pulse">GET LUCKY</span> tonight?</h1>
 
     <div class="stageBlock">
-      <div class="stage" id="cookieStage">
-        <img id="cookieFrame" alt="Tap to crack the fortune cookie" />
+      <div class="stage" id="fortuneStage">
+        <img id="fortuneFrame" alt="Tap to crack the fortune cookie" role="img" aria-label="Fortune cookie" />
       </div>
       <div class="caption">
         Tap the fortune cookie to reveal your sexy fortune and start dating now
@@ -180,6 +180,7 @@
 
 <script>
 (() => {
+  // Keep your asset paths the same; only IDs changed to avoid Brave's "cookie" cosmetic filters.
   const imgs = [
     "cookie/cookie-1.PNG",
     "cookie/cookie-2.PNG",
@@ -210,8 +211,8 @@
     "Express your sexuality in your unique way and you’ll feel hotter than ever."
   ];
 
-  const frameEl   = document.getElementById("cookieFrame");
-  const stageEl   = document.getElementById("cookieStage");
+  const frameEl   = document.getElementById("fortuneFrame");
+  const stageEl   = document.getElementById("fortuneStage");
   const overlayEl = document.getElementById("fortuneOverlay");
   const fortuneEl = document.getElementById("fortuneText");
   const closeBtn  = document.getElementById("closeFortune");
