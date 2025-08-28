@@ -7,22 +7,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --gold:#e1bf78; --blue:#064D95; --green:#06954E; --red:#950606;
+      --gold:#e1bf78; --blue:#064D95; --green:#06954E; --red:#c40018; --redBright:#ff1e2d;
     }
     body{font-family:'Montserrat',sans-serif;background:#000;color:#fff;text-align:center;padding:20px;margin:0;overflow:hidden}
     .container{max-width:640px;margin:0 auto;border:2px solid var(--gold);border-radius:15px;padding:20px;box-shadow:0 0 20px var(--gold)}
-    h1{font-size:2em;color:var(--gold);margin-bottom:10px;text-shadow:0 0 10px var(--gold)}
-    h1 .rizz{color:var(--red);animation:pulseRed 1.6s infinite}
-    button{padding:12px 20px;margin:8px;font-size:1em;border:none;border-radius:22px;cursor:pointer;transition:transform .2s,box-shadow .2s;color:#fff}
-    button:hover{transform:scale(1.06);box-shadow:0 0 15px currentColor}
+    h1{font-size:2em;color:var(--gold);margin-bottom:10px}
+    h1 .rizz{color:var(--redBright);display:inline-block;animation:rizzPulse 1.4s ease-in-out infinite}
+    @keyframes rizzPulse{
+      0%{transform:scale(1)}
+      50%{transform:scale(1.15)}
+      100%{transform:scale(1)}
+    }
+    button{padding:12px 20px;margin:8px;font-size:1em;border:none;border-radius:22px;cursor:pointer;transition:transform .2s,box-shadow .2s,color .2s;background:#333;color:#fff}
+    button:hover{transform:scale(1.06)}
     #enter-btn{background:var(--red);color:#fff}
     #speak-btn{background:var(--green)}
     #listen-btn{background:var(--blue)}
-    #accept-btn,#send-btn{background:var(--red)}
-    #next-btn{background:var(--red)}
+    #accept-btn,#send-btn,#next-btn{background:var(--red)}
     #profile-form,#listen-section,#match-section{margin-top:20px}
     input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff;font-family:'Montserrat',sans-serif;width:calc(100% - 24px)}
-    #me-line{opacity:.85;margin:6px 0 12px}
+    #me-line{opacity:.9;margin:6px 0 12px}
     #audio-player{margin:16px auto;width:100%}
     #chat-window{height:260px;overflow-y:auto;border:1px solid var(--gold);border-radius:10px;padding:10px;background:#111;margin-bottom:10px;text-align:left}
     .chat-message{padding:8px 10px;margin:6px 0;border-radius:12px;max-width:85%;word-wrap:break-word;animation:slideIn .3s ease-out;display:inline-block}
@@ -33,17 +37,15 @@
     .icon-btn{background:var(--blue)}
     .hidden{display:none}
     #live-remote{width:100%;margin-top:8px}
-    /* Inline tune prompt */
-    #tune-inline{margin-top:12px;border:1px dashed var(--gold);border-radius:10px;padding:10px;background:#0d0d0d}
-    #tune-inline .label{display:block;margin-bottom:6px;opacity:.85}
-    #tune-btn{background:var(--blue)}
-    @keyframes pulseRed{
-      0%{filter:none;opacity:1}
-      50%{text-shadow:0 0 6px rgba(149,6,6,.9),0 0 14px rgba(149,6,6,.7);opacity:.8}
-      100%{filter:none;opacity:1}
-    }
     @keyframes slideIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
     body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(225,191,120,.1) 0%,rgba(0,0,0,0) 100%);z-index:-1}
+
+    /* Inline tune prompt */
+    #tune-inline{margin-top:12px;border:1px dashed var(--gold);border-radius:10px;padding:10px;background:#0d0d0d}
+    #tune-inline .label{display:block;margin-bottom:6px;opacity:.9}
+    #tune-btn{background:var(--blue)}
+    #tune-status{font-size:.9em;opacity:.8;margin-top:6px;min-height:1.2em}
+    #tune-cancel{background:#444;margin-left:8px}
   </style>
 </head>
 <body>
@@ -63,11 +65,15 @@
       <button id="speak-btn">Speak & Rizz</button>
       <button id="listen-btn">Listen & Get Rizzed</button>
 
-      <!-- Inline tune prompt appears when needed -->
+      <!-- Inline tune prompt -->
       <div id="tune-inline" class="hidden">
         <span class="label">Enter a username/station now</span>
         <input type="text" id="target-inline" placeholder="@username or station">
-        <button id="tune-btn">Tune</button>
+        <div>
+          <button id="tune-btn">Tune</button>
+          <button id="tune-cancel" class="hidden">Cancel</button>
+        </div>
+        <div id="tune-status"></div>
       </div>
     </div>
 
@@ -123,6 +129,11 @@
     // Image transfer buffer
     let rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg', size: 0 };
 
+    // Retry tuning
+    let tuneRetryTimer = null;
+    let tuneRetryCount = 0;
+    let tuneInProgress = false;
+
     // --- Username persistence ---
     function getSavedUsername(){ return localStorage.getItem('rizz_username') || ''; }
     function saveUsername(u){ localStorage.setItem('rizz_username', u); }
@@ -159,40 +170,41 @@
       audio.play().catch(()=>{});
     }
 
-    // --- Peer init with desired username as PeerID (fallback if taken) ---
+    // --- Peer init with chosen username as PeerID ---
     async function initPeerWithId(desiredId) {
-      return new Promise((resolve) => {
-        let idTried = desiredId;
-        function makePeer(id) {
-          const p = new Peer(id);
-          p.on('open', (id) => resolve({ peer: p, id }));
-          p.on('error', (err) => {
-            if (err?.type === 'unavailable-id') {
-              const suffix = Math.random().toString(36).slice(2,5);
-              idTried = `${desiredId}-${suffix}`;
-              makePeer(idTried);
-            } else {
-              alert('Peer error: ' + err.type);
-            }
-          });
-        }
-        makePeer(idTried);
+      return new Promise((resolve, reject) => {
+        const p = new Peer(desiredId);
+        p.on('open', (id) => resolve({ peer: p, id }));
+        p.on('error', (err) => reject(err));
       });
     }
 
     async function initPeer() {
-      const saved = getSavedUsername();
-      const baseName = saved || (userProfile.name || '').replace(/\s+/g,'').toLowerCase();
+      const baseName = (getSavedUsername() || userProfile.name || '').replace(/\s+/g,'').toLowerCase();
       if (!baseName) { alert('Missing username'); return; }
 
-      const { peer: p, id } = await initPeerWithId(baseName);
-      peer = p; myPeerId = id; saveUsername(id);
+      try {
+        const { peer: p, id } = await initPeerWithId(baseName);
+        peer = p; myPeerId = id; saveUsername(id);
+      } catch (err) {
+        if (err?.type === 'unavailable-id') {
+          alert('That username is already in use on this network. Pick a different one.');
+          // Show profile form again for quick rename
+          document.getElementById('main-section').classList.add('hidden');
+          const pf = document.getElementById('profile-form');
+          pf.classList.remove('hidden');
+          return;
+        } else {
+          alert('Peer error: ' + (err?.type || err));
+          return;
+        }
+      }
 
       // Show handle & helper
       const me = document.getElementById('me-line');
-      me.textContent = `You are live as @${id}`;
+      me.textContent = `You are live as @${myPeerId}`;
       me.classList.remove('hidden');
-      toast('You are live as @' + id);
+      toast('You are live as @' + myPeerId);
 
       // Incoming data connections
       peer.on('connection', (connection) => {
@@ -221,37 +233,80 @@
     }
 
     function wireConn(c) {
-      c.on('open', () => c.send({ type: 'profile', data: userProfile }));
+      c.on('open', () => {
+        tuneStatus('Connected to @' + (currentPeerId || c.peer));
+        document.getElementById('tune-inline').classList.add('hidden');
+        tuneStopRetry();
+        c.send({ type: 'profile', data: userProfile });
+      });
       c.on('data', handleData);
       c.on('close', () => console.log('Connection closed'));
-      c.on('error', (e) => console.error('Conn error:', e));
+      c.on('error', (e) => {
+        console.error('Conn error:', e);
+        if (e?.type === 'peer-unavailable') {
+          // Will be handled by retry flow
+        }
+      });
     }
+
+    // --- Inline tune UI helpers ---
+    function showTuneInline() {
+      const box = document.getElementById('tune-inline');
+      box.classList.remove('hidden');
+      document.getElementById('target-inline').focus();
+      document.getElementById('tune-cancel').classList.toggle('hidden', !tuneInProgress);
+    }
+    function tuneStatus(msg) {
+      document.getElementById('tune-status').textContent = msg || '';
+    }
+    function tuneStartRetry(target) {
+      if (tuneInProgress) return;
+      tuneInProgress = true;
+      document.getElementById('tune-cancel').classList.remove('hidden');
+      tuneRetryCount = 0;
+      attemptConnect(target);
+    }
+    function tuneStopRetry() {
+      tuneInProgress = false;
+      document.getElementById('tune-cancel').classList.add('hidden');
+      if (tuneRetryTimer) { clearTimeout(tuneRetryTimer); tuneRetryTimer = null; }
+    }
+    function attemptConnect(target) {
+      currentPeerId = target;
+      tuneStatus(`Connecting to @${target}…`);
+      if (conn && !conn.open) try { conn.close(); } catch {}
+      conn = peer.connect(target);
+      wireConn(conn);
+
+      // Guard: if it hasn’t opened within X sec, assume remote offline and retry
+      const WAIT_MS = 3500;
+      setTimeout(() => {
+        if (!conn.open) {
+          tuneRetryCount++;
+          const nextIn = Math.min(3000 + tuneRetryCount*500, 8000);
+          tuneStatus(`Waiting for @${target} to come online… retrying in ${Math.round(nextIn/1000)}s`);
+          tuneRetryTimer = setTimeout(() => attemptConnect(target), nextIn);
+        }
+      }, WAIT_MS);
+    }
+
+    document.getElementById('tune-btn').addEventListener('click', () => {
+      const val = (document.getElementById('target-inline').value || '').replace(/^@/,'').trim();
+      if (!val) { tuneStatus('Please enter a username/station.'); return; }
+      showTuneInline();
+      tuneStartRetry(val);
+    });
+    document.getElementById('tune-cancel').addEventListener('click', () => {
+      tuneStopRetry();
+      tuneStatus('Tuning cancelled.');
+    });
 
     // --- Ensure a connection; if no target, reveal inline tune prompt (no alerts) ---
-    function ensureConnectionForSending({showInlineIfMissing=true} = {}) {
+    function ensureConnectionForSending() {
       if (conn && conn.open) return true;
-
-      const inline = document.getElementById('tune-inline');
-      const targetInput = document.getElementById('target-inline');
-      const val = (targetInput.value || '').replace(/^@/,'').trim();
-
-      if (!val) {
-        if (showInlineIfMissing) inline.classList.remove('hidden');
-        targetInput.focus();
-        return false;
-      }
-      currentPeerId = val;
-      conn = peer.connect(currentPeerId);
-      wireConn(conn);
-      return true;
+      showTuneInline();
+      return false;
     }
-
-    // Tune button handler
-    document.getElementById('tune-btn').addEventListener('click', () => {
-      if (ensureConnectionForSending({showInlineIfMissing:true})) {
-        document.getElementById('tune-inline').classList.add('hidden');
-      }
-    });
 
     // --- UI wiring ---
     document.getElementById('enter-btn').addEventListener('click', async () => {
@@ -269,23 +324,32 @@
 
       await initPeer();
 
+      // Auto-open tune prompt so it’s obvious
+      showTuneInline();
+
       // Deep-link support: ?to=username
       const params = new URLSearchParams(location.search);
       const to = (params.get('to') || '').replace(/^@/,'');
       if (to) {
         document.getElementById('target-inline').value = to;
-        // pre-open inline prompt for clarity
-        document.getElementById('tune-inline').classList.remove('hidden');
+        tuneStatus('');
       }
     });
 
     document.getElementById('speak-btn').addEventListener('click', () => {
+      // If not connected yet, show inline prompt instead of proceeding
+      if (!ensureConnectionForSending()) return;
       const btn = document.getElementById('speak-btn');
       if (btn.dataset.state === 'recording') stopRecording();
       else startRecording();
     });
 
-    document.getElementById('listen-btn').addEventListener('click', startListening);
+    document.getElementById('listen-btn').addEventListener('click', () => {
+      // Always allow user to tune here if not connected yet
+      if (!ensureConnectionForSending()) return;
+      startListening();
+    });
+
     document.getElementById('accept-btn').addEventListener('click', acceptLine);
     document.getElementById('next-btn').addEventListener('click', nextLine);
     document.getElementById('send-btn').addEventListener('click', sendMessage);
@@ -296,9 +360,6 @@
 
     // --- Pickup line record → send (kept working behavior) ---
     function startRecording() {
-      // If no connection yet, show inline tune prompt instead of alert
-      if (!ensureConnectionForSending({showInlineIfMissing:true})) return;
-
       navigator.mediaDevices.getUserMedia({ audio: true }).then((s) => {
         recordingStream = s;
         const mimeType = getSupportedMime();
@@ -343,13 +404,10 @@
       readNext();
     }
 
-    // --- Listening to pickup lines (no prompts; inline tune if missing) ---
+    // --- Listening to pickup lines (view switch only; connection already handled by tuning) ---
     function startListening() {
       document.getElementById('main-section').classList.add('hidden');
       document.getElementById('listen-section').classList.remove('hidden');
-      if (!peer) { initPeer(); }
-      // If not already connected, show inline prompt
-      if (!ensureConnectionForSending({showInlineIfMissing:true})) return;
     }
 
     // --- Accept -> Live audio room handshake ---
@@ -407,6 +465,8 @@
       // go back to main to choose again
       document.getElementById('listen-section').classList.add('hidden');
       document.getElementById('main-section').classList.remove('hidden');
+      // show tuner to pick another target
+      showTuneInline();
     }
 
     function showMatch(otherProfile) {
