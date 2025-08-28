@@ -22,7 +22,7 @@
     #accept-btn,#send-btn,#next-btn{background:var(--red)}
     #profile-form,#listen-section,#match-section{margin-top:20px}
     input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff;font-family:'Montserrat',sans-serif;width:calc(100% - 24px)}
-    #me-line{opacity:.9;margin:6px 0 12px}
+    #me-line{opacity:.95;margin:10px 0 6px}
     #audio-player{margin:16px auto;width:100%}
     #chat-window{height:260px;overflow-y:auto;border:1px solid var(--gold);border-radius:10px;padding:10px;background:#111;margin-bottom:10px;text-align:left}
     .chat-message{padding:8px 10px;margin:6px 0;border-radius:12px;max-width:85%;word-wrap:break-word;animation:slideIn .3s ease-out;display:inline-block}
@@ -35,13 +35,13 @@
     #live-remote{width:100%;margin-top:8px}
     @keyframes slideIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
     body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(225,191,120,.1) 0%,rgba(0,0,0,0) 100%);z-index:-1}
-
-    /* Inline tune prompt */
-    #tune-inline{margin-top:12px;border:1px dashed var(--gold);border-radius:10px;padding:10px;background:#0d0d0d}
-    #tune-inline .label{display:block;margin-bottom:6px;opacity:.9}
-    #tune-btn{background:var(--blue)}
-    #tune-status{font-size:.9em;opacity:.8;margin-top:6px;min-height:1.2em}
-    #tune-cancel{background:#444;margin-left:8px}
+    /* Inline connect prompt */
+    #connect-inline{margin-top:12px;border:1px dashed var(--gold);border-radius:10px;padding:10px;background:#0d0d0d}
+    #connect-inline .label{display:block;margin-bottom:6px;opacity:.9}
+    #connect-btn{background:var(--blue)}
+    #connect-status{font-size:.9em;opacity:.85;margin-top:6px;min-height:1.2em}
+    #copy-btn{background:#444;margin-left:8px}
+    #myid{user-select:all}
   </style>
 </head>
 <body>
@@ -50,10 +50,13 @@
 
     <!-- LOGIN / HANDLE -->
     <div id="profile-form">
-      <input type="text" id="username" placeholder="Choose your username (becomes your @handle)" required>
+      <input type="text" id="display-name" placeholder="Your display name (shown on match)" />
       <input type="text" id="photo-url" placeholder="Photo URL (optional)">
       <button id="enter-btn">Enter the Game</button>
-      <div id="me-line" class="hidden"></div>
+      <div id="me-line" class="hidden">
+        Your ID: <span id="myid"></span>
+        <button id="copy-btn" title="Copy your ID">Copy</button>
+      </div>
     </div>
 
     <!-- MAIN -->
@@ -61,15 +64,14 @@
       <button id="speak-btn">Speak & Rizz</button>
       <button id="listen-btn">Listen & Get Rizzed</button>
 
-      <!-- Inline tune prompt -->
-      <div id="tune-inline" class="hidden">
-        <span class="label">Enter a username/station now</span>
-        <input type="text" id="target-inline" placeholder="@username or station">
+      <!-- Inline connect prompt -->
+      <div id="connect-inline" class="hidden">
+        <span class="label">Enter your partner’s ID</span>
+        <input type="text" id="target-id" placeholder="Paste their ID here">
         <div>
-          <button id="tune-btn">Tune</button>
-          <button id="tune-cancel" class="hidden">Cancel</button>
+          <button id="connect-btn">Connect</button>
         </div>
-        <div id="tune-status"></div>
+        <div id="connect-status"></div>
       </div>
     </div>
 
@@ -110,7 +112,7 @@
     let myPeerId = null;
     let userProfile = {};
     let remoteProfile = null;
-    let currentPeerId = null; // who we tune to
+    let currentPeerId = null; // partner’s id
     let remotePeerId = null;  // who is on the other end
     let matched = false;
 
@@ -118,21 +120,12 @@
     let acceptedLocal = false, acceptedRemote = false;
     let liveCall = null, liveLocalStream = null;
 
-    // Pickup line recording flow
+    // Pickup line chunks
     let mediaRecorder, recordingStream, audioChunks = [];
     let incomingChunks = [], incomingMime = 'audio/webm;codecs=opus', incomingSize = 0;
 
-    // Image transfer buffer
+    // Images
     let rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg', size: 0 };
-
-    // Retry tuning
-    let tuneRetryTimer = null;
-    let tuneRetryCount = 0;
-    let tuneInProgress = false;
-
-    // --- Username persistence ---
-    function getSavedUsername(){ return localStorage.getItem('rizz_username') || ''; }
-    function saveUsername(u){ localStorage.setItem('rizz_username', u); }
 
     // --- Toast helper ---
     function toast(msg) {
@@ -140,7 +133,7 @@
       el.textContent = msg;
       el.style.cssText = 'position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:#222;padding:10px 14px;border:1px solid var(--gold);border-radius:10px;z-index:9999';
       document.body.appendChild(el);
-      setTimeout(()=>el.remove(), 2200);
+      setTimeout(()=>el.remove(), 2000);
     }
 
     // --- Codec detection for recording ---
@@ -156,7 +149,6 @@
       }
       return '';
     }
-
     function playBlobInAudio(blob) {
       const audio = document.getElementById('audio-player');
       const url = URL.createObjectURL(blob);
@@ -166,45 +158,33 @@
       audio.play().catch(()=>{});
     }
 
-    // --- Peer init with chosen username as PeerID + robust config ---
+    // --- Initialize Peer with RANDOM ID (reliable with public server) ---
     async function initPeer() {
-      const baseName = (getSavedUsername() || userProfile.name || '').replace(/\s+/g,'').toLowerCase();
-      if (!baseName) { alert('Missing username'); return; }
-
-      try {
-        peer = new Peer(baseName, {
-          debug: 2,
-          config: {
-            iceServers: [
-              { urls: 'stun:stun.l.google.com:19302' },
-              { urls: 'stun:stun1.l.google.com:19302' },
-              { urls: 'stun:stun2.l.google.com:19302' }
-            ]
-          }
-        });
-      } catch (e) {
-        alert('Peer init failed'); return;
-      }
+      peer = new Peer(undefined, {
+        debug: 2,
+        config: { iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' }
+        ]}
+      });
 
       peer.on('open', (id) => {
-        myPeerId = id; saveUsername(id);
-        const me = document.getElementById('me-line');
-        me.textContent = `You are live as @${id}`;
-        me.classList.remove('hidden');
-        toast('You are live as @' + id);
+        myPeerId = id;
+        document.getElementById('myid').textContent = id;
+        document.getElementById('me-line').classList.remove('hidden');
+        toast('Your ID is ready — share it with your partner');
       });
 
       // Incoming data connections
       peer.on('connection', (connection) => {
-        // If we're auto-retrying outbound, stop when inbound arrives
-        tuneStopRetry();
         conn = connection;
         remotePeerId = connection.peer;
         wireConn(conn);
         if (conn.open) conn.send({ type: 'profile', data: userProfile });
       });
 
-      // Incoming media calls (live audio room)
+      // Incoming media calls (live audio)
       peer.on('call', async (call) => {
         try {
           const s = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -219,144 +199,75 @@
         }
       });
 
-      // Robust reconnection
-      peer.on('disconnected', () => {
-        console.warn('Peer disconnected. Reconnecting…');
-        try { peer.reconnect(); } catch {}
-      });
-
-      peer.on('close', () => console.warn('Peer closed'));
+      peer.on('disconnected', () => { try { peer.reconnect(); } catch {} });
       peer.on('error', (e) => console.error('Peer error:', e));
     }
 
     function wireConn(c) {
       c.on('open', () => {
-        tuneStatus('Connected to @' + (currentPeerId || c.peer));
-        document.getElementById('tune-inline').classList.add('hidden');
-        tuneStopRetry();
+        setConnectStatus('Connected!');
+        document.getElementById('connect-inline').classList.add('hidden');
         c.send({ type: 'profile', data: userProfile });
       });
       c.on('data', handleData);
       c.on('close', () => console.log('Connection closed'));
-      c.on('error', (e) => {
-        console.error('Conn error:', e);
-        // Hard retry on explicit peer-unavailable
-        if (e?.type === 'peer-unavailable' && currentPeerId) {
-          scheduleNextAttempt(currentPeerId, true);
-        }
-      });
+      c.on('error', (e) => console.error('Conn error:', e));
     }
 
-    // --- Inline tune UI helpers with robust retry ---
-    function showTuneInline() {
-      const box = document.getElementById('tune-inline');
+    // --- Connect Inline UI ---
+    function showConnectInline() {
+      const box = document.getElementById('connect-inline');
       box.classList.remove('hidden');
-      document.getElementById('target-inline').focus();
-      document.getElementById('tune-cancel').classList.toggle('hidden', !tuneInProgress);
+      document.getElementById('target-id').focus();
+      setConnectStatus('');
     }
-    function tuneStatus(msg) {
-      document.getElementById('tune-status').textContent = msg || '';
-    }
-    function tuneStartRetry(target) {
-      tuneStopRetry(); // reset timers
-      tuneInProgress = true;
-      document.getElementById('tune-cancel').classList.remove('hidden');
-      tuneRetryCount = 0;
-      attemptConnect(target);
-    }
-    function tuneStopRetry() {
-      tuneInProgress = false;
-      document.getElementById('tune-cancel').classList.add('hidden');
-      if (tuneRetryTimer) { clearTimeout(tuneRetryTimer); tuneRetryTimer = null; }
-    }
-    function attemptConnect(target) {
-      currentPeerId = target;
-      tuneStatus(`Connecting to @${target}…`);
-      // close stale attempt
-      if (conn && !conn.open) {
-        try { conn.close(); } catch {}
-      }
-      conn = null;
-      // fresh attempt (give it a unique label to dodge stale sockets)
-      const label = 'chat-' + Date.now();
+    function setConnectStatus(msg){ document.getElementById('connect-status').textContent = msg || ''; }
+
+    function doConnect() {
+      const val = (document.getElementById('target-id').value || '').trim();
+      if (!val) { setConnectStatus('Please paste their ID.'); return; }
+      currentPeerId = val;
+      setConnectStatus('Connecting…');
       try {
-        conn = peer.connect(target, { reliable: true, label, serialization: 'binary' });
+        conn = peer.connect(currentPeerId, { reliable: true });
+        wireConn(conn);
       } catch (e) {
-        console.error('connect threw:', e);
+        setConnectStatus('Failed to start connection.');
       }
-      if (conn) wireConn(conn);
-
-      // Guard: if it hasn’t opened within WAIT_MS, retry (remote might come online later)
-      const WAIT_MS = 3500;
-      setTimeout(() => {
-        if (!conn || !conn.open) {
-          scheduleNextAttempt(target, false);
-        }
-      }, WAIT_MS);
-    }
-    function scheduleNextAttempt(target, immediate) {
-      if (!tuneInProgress) return;
-      tuneRetryCount++;
-      const nextIn = immediate ? 1200 : Math.min(3000 + tuneRetryCount*600, 9000);
-      tuneStatus(`Waiting for @${target} to come online… retrying in ${Math.round(nextIn/1000)}s`);
-      tuneRetryTimer = setTimeout(() => attemptConnect(target), nextIn);
-    }
-
-    document.getElementById('tune-btn').addEventListener('click', () => {
-      const val = (document.getElementById('target-inline').value || '').replace(/^@/,'').trim();
-      if (!val) { tuneStatus('Please enter a username/station.'); return; }
-      showTuneInline();
-      tuneStartRetry(val);
-    });
-    document.getElementById('tune-cancel').addEventListener('click', () => {
-      tuneStopRetry();
-      tuneStatus('Tuning cancelled.');
-    });
-
-    // --- Ensure a connection; if no target, reveal inline tune prompt ---
-    function ensureConnectionForSending() {
-      if (conn && conn.open) return true;
-      showTuneInline();
-      return false;
     }
 
     // --- UI wiring ---
     document.getElementById('enter-btn').addEventListener('click', async () => {
-      const nameInput = document.getElementById('username');
-      const photoInput = document.getElementById('photo-url');
-
-      let desiredUsername = nameInput.value.trim() || getSavedUsername();
-      if (!desiredUsername) { alert('Choose a username'); return; }
-
-      userProfile.name = desiredUsername;  // username doubles as display name
-      userProfile.photo = photoInput.value.trim() || 'No photo';
+      userProfile.name  = (document.getElementById('display-name').value || '').trim() || 'Rizzler';
+      userProfile.photo = (document.getElementById('photo-url').value || '').trim() || 'No photo';
 
       document.getElementById('profile-form').classList.add('hidden');
       document.getElementById('main-section').classList.remove('hidden');
-
       await initPeer();
 
-      // Auto-open tune prompt so it’s obvious
-      showTuneInline();
-
-      // Deep-link support: ?to=username
-      const params = new URLSearchParams(location.search);
-      const to = (params.get('to') || '').replace(/^@/,'');
-      if (to) {
-        document.getElementById('target-inline').value = to;
-        tuneStatus('');
-      }
+      // make it obvious how to connect
+      showConnectInline();
     });
 
+    document.getElementById('copy-btn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(myPeerId || '');
+        toast('Copied your ID!');
+      } catch {}
+    });
+
+    document.getElementById('connect-btn').addEventListener('click', doConnect);
+
+    // Primary buttons
     document.getElementById('speak-btn').addEventListener('click', () => {
-      if (!ensureConnectionForSending()) return;
+      if (!conn || !conn.open) { showConnectInline(); return; }
       const btn = document.getElementById('speak-btn');
       if (btn.dataset.state === 'recording') stopRecording();
       else startRecording();
     });
 
     document.getElementById('listen-btn').addEventListener('click', () => {
-      if (!ensureConnectionForSending()) return; // prompt inline if not tuned yet
+      if (!conn || !conn.open) { showConnectInline(); return; }
       startListening();
     });
 
@@ -368,7 +279,7 @@
     });
     document.getElementById('photo-input').addEventListener('change', handlePhotoChosen);
 
-    // --- Pickup line record → send ---
+    // --- Pickup line record → send (kept working behavior) ---
     function startRecording() {
       navigator.mediaDevices.getUserMedia({ audio: true }).then((s) => {
         recordingStream = s;
@@ -383,15 +294,22 @@
           const finalMime = mediaRecorder.mimeType || mimeType || 'audio/webm';
           const blob = new Blob(audioChunks, { type: finalMime });
           sendPickupBlob(blob, finalMime);
-          const btn = document.getElementById('speak-btn'); btn.innerText = 'Speak & Rizz'; btn.dataset.state = '';
+          const btn = document.getElementById('speak-btn');
+          btn.innerText = 'Speak & Rizz';
+          btn.dataset.state = '';
         };
+
         mediaRecorder.start(100);
-        const btn = document.getElementById('speak-btn'); btn.innerText = 'Stop'; btn.dataset.state = 'recording';
+        const btn = document.getElementById('speak-btn');
+        btn.innerText = 'Stop';
+        btn.dataset.state = 'recording';
       }).catch((e) => alert('Microphone access denied: ' + e.message));
     }
+
     function stopRecording() {
       if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
     }
+
     function sendPickupBlob(blob, mimeType) {
       if (!(conn && conn.open)) return;
       conn.send({ type: 'audio-start', mime: mimeType, size: blob.size });
@@ -407,7 +325,7 @@
       readNext();
     }
 
-    // --- Listening view switch ---
+    // --- Listening view ---
     function startListening() {
       document.getElementById('main-section').classList.add('hidden');
       document.getElementById('listen-section').classList.remove('hidden');
@@ -424,7 +342,7 @@
     function tryStartLiveRoom() {
       if (!acceptedLocal || !acceptedRemote) return;
       if (!myPeerId || !remotePeerId) return;
-      const iInitiate = myPeerId < remotePeerId;
+      const iInitiate = myPeerId < remotePeerId; // avoid double-call
       if (iInitiate) startOutgoingLiveCall();
     }
     async function startOutgoingLiveCall() {
@@ -460,8 +378,9 @@
       acceptedLocal = false; acceptedRemote = false; matched = false;
       document.getElementById('listen-section').classList.add('hidden');
       document.getElementById('main-section').classList.remove('hidden');
-      showTuneInline();
+      showConnectInline();
     }
+
     function showMatch(otherProfile) {
       document.getElementById('listen-section').classList.add('hidden');
       document.getElementById('match-section').classList.remove('hidden');
@@ -473,7 +392,7 @@
       }`;
     }
 
-    // --- Text chat ---
+    // --- Text chat (auto on both ends) ---
     function sendMessage() {
       const input = document.getElementById('chat-input');
       const message = input.value.trim();
@@ -491,10 +410,11 @@
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    // --- Photo sending ---
+    // --- Photo sending (chunked) ---
     function handlePhotoChosen(e) {
       const file = e.target.files && e.target.files[0];
       if (!file || !(conn && conn.open)) return;
+
       file.arrayBuffer().then(buf => {
         const blob = new Blob([buf], { type: file.type || 'image/jpeg' });
         appendImage(blob, true);
@@ -531,7 +451,7 @@
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    // --- Incoming data handler ---
+    // --- Incoming messages ---
     function handleData(msg) {
       if (!msg || !msg.type) return;
 
