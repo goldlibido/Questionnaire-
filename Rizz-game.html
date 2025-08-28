@@ -87,8 +87,8 @@
     } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
 
     /***** Config *****/
-    const QUEUE_TTL_MS = 30000;    // ticket expires after 30s
-    const CLAIM_BATCH  = 8;        // check up to N candidates while claiming
+    const QUEUE_TTL_MS = 30000;
+    const CLAIM_BATCH  = 8;
     const CHUNK_SIZE   = 16 * 1024;
 
     /***** State *****/
@@ -99,8 +99,10 @@
     let liveCall = null, liveLocalStream = null;
 
     let mediaRecorder, recordingStream, audioChunks = [];
-    let incomingChunks = [], incomingMime = 'audio/webm;codecs=opus';
-    let rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg' };
+    let incomingB64 = [];             // base64 chunks for audio
+    let rxImageB64 = [];              // base64 chunks for image
+    let incomingMime = 'audio/webm;codecs=opus';
+    let rxImageMeta = { mime: 'image/jpeg', name: 'photo.jpg' };
 
     let myTicketRef = null, myPairRef = null;
     let requeueTimer = null;
@@ -112,38 +114,58 @@
     const $ = s => document.querySelector(s);
     function setStatus(s){ $('#status').textContent = s || ''; }
     function clearRequeueTimer(){ if(requeueTimer){ clearTimeout(requeueTimer); requeueTimer=null; } }
-    function getSupportedMime(){
-      const t = ['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
-      for (const x of t) if (window.MediaRecorder?.isTypeSupported?.(x)) return x;
+
+    function preferMime(){
+      // Prefer iOS-friendly first
+      const candidates = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
+      for (const t of candidates) {
+        if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
+      }
       return '';
     }
-    function playBlobInAudio(blob){
-      const a = $('#audio-player'); const url = URL.createObjectURL(blob);
-      a.srcObject=null; a.src=url; a.load(); a.play().catch(()=>{});
+
+    function blobToB64(blob){
+      return new Promise((resolve,reject)=>{
+        const fr = new FileReader();
+        fr.onload = () => {
+          const url = fr.result; // data:...;base64,XXXX
+          const comma = url.indexOf(',');
+          resolve(url.slice(comma+1));
+        };
+        fr.onerror = reject;
+        fr.readAsDataURL(blob);
+      });
     }
+
+    function b64ToBlob(b64, mime){
+      // atob handles ASCII; split if large strings to avoid stack issues
+      const byteChars = atob(b64);
+      const len = byteChars.length;
+      const bytes = new Uint8Array(len);
+      for (let i=0;i<len;i++) bytes[i] = byteChars.charCodeAt(i);
+      return new Blob([bytes], { type: mime });
+    }
+
+    function playBlobInAudio(blob){
+      const a = $('#audio-player');
+      const url = URL.createObjectURL(blob);
+      a.srcObject = null;
+      a.src = url;
+      a.load();
+      a.play().catch(()=>{});
+    }
+
     function isFresh(ts){ return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
     function safeRemove(r){ try{ r && remove(r); }catch{} }
-
-    // Robust conversion of received chunk payloads → Uint8Array
-    function toUint8(data){
-      if (data instanceof ArrayBuffer) return new Uint8Array(data);
-      if (ArrayBuffer.isView(data)) return new Uint8Array(data.buffer);
-      if (data && data.data && Array.isArray(data.data)) return new Uint8Array(data.data); // Node-style
-      // As a last resort, try Blob
-      if (data instanceof Blob) return new Uint8Array(); // we'll never send raw Blob here
-      return new Uint8Array();
-    }
 
     /***** Matchmaking (Realtime Database) *****/
     function joinQueue(){
       setStatus('Finding a random match…');
 
-      // 1) create my ticket
       myTicketRef = push(ref(db, 'queue'));
       set(myTicketRef, { peer: myPeerId, claimed: false, ts: serverTimestamp() });
       onDisconnect(myTicketRef).remove();
 
-      // 2) watch if someone pairs us
       myPairRef = ref(db, 'pairs/'+myPeerId);
       onDisconnect(myPairRef).remove();
       onValue(myPairRef, (snap)=>{
@@ -156,10 +178,8 @@
         }
       });
 
-      // 3) cleanup stale tickets then attempt to claim a partner
       cleanupStaleTickets(() => { importCandidatesAndClaim(); });
 
-      // 4) auto re-queue if unmatched after TTL
       clearRequeueTimer();
       requeueTimer = setTimeout(() => {
         if (!partnerId) {
@@ -197,7 +217,7 @@
             updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
             updates[`queue/${myTicketRef.key}`] = null;
             updates[`queue/${cand.key}`] = null;
-            update(ref(db), updates).then(()=>{
+            update(ref(db), updates)).then(()=>{
               partnerId = cand.peer;
               clearRequeueTimer();
               setStatus('Matched! Connecting…');
@@ -253,7 +273,7 @@
       peer.on('call', async (call)=>{
         try{
           const s = await navigator.mediaDevices.getUserMedia({ audio:true });
-        liveLocalStream = s;
+          liveLocalStream = s;
           call.answer(s);
           liveCall = call;
           call.on('stream', attachRemoteLive);
@@ -311,17 +331,14 @@
       await initPeer();
     });
 
-    // Start recording immediately; buffer if not yet connected
     $('#speak-btn').addEventListener('click', () => {
       const btn = $('#speak-btn');
       btn.dataset.state === 'recording' ? stopRec() : startRec();
     });
 
-    // Enter listen mode immediately and prime autoplay
     $('#listen-btn').addEventListener('click', () => {
       $('#main-section').classList.add('hidden');
       $('#listen-section').classList.remove('hidden');
-
       const a = $('#audio-player');
       a.muted = false;
       a.play().catch(()=>{});
@@ -340,11 +357,11 @@
       });
     });
 
-    /***** Recording → Send pickup line (send ArrayBuffer chunks) *****/
+    /***** Recording → Send pickup line (base64 chunks) *****/
     function startRec(){
       navigator.mediaDevices.getUserMedia({ audio:true }).then(s=>{
         recordingStream = s;
-        const mime = getSupportedMime();
+        const mime = preferMime(); // iOS prefers audio/mp4
         try{ mediaRecorder = new MediaRecorder(s, mime?{mimeType:mime}:{}) }catch(e){ alert('Recorder failed: '+e.message); return; }
         audioChunks = [];
         mediaRecorder.ondataavailable = e => { if (e.data && e.data.size>0) audioChunks.push(e.data); };
@@ -369,22 +386,18 @@
     }
     function stopRec(){ if (mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop(); }
 
-    function reallySendAudio(blob, mimeType){
+    async function reallySendAudio(blob, mimeType){
       if (!(conn && conn.open)) return;
       conn.send({ type:'audio-start', mime: mimeType, size: blob.size });
       let offset = 0;
-      function pump(){
+      while (offset < blob.size) {
         const slice = blob.slice(offset, offset + CHUNK_SIZE);
-        const reader = new FileReader();
-        reader.onload = e => {
-          const arrbuf = e.target.result; // ArrayBuffer
-          conn.send({ type: 'audio-chunk', data: arrbuf });
-          offset += CHUNK_SIZE;
-          if (offset < blob.size) pump(); else { conn.send({ type:'audio-end' }); setStatus('Line sent!'); }
-        };
-        reader.readAsArrayBuffer(slice);
+        const b64 = await blobToB64(slice);
+        conn.send({ type:'audio-chunk-b64', data: b64 });
+        offset += CHUNK_SIZE;
       }
-      pump();
+      conn.send({ type:'audio-end' });
+      setStatus('Line sent!');
     }
 
     /***** Accept → Live audio *****/
@@ -443,7 +456,7 @@
       $('#match-info').innerHTML = `Matched with ${other.name || 'Mystery'}!`;
     }
 
-    /***** Chat & Photos *****/
+    /***** Chat & Photos (base64 chunks) *****/
     function sendMsg(){
       const input = $('#chat-input'); const msg = input.value.trim();
       if (!msg) return;
@@ -462,22 +475,20 @@
       box.appendChild(d);
       box.scrollTop = box.scrollHeight;
     }
-    function sendImg(blob, name){
+
+    async function sendImg(blob, name){
       if (!(conn && conn.open)) return;
-      let offset = 0;
       conn.send({ type:'image-start', mime: blob.type, name, size: blob.size });
-      function pump(){
+      let offset = 0;
+      while (offset < blob.size) {
         const slice = blob.slice(offset, offset + CHUNK_SIZE);
-        const reader = new FileReader();
-        reader.onload = e => {
-          conn.send({ type:'image-chunk', data: e.target.result }); // ArrayBuffer
-          offset += CHUNK_SIZE;
-          if (offset < blob.size) pump(); else conn.send({ type:'image-end' });
-        };
-        reader.readAsArrayBuffer(slice);
+        const b64 = await blobToB64(slice);
+        conn.send({ type:'image-chunk-b64', data: b64 });
+        offset += CHUNK_SIZE;
       }
-      pump();
+      conn.send({ type:'image-end' });
     }
+
     function appendImg(b, sent){
       const box = $('#chat-window');
       const url = URL.createObjectURL(b);
@@ -496,47 +507,48 @@
           remoteProfile = msg.data || null;
           break;
 
+        // AUDIO (base64)
         case 'audio-start':
-          incomingChunks=[]; incomingMime=msg.mime || 'audio/webm;codecs=opus';
+          incomingB64=[]; incomingMime=msg.mime || 'audio/webm;codecs=opus';
           setStatus('Receiving line…');
           break;
 
-        case 'audio-chunk': {
-          // msg.data is an ArrayBuffer (or similar) — normalize
-          const u8 = toUint8(msg.data);
-          if (u8.length) incomingChunks.push(u8);
+        case 'audio-chunk-b64':
+          if (typeof msg.data === 'string' && msg.data.length) incomingB64.push(msg.data);
           break;
-        }
 
         case 'audio-end': {
-          const blob = new Blob(incomingChunks, { type: incomingMime });
+          const joined = incomingB64.join('');
+          const blob = b64ToBlob(joined, incomingMime);
           playBlobInAudio(blob);
           setStatus('Line received!');
           break;
         }
 
+        // ACCEPT → live
         case 'accept':
           acceptedRemote = true; showMatch(remoteProfile || {}); tryLive();
           break;
 
+        // CHAT
         case 'message':
           dispMsg(msg.data, false);
           break;
 
+        // IMAGE (base64)
         case 'image-start':
-          rxImage={parts:[],mime:msg.mime||'image/jpeg',name:msg.name||'photo.jpg'};
+          rxImageB64=[]; rxImageMeta={ mime: msg.mime || 'image/jpeg', name: msg.name || 'photo.jpg' };
           break;
 
-        case 'image-chunk': {
-          const u8 = toUint8(msg.data);
-          if (u8.length) rxImage.parts.push(u8);
+        case 'image-chunk-b64':
+          if (typeof msg.data === 'string' && msg.data.length) rxImageB64.push(msg.data);
           break;
-        }
 
         case 'image-end': {
-          const blob = new Blob(rxImage.parts,{type:rxImage.mime});
+          const joined = rxImageB64.join('');
+          const blob = b64ToBlob(joined, rxImageMeta.mime);
           appendImg(blob, false);
-          rxImage={parts:[],mime:'image/jpeg',name:'photo.jpg'};
+          rxImageB64=[];
           break;
         }
       }
