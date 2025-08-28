@@ -99,15 +99,12 @@
     let liveCall = null, liveLocalStream = null;
 
     let mediaRecorder, recordingStream, audioChunks = [];
-    let incomingB64 = [];             // base64 chunks for audio
-    let rxImageB64 = [];              // base64 chunks for image
-    let incomingMime = 'audio/webm;codecs=opus';
-    let rxImageMeta = { mime: 'image/jpeg', name: 'photo.jpg' };
+    let incomingB64 = [], incomingMime = 'audio/webm;codecs=opus';
+    let rxImageB64 = [], rxImageMeta = { mime: 'image/jpeg', name: 'photo.jpg' };
 
     let myTicketRef = null, myPairRef = null;
     let requeueTimer = null;
 
-    // Buffer recordings if not connected yet
     const pendingAudioBlobs = [];
 
     /***** Helpers *****/
@@ -116,11 +113,8 @@
     function clearRequeueTimer(){ if(requeueTimer){ clearTimeout(requeueTimer); requeueTimer=null; } }
 
     function preferMime(){
-      // Prefer iOS-friendly first
-      const candidates = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
-      for (const t of candidates) {
-        if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
-      }
+      const candidates = ['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'];
+      for (const t of candidates) if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
       return '';
     }
 
@@ -128,33 +122,25 @@
       return new Promise((resolve,reject)=>{
         const fr = new FileReader();
         fr.onload = () => {
-          const url = fr.result; // data:...;base64,XXXX
-          const comma = url.indexOf(',');
-          resolve(url.slice(comma+1));
+          const url = fr.result; // data:<mime>;base64,XXXX
+          resolve(url.slice(url.indexOf(',')+1));
         };
         fr.onerror = reject;
         fr.readAsDataURL(blob);
       });
     }
-
     function b64ToBlob(b64, mime){
-      // atob handles ASCII; split if large strings to avoid stack issues
-      const byteChars = atob(b64);
-      const len = byteChars.length;
-      const bytes = new Uint8Array(len);
-      for (let i=0;i<len;i++) bytes[i] = byteChars.charCodeAt(i);
-      return new Blob([bytes], { type: mime });
+      const bin = atob(b64), len = bin.length, u8 = new Uint8Array(len);
+      for (let i=0;i<len;i++) u8[i] = bin.charCodeAt(i);
+      return new Blob([u8], { type: mime });
     }
-
     function playBlobInAudio(blob){
       const a = $('#audio-player');
-      const url = URL.createObjectURL(blob);
       a.srcObject = null;
-      a.src = url;
+      a.src = URL.createObjectURL(blob);
       a.load();
       a.play().catch(()=>{});
     }
-
     function isFresh(ts){ return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
     function safeRemove(r){ try{ r && remove(r); }catch{} }
 
@@ -197,9 +183,7 @@
         const cands = [];
         snap.forEach(cs=>{
           const v = cs.val();
-          if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) {
-            cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
-          }
+          if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
         });
         tryClaim(cands, 0);
       });
@@ -217,7 +201,7 @@
             updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
             updates[`queue/${myTicketRef.key}`] = null;
             updates[`queue/${cand.key}`] = null;
-            update(ref(db), updates)).then(()=>{
+            update(ref(db), updates).then(()=>{
               partnerId = cand.peer;
               clearRequeueTimer();
               setStatus('Matched! Connecting…');
@@ -300,7 +284,7 @@
         $('#main-section').classList.remove('hidden');
         c.send({ type:'profile', data:userProfile });
 
-        // Flush any recordings queued before connection
+        // Flush queued recordings
         while (pendingAudioBlobs.length) {
           const { blob, mime } = pendingAudioBlobs.shift();
           reallySendAudio(blob, mime);
@@ -361,7 +345,7 @@
     function startRec(){
       navigator.mediaDevices.getUserMedia({ audio:true }).then(s=>{
         recordingStream = s;
-        const mime = preferMime(); // iOS prefers audio/mp4
+        const mime = preferMime();
         try{ mediaRecorder = new MediaRecorder(s, mime?{mimeType:mime}:{}) }catch(e){ alert('Recorder failed: '+e.message); return; }
         audioChunks = [];
         mediaRecorder.ondataavailable = e => { if (e.data && e.data.size>0) audioChunks.push(e.data); };
@@ -512,14 +496,11 @@
           incomingB64=[]; incomingMime=msg.mime || 'audio/webm;codecs=opus';
           setStatus('Receiving line…');
           break;
-
         case 'audio-chunk-b64':
           if (typeof msg.data === 'string' && msg.data.length) incomingB64.push(msg.data);
           break;
-
         case 'audio-end': {
-          const joined = incomingB64.join('');
-          const blob = b64ToBlob(joined, incomingMime);
+          const blob = b64ToBlob(incomingB64.join(''), incomingMime);
           playBlobInAudio(blob);
           setStatus('Line received!');
           break;
@@ -539,14 +520,11 @@
         case 'image-start':
           rxImageB64=[]; rxImageMeta={ mime: msg.mime || 'image/jpeg', name: msg.name || 'photo.jpg' };
           break;
-
         case 'image-chunk-b64':
           if (typeof msg.data === 'string' && msg.data.length) rxImageB64.push(msg.data);
           break;
-
         case 'image-end': {
-          const joined = rxImageB64.join('');
-          const blob = b64ToBlob(joined, rxImageMeta.mime);
+          const blob = b64ToBlob(rxImageB64.join(''), rxImageMeta.mime);
           appendImg(blob, false);
           rxImageB64=[];
           break;
