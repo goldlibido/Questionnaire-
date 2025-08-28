@@ -104,6 +104,9 @@
     let myTicketRef = null, myPairRef = null;
     let requeueTimer = null;
 
+    // Buffer recordings if not connected yet
+    const pendingAudioBlobs = [];
+
     /***** Helpers *****/
     const $ = s => document.querySelector(s);
     function setStatus(s){ $('#status').textContent = s || ''; }
@@ -143,9 +146,7 @@
       });
 
       // 3) cleanup stale tickets then attempt to claim a partner
-      cleanupStaleTickets(() => {
-        importCandidatesAndClaim();
-      });
+      cleanupStaleTickets(() => { importCandidatesAndClaim(); });
 
       // 4) auto re-queue if unmatched after TTL
       clearRequeueTimer();
@@ -160,7 +161,6 @@
     }
 
     function importCandidatesAndClaim(){
-      // Pull a small batch of unclaimed tickets
       const q = query(ref(db, 'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
       get(q).then((snap)=>{
         const cands = [];
@@ -181,7 +181,6 @@
       runTransaction(claimPath, cur => cur === false ? myPeerId : cur)
         .then(res=>{
           if (res.committed && res.snapshot.val() === myPeerId) {
-            // success: write reciprocal pairs & delete tickets (my ticket + theirs)
             const updates = {};
             updates[`pairs/${myPeerId}`] = { partner: cand.peer, ts: Date.now() };
             updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
@@ -269,6 +268,12 @@
         $('#profile-form').classList.add('hidden');
         $('#main-section').classList.remove('hidden');
         c.send({ type:'profile', data:userProfile });
+
+        // Flush any recordings queued before connection
+        while (pendingAudioBlobs.length) {
+          const { blob, mime } = pendingAudioBlobs.shift();
+          reallySendAudio(blob, mime);
+        }
       });
       c.on('data', handleData);
       c.on('close', onPartnerDisconnected);
@@ -295,16 +300,21 @@
       await initPeer();
     });
 
+    // Start recording immediately; buffer if not yet connected
     $('#speak-btn').addEventListener('click', () => {
-      if (!conn || !conn.open) { setStatus('Connecting…'); return; }
       const btn = $('#speak-btn');
       btn.dataset.state === 'recording' ? stopRec() : startRec();
     });
 
+    // Enter listen mode immediately and prime autoplay
     $('#listen-btn').addEventListener('click', () => {
-      if (!conn || !conn.open) { setStatus('Connecting…'); return; }
       $('#main-section').classList.add('hidden');
       $('#listen-section').classList.remove('hidden');
+
+      const a = $('#audio-player');
+      a.muted = false;
+      a.play().catch(()=>{});
+      setStatus((conn && conn.open) ? 'Listening…' : 'Listening… waiting for match');
     });
 
     $('#accept-btn').addEventListener('click', () => { acceptedLocal = true; acceptLine(); });
@@ -329,23 +339,33 @@
         mediaRecorder.ondataavailable = e => { if (e.data && e.data.size>0) audioChunks.push(e.data); };
         mediaRecorder.onstop = () => {
           recordingStream.getTracks().forEach(t => t.stop());
-          const b = new Blob(audioChunks, { type: mediaRecorder.mimeType || mime || 'audio/webm' });
-          sendAudio(b);
+          const finalMime = mediaRecorder.mimeType || mime || 'audio/webm';
+          const b = new Blob(audioChunks, { type: finalMime });
+
+          if (conn && conn.open) {
+            reallySendAudio(b, finalMime);
+          } else {
+            pendingAudioBlobs.push({ blob: b, mime: finalMime });
+            setStatus('Recorded! Will send when matched…');
+          }
+
           const btn = $('#speak-btn'); btn.innerText='Speak & Rizz'; btn.dataset.state='';
         };
         mediaRecorder.start(100);
         const btn = $('#speak-btn'); btn.innerText='Stop'; btn.dataset.state='recording';
+        setStatus('Recording…');
       }).catch(e => alert('Mic denied: '+e.message));
     }
     function stopRec(){ if (mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop(); }
-    function sendAudio(blob){
+
+    function reallySendAudio(blob, mimeType){
       if (!(conn && conn.open)) return;
+      conn.send({ type:'audio-start', mime: mimeType, size: blob.size });
       const r = new FileReader(); let o = 0;
-      conn.send({ type:'audio-start', mime:blob.type, size:blob.size });
       r.onload = e => {
         conn.send({ type:'audio-chunk', data:new Uint8Array(e.target.result) });
         o += e.target.result.byteLength;
-        if (o < blob.size) readNext(); else conn.send({ type:'audio-end' });
+        if (o < blob.size) readNext(); else { conn.send({ type:'audio-end' }); setStatus('Line sent!'); }
       };
       function readNext(){ r.readAsArrayBuffer(blob.slice(o, o + 16*1024)); }
       readNext();
@@ -410,9 +430,13 @@
     /***** Chat & Photos *****/
     function sendMsg(){
       const input = $('#chat-input'); const msg = input.value.trim();
-      if (!msg || !(conn && conn.open)) return;
-      conn.send({ type:'message', data: msg });
-      dispMsg(msg, true); input.value='';
+      if (!msg) return;
+      if (conn && conn.open) {
+        conn.send({ type:'message', data: msg });
+        dispMsg(msg, true); input.value='';
+      } else {
+        setStatus('Not connected yet — message not sent.');
+      }
     }
     function dispMsg(m, sent){
       const box = $('#chat-window');
@@ -449,9 +473,9 @@
       if (!msg || !msg.type) return;
       switch(msg.type){
         case 'profile': remoteProfile = msg.data || null; break;
-        case 'audio-start': incomingChunks=[]; incomingMime=msg.mime || 'audio/webm;codecs=opus'; break;
+        case 'audio-start': incomingChunks=[]; incomingMime=msg.mime || 'audio/webm;codecs=opus'; setStatus('Receiving line…'); break;
         case 'audio-chunk': incomingChunks.push(msg.data); break;
-        case 'audio-end': playBlobInAudio(new Blob(incomingChunks,{type:incomingMime})); break;
+        case 'audio-end': playBlobInAudio(new Blob(incomingChunks,{type:incomingMime})); setStatus('Line received!'); break;
         case 'accept': acceptedRemote = true; showMatch(remoteProfile || {}); tryLive(); break;
         case 'message': dispMsg(msg.data, false); break;
         case 'image-start': rxImage={parts:[],mime:msg.mime||'image/jpeg',name:msg.name||'photo.jpg'}; break;
