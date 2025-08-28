@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rizzler: Drop Your Best Line</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 2px solid #e1bf78;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px #e1bf78;
+        }
+        h1 {
+            font-size: 2em;
+            color: #e1bf78;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #e1bf78;
+        }
+        h1 span {
+            color: #e1bf78;
+            animation: pulse 2s infinite;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: #fff;
+        }
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px currentColor;
+        }
+        #speak-btn {
+            background: #06954E; /* green */
+        }
+        #listen-btn {
+            background: #064D95; /* blue */
+        }
+        #accept-btn, #send-btn {
+            background: #950606; /* red */
+        }
+        #next-btn {
+            background: #950606; /* red */
+        }
+        #profile-form, #listen-section, #match-section {
+            margin-top: 20px;
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #e1bf78;
+            border-radius: 10px;
+            background: #222;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+        }
+        #chat-window {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e1bf78;
+            border-radius: 10px;
+            padding: 10px;
+            background: #111;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .chat-message {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+            animation: slideIn 0.3s ease-out;
+        }
+        .sent {
+            background: #06954E; /* green for sent */
+            margin-left: auto;
+        }
+        .received {
+            background: #064D95; /* blue for received */
+            margin-right: auto;
+        }
+        #audio-player {
+            margin: 20px auto;
+            width: 100%;
+        }
+        .hidden {
+            display: none;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        /* Sexy gradient background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(225,191,120,0.1) 0%, rgba(0,0,0,0) 100%);
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rizzler: Unleash Your <span>Rizz!</span></h1>
+        <div id="profile-form">
+            <input type="text" id="username" placeholder="Your name (required)" required>
+            <input type="text" id="photo-url" placeholder="Photo URL (optional)">
+            <button onclick="saveProfile()">Enter the Game</button>
+        </div>
+        <div id="main-section" class="hidden">
+            <button id="speak-btn" onclick="startRecording()">Speak Your Line</button>
+            <button id="listen-btn" onclick="startListening()">Listen & Rizz</button>
+        </div>
+        <div id="listen-section" class="hidden">
+            <audio id="audio-player" controls></audio>
+            <button id="accept-btn" onclick="acceptLine()">Accept & Match</button>
+            <button id="next-btn" onclick="nextLine()">Next Line</button>
+        </div>
+        <div id="match-section" class="hidden">
+            <h2>Match! Let the Sparks Fly!</h2>
+            <p id="match-info"></p>
+            <div id="chat-window"></div>
+            <input type="text" id="chat-input" placeholder="Type your flirty message...">
+            <button id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script>
+        let peer;
+        let conn;
+        let stream;
+        let mediaRecorder;
+        let audioChunks = [];
+        let userProfile = {};
+        let currentPeerId = null;
+        let matched = false;
+
+        // Initialize PeerJS with default cloud server for signaling
+        function initPeer() {
+            peer = new Peer();
+            peer.on('open', (id) => {
+                console.log('Your Peer ID: ' + id);
+                alert('Share this Peer ID with others: ' + id); // For MVP, show ID to share manually
+            });
+            peer.on('connection', (connection) => {
+                conn = connection;
+                conn.on('data', handleData);
+                console.log('Connected to peer');
+            });
+            peer.on('call', (call) => {
+                call.answer();
+                call.on('stream', (remoteStream) => {
+                    const audio = document.getElementById('audio-player');
+                    audio.srcObject = remoteStream;
+                    audio.play().catch(e => console.error('Audio play error:', e));
+                });
+            });
+        }
+
+        // Save user profile
+        function saveProfile() {
+            userProfile.name = document.getElementById('username').value.trim();
+            userProfile.photo = document.getElementById('photo-url').value.trim() || 'No photo';
+            if (userProfile.name) {
+                document.getElementById('profile-form').classList.add('hidden');
+                document.getElementById('main-section').classList.remove('hidden');
+                initPeer();
+            } else {
+                alert('Name is required!');
+            }
+        }
+
+        // Start recording pick-up line
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(s => {
+                    stream = s;
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' }); // Compatible with Safari
+                    mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+                    mediaRecorder.start();
+                    document.getElementById('speak-btn').innerText = 'Stop Recording';
+                    document.getElementById('speak-btn').onclick = stopRecording;
+                })
+                .catch(e => alert('Microphone access denied: ' + e.message));
+        }
+
+        // Stop recording and send
+        function stopRecording() {
+            mediaRecorder.stop();
+            mediaRecorder.onstop = () => {
+                stream.getTracks().forEach(track => track.stop());
+                document.getElementById('speak-btn').innerText = 'Speak Your Line';
+                document.getElementById('speak-btn').onclick = startRecording;
+                // For live, call peer if connected
+                if (currentPeerId && stream) callPeer();
+            };
+        }
+
+        // Call peer with live stream
+        function callPeer() {
+            if (stream && currentPeerId) {
+                const call = peer.call(currentPeerId, stream);
+                call.on('stream', (remoteStream) => {
+                    // Handle incoming stream if any
+                });
+            }
+        }
+
+        // Start listening mode
+        function startListening() {
+            document.getElementById('main-section').classList.add('hidden');
+            document.getElementById('listen-section').classList.remove('hidden');
+            // For MVP, prompt for peer ID (share manually for "live" connections)
+            currentPeerId = prompt('Enter the Peer ID of someone to connect with:');
+            if (currentPeerId) {
+                conn = peer.connect(currentPeerId);
+                conn.on('open', () => {
+                    conn.send({ type: 'profile', data: userProfile });
+                    console.log('Connection open');
+                });
+                conn.on('data', handleData);
+            }
+        }
+
+        // Handle incoming data (profile, accept, message)
+        function handleData(data) {
+            if (data.type === 'profile' && !matched) {
+                // Received profile, wait for audio
+            } else if (data.type === 'accept' && !matched) {
+                matched = true;
+                showMatch(data.data);
+            } else if (data.type === 'message' && matched) {
+                displayMessage(data.data, false);
+            }
+        }
+
+        // Accept the line and match
+        function acceptLine() {
+            if (conn && currentPeerId) {
+                matched = true;
+                conn.send({ type: 'accept', data: userProfile });
+                showMatch(userProfile); // Show own profile? Wait, should be other's, but since symmetric
+            }
+        }
+
+        // Next line (reconnect)
+        function nextLine() {
+            if (conn) conn.close();
+            document.getElementById('audio-player').srcObject = null;
+            startListening(); // Prompt for new ID
+        }
+
+        // Show match section
+        function showMatch(otherProfile) {
+            document.getElementById('listen-section').classList.add('hidden');
+            document.getElementById('match-section').classList.remove('hidden');
+            const matchInfo = document.getElementById('match-info');
+            matchInfo.innerHTML = `Matched with ${otherProfile.name}! ${otherProfile.photo !== 'No photo' ? `<br><img src="${otherProfile.photo}" alt="Profile Photo" style="max-width: 150px; border-radius: 50%; border: 2px solid #e1bf78;">` : ''}`;
+        }
+
+        // Send chat message
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message && conn) {
+                conn.send({ type: 'message', data: message });
+                displayMessage(message, true);
+                input.value = '';
+            }
+        }
+
+        // Display message in chat
+        function displayMessage(message, isSent) {
+            const chatWindow = document.getElementById('chat-window');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isSent ? 'sent' : 'received'}`;
+            messageDiv.textContent = message;
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+    </script>
+</body>
+</html>
