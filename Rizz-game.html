@@ -53,10 +53,7 @@
         #listen-btn {
             background: #064D95; /* blue */
         }
-        #accept-btn, #send-btn {
-            background: #950606; /* red */
-        }
-        #next-btn {
+        #accept-btn, #send-btn, #next-btn {
             background: #950606; /* red */
         }
         #profile-form, #listen-section, #match-section {
@@ -113,7 +110,6 @@
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        /* Sexy gradient background */
         body::before {
             content: '';
             position: absolute;
@@ -139,7 +135,7 @@
             <button id="listen-btn" onclick="startListening()">Listen & Rizz</button>
         </div>
         <div id="listen-section" class="hidden">
-            <audio id="audio-player" controls></audio>
+            <audio id="audio-player" controls autoplay></audio>
             <button id="accept-btn" onclick="acceptLine()">Accept & Match</button>
             <button id="next-btn" onclick="nextLine()">Next Line</button>
         </div>
@@ -161,27 +157,39 @@
         let userProfile = {};
         let currentPeerId = null;
         let matched = false;
+        let activeCall = null;
 
-        // Initialize PeerJS with default cloud server for signaling
+        // Initialize PeerJS
         function initPeer() {
             peer = new Peer();
             peer.on('open', (id) => {
                 console.log('Your Peer ID: ' + id);
-                alert('Share this Peer ID with others: ' + id); // For MVP, show ID to share manually
+                alert('Share this Peer ID with others: ' + id);
             });
             peer.on('connection', (connection) => {
                 conn = connection;
                 conn.on('data', handleData);
-                console.log('Connected to peer');
+                conn.on('open', () => {
+                    console.log('Connection opened with', conn.peer);
+                    // Send profile when connection opens
+                    conn.send({ type: 'profile', data: userProfile });
+                });
+                conn.on('error', (err) => console.error('Connection error:', err));
             });
             peer.on('call', (call) => {
-                call.answer();
+                activeCall = call;
+                call.answer(stream); // Answer with current stream if recording
                 call.on('stream', (remoteStream) => {
                     const audio = document.getElementById('audio-player');
                     audio.srcObject = remoteStream;
-                    audio.play().catch(e => console.error('Audio play error:', e));
+                    audio.play().catch(e => {
+                        console.error('Audio playback error:', e);
+                        alert('Playback failed. Ensure audio permissions are enabled.');
+                    });
                 });
+                call.on('error', (err) => console.error('Call error:', err));
             });
+            peer.on('error', (err) => console.error('PeerJS error:', err));
         }
 
         // Save user profile
@@ -197,39 +205,48 @@
             }
         }
 
-        // Start recording pick-up line
+        // Start recording
         function startRecording() {
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(s => {
                     stream = s;
-                    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' }); // Compatible with Safari
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
                     mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
                     mediaRecorder.start();
                     document.getElementById('speak-btn').innerText = 'Stop Recording';
                     document.getElementById('speak-btn').onclick = stopRecording;
+                    console.log('Recording started');
+                    // If already connected, initiate call
+                    if (currentPeerId) callPeer();
                 })
-                .catch(e => alert('Microphone access denied: ' + e.message));
+                .catch(e => {
+                    console.error('Microphone error:', e);
+                    alert('Microphone access denied: ' + e.message);
+                });
         }
 
-        // Stop recording and send
+        // Stop recording
         function stopRecording() {
             mediaRecorder.stop();
             mediaRecorder.onstop = () => {
                 stream.getTracks().forEach(track => track.stop());
                 document.getElementById('speak-btn').innerText = 'Speak Your Line';
                 document.getElementById('speak-btn').onclick = startRecording;
-                // For live, call peer if connected
-                if (currentPeerId && stream) callPeer();
+                console.log('Recording stopped');
             };
         }
 
         // Call peer with live stream
         function callPeer() {
-            if (stream && currentPeerId) {
-                const call = peer.call(currentPeerId, stream);
-                call.on('stream', (remoteStream) => {
-                    // Handle incoming stream if any
+            if (stream && currentPeerId && conn && conn.open) {
+                activeCall = peer.call(currentPeerId, stream);
+                activeCall.on('stream', (remoteStream) => {
+                    console.log('Received remote stream');
                 });
+                activeCall.on('error', (err) => console.error('Call error:', err));
+                console.log('Calling peer:', currentPeerId);
+            } else {
+                console.log('Cannot call: stream or connection not ready');
             }
         }
 
@@ -237,22 +254,25 @@
         function startListening() {
             document.getElementById('main-section').classList.add('hidden');
             document.getElementById('listen-section').classList.remove('hidden');
-            // For MVP, prompt for peer ID (share manually for "live" connections)
             currentPeerId = prompt('Enter the Peer ID of someone to connect with:');
             if (currentPeerId) {
                 conn = peer.connect(currentPeerId);
                 conn.on('open', () => {
                     conn.send({ type: 'profile', data: userProfile });
-                    console.log('Connection open');
+                    console.log('Sent profile to', currentPeerId);
                 });
-                conn.on('data', handleData);
+                conn.on('error', (err) => console.error('Connection error:', err));
+            } else {
+                document.getElementById('listen-section').classList.add('hidden');
+                document.getElementById('main-section').classList.remove('hidden');
             }
         }
 
-        // Handle incoming data (profile, accept, message)
+        // Handle incoming data
         function handleData(data) {
             if (data.type === 'profile' && !matched) {
-                // Received profile, wait for audio
+                currentPeerId = conn.peer;
+                console.log('Received profile from', currentPeerId);
             } else if (data.type === 'accept' && !matched) {
                 matched = true;
                 showMatch(data.data);
@@ -266,45 +286,9 @@
             if (conn && currentPeerId) {
                 matched = true;
                 conn.send({ type: 'accept', data: userProfile });
-                showMatch(userProfile); // Show own profile? Wait, should be other's, but since symmetric
+                showMatch(userProfile);
             }
         }
 
         // Next line (reconnect)
-        function nextLine() {
-            if (conn) conn.close();
-            document.getElementById('audio-player').srcObject = null;
-            startListening(); // Prompt for new ID
-        }
-
-        // Show match section
-        function showMatch(otherProfile) {
-            document.getElementById('listen-section').classList.add('hidden');
-            document.getElementById('match-section').classList.remove('hidden');
-            const matchInfo = document.getElementById('match-info');
-            matchInfo.innerHTML = `Matched with ${otherProfile.name}! ${otherProfile.photo !== 'No photo' ? `<br><img src="${otherProfile.photo}" alt="Profile Photo" style="max-width: 150px; border-radius: 50%; border: 2px solid #e1bf78;">` : ''}`;
-        }
-
-        // Send chat message
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            if (message && conn) {
-                conn.send({ type: 'message', data: message });
-                displayMessage(message, true);
-                input.value = '';
-            }
-        }
-
-        // Display message in chat
-        function displayMessage(message, isSent) {
-            const chatWindow = document.getElementById('chat-window');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message ${isSent ? 'sent' : 'received'}`;
-            messageDiv.textContent = message;
-            chatWindow.appendChild(messageDiv);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
-    </script>
-</body>
-</html>
+        function
