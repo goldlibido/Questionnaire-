@@ -2,295 +2,57 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Le Libido — Blindfold Mode (Audio Only, Serverless)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Blindfold Mode — Chat Now</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --gold:#e1bf78; --blue:#064D95; --green:#06954E; --red:#950606; --bg:#0d0d0d;
-    --card:#101113; --edge:#1b1c20; --muted:#b9b9b9;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{margin:0;background:var(--bg);color:#fff;font-family:Montserrat,system-ui,sans-serif}
-  .border{
-    min-height:100%;
-    background:
-      linear-gradient(135deg, rgba(255,255,255,.04), rgba(0,0,0,.15)) padding-box,
-      linear-gradient(135deg, var(--red), var(--blue), var(--green), var(--blue), var(--red)) border-box;
-    border:2px solid transparent;
-  }
-  .wrap{max-width:860px;margin:0 auto;padding:22px}
-  header{display:flex;align-items:center;gap:12px;margin:6px 0 18px}
-  .logo{
-    width:48px;height:48px;border-radius:12px;
-    background: radial-gradient(circle at 30% 30%, var(--gold), #4f3d16 60%);
-    box-shadow:0 0 0 2px rgba(225,191,120,.2), 0 8px 26px rgba(0,0,0,.5);
-  }
-  h1{margin:0;font-size:24px;font-weight:800;letter-spacing:.2px;text-shadow:0 0 8px rgba(225,191,120,.12)}
-  .subtitle{color:var(--muted);margin-top:2px;font-size:13px}
-
-  .card{
-    background:linear-gradient(180deg, #121316, #0b0c0e);
-    border:1px solid var(--edge); border-radius:18px; padding:16px;
-    box-shadow:0 24px 60px rgba(0,0,0,.55);
-  }
-  .card h2{margin:6px 0 8px;font-size:16px;font-weight:800;color:var(--gold)}
-  .grid{display:grid;grid-template-columns:1fr;gap:16px}
-  @media(min-width:860px){ .grid{grid-template-columns:1fr 1fr} }
-
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #27292f;color:#cfd0d2;font-size:12px}
-  button{
-    border:none;border-radius:12px;padding:12px 14px;font-weight:800;cursor:pointer;
-    background:#1b1d21;color:#fff;letter-spacing:.3px;box-shadow:0 8px 24px rgba(0,0,0,.35);
-    transition:transform .06s ease, box-shadow .2s ease, background .2s ease;
-  }
+  body{margin:0;font-family:Montserrat;background:#0d0d0d;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh}
+  button{padding:14px 28px;font-size:18px;font-weight:600;border:none;border-radius:12px;cursor:pointer;
+    background:#e1bf78;color:#000;box-shadow:0 6px 18px rgba(0,0,0,.4)}
   button:hover{transform:translateY(-1px)}
-  .primary{background:var(--gold);color:#000}
-  .ghost{background:transparent;border:1px solid #2a2c31;color:#cfd0d2}
-  .danger{background:#241416;border:1px solid #3a1d22}
-  textarea{
-    width:100%;min-height:120px;background:#0c0d10;border:1px solid #232429;border-radius:12px;
-    color:#e9eaec;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
-    padding:12px;resize:vertical
-  }
-  label{font-size:12px;color:#aeb1b6;margin-top:6px;display:block}
-  audio{width:100%;background:#0b0c0e;border:1px solid #232429;border-radius:12px}
-
-  .meter{height:8px;border-radius:999px;background:#15171b;border:1px solid #2a2b30;overflow:hidden;margin-top:8px}
-  .fill{height:100%;width:0%;background:linear-gradient(90deg, var(--blue), var(--green))}
-  .status{font-size:12px;color:#cfd0d2;margin-top:8px}
-  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
-  .blue{background:var(--blue)} .green{background:var(--green)} .red{background:var(--red)} .gold{background:var(--gold)}
-  footer{margin:24px 0 12px;color:#9ea0a4;font-size:12px;text-align:center}
+  audio{margin-top:20px;width:90%;max-width:400px}
 </style>
 </head>
 <body>
-<div class="border">
-  <div class="wrap">
-    <header>
-      <div class="logo"></div>
-      <div>
-        <h1>Blindfold Mode <span style="color:var(--gold)">— Audio Only</span></h1>
-        <div class="subtitle">Anonymous voice chat. No accounts. No servers. Use copy & paste to connect.</div>
-      </div>
-    </header>
-
-    <section class="card">
-      <div class="row" style="justify-content:space-between">
-        <h2>1) Microphone</h2>
-        <span class="pill">Private · Ephemeral</span>
-      </div>
-      <div class="row" style="gap:8px">
-        <button id="btnMic" class="primary">Enable Mic</button>
-        <button id="btnMute" class="ghost" disabled>Mute</button>
-        <button id="btnEnd" class="danger" disabled>End</button>
-      </div>
-      <div class="meter"><div id="level" class="fill"></div></div>
-      <div id="micStatus" class="status"><span class="dot red"></span>Mic off</div>
-    </section>
-
-    <div class="grid">
-      <section class="card">
-        <h2>2A) If you’re starting the call</h2>
-        <div class="row" style="gap:8px">
-          <button id="btnOffer" class="ghost" disabled>Create Offer</button>
-        </div>
-        <label>Offer (copy and send to partner)</label>
-        <textarea id="offerBox" placeholder="Click ‘Create Offer’ after enabling your mic…" readonly></textarea>
-
-        <label style="margin-top:10px">Paste Answer (from them), then click Connect</label>
-        <textarea id="answerIn" placeholder="Paste their Answer here…"></textarea>
-        <div class="row" style="gap:8px;margin-top:8px">
-          <button id="btnConnect" class="primary" disabled>Connect</button>
-          <button id="btnClearAns" class="ghost">Clear</button>
-        </div>
-        <div id="connA" class="status"><span class="dot red"></span>Not connected</div>
-      </section>
-
-      <section class="card">
-        <h2>2B) If you received an offer</h2>
-        <label>Paste Offer (from them)</label>
-        <textarea id="offerIn" placeholder="Paste their Offer here…"></textarea>
-        <div class="row" style="gap:8px;margin-top:8px">
-          <button id="btnAnswer" class="primary" disabled>Create Answer</button>
-          <button id="btnClearOff" class="ghost">Clear</button>
-        </div>
-        <label style="margin-top:10px">Answer (copy and send back)</label>
-        <textarea id="answerBox" placeholder="Click ‘Create Answer’ to generate…" readonly></textarea>
-        <div id="connB" class="status"><span class="dot red"></span>Waiting to connect</div>
-      </section>
-    </div>
-
-    <section class="card">
-      <h2>3) In Call</h2>
-      <audio id="remoteAudio" autoplay playsinline controls></audio>
-      <div id="callStatus" class="status" style="margin-top:8px"><span class="dot red"></span>Not connected</div>
-    </section>
-
-    <footer>Built for <b>Le Libido</b> • Colors: <span class="dot gold"></span><span class="dot blue"></span><span class="dot green"></span><span class="dot red"></span></footer>
-  </div>
-</div>
+  <button id="chatBtn">Chat Now</button>
+  <audio id="remote" autoplay controls></audio>
 
 <script>
-/* ========== Blindfold Mode — Super Minimal, Serverless WebRTC (Audio) ========== */
-/* Works with manual copy/paste signaling. No server, no database. */
-let pc, localStream, analyser, rafId;
+let pc, localStream;
+const btn = document.getElementById('chatBtn');
+const remoteAudio = document.getElementById('remote');
 
-const btnMic = document.getElementById('btnMic');
-const btnMute = document.getElementById('btnMute');
-const btnEnd = document.getElementById('btnEnd');
+async function chatNow(){
+  btn.disabled = true;
+  localStream = await navigator.mediaDevices.getUserMedia({audio:true});
+  pc = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+  pc.addTrack(localStream.getTracks()[0], localStream);
+  pc.ontrack = e => remoteAudio.srcObject = e.streams[0];
 
-const btnOffer = document.getElementById('btnOffer');
-const btnAnswer = document.getElementById('btnAnswer');
-const btnConnect = document.getElementById('btnConnect');
-
-const offerBox = document.getElementById('offerBox');
-const answerBox = document.getElementById('answerBox');
-const offerIn = document.getElementById('offerIn');
-const answerIn = document.getElementById('answerIn');
-
-const micStatus = document.getElementById('micStatus');
-const connA = document.getElementById('connA');
-const connB = document.getElementById('connB');
-const callStatus = document.getElementById('callStatus');
-const remoteAudio = document.getElementById('remoteAudio');
-const levelFill = document.getElementById('level');
-
-function status(el, text, color){
-  el.innerHTML = '<span class="dot '+color+'"></span>'+text;
-}
-
-function resetPeer(){
-  if (pc){ try{pc.onicecandidate=null; pc.ontrack=null; pc.close();}catch{} }
-  pc = null;
-  remoteAudio.srcObject = null;
-  status(connA,'Not connected','red');
-  status(connB,'Waiting to connect','red');
-  status(callStatus,'Not connected','red');
-  btnConnect.disabled = true;
-  btnAnswer.disabled = !offerIn.value.trim();
-}
-
-function stopAudio(){
-  if (rafId) cancelAnimationFrame(rafId);
-  levelFill.style.width = '0%';
-  if (localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream = null; }
-  micStatus.innerHTML = '<span class="dot red"></span>Mic off';
-  btnMute.disabled = true; btnEnd.disabled = true;
-  btnOffer.disabled = true; btnAnswer.disabled = !offerIn.value.trim();
-}
-
-async function enableMic(){
-  if (localStream) return;
-  try{
-    localStream = await navigator.mediaDevices.getUserMedia({ audio:true, video:false });
-    micStatus.innerHTML = '<span class="dot green"></span>Mic on';
-    btnMute.disabled = false; btnEnd.disabled = false;
-    btnOffer.disabled = false; btnAnswer.disabled = !offerIn.value.trim();
-
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const src = ctx.createMediaStreamSource(localStream);
-    analyser = ctx.createAnalyser(); analyser.fftSize = 256;
-    src.connect(analyser);
-    const data = new Uint8Array(analyser.frequencyBinCount);
-    const draw = () => {
-      analyser.getByteTimeDomainData(data);
-      let sum=0; for (let i=0;i<data.length;i++){ const v=(data[i]-128)/128; sum+=v*v; }
-      const rms = Math.sqrt(sum/data.length);
-      levelFill.style.width = Math.min(100, rms*220)+'%';
-      rafId = requestAnimationFrame(draw);
-    };
-    draw();
-  }catch(e){
-    alert('Mic permission denied.');
+  // If you are the first user: create offer and prompt them to share
+  if(!sessionStorage.getItem("hasOffer")){
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    await new Promise(r=>setTimeout(r,1500));
+    const sdp = btoa(JSON.stringify(pc.localDescription));
+    const theirAnswer = prompt("Send this Offer to your partner, then paste their Answer here:", sdp);
+    if(theirAnswer){
+      const ans = JSON.parse(atob(theirAnswer));
+      await pc.setRemoteDescription(ans);
+    }
+    sessionStorage.setItem("hasOffer","1");
+  } else {
+    // Second user: paste partner's offer, generate answer
+    const theirOffer = prompt("Paste your partner's Offer here:");
+    const offer = JSON.parse(atob(theirOffer));
+    await pc.setRemoteDescription(offer);
+    const ans = await pc.createAnswer();
+    await pc.setLocalDescription(ans);
+    await new Promise(r=>setTimeout(r,1500));
+    alert("Send this Answer back to your partner:\n\n"+ btoa(JSON.stringify(pc.localDescription)));
   }
 }
-
-function toggleMute(){
-  if (!localStream) return;
-  for (const t of localStream.getAudioTracks()) t.enabled = !t.enabled;
-  btnMute.textContent = localStream.getAudioTracks()[0].enabled ? 'Mute' : 'Unmute';
-}
-
-function newPeer(){
-  resetPeer();
-  pc = new RTCPeerConnection({ iceServers:[ {urls:'stun:stun.l.google.com:19302'} ] });
-  if (localStream) pc.addTrack(localStream.getAudioTracks()[0], localStream);
-  pc.ontrack = (e)=>{ remoteAudio.srcObject = e.streams[0]; status(callStatus,'Connected','green'); };
-  pc.onconnectionstatechange = ()=>{
-    if (!pc) return;
-    const s = pc.connectionState;
-    if (s === 'connected') { status(callStatus,'Connected','green'); }
-    if (s === 'failed' || s === 'disconnected' || s === 'closed') { status(callStatus,'Disconnected','red'); }
-  };
-}
-
-function waitForIce(pc){
-  return new Promise(resolve=>{
-    if (pc.iceGatheringState === 'complete') return resolve();
-    const done = ()=>{ pc.removeEventListener('icegatheringstatechange', onchg); resolve(); };
-    const onchg = ()=>{ if (pc.iceGatheringState === 'complete') done(); };
-    pc.addEventListener('icegatheringstatechange', onchg);
-    // Fallback timeout in case some networks never fully "complete"
-    setTimeout(done, 2000);
-  });
-}
-
-/* ---------- Event wiring ---------- */
-btnMic.onclick = enableMic;
-btnMute.onclick = toggleMute;
-btnEnd.onclick = ()=>{ stopAudio(); resetPeer(); };
-
-btnOffer.onclick = async ()=>{
-  await enableMic();
-  newPeer();
-  status(connA,'Creating offer…','blue');
-  const offer = await pc.createOffer({ offerToReceiveAudio:true, offerToReceiveVideo:false });
-  await pc.setLocalDescription(offer);
-  await waitForIce(pc);
-  offerBox.value = btoa(JSON.stringify(pc.localDescription));
-  status(connA,'Share Offer with partner','blue');
-  btnConnect.disabled = false;
-};
-
-btnConnect.onclick = async ()=>{
-  const txt = (answerIn.value||'').trim();
-  if (!txt) return alert('Paste their Answer first.');
-  try{
-    const ans = JSON.parse(atob(txt));
-    await pc.setRemoteDescription(ans);
-    status(connA,'Connecting…','blue');
-  }catch(e){ alert('Invalid Answer.'); }
-};
-
-offerIn.addEventListener('input', ()=>{ btnAnswer.disabled = !offerIn.value.trim(); });
-
-btnAnswer.onclick = async ()=>{
-  await enableMic();
-  newPeer();
-  const txt = (offerIn.value||'').trim();
-  if (!txt) return alert('Paste their Offer first.');
-  let offer;
-  try{ offer = JSON.parse(atob(txt)); } catch(e){ return alert('Invalid Offer.'); }
-  status(connB,'Creating answer…','blue');
-  await pc.setRemoteDescription(offer);
-  const ans = await pc.createAnswer();
-  await pc.setLocalDescription(ans);
-  await waitForIce(pc);
-  answerBox.value = btoa(JSON.stringify(pc.localDescription));
-  status(connB,'Send Answer back to them','blue');
-};
-
-document.getElementById('btnClearOff').onclick = ()=>{ offerIn.value=''; btnAnswer.disabled=true; };
-document.getElementById('btnClearAns').onclick = ()=>{ answerIn.value=''; };
-
-/* Small UX nudge: scroll into view after generating text */
-[ 'offerBox','answerBox' ].forEach(id=>{
-  const el = document.getElementById(id);
-  el.addEventListener('focus', ()=> el.select());
-});
+btn.onclick = chatNow;
 </script>
 </body>
 </html>
