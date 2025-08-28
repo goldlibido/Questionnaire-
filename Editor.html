@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Blindfold Audio Editor</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#0d0d0d;color:#fff;font-family:Montserrat,system-ui;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+  h1{color:#e1bf78;margin:20px 0}
+  #controls{margin:12px}
+  button{background:#e1bf78;color:#000;border:none;padding:10px 18px;margin:4px;border-radius:8px;cursor:pointer;font-weight:700}
+  button:hover{background:#d5aa60}
+  #timeline{width:95%;max-width:900px;min-height:200px;border:2px solid #e1bf78;margin:10px;padding:10px;position:relative;overflow-x:auto;white-space:nowrap}
+  .clip{display:inline-block;background:#064D95;color:#fff;padding:6px 12px;margin:4px;border-radius:6px;cursor:move;user-select:none}
+  #library{margin:12px}
+  .track{height:50px;border-top:1px solid #333;position:relative}
+  .effect{margin:8px}
+</style>
+</head>
+<body>
+  <h1>🎶 Blindfold Audio Editor</h1>
+  <div id="controls">
+    <button id="addClip">Upload Sound</button>
+    <button id="play">Play</button>
+    <button id="stop">Stop</button>
+    <button id="export">Export WAV</button>
+  </div>
+  <div id="timeline"></div>
+  <div id="effects">
+    <label class="effect"><input type="checkbox" id="echo"> Echo</label>
+    <label class="effect"><input type="checkbox" id="lowpass"> Low-Pass Filter</label>
+  </div>
+  <input type="file" id="fileInput" accept="audio/*" style="display:none" />
+  <script>
+    const AudioContext = window.AudioContext||window.webkitAudioContext;
+    const ctx = new AudioContext();
+    let clips = []; // {buffer, start}
+    let sources = [];
+    const timeline = document.getElementById("timeline");
+    const fileInput = document.getElementById("fileInput");
+
+    document.getElementById("addClip").onclick = ()=>fileInput.click();
+    fileInput.onchange = async e=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const arr = await file.arrayBuffer();
+      const buffer = await ctx.decodeAudioData(arr);
+      const clipEl = document.createElement("div");
+      clipEl.className="clip";
+      clipEl.textContent=file.name;
+      clipEl.style.left="0px";
+      clipEl.draggable=true;
+      timeline.appendChild(clipEl);
+      clips.push({el:clipEl,buffer,start:0});
+      clipEl.ondragend = e=>{
+        let left = Math.max(0,e.pageX - timeline.offsetLeft-50);
+        clipEl.style.position="absolute";
+        clipEl.style.left=left+"px";
+        const seconds = left/50; // 50px per second
+        clips.find(c=>c.el===clipEl).start=seconds;
+      };
+    };
+
+    function applyEffects(node){
+      let out = node;
+      if(document.getElementById("echo").checked){
+        let delay=ctx.createDelay(5.0);
+        delay.delayTime.value=0.25;
+        let fb=ctx.createGain();fb.gain.value=0.4;
+        out.connect(delay);delay.connect(fb);fb.connect(delay);delay.connect(ctx.destination);
+      }
+      if(document.getElementById("lowpass").checked){
+        let biquad = ctx.createBiquadFilter();
+        biquad.type="lowpass";biquad.frequency.value=800;
+        out.connect(biquad);biquad.connect(ctx.destination);
+        return;
+      }
+      out.connect(ctx.destination);
+    }
+
+    document.getElementById("play").onclick=()=>{
+      if(ctx.state==="suspended") ctx.resume();
+      sources=[];
+      const now = ctx.currentTime+0.1;
+      clips.forEach(c=>{
+        let src=ctx.createBufferSource();
+        src.buffer=c.buffer;
+        applyEffects(src);
+        src.start(now+c.start);
+        sources.push(src);
+      });
+    };
+    document.getElementById("stop").onclick=()=>{sources.forEach(s=>{try{s.stop();}catch{}});sources=[];};
+
+    document.getElementById("export").onclick=async()=>{
+      const length = Math.max(...clips.map(c=>c.start+c.buffer.duration));
+      const offCtx = new OfflineAudioContext(1,44100*length,44100);
+      clips.forEach(c=>{
+        const src=offCtx.createBufferSource();
+        src.buffer=c.buffer;
+        src.connect(offCtx.destination);
+        src.start(c.start);
+      });
+      const rendered=await offCtx.startRendering();
+      const wav = audioBufferToWav(rendered);
+      const blob=new Blob([new DataView(wav)],{type:"audio/wav"});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url;a.download="mix.wav";a.click();
+    };
+
+    // util: convert buffer to WAV
+    function audioBufferToWav(buffer){
+      let numOfChan = buffer.numberOfChannels,
+          length = buffer.length * numOfChan * 2 + 44,
+          bufferOut = new ArrayBuffer(length),
+          view = new DataView(bufferOut),
+          channels = [], i, sample,
+          offset = 0, pos = 0;
+      setUint32(0x46464952); pos+=4; setUint32(length-8); pos+=4; setUint32(0x45564157); pos+=4;
+      setUint32(0x20746d66); pos+=4; setUint32(16); pos+=4; setUint16(1); pos+=2;
+      setUint16(numOfChan); pos+=2; setUint32(buffer.sampleRate); pos+=4;
+      setUint32(buffer.sampleRate*2*numOfChan); pos+=4; setUint16(numOfChan*2); pos+=2;
+      setUint16(16); pos+=2; setUint32(0x61746164); pos+=4; setUint32(length-pos-4); pos+=4;
+      for(i=0;i<buffer.numberOfChannels;i++) channels.push(buffer.getChannelData(i));
+      while(pos<length){
+        for(i=0;i<numOfChan;i++){
+          sample = Math.max(-1, Math.min(1, channels[i][offset]));
+          view.setInt16(pos, sample<0 ? sample*0x8000 : sample*0x7FFF, true);
+          pos+=2;
+        }
+        offset++;
+      }
+      return bufferOut;
+      function setUint16(data){view.setUint16(pos,data,true);pos+=2;}
+      function setUint32(data){view.setUint32(pos,data,true);pos+=4;}
+    }
+  </script>
+</body>
+</html>
