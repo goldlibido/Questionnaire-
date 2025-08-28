@@ -13,12 +13,8 @@
     .container{max-width:640px;margin:0 auto;border:2px solid var(--gold);border-radius:15px;padding:20px;box-shadow:0 0 20px var(--gold)}
     h1{font-size:2em;color:var(--gold);margin-bottom:10px}
     h1 .rizz{color:var(--redBright);display:inline-block;animation:rizzPulse 1.4s ease-in-out infinite}
-    @keyframes rizzPulse{
-      0%{transform:scale(1)}
-      50%{transform:scale(1.15)}
-      100%{transform:scale(1)}
-    }
-    button{padding:12px 20px;margin:8px;font-size:1em;border:none;border-radius:22px;cursor:pointer;transition:transform .2s,box-shadow .2s,color .2s;background:#333;color:#fff}
+    @keyframes rizzPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+    button{padding:12px 20px;margin:8px;font-size:1em;border:none;border-radius:22px;cursor:pointer;transition:transform .2s,box-shadow .2s;background:#333;color:#fff}
     button:hover{transform:scale(1.06)}
     #enter-btn{background:var(--red);color:#fff}
     #speak-btn{background:var(--green)}
@@ -122,7 +118,7 @@
     let acceptedLocal = false, acceptedRemote = false;
     let liveCall = null, liveLocalStream = null;
 
-    // Pickup line recording flow (keep working behavior)
+    // Pickup line recording flow
     let mediaRecorder, recordingStream, audioChunks = [];
     let incomingChunks = [], incomingMime = 'audio/webm;codecs=opus', incomingSize = 0;
 
@@ -152,7 +148,7 @@
       const tryTypes = [
         'audio/webm;codecs=opus',
         'audio/webm',
-        'audio/mp4',              // iOS Safari often supports this
+        'audio/mp4',
         'audio/ogg;codecs=opus'
       ];
       for (const t of tryTypes) {
@@ -170,44 +166,38 @@
       audio.play().catch(()=>{});
     }
 
-    // --- Peer init with chosen username as PeerID ---
-    async function initPeerWithId(desiredId) {
-      return new Promise((resolve, reject) => {
-        const p = new Peer(desiredId);
-        p.on('open', (id) => resolve({ peer: p, id }));
-        p.on('error', (err) => reject(err));
-      });
-    }
-
+    // --- Peer init with chosen username as PeerID + robust config ---
     async function initPeer() {
       const baseName = (getSavedUsername() || userProfile.name || '').replace(/\s+/g,'').toLowerCase();
       if (!baseName) { alert('Missing username'); return; }
 
       try {
-        const { peer: p, id } = await initPeerWithId(baseName);
-        peer = p; myPeerId = id; saveUsername(id);
-      } catch (err) {
-        if (err?.type === 'unavailable-id') {
-          alert('That username is already in use on this network. Pick a different one.');
-          // Show profile form again for quick rename
-          document.getElementById('main-section').classList.add('hidden');
-          const pf = document.getElementById('profile-form');
-          pf.classList.remove('hidden');
-          return;
-        } else {
-          alert('Peer error: ' + (err?.type || err));
-          return;
-        }
+        peer = new Peer(baseName, {
+          debug: 2,
+          config: {
+            iceServers: [
+              { urls: 'stun:stun.l.google.com:19302' },
+              { urls: 'stun:stun1.l.google.com:19302' },
+              { urls: 'stun:stun2.l.google.com:19302' }
+            ]
+          }
+        });
+      } catch (e) {
+        alert('Peer init failed'); return;
       }
 
-      // Show handle & helper
-      const me = document.getElementById('me-line');
-      me.textContent = `You are live as @${myPeerId}`;
-      me.classList.remove('hidden');
-      toast('You are live as @' + myPeerId);
+      peer.on('open', (id) => {
+        myPeerId = id; saveUsername(id);
+        const me = document.getElementById('me-line');
+        me.textContent = `You are live as @${id}`;
+        me.classList.remove('hidden');
+        toast('You are live as @' + id);
+      });
 
       // Incoming data connections
       peer.on('connection', (connection) => {
+        // If we're auto-retrying outbound, stop when inbound arrives
+        tuneStopRetry();
         conn = connection;
         remotePeerId = connection.peer;
         wireConn(conn);
@@ -229,6 +219,13 @@
         }
       });
 
+      // Robust reconnection
+      peer.on('disconnected', () => {
+        console.warn('Peer disconnected. Reconnecting…');
+        try { peer.reconnect(); } catch {}
+      });
+
+      peer.on('close', () => console.warn('Peer closed'));
       peer.on('error', (e) => console.error('Peer error:', e));
     }
 
@@ -243,13 +240,14 @@
       c.on('close', () => console.log('Connection closed'));
       c.on('error', (e) => {
         console.error('Conn error:', e);
-        if (e?.type === 'peer-unavailable') {
-          // Will be handled by retry flow
+        // Hard retry on explicit peer-unavailable
+        if (e?.type === 'peer-unavailable' && currentPeerId) {
+          scheduleNextAttempt(currentPeerId, true);
         }
       });
     }
 
-    // --- Inline tune UI helpers ---
+    // --- Inline tune UI helpers with robust retry ---
     function showTuneInline() {
       const box = document.getElementById('tune-inline');
       box.classList.remove('hidden');
@@ -260,7 +258,7 @@
       document.getElementById('tune-status').textContent = msg || '';
     }
     function tuneStartRetry(target) {
-      if (tuneInProgress) return;
+      tuneStopRetry(); // reset timers
       tuneInProgress = true;
       document.getElementById('tune-cancel').classList.remove('hidden');
       tuneRetryCount = 0;
@@ -274,20 +272,34 @@
     function attemptConnect(target) {
       currentPeerId = target;
       tuneStatus(`Connecting to @${target}…`);
-      if (conn && !conn.open) try { conn.close(); } catch {}
-      conn = peer.connect(target);
-      wireConn(conn);
+      // close stale attempt
+      if (conn && !conn.open) {
+        try { conn.close(); } catch {}
+      }
+      conn = null;
+      // fresh attempt (give it a unique label to dodge stale sockets)
+      const label = 'chat-' + Date.now();
+      try {
+        conn = peer.connect(target, { reliable: true, label, serialization: 'binary' });
+      } catch (e) {
+        console.error('connect threw:', e);
+      }
+      if (conn) wireConn(conn);
 
-      // Guard: if it hasn’t opened within X sec, assume remote offline and retry
+      // Guard: if it hasn’t opened within WAIT_MS, retry (remote might come online later)
       const WAIT_MS = 3500;
       setTimeout(() => {
-        if (!conn.open) {
-          tuneRetryCount++;
-          const nextIn = Math.min(3000 + tuneRetryCount*500, 8000);
-          tuneStatus(`Waiting for @${target} to come online… retrying in ${Math.round(nextIn/1000)}s`);
-          tuneRetryTimer = setTimeout(() => attemptConnect(target), nextIn);
+        if (!conn || !conn.open) {
+          scheduleNextAttempt(target, false);
         }
       }, WAIT_MS);
+    }
+    function scheduleNextAttempt(target, immediate) {
+      if (!tuneInProgress) return;
+      tuneRetryCount++;
+      const nextIn = immediate ? 1200 : Math.min(3000 + tuneRetryCount*600, 9000);
+      tuneStatus(`Waiting for @${target} to come online… retrying in ${Math.round(nextIn/1000)}s`);
+      tuneRetryTimer = setTimeout(() => attemptConnect(target), nextIn);
     }
 
     document.getElementById('tune-btn').addEventListener('click', () => {
@@ -301,7 +313,7 @@
       tuneStatus('Tuning cancelled.');
     });
 
-    // --- Ensure a connection; if no target, reveal inline tune prompt (no alerts) ---
+    // --- Ensure a connection; if no target, reveal inline tune prompt ---
     function ensureConnectionForSending() {
       if (conn && conn.open) return true;
       showTuneInline();
@@ -337,7 +349,6 @@
     });
 
     document.getElementById('speak-btn').addEventListener('click', () => {
-      // If not connected yet, show inline prompt instead of proceeding
       if (!ensureConnectionForSending()) return;
       const btn = document.getElementById('speak-btn');
       if (btn.dataset.state === 'recording') stopRecording();
@@ -345,8 +356,7 @@
     });
 
     document.getElementById('listen-btn').addEventListener('click', () => {
-      // Always allow user to tune here if not connected yet
-      if (!ensureConnectionForSending()) return;
+      if (!ensureConnectionForSending()) return; // prompt inline if not tuned yet
       startListening();
     });
 
@@ -358,7 +368,7 @@
     });
     document.getElementById('photo-input').addEventListener('change', handlePhotoChosen);
 
-    // --- Pickup line record → send (kept working behavior) ---
+    // --- Pickup line record → send ---
     function startRecording() {
       navigator.mediaDevices.getUserMedia({ audio: true }).then((s) => {
         recordingStream = s;
@@ -373,22 +383,15 @@
           const finalMime = mediaRecorder.mimeType || mimeType || 'audio/webm';
           const blob = new Blob(audioChunks, { type: finalMime });
           sendPickupBlob(blob, finalMime);
-          const btn = document.getElementById('speak-btn');
-          btn.innerText = 'Speak & Rizz';
-          btn.dataset.state = '';
+          const btn = document.getElementById('speak-btn'); btn.innerText = 'Speak & Rizz'; btn.dataset.state = '';
         };
-
         mediaRecorder.start(100);
-        const btn = document.getElementById('speak-btn');
-        btn.innerText = 'Stop';
-        btn.dataset.state = 'recording';
+        const btn = document.getElementById('speak-btn'); btn.innerText = 'Stop'; btn.dataset.state = 'recording';
       }).catch((e) => alert('Microphone access denied: ' + e.message));
     }
-
     function stopRecording() {
       if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
     }
-
     function sendPickupBlob(blob, mimeType) {
       if (!(conn && conn.open)) return;
       conn.send({ type: 'audio-start', mime: mimeType, size: blob.size });
@@ -404,7 +407,7 @@
       readNext();
     }
 
-    // --- Listening to pickup lines (view switch only; connection already handled by tuning) ---
+    // --- Listening view switch ---
     function startListening() {
       document.getElementById('main-section').classList.add('hidden');
       document.getElementById('listen-section').classList.remove('hidden');
@@ -418,16 +421,12 @@
       showMatch(remoteProfile || userProfile);
       tryStartLiveRoom();
     }
-
     function tryStartLiveRoom() {
       if (!acceptedLocal || !acceptedRemote) return;
       if (!myPeerId || !remotePeerId) return;
-      // Avoid double call — lexicographically smaller PeerID initiates
       const iInitiate = myPeerId < remotePeerId;
       if (iInitiate) startOutgoingLiveCall();
-      // other side auto-answers in peer.on('call')
     }
-
     async function startOutgoingLiveCall() {
       try {
         const s = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -440,21 +439,18 @@
         console.error('Mic error placing call:', e);
       }
     }
-
     function attachRemoteLive(remoteStream) {
       const el = document.getElementById('live-remote');
       el.classList.remove('hidden');
       el.srcObject = remoteStream;
       el.play().catch(()=>{});
     }
-
     function cleanupLiveCall() {
       const el = document.getElementById('live-remote');
       el.pause(); el.srcObject = null; el.classList.add('hidden');
       if (liveLocalStream) { liveLocalStream.getTracks().forEach(t=>t.stop()); liveLocalStream = null; }
       liveCall = null;
     }
-
     function nextLine() {
       if (conn) try { conn.close(); } catch {}
       document.getElementById('audio-player').srcObject = null;
@@ -462,13 +458,10 @@
       cleanupLiveCall();
       remoteProfile = null;
       acceptedLocal = false; acceptedRemote = false; matched = false;
-      // go back to main to choose again
       document.getElementById('listen-section').classList.add('hidden');
       document.getElementById('main-section').classList.remove('hidden');
-      // show tuner to pick another target
       showTuneInline();
     }
-
     function showMatch(otherProfile) {
       document.getElementById('listen-section').classList.add('hidden');
       document.getElementById('match-section').classList.remove('hidden');
@@ -480,16 +473,15 @@
       }`;
     }
 
-    // --- Text chat (auto shows on both ends) ---
+    // --- Text chat ---
     function sendMessage() {
       const input = document.getElementById('chat-input');
       const message = input.value.trim();
       if (!message || !(conn && conn.open)) return;
       conn.send({ type: 'message', data: message });
-      displayMessage(message, true);   // local bubble
+      displayMessage(message, true);
       input.value = '';
     }
-
     function displayMessage(message, isSent) {
       const chatWindow = document.getElementById('chat-window');
       const messageDiv = document.createElement('div');
@@ -499,19 +491,17 @@
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    // --- Photo sending (chunked) ---
+    // --- Photo sending ---
     function handlePhotoChosen(e) {
       const file = e.target.files && e.target.files[0];
       if (!file || !(conn && conn.open)) return;
-
       file.arrayBuffer().then(buf => {
         const blob = new Blob([buf], { type: file.type || 'image/jpeg' });
-        appendImage(blob, true);              // local echo
+        appendImage(blob, true);
         sendImageBlob(blob, file.name || 'photo.jpg');
         e.target.value = '';
       });
     }
-
     function sendImageBlob(blob, name) {
       if (!(conn && conn.open)) return;
       conn.send({ type: 'image-start', mime: blob.type, name, size: blob.size });
@@ -526,7 +516,6 @@
       function readNext(){ reader.readAsArrayBuffer(blob.slice(offset, offset + chunkSize)); }
       readNext();
     }
-
     function appendImage(blob, sent) {
       const chatWindow = document.getElementById('chat-window');
       const url = URL.createObjectURL(blob);
@@ -542,7 +531,7 @@
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    // --- Incoming data handler (profiles, audio chunks, accept, text, images) ---
+    // --- Incoming data handler ---
     function handleData(msg) {
       if (!msg || !msg.type) return;
 
@@ -552,7 +541,7 @@
           remotePeerId = conn?.peer || remotePeerId;
           break;
 
-        // pickup line receive (kept working)
+        // pickup line receive
         case 'audio-start':
           incomingChunks = []; incomingMime = msg.mime || 'audio/webm;codecs=opus'; incomingSize = msg.size || 0;
           break;
@@ -574,7 +563,7 @@
           tryStartLiveRoom();
           break;
 
-        // text chat (auto shows here)
+        // text chat
         case 'message':
           if (matched) displayMessage(msg.data, false);
           break;
