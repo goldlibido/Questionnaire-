@@ -1,513 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rizzler: Drop Your Best Line</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gold: #e1bf78;
-            --blue: #064D95;
-            --green: #06954E;
-            --red: #c40018;
-            --redBright: #ff1e2d;
-        }
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: #000;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-            overflow: hidden;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            border: 2px solid var(--gold);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 0 20px var(--gold);
-        }
-        h1 {
-            font-size: 2em;
-            color: var(--gold);
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px var(--gold);
-        }
-        h1 .rizz {
-            color: var(--redBright);
-            animation: pulse 1.4s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
-        }
-        button {
-            padding: 15px 30px;
-            margin: 10px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            color: #fff;
-        }
-        button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px currentColor;
-        }
-        #enter-btn {
-            background: var(--red);
-        }
-        #speak-btn {
-            background: var(--green);
-        }
-        #listen-btn {
-            background: var(--blue);
-        }
-        #accept-btn, #send-btn, #next-btn {
-            background: var(--red);
-        }
-        input {
-            padding: 10px;
-            margin: 5px;
-            border: 1px solid var(--gold);
-            border-radius: 10px;
-            background: #222;
-            color: #fff;
-            font-family: 'Montserrat', sans-serif;
-            width: calc(100% - 24px);
-        }
-        #status {
-            opacity: 0.9;
-            margin: 8px 0 2px;
-            min-height: 1.2em;
-        }
-        #chat-window {
-            height: 200px;
-            overflow-y: auto;
-            border: 1px solid var(--gold);
-            border-radius: 10px;
-            padding: 10px;
-            background: #111;
-            margin-bottom: 10px;
-            text-align: left;
-        }
-        .chat-message {
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 15px;
-            max-width: 80%;
-            word-wrap: break-word;
-            animation: slideIn 0.3s ease-out;
-        }
-        .sent {
-            background: var(--green);
-            margin-left: auto;
-        }
-        .received {
-            background: var(--blue);
-            margin-right: auto;
-        }
-        #audio-player {
-            margin: 20px auto;
-            width: 100%;
-        }
-        .hidden {
-            display: none;
-        }
-        @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(225,191,120,0.1) 0%, rgba(0,0,0,0) 100%);
-            z-index: -1;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Rizzler: Push-to-Talk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--gold:#e1bf78;--blue:#064D95;--green:#06954E;--red:#c40018;--redBright:#ff1e2d;}
+    body{font-family:'Montserrat',sans-serif;background:#000;color:#fff;text-align:center;padding:20px;margin:0;overflow:hidden}
+    .container{max-width:640px;margin:0 auto;border:2px solid var(--gold);border-radius:15px;padding:20px;box-shadow:0 0 20px var(--gold)}
+    h1{font-size:2em;color:var(--gold);margin-bottom:10px}
+    h1 .rizz{color:var(--redBright);display:inline-block;animation:rizzPulse 1.4s ease-in-out infinite}
+    @keyframes rizzPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+    button{padding:12px 22px;margin:8px;font-size:1em;border:none;border-radius:22px;cursor:pointer;transition:transform .2s;background:#333;color:#fff}
+    button:hover{transform:scale(1.06)}
+    #enter-btn{background:var(--red);color:#fff}
+    #speak-btn{background:var(--green)}
+    #listen-btn{background:var(--blue)}
+    #next-btn{background:var(--red)}
+    input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff;width:calc(100% - 24px)}
+    .hidden{display:none}
+    #me-line{opacity:.95;margin:10px 0 6px}
+    #status{opacity:.9;margin:8px 0 2px;min-height:1.2em}
+    #remote-audio{margin:16px auto;width:100%}
+    body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(225,191,120,.1) 0%,rgba(0,0,0,0) 100%);z-index:-1}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Rizzler: Unleash Your <span class="rizz">Rizz!</span></h1>
-        <div id="profile-form">
-            <input type="text" id="display-name" placeholder="Your name (optional)">
-            <button id="enter-btn">Enter the Game</button>
-            <div id="status"></div>
-        </div>
-        <div id="main-section" class="hidden">
-            <button id="speak-btn">Speak Your Line</button>
-            <button id="listen-btn">Listen & Rizz</button>
-        </div>
-        <div id="listen-section" class="hidden">
-            <audio id="audio-player" controls autoplay playsinline></audio>
-            <button id="accept-btn">Accept & Match</button>
-            <button id="next-btn">Next Line</button>
-        </div>
-        <div id="match-section" class="hidden">
-            <h2>Match! Let the Sparks Fly!</h2>
-            <p id="match-info"></p>
-            <div id="chat-window"></div>
-            <input type="text" id="chat-input" placeholder="Type your flirty message...">
-            <button id="send-btn">Send</button>
-        </div>
+  <div class="container">
+    <h1>Rizzler: Unleash Your <span class="rizz">Rizz</span>!</h1>
+
+    <div id="profile-form">
+      <input type="text" id="display-name" placeholder="Your display name (optional)">
+      <button id="enter-btn">Enter the Game</button>
+      <div id="me-line" class="hidden"></div>
+      <div id="status"></div>
     </div>
 
-    <!-- PeerJS (for WebRTC) -->
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <div id="main-section" class="hidden">
+      <button id="speak-btn">Speak & Rizz</button>
+      <button id="listen-btn">Listen & Get Rizzed</button>
+      <button id="next-btn">Next Match</button>
+      <audio id="remote-audio" controls autoplay playsinline class="hidden"></audio>
+    </div>
+  </div>
 
-    <!-- Firebase (for matchmaking) -->
-    <script type="module">
-        import { db } from './firebase-config.js';
-        import {
-            ref, push, set, onValue, onDisconnect, remove, update, get,
-            runTransaction, serverTimestamp, query, orderByChild, equalTo,
-            limitToFirst, endAt
-        } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
+  <!-- PeerJS (for WebRTC) -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
-        /***** Config *****/
-        const QUEUE_TTL_MS = 30000;
-        const CLAIM_BATCH = 8;
+  <!-- App logic (ES module): imports your firebase-config.js which exports `db` -->
+  <script type="module">
+    /***** Imports *****/
+    import { db } from './firebase-config.js';
+    import {
+      ref, push, set, onValue, onDisconnect, remove, update, get,
+      runTransaction, serverTimestamp, query, orderByChild, equalTo,
+      limitToFirst, endAt
+    } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
 
-        /***** State *****/
-        let peer, conn, stream, activeCall = null;
-        let myPeerId = null, partnerId = null;
-        let userProfile = {}, remoteProfile = null;
-        let myTicketRef = null, myPairRef = null;
-        let requeueTimer = null;
-        let matched = false;
-        let isSpeaking = false;
+    /***** Config *****/
+    const QUEUE_TTL_MS = 30000;    // tickets expire after 30s
+    const CLAIM_BATCH  = 8;        // scan up to N candidates per claim
 
-        /***** Helpers *****/
-        const $ = s => document.querySelector(s);
-        function setStatus(s) { $('#status').textContent = s || ''; }
-        function clearRequeueTimer() { if (requeueTimer) { clearTimeout(requeueTimer); requeueTimer = null; } }
-        function isFresh(ts) { return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
-        function safeRemove(r) { try { r && remove(r); } catch {} }
-        function stopStream() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
-            if (activeCall) {
-                activeCall.close();
-                activeCall = null;
-            }
-            $('#audio-player').srcObject = null;
+    /***** State *****/
+    let peer;
+    let myPeerId = null;
+    let partnerId = null;
+
+    let userProfile = {};
+    let listeningArmed = false;     // user tapped Listen once (unlocks autoplay)
+    let speaking = false;
+
+    // WebRTC call state
+    let outgoingCall = null;        // PeerJS MediaConnection we initiated
+    let incomingCall = null;        // PeerJS MediaConnection we answered
+    let localMicStream = null;      // MediaStream while speaking
+
+    // Firebase matchmaking refs
+    let myTicketRef = null;
+    let myPairRef = null;
+    let requeueTimer = null;
+
+    /***** DOM utils *****/
+    const $ = s => document.querySelector(s);
+    const statusEl = $('#status');
+    function setStatus(txt){ statusEl.textContent = txt || ''; }
+    function show(el){ el.classList.remove('hidden'); }
+    function hide(el){ el.classList.add('hidden'); }
+
+    /***** PeerJS init *****/
+    async function initPeer(){
+      peer = new Peer(undefined,{
+        debug:2,
+        config:{ iceServers:[
+          {urls:'stun:stun.l.google.com:19302'},
+          {urls:'stun:stun1.l.google.com:19302'},
+          {urls:'stun:stun2.l.google.com:19302'}
+        ]}
+      });
+
+      peer.on('open', id => {
+        myPeerId = id;
+        show($('#me-line'));
+        $('#me-line').textContent = `Your ID: ${id}`;
+        setStatus('Looking for a match…');
+        joinQueue();
+      });
+
+      // When we RECEIVE a live call (we are the listener)
+      peer.on('call', (call) => {
+        incomingCall?.close(); // close any old
+        incomingCall = call;
+
+        // If user already tapped "Listen", answer receive-only (no local stream)
+        try {
+          call.answer(); // answer without a local stream to be pure receiver
+        } catch(e) {
+          // some browsers require a dummy stream; fallback:
+          call.answer();
         }
 
-        /***** Matchmaking (Firebase Realtime Database) *****/
-        function joinQueue() {
-            setStatus('Finding a random match…');
-            myTicketRef = push(ref(db, 'queue'));
-            set(myTicketRef, { peer: myPeerId, claimed: false, ts: serverTimestamp() });
-            onDisconnect(myTicketRef).remove();
-
-            myPairRef = ref(db, 'pairs/' + myPeerId);
-            onDisconnect(myPairRef).remove();
-            onValue(myPairRef, (snap) => {
-                const v = snap.val();
-                if (v?.partner && !partnerId) {
-                    partnerId = v.partner;
-                    clearRequeueTimer();
-                    setStatus('Matched! Connecting…');
-                    connectToPartner();
-                }
-            });
-
-            cleanupStaleTickets(() => importCandidatesAndClaim());
-
-            clearRequeueTimer();
-            requeueTimer = setTimeout(() => {
-                if (!partnerId) {
-                    setStatus('No match yet. Re-queuing…');
-                    safeRemove(myTicketRef);
-                    safeRemove(myPairRef);
-                    joinQueue();
-                }
-            }, QUEUE_TTL_MS);
-        }
-
-        function importCandidatesAndClaim() {
-            const q = query(ref(db, 'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
-            get(q).then((snap) => {
-                const cands = [];
-                snap.forEach(cs => {
-                    const v = cs.val();
-                    if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
-                });
-                tryClaim(cands, 0);
-            }).catch(e => {
-                console.error('Queue fetch error:', e);
-                setStatus('Error finding match. Retrying…');
-                joinQueue();
-            });
-        }
-
-        function tryClaim(list, i) {
-            if (partnerId || i >= list.length) { setStatus('Waiting for someone…'); return; }
-            const cand = list[i];
-            const claimPath = ref(db, `queue/${cand.key}/claimed`);
-            runTransaction(claimPath, cur => cur === false ? myPeerId : cur)
-                .then(res => {
-                    if (res.committed && res.snapshot.val() === myPeerId) {
-                        const updates = {};
-                        updates[`pairs/${myPeerId}`] = { partner: cand.peer, ts: Date.now() };
-                        updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
-                        updates[`queue/${myTicketRef.key}`] = null;
-                        updates[`queue/${cand.key}`] = null;
-                        update(ref(db), updates).then(() => {
-                            partnerId = cand.peer;
-                            clearRequeueTimer();
-                            setStatus('Matched! Connecting…');
-                            connectToPartner();
-                        }).catch(e => {
-                            console.error('Pair update error:', e);
-                            setStatus('Error pairing. Retrying…');
-                            joinQueue();
-                        });
-                    } else {
-                        tryClaim(list, i + 1);
-                    }
-                }).catch(() => tryClaim(list, i + 1));
-        }
-
-        function cleanupStaleTickets(done) {
-            const cutoff = Date.now() - QUEUE_TTL_MS;
-            const q = query(ref(db, 'queue'), orderByChild('ts'), endAt(cutoff), limitToFirst(25));
-            get(q).then((snap) => {
-                const updates = {};
-                snap.forEach(cs => {
-                    const v = cs.val();
-                    if (v && v.ts && v.ts < cutoff) updates[`queue/${cs.key}`] = null;
-                });
-                if (Object.keys(updates).length) update(ref(db), updates).finally(() => done && done());
-                else done && done();
-            }).catch(e => console.error('Cleanup error:', e));
-        }
-
-        /***** PeerJS (WebRTC) *****/
-        async function initPeer() {
-            peer = new Peer({
-                debug: 2,
-                config: {
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' }
-                    ]
-                }
-            });
-
-            peer.on('open', id => {
-                myPeerId = id;
-                $('#me-line').classList.remove('hidden');
-                $('#me-line').textContent = `Your ID: ${id}`;
-                joinQueue();
-            });
-
-            peer.on('connection', (connection) => {
-                conn = connection;
-                wireConn(conn);
-                if (conn.open) conn.send({ type: 'profile', data: userProfile });
-            });
-
-            peer.on('call', async (call) => {
-                activeCall = call;
-                try {
-                    const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    stream = s;
-                    call.answer(s);
-                    call.on('stream', (remoteStream) => {
-                        const audio = $('#audio-player');
-                        audio.srcObject = remoteStream;
-                        audio.play().catch(e => {
-                            console.error('Audio playback error:', e);
-                            setStatus('Playback failed. Ensure audio permissions are enabled.');
-                        });
-                    });
-                    call.on('close', onPartnerDisconnected);
-                    call.on('error', onPartnerDisconnected);
-                } catch (e) {
-                    console.error('Mic error answering call:', e);
-                    setStatus('Microphone access denied: ' + e.message);
-                }
-            });
-
-            peer.on('disconnected', () => { try { peer.reconnect(); } catch {} });
-            peer.on('error', e => console.error('Peer error:', e));
-        }
-
-        function connectToPartner() {
-            try {
-                conn = peer.connect(partnerId, { reliable: true });
-                wireConn(conn);
-            } catch (e) {
-                setStatus('Failed to connect to partner.');
-                joinQueue();
-            }
-        }
-
-        function wireConn(c) {
-            c.on('open', () => {
-                setStatus('Connected! Choose to speak or listen.');
-                $('#profile-form').classList.add('hidden');
-                $('#main-section').classList.remove('hidden');
-                c.send({ type: 'profile', data: userProfile });
-            });
-            c.on('data', handleData);
-            c.on('close', onPartnerDisconnected);
-            c.on('error', onPartnerDisconnected);
-        }
-
-        function onPartnerDisconnected() {
-            setStatus('Partner disconnected. Re-queuing…');
-            stopStream();
-            matched = false;
-            partnerId = null;
-            isSpeaking = false;
-            $('#listen-section').classList.add('hidden');
-            $('#match-section').classList.add('hidden');
-            $('#main-section').classList.remove('hidden');
-            clearRequeueTimer();
-            joinQueue();
-        }
-
-        /***** UI *****/
-        $('#enter-btn').addEventListener('click', async () => {
-            userProfile.name = ($('#display-name').value || '').trim() || 'Rizzler';
-            $('#profile-form').classList.add('hidden');
-            $('#main-section').classList.remove('hidden');
-            setStatus('Initializing…');
-            await initPeer();
+        call.on('stream', (remoteStream) => {
+          const a = $('#remote-audio');
+          a.srcObject = remoteStream;
+          show(a);
+          // If user tapped Listen button earlier, autoplay is unlocked
+          a.play().catch(()=>{ /* user can tap play */ });
+          setStatus('Receiving live audio…');
         });
 
-        $('#speak-btn').addEventListener('click', startSpeaking);
-        $('#listen-btn').addEventListener('click', startListening);
-        $('#accept-btn').addEventListener('click', acceptLine);
-        $('#next-btn').addEventListener('click', nextLine);
-        $('#send-btn').addEventListener('click', sendMessage);
+        call.on('close', () => {
+          if ($('#remote-audio').srcObject) {
+            $('#remote-audio').pause();
+            $('#remote-audio').srcObject = null;
+          }
+          hide($('#remote-audio'));
+          setStatus('Caller ended.');
+        });
+        call.on('error', () => {
+          setStatus('Call error.');
+        });
+      });
 
-        /***** Live Audio Streaming *****/
-        async function startSpeaking() {
-            if (isSpeaking) {
-                stopStream();
-                $('#speak-btn').innerText = 'Speak Your Line';
-                isSpeaking = false;
-                setStatus('Stopped speaking. Choose an action.');
-                return;
-            }
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                isSpeaking = true;
-                $('#speak-btn').innerText = 'Stop Speaking';
-                $('#main-section').classList.add('hidden');
-                $('#listen-section').classList.remove('hidden');
-                setStatus('Speaking live… Drop your best line!');
-                if (partnerId && conn && conn.open) callPeer();
-            } catch (e) {
-                console.error('Microphone error:', e);
-                setStatus('Microphone access denied: ' + e.message);
-            }
-        }
+      peer.on('disconnected', ()=>{ try{peer.reconnect();}catch{} });
+      peer.on('error', (e) => {
+        console.error('Peer error:', e);
+        setStatus('Network error. Reconnecting…');
+      });
+    }
 
-        function startListening() {
-            $('#main-section').classList.add('hidden');
-            $('#listen-section').classList.remove('hidden');
-            const a = $('#audio-player');
-            a.muted = false;
-            a.play().catch(() => {});
-            setStatus((conn && conn.open) ? 'Listening live…' : 'Listening… waiting for match');
-        }
+    /***** Matchmaking (Firebase Realtime DB) *****/
+    function joinQueue(){
+      // 1) create my ticket
+      myTicketRef = push(ref(db, 'queue'));
+      set(myTicketRef, { peer: myPeerId, claimed: false, ts: serverTimestamp() });
+      onDisconnect(myTicketRef).remove();
 
-        function callPeer() {
-            if (stream && partnerId && conn && conn.open) {
-                activeCall = peer.call(partnerId, stream);
-                activeCall.on('stream', (remoteStream) => {
-                    console.log('Received remote stream');
-                });
-                activeCall.on('error', (err) => console.error('Call error:', err));
-                setStatus('Streaming your line live…');
-            } else {
-                setStatus('Cannot stream: not connected yet.');
-            }
+      // 2) watch if someone pairs us
+      myPairRef = ref(db, 'pairs/'+myPeerId);
+      onDisconnect(myPairRef).remove();
+      onValue(myPairRef, (snap)=>{
+        const v = snap.val();
+        if (v?.partner && !partnerId) {
+          partnerId = v.partner;
+          clearTimeout(requeueTimer);
+          setStatus('Matched! You can Speak or Listen.');
+          // ready to call or receive
         }
+      });
 
-        /***** Match Navigation *****/
-        function acceptLine() {
-            if (conn && conn.open) {
-                matched = true;
-                conn.send({ type: 'accept', data: userProfile });
-                stopStream();
-                showMatch(remoteProfile || userProfile);
-            }
-        }
+      // 3) clean stale tickets then try to claim someone
+      cleanupStaleTickets(importCandidatesAndClaim);
 
-        function nextLine() {
-            if (conn) conn.close();
-            stopStream();
-            matched = false;
-            partnerId = null;
-            isSpeaking = false;
-            $('#listen-section').classList.add('hidden');
-            $('#match-section').classList.add('hidden');
-            $('#main-section').classList.remove('hidden');
-            clearRequeueTimer();
-            joinQueue();
+      // 4) re-queue if nobody matched soon
+      requeueTimer = setTimeout(() => {
+        if (!partnerId) {
+          setStatus('No match yet. Re-queuing…');
+          safeRemove(myTicketRef);
+          safeRemove(myPairRef);
+          joinQueue();
         }
+      }, QUEUE_TTL_MS);
+    }
 
-        function showMatch(other) {
-            $('#listen-section').classList.add('hidden');
-            $('#match-section').classList.remove('hidden');
-            $('#match-info').innerHTML = `Matched with ${other.name || 'Mystery'}!`;
-        }
+    function importCandidatesAndClaim(){
+      const q = query(ref(db, 'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
+      get(q).then((snap)=>{
+        const cands = [];
+        snap.forEach(cs=>{
+          const v = cs.val();
+          if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) { cands.push({ key: cs.key, peer: v.peer, ts: v.ts }); }
+        });
+        tryClaim(cands, 0);
+      });
+    }
 
-        /***** Chat *****/
-        function sendMessage() {
-            const input = $('#chat-input');
-            const msg = input.value.trim();
-            if (!msg || !(conn && conn.open)) {
-                setStatus('Not connected yet — message not sent.');
-                return;
-            }
-            conn.send({ type: 'message', data: msg });
-            dispMsg(msg, true);
-            input.value = '';
-        }
+    function tryClaim(list, i){
+      if (partnerId || i >= list.length) { setStatus('Waiting for someone…'); return; }
+      const cand = list[i];
+      const claimPath = ref(db, `queue/${cand.key}/claimed`);
+      runTransaction(claimPath, cur => cur === false ? myPeerId : cur)
+        .then(res=>{
+          if (res.committed && res.snapshot.val() === myPeerId) {
+            const updates = {};
+            updates[`pairs/${myPeerId}`] = { partner: cand.peer, ts: Date.now() };
+            updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
+            updates[`queue/${myTicketRef.key}`] = null;
+            updates[`queue/${cand.key}`] = null;
+            update(ref(db), updates).then(()=>{
+              partnerId = cand.peer;
+              clearTimeout(requeueTimer);
+              setStatus('Matched! You can Speak or Listen.');
+            });
+          } else {
+            tryClaim(list, i+1);
+          }
+        })
+        .catch(()=> tryClaim(list, i+1));
+    }
 
-        function dispMsg(m, sent) {
-            const box = $('#chat-window');
-            const d = document.createElement('div');
-            d.className = `chat-message ${sent ? 'sent' : 'received'}`;
-            d.textContent = m;
-            box.appendChild(d);
-            box.scrollTop = box.scrollHeight;
-        }
+    function cleanupStaleTickets(done){
+      const cutoff = Date.now() - QUEUE_TTL_MS;
+      const q = query(ref(db, 'queue'), orderByChild('ts'), endAt(cutoff), limitToFirst(25));
+      get(q).then((snap)=>{
+        const updates = {};
+        snap.forEach(cs=>{
+          const v = cs.val();
+          if (v && v.ts && v.ts < cutoff) updates[`queue/${cs.key}`] = null;
+        });
+        if (Object.keys(updates).length) update(ref(db), updates).finally(()=>done && done());
+        else done && done();
+      });
+    }
 
-        /***** Incoming Data *****/
-        function handleData(msg) {
-            if (!msg || !msg.type) return;
-            switch (msg.type) {
-                case 'profile':
-                    remoteProfile = msg.data || null;
-                    break;
-                case 'accept':
-                    matched = true;
-                    stopStream();
-                    showMatch(remoteProfile || {});
-                    break;
-                case 'message':
-                    dispMsg(msg.data, false);
-                    break;
-            }
-        }
-    </script>
+    function isFresh(ts){ return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
+    function safeRemove(r){ try{ r && remove(r); }catch{} }
+
+    /***** Push-to-Talk controls *****/
+    async function startSpeaking(){
+      if (!partnerId) { setStatus('Matching… then we’ll send your voice live.'); return; }
+      if (speaking) return;
+      try{
+        // Capture mic
+        localMicStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+
+        // Place a **live** call to partner
+        outgoingCall?.close();
+        outgoingCall = peer.call(partnerId, localMicStream);
+
+        outgoingCall.on('stream', (remoteStream) => {
+          // (If both talk at once, you could hear them too)
+          const a = $('#remote-audio');
+          a.srcObject = remoteStream;
+          show(a);
+          a.play().catch(()=>{});
+        });
+        outgoingCall.on('close', () => { /* remote ended */ });
+        outgoingCall.on('error', () => { setStatus('Call error.'); });
+
+        speaking = true;
+        $('#speak-btn').textContent = 'Stop';
+        setStatus('Sending live audio…');
+      }catch(e){
+        console.error(e);
+        setStatus('Mic permission needed.');
+      }
+    }
+
+    function stopSpeaking(){
+      if (!speaking) return;
+      // stop local mic
+      if (localMicStream){
+        localMicStream.getTracks().forEach(t=>t.stop());
+        localMicStream = null;
+      }
+      // end the call we placed
+      try{ outgoingCall?.close(); }catch{}
+      outgoingCall = null;
+      speaking = false;
+      $('#speak-btn').textContent = 'Speak & Rizz';
+      setStatus('Live message ended.');
+    }
+
+    function armListening(){
+      listeningArmed = true;
+      const a = $('#remote-audio');
+      show(a);
+      // try a play() once (user gesture) to unlock autoplay
+      a.play().catch(()=>{});
+      setStatus(partnerId ? 'Armed to listen…' : 'Armed to listen… waiting for match');
+    }
+
+    function nextMatch(){
+      // hang up anything
+      stopSpeaking();
+      try{ incomingCall?.close(); }catch{}
+      incomingCall = null;
+      const a = $('#remote-audio');
+      a.pause(); a.srcObject = null; hide(a);
+
+      // clear pairing and requeue
+      partnerId = null;
+      setStatus('Re-matching…');
+      joinQueue();
+    }
+
+    /***** UI wiring *****/
+    $('#enter-btn').addEventListener('click', async () => {
+      userProfile.name = ($('#display-name').value || '').trim() || 'Rizzler';
+      hide($('#profile-form'));
+      show($('#main-section'));
+      setStatus('Initializing…');
+      await initPeer();
+    });
+
+    $('#speak-btn').addEventListener('click', () => {
+      speaking ? stopSpeaking() : startSpeaking();
+    });
+
+    $('#listen-btn').addEventListener('click', () => {
+      armListening();
+    });
+
+    $('#next-btn').addEventListener('click', () => nextMatch());
+  </script>
 </body>
 </html>
