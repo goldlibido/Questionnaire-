@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Rizzler: Push-to-Talk</title>
+  <title>Rizzler: One-Way Push-to-Talk</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root{--gold:#e1bf78;--blue:#064D95;--green:#06954E;--red:#c40018;--redBright:#ff1e2d;}
@@ -14,9 +14,10 @@
     @keyframes rizzPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
     button{padding:12px 22px;margin:8px;font-size:1em;border:none;border-radius:22px;cursor:pointer;transition:transform .2s;background:#333;color:#fff}
     button:hover{transform:scale(1.06)}
-    #enter-btn{background:var(--red);color:#fff}
+    #enter-btn{background:var(--red)}
     #speak-btn{background:var(--green)}
     #listen-btn{background:var(--blue)}
+    #stop-btn{background:#6b6b6b}
     #next-btn{background:var(--red)}
     input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff;width:calc(100% - 24px)}
     .hidden{display:none}
@@ -38,9 +39,12 @@
     </div>
 
     <div id="main-section" class="hidden">
+      <div style="margin-bottom:6px;">Choose your role each round:</div>
       <button id="speak-btn">Speak & Rizz</button>
       <button id="listen-btn">Listen & Get Rizzed</button>
+      <button id="stop-btn" class="hidden">Stop</button>
       <button id="next-btn">Next Match</button>
+
       <audio id="remote-audio" controls autoplay playsinline class="hidden"></audio>
     </div>
   </div>
@@ -48,9 +52,9 @@
   <!-- PeerJS (for WebRTC) -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
-  <!-- App logic (ES module): imports your firebase-config.js which exports `db` -->
+  <!-- App logic (ES module): uses your firebase-config.js exporting `db` -->
   <script type="module">
-    /***** Imports *****/
+    /********** Imports **********/
     import { db } from './firebase-config.js';
     import {
       ref, push, set, onValue, onDisconnect, remove, update, get,
@@ -58,37 +62,38 @@
       limitToFirst, endAt
     } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
 
-    /***** Config *****/
-    const QUEUE_TTL_MS = 30000;    // tickets expire after 30s
-    const CLAIM_BATCH  = 8;        // scan up to N candidates per claim
+    /********** Config **********/
+    const QUEUE_TTL_MS = 30000;
+    const CLAIM_BATCH  = 8;
 
-    /***** State *****/
+    /********** State **********/
     let peer;
     let myPeerId = null;
     let partnerId = null;
 
     let userProfile = {};
-    let listeningArmed = false;     // user tapped Listen once (unlocks autoplay)
-    let speaking = false;
+    let role = 'none'; // 'speaker' | 'listener' | 'none'
+    let listeningArmed = false;
 
     // WebRTC call state
-    let outgoingCall = null;        // PeerJS MediaConnection we initiated
-    let incomingCall = null;        // PeerJS MediaConnection we answered
-    let localMicStream = null;      // MediaStream while speaking
+    let outgoingCall = null;        // when we initiate (speaker)
+    let incomingCall = null;        // when we receive (listener)
+    let localMicStream = null;      // mic stream while speaking
+    let pendingRemoteStream = null; // if stream arrives before user arms listening
 
     // Firebase matchmaking refs
     let myTicketRef = null;
     let myPairRef = null;
     let requeueTimer = null;
 
-    /***** DOM utils *****/
-    const $ = s => document.querySelector(s);
+    /********** DOM helpers **********/
+    const $ = sel => document.querySelector(sel);
     const statusEl = $('#status');
-    function setStatus(txt){ statusEl.textContent = txt || ''; }
+    function setStatus(t){ statusEl.textContent = t || ''; }
     function show(el){ el.classList.remove('hidden'); }
     function hide(el){ el.classList.add('hidden'); }
 
-    /***** PeerJS init *****/
+    /********** PeerJS **********/
     async function initPeer(){
       peer = new Peer(undefined,{
         debug:2,
@@ -107,56 +112,50 @@
         joinQueue();
       });
 
-      // When we RECEIVE a live call (we are the listener)
+      // LISTENER side: receive a call; answer with NO local stream (pure receive)
       peer.on('call', (call) => {
-        incomingCall?.close(); // close any old
-        incomingCall = call;
-
-        // If user already tapped "Listen", answer receive-only (no local stream)
-        try {
-          call.answer(); // answer without a local stream to be pure receiver
-        } catch(e) {
-          // some browsers require a dummy stream; fallback:
-          call.answer();
+        // If we've chosen speaker role, we ignore incoming (one-way design)
+        if (role === 'speaker') {
+          // Politely reject to avoid loop
+          try { call.close(); } catch {}
+          return;
         }
 
+        incomingCall?.close();
+        incomingCall = call;
+        role = (role === 'none') ? 'listener' : role;
+
+        // Answer without a stream (receive-only)
+        try { call.answer(); } catch { call.answer(); }
+
         call.on('stream', (remoteStream) => {
-          const a = $('#remote-audio');
-          a.srcObject = remoteStream;
-          show(a);
-          // If user tapped Listen button earlier, autoplay is unlocked
-          a.play().catch(()=>{ /* user can tap play */ });
+          pendingRemoteStream = remoteStream;
+          attachRemoteIfArmed();
           setStatus('Receiving live audio…');
         });
 
         call.on('close', () => {
-          if ($('#remote-audio').srcObject) {
-            $('#remote-audio').pause();
-            $('#remote-audio').srcObject = null;
-          }
-          hide($('#remote-audio'));
-          setStatus('Caller ended.');
+          teardownRemoteAudio();
+          setStatus('Sender ended.');
+          incomingCall = null;
         });
+
         call.on('error', () => {
           setStatus('Call error.');
+          incomingCall = null;
         });
       });
 
-      peer.on('disconnected', ()=>{ try{peer.reconnect();}catch{} });
-      peer.on('error', (e) => {
-        console.error('Peer error:', e);
-        setStatus('Network error. Reconnecting…');
-      });
+      peer.on('disconnected', ()=>{ try{ peer.reconnect(); }catch {} });
+      peer.on('error', (e)=>{ console.error('Peer error:', e); setStatus('Network issue. Reconnecting…'); });
     }
 
-    /***** Matchmaking (Firebase Realtime DB) *****/
+    /********** Matchmaking (Firebase) **********/
     function joinQueue(){
-      // 1) create my ticket
       myTicketRef = push(ref(db, 'queue'));
       set(myTicketRef, { peer: myPeerId, claimed: false, ts: serverTimestamp() });
       onDisconnect(myTicketRef).remove();
 
-      // 2) watch if someone pairs us
       myPairRef = ref(db, 'pairs/'+myPeerId);
       onDisconnect(myPairRef).remove();
       onValue(myPairRef, (snap)=>{
@@ -164,15 +163,12 @@
         if (v?.partner && !partnerId) {
           partnerId = v.partner;
           clearTimeout(requeueTimer);
-          setStatus('Matched! You can Speak or Listen.');
-          // ready to call or receive
+          setStatus('Matched! Choose Speak or Listen.');
         }
       });
 
-      // 3) clean stale tickets then try to claim someone
       cleanupStaleTickets(importCandidatesAndClaim);
 
-      // 4) re-queue if nobody matched soon
       requeueTimer = setTimeout(() => {
         if (!partnerId) {
           setStatus('No match yet. Re-queuing…');
@@ -189,7 +185,9 @@
         const cands = [];
         snap.forEach(cs=>{
           const v = cs.val();
-          if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) { cands.push({ key: cs.key, peer: v.peer, ts: v.ts }); }
+          if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) {
+            cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
+          }
         });
         tryClaim(cands, 0);
       });
@@ -210,7 +208,7 @@
             update(ref(db), updates).then(()=>{
               partnerId = cand.peer;
               clearTimeout(requeueTimer);
-              setStatus('Matched! You can Speak or Listen.');
+              setStatus('Matched! Choose Speak or Listen.');
             });
           } else {
             tryClaim(list, i+1);
@@ -236,39 +234,40 @@
     function isFresh(ts){ return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
     function safeRemove(r){ try{ r && remove(r); }catch{} }
 
-    /***** Push-to-Talk controls *****/
+    /********** One-way Push-to-Talk **********/
     async function startSpeaking(){
-      if (!partnerId) { setStatus('Matching… then we’ll send your voice live.'); return; }
-      if (speaking) return;
+      if (!partnerId) { setStatus('Matching… then you can talk.'); return; }
+      if (role === 'listener') { setStatus('You’re the listener this round. Hit Next Match to switch.'); return; }
+      if (localMicStream) return;
+
       try{
-        // Capture mic
         localMicStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-
-        // Place a **live** call to partner
-        outgoingCall?.close();
-        outgoingCall = peer.call(partnerId, localMicStream);
-
-        outgoingCall.on('stream', (remoteStream) => {
-          // (If both talk at once, you could hear them too)
-          const a = $('#remote-audio');
-          a.srcObject = remoteStream;
-          show(a);
-          a.play().catch(()=>{});
-        });
-        outgoingCall.on('close', () => { /* remote ended */ });
-        outgoingCall.on('error', () => { setStatus('Call error.'); });
-
-        speaking = true;
-        $('#speak-btn').textContent = 'Stop';
-        setStatus('Sending live audio…');
       }catch(e){
         console.error(e);
         setStatus('Mic permission needed.');
+        return;
       }
+
+      // Place one-way call to partner (we send mic; we don’t expect remote audio)
+      outgoingCall?.close();
+      try{
+        outgoingCall = peer.call(partnerId, localMicStream);
+      }catch(e){
+        console.error(e);
+        setStatus('Call failed. Try again.');
+        stopSpeaking();
+        return;
+      }
+
+      role = 'speaker';
+      $('#speak-btn').textContent = 'Speaking…';
+      show($('#stop-btn'));
+      setStatus('Sending live audio…');
+
+      // If the other side calls us back (shouldn’t), we ignore in peer.on('call') because role==='speaker'
     }
 
     function stopSpeaking(){
-      if (!speaking) return;
       // stop local mic
       if (localMicStream){
         localMicStream.getTracks().forEach(t=>t.stop());
@@ -277,27 +276,53 @@
       // end the call we placed
       try{ outgoingCall?.close(); }catch{}
       outgoingCall = null;
-      speaking = false;
+
       $('#speak-btn').textContent = 'Speak & Rizz';
+      hide($('#stop-btn'));
       setStatus('Live message ended.');
+      // keep role, but no active stream now
     }
 
     function armListening(){
+      if (role === 'speaker') { setStatus('You’re the speaker this round. Hit Stop or Next Match to switch.'); return; }
+      role = 'listener';
       listeningArmed = true;
+
+      // prepare audio element to satisfy autoplay policies
       const a = $('#remote-audio');
       show(a);
-      // try a play() once (user gesture) to unlock autoplay
-      a.play().catch(()=>{});
-      setStatus(partnerId ? 'Armed to listen…' : 'Armed to listen… waiting for match');
+      a.muted = false;
+      a.play().catch(()=>{}); // pre-warm
+
+      attachRemoteIfArmed();
+      setStatus(partnerId ? 'Ready to hear a live line…' : 'Armed to listen… waiting for match');
+    }
+
+    function attachRemoteIfArmed(){
+      if (!listeningArmed || !pendingRemoteStream) return;
+      const a = $('#remote-audio');
+      a.srcObject = pendingRemoteStream;
+      a.play().catch(()=>{}); // should be allowed after user gesture
+      pendingRemoteStream = null;
+    }
+
+    function teardownRemoteAudio(){
+      const a = $('#remote-audio');
+      try { a.pause(); } catch {}
+      a.srcObject = null;
+      hide(a);
     }
 
     function nextMatch(){
-      // hang up anything
+      // hang up anything + reset roles
       stopSpeaking();
       try{ incomingCall?.close(); }catch{}
       incomingCall = null;
-      const a = $('#remote-audio');
-      a.pause(); a.srcObject = null; hide(a);
+      teardownRemoteAudio();
+
+      role = 'none';
+      listeningArmed = false;
+      pendingRemoteStream = null;
 
       // clear pairing and requeue
       partnerId = null;
@@ -305,7 +330,7 @@
       joinQueue();
     }
 
-    /***** UI wiring *****/
+    /********** UI **********/
     $('#enter-btn').addEventListener('click', async () => {
       userProfile.name = ($('#display-name').value || '').trim() || 'Rizzler';
       hide($('#profile-form'));
@@ -315,7 +340,12 @@
     });
 
     $('#speak-btn').addEventListener('click', () => {
-      speaking ? stopSpeaking() : startSpeaking();
+      if (localMicStream) return; // already speaking
+      startSpeaking();
+    });
+
+    $('#stop-btn').addEventListener('click', () => {
+      stopSpeaking();
     });
 
     $('#listen-btn').addEventListener('click', () => {
