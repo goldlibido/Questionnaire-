@@ -1,26 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Le Libido — Blindfold Mode (Audio-Only, Serverless)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<title>Le Libido — Blindfold Mode (Audio Only, Serverless)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --gold:#e1bf78; --blue:#064D95; --green:#06954E; --red:#950606; --bg:#0d0d0d;
-    --card:#0f1012; --edge:#212227; --muted:#b9b9b9;
+    --card:#101113; --edge:#1b1c20; --muted:#b9b9b9;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:var(--bg);color:#fff;font-family:Montserrat,system-ui,sans-serif}
-  .border-wrap{
+  .border{
     min-height:100%;
     background:
       linear-gradient(135deg, rgba(255,255,255,.04), rgba(0,0,0,.15)) padding-box,
       linear-gradient(135deg, var(--red), var(--blue), var(--green), var(--blue), var(--red)) border-box;
     border:2px solid transparent;
   }
-  .wrap{max-width:920px;margin:0 auto;padding:22px}
+  .wrap{max-width:860px;margin:0 auto;padding:22px}
   header{display:flex;align-items:center;gap:12px;margin:6px 0 18px}
   .logo{
     width:48px;height:48px;border-radius:12px;
@@ -29,17 +29,18 @@
   }
   h1{margin:0;font-size:24px;font-weight:800;letter-spacing:.2px;text-shadow:0 0 8px rgba(225,191,120,.12)}
   .subtitle{color:var(--muted);margin-top:2px;font-size:13px}
-  .grid{display:grid;grid-template-columns:1fr;gap:18px}
-  @media (min-width:900px){ .grid{grid-template-columns:1.1fr .9fr} }
+
   .card{
-    background:linear-gradient(180deg, #111215, #0b0c0e);
-    border:1px solid var(--edge); border-radius:18px; padding:18px;
+    background:linear-gradient(180deg, #121316, #0b0c0e);
+    border:1px solid var(--edge); border-radius:18px; padding:16px;
     box-shadow:0 24px 60px rgba(0,0,0,.55);
   }
-  .card h2{margin:6px 0 10px;font-size:18px;font-weight:800;color:var(--gold)}
-  .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #2a2b30;color:#cfd0d2;font-size:12px}
-  .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
-  .btnrow{display:flex;gap:10px;flex-wrap:wrap}
+  .card h2{margin:6px 0 8px;font-size:16px;font-weight:800;color:var(--gold)}
+  .grid{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:860px){ .grid{grid-template-columns:1fr 1fr} }
+
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #27292f;color:#cfd0d2;font-size:12px}
   button{
     border:none;border-radius:12px;padding:12px 14px;font-weight:800;cursor:pointer;
     background:#1b1d21;color:#fff;letter-spacing:.3px;box-shadow:0 8px 24px rgba(0,0,0,.35);
@@ -49,155 +50,146 @@
   .primary{background:var(--gold);color:#000}
   .ghost{background:transparent;border:1px solid #2a2c31;color:#cfd0d2}
   .danger{background:#241416;border:1px solid #3a1d22}
-  .ok{background:#152317;border:1px solid #253d2a}
   textarea{
     width:100%;min-height:120px;background:#0c0d10;border:1px solid #232429;border-radius:12px;
     color:#e9eaec;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
     padding:12px;resize:vertical
   }
-  .hint{color:#a7a9ad;font-size:12px;margin-top:6px}
-  .status{font-size:12px;color:#cfd0d2}
-  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
-  .gold{background:var(--gold)} .blue{background:var(--blue)} .green{background:var(--green)} .red{background:var(--red)}
-  .meter{height:8px;border-radius:999px;background:#15171b;border:1px solid #2a2b30;overflow:hidden}
+  label{font-size:12px;color:#aeb1b6;margin-top:6px;display:block}
+  audio{width:100%;background:#0b0c0e;border:1px solid #232429;border-radius:12px}
+
+  .meter{height:8px;border-radius:999px;background:#15171b;border:1px solid #2a2b30;overflow:hidden;margin-top:8px}
   .fill{height:100%;width:0%;background:linear-gradient(90deg, var(--blue), var(--green))}
-  .mic-card{display:flex;flex-direction:column;gap:12px;align-items:stretch;justify-content:center;min-height:200px}
-  .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .badge{font-size:12px;color:#cfd0d2}
-  footer{margin:26px 0 12px;color:#9ea0a4;font-size:12px;text-align:center}
-  .small{font-size:12px;color:#aeb1b6}
+  .status{font-size:12px;color:#cfd0d2;margin-top:8px}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+  .blue{background:var(--blue)} .green{background:var(--green)} .red{background:var(--red)} .gold{background:var(--gold)}
+  footer{margin:24px 0 12px;color:#9ea0a4;font-size:12px;text-align:center}
 </style>
 </head>
 <body>
-<div class="border-wrap">
+<div class="border">
   <div class="wrap">
     <header>
       <div class="logo"></div>
       <div>
         <h1>Blindfold Mode <span style="color:var(--gold)">— Audio Only</span></h1>
-        <div class="subtitle">Anonymous voice chat. No photos. No accounts. No servers. Just copy & paste to connect.</div>
+        <div class="subtitle">Anonymous voice chat. No accounts. No servers. Use copy & paste to connect.</div>
       </div>
     </header>
 
+    <section class="card">
+      <div class="row" style="justify-content:space-between">
+        <h2>1) Microphone</h2>
+        <span class="pill">Private · Ephemeral</span>
+      </div>
+      <div class="row" style="gap:8px">
+        <button id="btnMic" class="primary">Enable Mic</button>
+        <button id="btnMute" class="ghost" disabled>Mute</button>
+        <button id="btnEnd" class="danger" disabled>End</button>
+      </div>
+      <div class="meter"><div id="level" class="fill"></div></div>
+      <div id="micStatus" class="status"><span class="dot red"></span>Mic off</div>
+    </section>
+
     <div class="grid">
-      <!-- Left: Call controls -->
       <section class="card">
-        <div class="row">
-          <h2>1) Microphone</h2>
-          <span class="pill">Private · Ephemeral</span>
+        <h2>2A) If you’re starting the call</h2>
+        <div class="row" style="gap:8px">
+          <button id="btnOffer" class="ghost" disabled>Create Offer</button>
         </div>
-        <div class="mic-card">
-          <div class="btnrow">
-            <button id="btnMic" class="primary">Enable Mic</button>
-            <button id="btnMute" class="ghost" disabled>Mute</button>
-            <button id="btnHang" class="danger" disabled>End</button>
-          </div>
-          <div class="meter"><div id="level" class="fill"></div></div>
-          <div id="micStatus" class="status">Mic: <b>off</b></div>
+        <label>Offer (copy and send to partner)</label>
+        <textarea id="offerBox" placeholder="Click ‘Create Offer’ after enabling your mic…" readonly></textarea>
+
+        <label style="margin-top:10px">Paste Answer (from them), then click Connect</label>
+        <textarea id="answerIn" placeholder="Paste their Answer here…"></textarea>
+        <div class="row" style="gap:8px;margin-top:8px">
+          <button id="btnConnect" class="primary" disabled>Connect</button>
+          <button id="btnClearAns" class="ghost">Clear</button>
         </div>
-
-        <hr style="border:none;border-top:1px solid #1f2024;margin:12px 0">
-
-        <div class="row">
-          <h2>2) Connect (Copy & Paste)</h2>
-          <span class="pill">No login · No database</span>
-        </div>
-
-        <div class="btnrow" style="margin-bottom:10px">
-          <button id="btnStart" class="ok">Start a Room (Offer)</button>
-          <button id="btnAnswer" class="ghost">I Have an Offer → Create Answer</button>
-          <button id="btnComplete" class="ghost">I Have an Answer → Complete</button>
-        </div>
-
-        <label class="small">Offer (share this with the other person)</label>
-        <textarea id="offerBox" placeholder="Click ‘Start a Room’ to generate an Offer…" readonly></textarea>
-        <div class="hint">Share this <b>Offer</b> text with your partner (DM, text, QR). They will paste it on their side.</div>
-
-        <label class="small" style="margin-top:10px">Paste Offer (from them)</label>
-        <textarea id="offerIn" placeholder="Paste their Offer here to create your Answer…"></textarea>
-        <div class="btnrow" style="margin-top:8px">
-          <button id="btnCreateAnswer" class="ok">Create Answer</button>
-          <button id="btnClearOfferIn" class="ghost">Clear</button>
-        </div>
-
-        <label class="small" style="margin-top:10px">Answer (send back)</label>
-        <textarea id="answerBox" placeholder="Click ‘Create Answer’ to generate your Answer…" readonly></textarea>
-        <div class="hint">Send this <b>Answer</b> back. They’ll click “Complete” and you’ll connect.</div>
-
-        <label class="small" style="margin-top:10px">Paste Answer (from them)</label>
-        <textarea id="answerIn" placeholder="If you created the Offer, paste their Answer here, then click ‘Complete’…"></textarea>
-        <div class="btnrow" style="margin-top:8px">
-          <button id="btnComplete2" class="primary">Complete Connection</button>
-          <button id="btnClearAnswerIn" class="ghost">Clear</button>
-        </div>
-
-        <div id="connStatus" class="status" style="margin-top:12px">
-          <span class="dot red"></span>Not connected
-        </div>
+        <div id="connA" class="status"><span class="dot red"></span>Not connected</div>
       </section>
 
-      <!-- Right: Your voice + Remote audio -->
       <section class="card">
-        <div class="row">
-          <h2>3) In-Call</h2>
-          <span class="pill">Voice-Only · Face Hidden</span>
+        <h2>2B) If you received an offer</h2>
+        <label>Paste Offer (from them)</label>
+        <textarea id="offerIn" placeholder="Paste their Offer here…"></textarea>
+        <div class="row" style="gap:8px;margin-top:8px">
+          <button id="btnAnswer" class="primary" disabled>Create Answer</button>
+          <button id="btnClearOff" class="ghost">Clear</button>
         </div>
-        <div class="flex">
-          <span class="badge"><span class="dot blue"></span>Your voice level</span>
-          <span class="badge"><span class="dot green"></span>Remote audio</span>
-        </div>
-        <audio id="remoteAudio" autoplay controls style="width:100%;margin-top:12px;background:#0b0c0e;border:1px solid #232429;border-radius:12px"></audio>
-        <div class="hint" style="margin-top:10px">
-          Pro-tip: Use headphones for privacy. End call when done — nothing is stored anywhere.
-        </div>
+        <label style="margin-top:10px">Answer (copy and send back)</label>
+        <textarea id="answerBox" placeholder="Click ‘Create Answer’ to generate…" readonly></textarea>
+        <div id="connB" class="status"><span class="dot red"></span>Waiting to connect</div>
       </section>
     </div>
 
-    <footer>
-      Built for <b>Le Libido</b> • Colors: <span class="dot gold"></span><span class="dot blue"></span><span class="dot green"></span><span class="dot red"></span>
-    </footer>
+    <section class="card">
+      <h2>3) In Call</h2>
+      <audio id="remoteAudio" autoplay playsinline controls></audio>
+      <div id="callStatus" class="status" style="margin-top:8px"><span class="dot red"></span>Not connected</div>
+    </section>
+
+    <footer>Built for <b>Le Libido</b> • Colors: <span class="dot gold"></span><span class="dot blue"></span><span class="dot green"></span><span class="dot red"></span></footer>
   </div>
 </div>
 
 <script>
-/* ============ Blindfold Mode — Serverless WebRTC ============ */
-/* No servers. Manual copy/paste signaling. Voice-only, anonymous. */
+/* ========== Blindfold Mode — Super Minimal, Serverless WebRTC (Audio) ========== */
+/* Works with manual copy/paste signaling. No server, no database. */
+let pc, localStream, analyser, rafId;
+
 const btnMic = document.getElementById('btnMic');
 const btnMute = document.getElementById('btnMute');
-const btnHang = document.getElementById('btnHang');
+const btnEnd = document.getElementById('btnEnd');
 
-const btnStart = document.getElementById('btnStart');
+const btnOffer = document.getElementById('btnOffer');
 const btnAnswer = document.getElementById('btnAnswer');
-const btnComplete = document.getElementById('btnComplete');
-const btnCreateAnswer = document.getElementById('btnCreateAnswer');
-const btnComplete2 = document.getElementById('btnComplete2');
+const btnConnect = document.getElementById('btnConnect');
 
 const offerBox = document.getElementById('offerBox');
-const offerIn = document.getElementById('offerIn');
 const answerBox = document.getElementById('answerBox');
+const offerIn = document.getElementById('offerIn');
 const answerIn = document.getElementById('answerIn');
 
 const micStatus = document.getElementById('micStatus');
-const connStatus = document.getElementById('connStatus');
-const levelFill = document.getElementById('level');
+const connA = document.getElementById('connA');
+const connB = document.getElementById('connB');
+const callStatus = document.getElementById('callStatus');
 const remoteAudio = document.getElementById('remoteAudio');
+const levelFill = document.getElementById('level');
 
-let pc, localStream, analyser, rafId, localTrack, isInitiator=false;
-
-function setConn(status, color){
-  connStatus.innerHTML = '<span class="dot '+color+'"></span>'+status;
+function status(el, text, color){
+  el.innerHTML = '<span class="dot '+color+'"></span>'+text;
 }
-function setMic(on){
-  micStatus.innerHTML = 'Mic: <b>'+(on ? 'on' : 'off')+'</b>';
+
+function resetPeer(){
+  if (pc){ try{pc.onicecandidate=null; pc.ontrack=null; pc.close();}catch{} }
+  pc = null;
+  remoteAudio.srcObject = null;
+  status(connA,'Not connected','red');
+  status(connB,'Waiting to connect','red');
+  status(callStatus,'Not connected','red');
+  btnConnect.disabled = true;
+  btnAnswer.disabled = !offerIn.value.trim();
+}
+
+function stopAudio(){
+  if (rafId) cancelAnimationFrame(rafId);
+  levelFill.style.width = '0%';
+  if (localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream = null; }
+  micStatus.innerHTML = '<span class="dot red"></span>Mic off';
+  btnMute.disabled = true; btnEnd.disabled = true;
+  btnOffer.disabled = true; btnAnswer.disabled = !offerIn.value.trim();
 }
 
 async function enableMic(){
   if (localStream) return;
   try{
     localStream = await navigator.mediaDevices.getUserMedia({ audio:true, video:false });
-    setMic(true);
-    btnMute.disabled = false;
-    // Level meter
+    micStatus.innerHTML = '<span class="dot green"></span>Mic on';
+    btnMute.disabled = false; btnEnd.disabled = false;
+    btnOffer.disabled = false; btnAnswer.disabled = !offerIn.value.trim();
+
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const src = ctx.createMediaStreamSource(localStream);
     analyser = ctx.createAnalyser(); analyser.fftSize = 256;
@@ -205,125 +197,100 @@ async function enableMic(){
     const data = new Uint8Array(analyser.frequencyBinCount);
     const draw = () => {
       analyser.getByteTimeDomainData(data);
-      // Rough RMS
-      let sum=0;
-      for (let i=0;i<data.length;i++){ const v=(data[i]-128)/128; sum += v*v; }
+      let sum=0; for (let i=0;i<data.length;i++){ const v=(data[i]-128)/128; sum+=v*v; }
       const rms = Math.sqrt(sum/data.length);
-      levelFill.style.width = Math.min(100, (rms*220)) + '%';
+      levelFill.style.width = Math.min(100, rms*220)+'%';
       rafId = requestAnimationFrame(draw);
     };
     draw();
-  }catch(err){
+  }catch(e){
     alert('Mic permission denied.');
   }
 }
+
 function toggleMute(){
   if (!localStream) return;
-  localStream.getAudioTracks().forEach(t => t.enabled = !t.enabled);
+  for (const t of localStream.getAudioTracks()) t.enabled = !t.enabled;
   btnMute.textContent = localStream.getAudioTracks()[0].enabled ? 'Mute' : 'Unmute';
-}
-function cleanup(){
-  if (rafId) cancelAnimationFrame(rafId);
-  if (pc){ pc.ontrack=null; pc.onicecandidate=null; try{pc.close()}catch{} pc=null; }
-  if (localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream=null; }
-  levelFill.style.width='0%'; setMic(false);
-  btnMute.disabled = true; btnHang.disabled = true;
-  setConn('Not connected','red');
 }
 
 function newPeer(){
-  const config = { iceServers: [{urls:'stun:stun.l.google.com:19302'}] };
-  pc = new RTCPeerConnection(config);
-  if (localStream){
-    localTrack = localStream.getAudioTracks()[0];
-    pc.addTrack(localTrack, localStream);
-  }
-  pc.ontrack = (e)=>{ remoteAudio.srcObject = e.streams[0]; };
+  resetPeer();
+  pc = new RTCPeerConnection({ iceServers:[ {urls:'stun:stun.l.google.com:19302'} ] });
+  if (localStream) pc.addTrack(localStream.getAudioTracks()[0], localStream);
+  pc.ontrack = (e)=>{ remoteAudio.srcObject = e.streams[0]; status(callStatus,'Connected','green'); };
   pc.onconnectionstatechange = ()=>{
+    if (!pc) return;
     const s = pc.connectionState;
-    if (s === 'connected'){ setConn('Connected','green'); btnHang.disabled=false; }
-    else if (s === 'connecting'){ setConn('Connecting…','blue'); }
-    else if (s === 'disconnected' || s === 'failed'){ setConn('Disconnected','red'); }
-  };
-  return pc;
-}
-
-btnMic.onclick = enableMic;
-btnMute.onclick = toggleMute;
-btnHang.onclick = cleanup;
-
-// Start a Room (create Offer)
-btnStart.onclick = async ()=>{
-  await enableMic();
-  isInitiator = true;
-  newPeer();
-  setConn('Creating offer…','blue');
-  const offer = await pc.createOffer({offerToReceiveAudio:true, offerToReceiveVideo:false});
-  await pc.setLocalDescription(offer);
-
-  // Wait for ICE to gather
-  await waitForIceGathering(pc);
-  offerBox.value = btoa(JSON.stringify(pc.localDescription));
-  setConn('Share Offer with partner','blue');
-};
-
-// I have an Offer → Create Answer
-btnCreateAnswer.onclick = async ()=>{
-  const txt = (offerIn.value || '').trim();
-  if (!txt) return alert('Paste their Offer first.');
-  await enableMic();
-  isInitiator = false;
-  newPeer();
-  try{
-    const offer = JSON.parse(atob(txt));
-    await pc.setRemoteDescription(offer);
-    setConn('Creating answer…','blue');
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    await waitForIceGathering(pc);
-    answerBox.value = btoa(JSON.stringify(pc.localDescription));
-    setConn('Send Answer back to them','blue');
-  }catch(e){
-    alert('Invalid Offer.');
-  }
-};
-
-// I have an Answer → Complete (initiator pastes answer)
-function completeFrom(box){
-  return async ()=>{
-    if (!pc || !isInitiator) {
-      if (!isInitiator) return alert('Use “Start a Room” first on this side.');
-    }
-    const txt = (box.value || '').trim();
-    if (!txt) return alert('Paste their Answer first.');
-    try{
-      const ans = JSON.parse(atob(txt));
-      await pc.setRemoteDescription(ans);
-      setConn('Connecting…','blue');
-      btnHang.disabled=false;
-    }catch(e){ alert('Invalid Answer.'); }
+    if (s === 'connected') { status(callStatus,'Connected','green'); }
+    if (s === 'failed' || s === 'disconnected' || s === 'closed') { status(callStatus,'Disconnected','red'); }
   };
 }
-btnComplete.onclick = completeFrom(answerIn);
-btnComplete2.onclick = completeFrom(answerIn);
 
-// Helpers
-function waitForIceGathering(pc){
+function waitForIce(pc){
   return new Promise(resolve=>{
     if (pc.iceGatheringState === 'complete') return resolve();
-    const check = ()=> pc.iceGatheringState === 'complete' && done();
-    const done = ()=>{ pc.removeEventListener('icegatheringstatechange', check); resolve(); };
-    pc.addEventListener('icegatheringstatechange', check);
+    const done = ()=>{ pc.removeEventListener('icegatheringstatechange', onchg); resolve(); };
+    const onchg = ()=>{ if (pc.iceGatheringState === 'complete') done(); };
+    pc.addEventListener('icegatheringstatechange', onchg);
     // Fallback timeout in case some networks never fully "complete"
     setTimeout(done, 2000);
   });
 }
 
-// Quick UI helpers
-document.getElementById('btnClearOfferIn').onclick = ()=> offerIn.value='';
-document.getElementById('btnClearAnswerIn').onclick = ()=> answerIn.value='';
-document.getElementById('btnAnswer').onclick = ()=> offerIn.scrollIntoView({behavior:'smooth'});
-document.getElementById('btnComplete').onclick = ()=> {}; // handled above
+/* ---------- Event wiring ---------- */
+btnMic.onclick = enableMic;
+btnMute.onclick = toggleMute;
+btnEnd.onclick = ()=>{ stopAudio(); resetPeer(); };
+
+btnOffer.onclick = async ()=>{
+  await enableMic();
+  newPeer();
+  status(connA,'Creating offer…','blue');
+  const offer = await pc.createOffer({ offerToReceiveAudio:true, offerToReceiveVideo:false });
+  await pc.setLocalDescription(offer);
+  await waitForIce(pc);
+  offerBox.value = btoa(JSON.stringify(pc.localDescription));
+  status(connA,'Share Offer with partner','blue');
+  btnConnect.disabled = false;
+};
+
+btnConnect.onclick = async ()=>{
+  const txt = (answerIn.value||'').trim();
+  if (!txt) return alert('Paste their Answer first.');
+  try{
+    const ans = JSON.parse(atob(txt));
+    await pc.setRemoteDescription(ans);
+    status(connA,'Connecting…','blue');
+  }catch(e){ alert('Invalid Answer.'); }
+};
+
+offerIn.addEventListener('input', ()=>{ btnAnswer.disabled = !offerIn.value.trim(); });
+
+btnAnswer.onclick = async ()=>{
+  await enableMic();
+  newPeer();
+  const txt = (offerIn.value||'').trim();
+  if (!txt) return alert('Paste their Offer first.');
+  let offer;
+  try{ offer = JSON.parse(atob(txt)); } catch(e){ return alert('Invalid Offer.'); }
+  status(connB,'Creating answer…','blue');
+  await pc.setRemoteDescription(offer);
+  const ans = await pc.createAnswer();
+  await pc.setLocalDescription(ans);
+  await waitForIce(pc);
+  answerBox.value = btoa(JSON.stringify(pc.localDescription));
+  status(connB,'Send Answer back to them','blue');
+};
+
+document.getElementById('btnClearOff').onclick = ()=>{ offerIn.value=''; btnAnswer.disabled=true; };
+document.getElementById('btnClearAns').onclick = ()=>{ answerIn.value=''; };
+
+/* Small UX nudge: scroll into view after generating text */
+[ 'offerBox','answerBox' ].forEach(id=>{
+  const el = document.getElementById(id);
+  el.addEventListener('focus', ()=> el.select());
+});
 </script>
 </body>
 </html>
