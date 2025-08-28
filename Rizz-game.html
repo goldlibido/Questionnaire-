@@ -6,6 +6,13 @@
     <title>Rizzler: Drop Your Best Line</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --gold: #e1bf78;
+            --blue: #064D95;
+            --green: #06954E;
+            --red: #c40018;
+            --redBright: #ff1e2d;
+        }
         body {
             font-family: 'Montserrat', sans-serif;
             background: #000;
@@ -18,20 +25,25 @@
         .container {
             max-width: 600px;
             margin: 0 auto;
-            border: 2px solid #e1bf78;
+            border: 2px solid var(--gold);
             border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 0 20px #e1bf78;
+            box-shadow: 0 0 20px var(--gold);
         }
         h1 {
             font-size: 2em;
-            color: #e1bf78;
+            color: var(--gold);
             margin-bottom: 10px;
-            text-shadow: 0 0 10px #e1bf78;
+            text-shadow: 0 0 10px var(--gold);
         }
-        h1 span {
-            color: #e1bf78;
-            animation: pulse 2s infinite;
+        h1 .rizz {
+            color: var(--redBright);
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
         }
         button {
             padding: 15px 30px;
@@ -47,22 +59,22 @@
             transform: scale(1.1);
             box-shadow: 0 0 15px currentColor;
         }
+        #enter-btn {
+            background: var(--red);
+        }
         #speak-btn {
-            background: #06954E; /* green */
+            background: var(--green);
         }
         #listen-btn {
-            background: #064D95; /* blue */
+            background: var(--blue);
         }
         #accept-btn, #send-btn, #next-btn {
-            background: #950606; /* red */
-        }
-        #profile-form, #listen-section, #match-section {
-            margin-top: 20px;
+            background: var(--red);
         }
         input {
             padding: 10px;
             margin: 5px;
-            border: 1px solid #e1bf78;
+            border: 1px solid var(--gold);
             border-radius: 10px;
             background: #222;
             color: #fff;
@@ -77,7 +89,7 @@
         #chat-window {
             height: 200px;
             overflow-y: auto;
-            border: 1px solid #e1bf78;
+            border: 1px solid var(--gold);
             border-radius: 10px;
             padding: 10px;
             background: #111;
@@ -93,11 +105,11 @@
             animation: slideIn 0.3s ease-out;
         }
         .sent {
-            background: #06954E; /* green */
+            background: var(--green);
             margin-left: auto;
         }
         .received {
-            background: #064D95; /* blue */
+            background: var(--blue);
             margin-right: auto;
         }
         #audio-player {
@@ -106,11 +118,6 @@
         }
         .hidden {
             display: none;
-        }
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
         }
         @keyframes slideIn {
             from { transform: translateY(20px); opacity: 0; }
@@ -130,7 +137,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Rizzler: Unleash Your <span>Rizz!</span></h1>
+        <h1>Rizzler: Unleash Your <span class="rizz">Rizz!</span></h1>
         <div id="profile-form">
             <input type="text" id="display-name" placeholder="Your name (optional)">
             <button id="enter-btn">Enter the Game</button>
@@ -171,13 +178,13 @@
         const CLAIM_BATCH = 8;
 
         /***** State *****/
-        let peer, conn;
+        let peer, conn, stream, activeCall = null;
         let myPeerId = null, partnerId = null;
         let userProfile = {}, remoteProfile = null;
         let myTicketRef = null, myPairRef = null;
         let requeueTimer = null;
-        let stream, mediaRecorder, audioChunks = [], activeCall = null;
         let matched = false;
+        let isSpeaking = false;
 
         /***** Helpers *****/
         const $ = s => document.querySelector(s);
@@ -185,6 +192,17 @@
         function clearRequeueTimer() { if (requeueTimer) { clearTimeout(requeueTimer); requeueTimer = null; } }
         function isFresh(ts) { return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
         function safeRemove(r) { try { r && remove(r); } catch {} }
+        function stopStream() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            if (activeCall) {
+                activeCall.close();
+                activeCall = null;
+            }
+            $('#audio-player').srcObject = null;
+        }
 
         /***** Matchmaking (Firebase Realtime Database) *****/
         function joinQueue() {
@@ -227,7 +245,11 @@
                     if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
                 });
                 tryClaim(cands, 0);
-            }).catch(e => console.error('Queue fetch error:', e));
+            }).catch(e => {
+                console.error('Queue fetch error:', e);
+                setStatus('Error finding match. Retrying…');
+                joinQueue();
+            });
         }
 
         function tryClaim(list, i) {
@@ -247,7 +269,11 @@
                             clearRequeueTimer();
                             setStatus('Matched! Connecting…');
                             connectToPartner();
-                        }).catch(e => console.error('Pair update error:', e));
+                        }).catch(e => {
+                            console.error('Pair update error:', e);
+                            setStatus('Error pairing. Retrying…');
+                            joinQueue();
+                        });
                     } else {
                         tryClaim(list, i + 1);
                     }
@@ -295,17 +321,24 @@
 
             peer.on('call', async (call) => {
                 activeCall = call;
-                call.answer();
-                call.on('stream', (remoteStream) => {
-                    const audio = $('#audio-player');
-                    audio.srcObject = remoteStream;
-                    audio.play().catch(e => {
-                        console.error('Audio playback error:', e);
-                        setStatus('Playback failed. Ensure audio permissions are enabled.');
+                try {
+                    const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    stream = s;
+                    call.answer(s);
+                    call.on('stream', (remoteStream) => {
+                        const audio = $('#audio-player');
+                        audio.srcObject = remoteStream;
+                        audio.play().catch(e => {
+                            console.error('Audio playback error:', e);
+                            setStatus('Playback failed. Ensure audio permissions are enabled.');
+                        });
                     });
-                });
-                call.on('close', onPartnerDisconnected);
-                call.on('error', onPartnerDisconnected);
+                    call.on('close', onPartnerDisconnected);
+                    call.on('error', onPartnerDisconnected);
+                } catch (e) {
+                    console.error('Mic error answering call:', e);
+                    setStatus('Microphone access denied: ' + e.message);
+                }
             });
 
             peer.on('disconnected', () => { try { peer.reconnect(); } catch {} });
@@ -316,12 +349,15 @@
             try {
                 conn = peer.connect(partnerId, { reliable: true });
                 wireConn(conn);
-            } catch (e) { setStatus('Failed to connect to partner.'); }
+            } catch (e) {
+                setStatus('Failed to connect to partner.');
+                joinQueue();
+            }
         }
 
         function wireConn(c) {
             c.on('open', () => {
-                setStatus('Connected! Drop your best line.');
+                setStatus('Connected! Choose to speak or listen.');
                 $('#profile-form').classList.add('hidden');
                 $('#main-section').classList.remove('hidden');
                 c.send({ type: 'profile', data: userProfile });
@@ -333,11 +369,10 @@
 
         function onPartnerDisconnected() {
             setStatus('Partner disconnected. Re-queuing…');
-            if (activeCall) activeCall.close();
-            $('#audio-player').srcObject = null;
-            audioChunks = [];
+            stopStream();
             matched = false;
             partnerId = null;
+            isSpeaking = false;
             $('#listen-section').classList.add('hidden');
             $('#match-section').classList.add('hidden');
             $('#main-section').classList.remove('hidden');
@@ -354,59 +389,42 @@
             await initPeer();
         });
 
-        $('#speak-btn').addEventListener('click', () => {
-            const btn = $('#speak-btn');
-            btn.dataset.state === 'recording' ? stopRecording() : startRecording();
-        });
+        $('#speak-btn').addEventListener('click', startSpeaking);
+        $('#listen-btn').addEventListener('click', startListening);
+        $('#accept-btn').addEventListener('click', acceptLine);
+        $('#next-btn').addEventListener('click', nextLine);
+        $('#send-btn').addEventListener('click', sendMessage);
 
-        $('#listen-btn').addEventListener('click', () => {
+        /***** Live Audio Streaming *****/
+        async function startSpeaking() {
+            if (isSpeaking) {
+                stopStream();
+                $('#speak-btn').innerText = 'Speak Your Line';
+                isSpeaking = false;
+                setStatus('Stopped speaking. Choose an action.');
+                return;
+            }
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                isSpeaking = true;
+                $('#speak-btn').innerText = 'Stop Speaking';
+                $('#main-section').classList.add('hidden');
+                $('#listen-section').classList.remove('hidden');
+                setStatus('Speaking live… Drop your best line!');
+                if (partnerId && conn && conn.open) callPeer();
+            } catch (e) {
+                console.error('Microphone error:', e);
+                setStatus('Microphone access denied: ' + e.message);
+            }
+        }
+
+        function startListening() {
             $('#main-section').classList.add('hidden');
             $('#listen-section').classList.remove('hidden');
             const a = $('#audio-player');
             a.muted = false;
             a.play().catch(() => {});
-            setStatus((conn && conn.open) ? 'Listening…' : 'Listening… waiting for match');
-        });
-
-        $('#accept-btn').addEventListener('click', () => {
-            if (conn && conn.open) {
-                matched = true;
-                conn.send({ type: 'accept', data: userProfile });
-                showMatch(remoteProfile || userProfile);
-            }
-        });
-
-        $('#next-btn').addEventListener('click', nextLine);
-
-        $('#send-btn').addEventListener('click', sendMessage);
-
-        /***** Recording → Live Stream *****/
-        function startRecording() {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(s => {
-                stream = s;
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                mediaRecorder.start();
-                $('#speak-btn').innerText = 'Stop Recording';
-                $('#speak-btn').dataset.state = 'recording';
-                $('#speak-btn').onclick = stopRecording;
-                setStatus('Recording…');
-                if (partnerId && conn && conn.open) callPeer();
-            }).catch(e => {
-                console.error('Microphone error:', e);
-                setStatus('Microphone access denied: ' + e.message);
-            });
-        }
-
-        function stopRecording() {
-            mediaRecorder.stop();
-            mediaRecorder.onstop = () => {
-                stream.getTracks().forEach(track => track.stop());
-                $('#speak-btn').innerText = 'Speak Your Line';
-                $('#speak-btn').dataset.state = '';
-                $('#speak-btn').onclick = startRecording;
-                setStatus('Line recorded! Ready to speak again.');
-            };
+            setStatus((conn && conn.open) ? 'Listening live…' : 'Listening… waiting for match');
         }
 
         function callPeer() {
@@ -416,20 +434,28 @@
                     console.log('Received remote stream');
                 });
                 activeCall.on('error', (err) => console.error('Call error:', err));
-                setStatus('Streaming your line…');
+                setStatus('Streaming your line live…');
             } else {
                 setStatus('Cannot stream: not connected yet.');
             }
         }
 
         /***** Match Navigation *****/
+        function acceptLine() {
+            if (conn && conn.open) {
+                matched = true;
+                conn.send({ type: 'accept', data: userProfile });
+                stopStream();
+                showMatch(remoteProfile || userProfile);
+            }
+        }
+
         function nextLine() {
             if (conn) conn.close();
-            if (activeCall) activeCall.close();
-            $('#audio-player').srcObject = null;
-            audioChunks = [];
+            stopStream();
             matched = false;
             partnerId = null;
+            isSpeaking = false;
             $('#listen-section').classList.add('hidden');
             $('#match-section').classList.add('hidden');
             $('#main-section').classList.remove('hidden');
@@ -474,6 +500,7 @@
                     break;
                 case 'accept':
                     matched = true;
+                    stopStream();
                     showMatch(remoteProfile || {});
                     break;
                 case 'message':
