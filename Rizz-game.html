@@ -81,7 +81,7 @@
     /***** Imports *****/
     import { db } from './firebase-config.js';
     import {
-      ref, push, set, onValue, onDisconnect, remove, update,
+      ref, push, set, onValue, onDisconnect, remove, update, get,
       runTransaction, serverTimestamp, query, orderByChild, equalTo,
       limitToFirst, endAt
     } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
@@ -144,10 +144,6 @@
 
       // 3) cleanup stale tickets then attempt to claim a partner
       cleanupStaleTickets(() => {
-        // query a handful of unclaimed tickets
-        // (RTDB can't filter by two fields; we scan a small batch and check freshness)
-        // We'll just read first N and filter in code.
-        // NOTE: Using orderByChild('claimed') == false works because we set booleans.
         importCandidatesAndClaim();
       });
 
@@ -166,7 +162,7 @@
     function importCandidatesAndClaim(){
       // Pull a small batch of unclaimed tickets
       const q = query(ref(db, 'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
-      onValue(q, (snap)=>{
+      get(q).then((snap)=>{
         const cands = [];
         snap.forEach(cs=>{
           const v = cs.val();
@@ -175,7 +171,7 @@
           }
         });
         tryClaim(cands, 0);
-      }, { onlyOnce: true });
+      });
     }
 
     function tryClaim(list, i){
@@ -206,9 +202,8 @@
 
     function cleanupStaleTickets(done){
       const cutoff = Date.now() - QUEUE_TTL_MS;
-      // Pull a bunch that are older than cutoff (we'll filter; serverTimestamp resolves later)
       const q = query(ref(db, 'queue'), orderByChild('ts'), endAt(cutoff), limitToFirst(25));
-      onValue(q, (snap)=>{
+      get(q).then((snap)=>{
         const updates = {};
         snap.forEach(cs=>{
           const v = cs.val();
@@ -216,7 +211,7 @@
         });
         if (Object.keys(updates).length) update(ref(db), updates).finally(()=>done && done());
         else done && done();
-      }, { onlyOnce: true });
+      });
     }
 
     /***** PeerJS (WebRTC) *****/
@@ -345,8 +340,8 @@
     function stopRec(){ if (mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop(); }
     function sendAudio(blob){
       if (!(conn && conn.open)) return;
-      conn.send({ type:'audio-start', mime:blob.type, size:blob.size });
       const r = new FileReader(); let o = 0;
+      conn.send({ type:'audio-start', mime:blob.type, size:blob.size });
       r.onload = e => {
         conn.send({ type:'audio-chunk', data:new Uint8Array(e.target.result) });
         o += e.target.result.byteLength;
@@ -429,8 +424,8 @@
     }
     function sendImg(blob, name){
       if (!(conn && conn.open)) return;
-      conn.send({ type:'image-start', mime: blob.type, name, size: blob.size });
       const r = new FileReader(); let o = 0;
+      conn.send({ type:'image-start', mime: blob.type, name, size: blob.size });
       r.onload = e => {
         conn.send({ type:'image-chunk', data:new Uint8Array(e.target.result) });
         o += e.target.result.byteLength;
