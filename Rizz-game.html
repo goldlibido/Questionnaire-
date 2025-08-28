@@ -1,536 +1,486 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Rizzler: Drop Your Best Line</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root{--gold:#e1bf78;--blue:#064D95;--green:#06954E;--red:#c40018;--redBright:#ff1e2d;}
-    body{font-family:'Montserrat',sans-serif;background:#000;color:#fff;text-align:center;padding:20px;margin:0;overflow:hidden}
-    .container{max-width:640px;margin:0 auto;border:2px solid var(--gold);border-radius:15px;padding:20px;box-shadow:0 0 20px var(--gold)}
-    h1{font-size:2em;color:var(--gold);margin-bottom:10px}
-    h1 .rizz{color:var(--redBright);display:inline-block;animation:rizzPulse 1.4s ease-in-out infinite}
-    @keyframes rizzPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-    button{padding:12px 20px;margin:8px;font-size:1em;border:none;border-radius:22px;cursor:pointer;transition:transform .2s;background:#333;color:#fff}
-    button:hover{transform:scale(1.06)}
-    #enter-btn{background:var(--red);color:#fff}
-    #speak-btn{background:var(--green)}
-    #listen-btn{background:var(--blue)}
-    #accept-btn,#send-btn,#next-btn{background:var(--red)}
-    input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff;width:calc(100% - 24px)}
-    .hidden{display:none}
-    #me-line{opacity:.95;margin:10px 0 6px}
-    #status{opacity:.9;margin:8px 0 2px;min-height:1.2em}
-    #audio-player{margin:16px auto;width:100%}
-    #chat-window{height:260px;overflow-y:auto;border:1px solid var(--gold);border-radius:10px;padding:10px;background:#111;margin-bottom:10px;text-align:left}
-    .chat-message{padding:8px 10px;margin:6px 0;border-radius:12px;max-width:85%;word-wrap:break-word;animation:slideIn .3s ease-out;display:inline-block}
-    .sent{background:var(--green);margin-left:auto}
-    .received{background:var(--blue);margin-right:auto}
-    .toolbar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:8px}
-    .toolbar input[type="text"]{flex:1;min-width:180px}
-    .icon-btn{background:var(--blue)}
-    #live-remote{width:100%;margin-top:8px}
-    @keyframes slideIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
-    body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(225,191,120,.1) 0%,rgba(0,0,0,0) 100%);z-index:-1}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rizzler: Drop Your Best Line</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 2px solid #e1bf78;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px #e1bf78;
+        }
+        h1 {
+            font-size: 2em;
+            color: #e1bf78;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #e1bf78;
+        }
+        h1 span {
+            color: #e1bf78;
+            animation: pulse 2s infinite;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: #fff;
+        }
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px currentColor;
+        }
+        #speak-btn {
+            background: #06954E; /* green */
+        }
+        #listen-btn {
+            background: #064D95; /* blue */
+        }
+        #accept-btn, #send-btn, #next-btn {
+            background: #950606; /* red */
+        }
+        #profile-form, #listen-section, #match-section {
+            margin-top: 20px;
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #e1bf78;
+            border-radius: 10px;
+            background: #222;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            width: calc(100% - 24px);
+        }
+        #status {
+            opacity: 0.9;
+            margin: 8px 0 2px;
+            min-height: 1.2em;
+        }
+        #chat-window {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e1bf78;
+            border-radius: 10px;
+            padding: 10px;
+            background: #111;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .chat-message {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+            animation: slideIn 0.3s ease-out;
+        }
+        .sent {
+            background: #06954E; /* green */
+            margin-left: auto;
+        }
+        .received {
+            background: #064D95; /* blue */
+            margin-right: auto;
+        }
+        #audio-player {
+            margin: 20px auto;
+            width: 100%;
+        }
+        .hidden {
+            display: none;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(225,191,120,0.1) 0%, rgba(0,0,0,0) 100%);
+            z-index: -1;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Rizzler: Unleash Your <span class="rizz">Rizz</span>!</h1>
-
-    <div id="profile-form">
-      <input type="text" id="display-name" placeholder="Your display name (optional)">
-      <button id="enter-btn">Enter the Game</button>
-      <div id="me-line" class="hidden"></div>
-      <div id="status"></div>
+    <div class="container">
+        <h1>Rizzler: Unleash Your <span>Rizz!</span></h1>
+        <div id="profile-form">
+            <input type="text" id="display-name" placeholder="Your name (optional)">
+            <button id="enter-btn">Enter the Game</button>
+            <div id="status"></div>
+        </div>
+        <div id="main-section" class="hidden">
+            <button id="speak-btn">Speak Your Line</button>
+            <button id="listen-btn">Listen & Rizz</button>
+        </div>
+        <div id="listen-section" class="hidden">
+            <audio id="audio-player" controls autoplay playsinline></audio>
+            <button id="accept-btn">Accept & Match</button>
+            <button id="next-btn">Next Line</button>
+        </div>
+        <div id="match-section" class="hidden">
+            <h2>Match! Let the Sparks Fly!</h2>
+            <p id="match-info"></p>
+            <div id="chat-window"></div>
+            <input type="text" id="chat-input" placeholder="Type your flirty message...">
+            <button id="send-btn">Send</button>
+        </div>
     </div>
 
-    <div id="main-section" class="hidden">
-      <button id="speak-btn">Speak & Rizz</button>
-      <button id="listen-btn">Listen & Get Rizzed</button>
-    </div>
+    <!-- PeerJS (for WebRTC) -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
-    <div id="listen-section" class="hidden">
-      <audio id="audio-player" controls crossorigin="anonymous" playsinline></audio>
-      <div>
-        <button id="accept-btn">Accept & Match</button>
-        <button id="next-btn">Next Line</button>
-      </div>
-    </div>
+    <!-- Firebase (for matchmaking) -->
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import {
+            ref, push, set, onValue, onDisconnect, remove, update, get,
+            runTransaction, serverTimestamp, query, orderByChild, equalTo,
+            limitToFirst, endAt
+        } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
 
-    <div id="match-section" class="hidden">
-      <h2>Match! Let the Sparks Fly!</h2>
-      <p id="match-info"></p>
-      <audio id="live-remote" class="hidden" controls autoplay playsinline></audio>
-      <div id="chat-window"></div>
-      <div class="toolbar">
-        <input type="text" id="chat-input" placeholder="Type your flirty message…">
-        <button id="send-btn">Send</button>
-        <input id="photo-input" class="hidden" type="file" accept="image/*" capture="environment">
-        <button id="photo-btn" class="icon-btn">📷 Photo</button>
-      </div>
-    </div>
-  </div>
+        /***** Config *****/
+        const QUEUE_TTL_MS = 30000;
+        const CLAIM_BATCH = 8;
 
-  <!-- PeerJS (for WebRTC) -->
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+        /***** State *****/
+        let peer, conn;
+        let myPeerId = null, partnerId = null;
+        let userProfile = {}, remoteProfile = null;
+        let myTicketRef = null, myPairRef = null;
+        let requeueTimer = null;
+        let stream, mediaRecorder, audioChunks = [], activeCall = null;
+        let matched = false;
 
-  <!-- App logic (ES module): imports your firebase-config.js which exports `db` -->
-  <script type="module">
-    /***** Imports *****/
-    import { db } from './firebase-config.js';
-    import {
-      ref, push, set, onValue, onDisconnect, remove, update, get,
-      runTransaction, serverTimestamp, query, orderByChild, equalTo,
-      limitToFirst, endAt
-    } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
+        /***** Helpers *****/
+        const $ = s => document.querySelector(s);
+        function setStatus(s) { $('#status').textContent = s || ''; }
+        function clearRequeueTimer() { if (requeueTimer) { clearTimeout(requeueTimer); requeueTimer = null; } }
+        function isFresh(ts) { return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
+        function safeRemove(r) { try { r && remove(r); } catch {} }
 
-    /***** Config *****/
-    const QUEUE_TTL_MS = 30000;
-    const CLAIM_BATCH  = 8;
-    const CHUNK_SIZE   = 16 * 1024;
+        /***** Matchmaking (Firebase Realtime Database) *****/
+        function joinQueue() {
+            setStatus('Finding a random match…');
+            myTicketRef = push(ref(db, 'queue'));
+            set(myTicketRef, { peer: myPeerId, claimed: false, ts: serverTimestamp() });
+            onDisconnect(myTicketRef).remove();
 
-    /***** State *****/
-    let peer, conn;
-    let myPeerId = null, partnerId = null;
-    let userProfile = {}, remoteProfile = null;
-    let acceptedLocal = false, acceptedRemote = false;
-    let liveCall = null, liveLocalStream = null;
-
-    let mediaRecorder, recordingStream, audioChunks = [];
-    let incomingB64 = [], incomingMime = 'audio/webm;codecs=opus';
-    let rxImageB64 = [], rxImageMeta = { mime: 'image/jpeg', name: 'photo.jpg' };
-
-    let myTicketRef = null, myPairRef = null;
-    let requeueTimer = null;
-
-    const pendingAudioBlobs = [];
-
-    /***** Helpers *****/
-    const $ = s => document.querySelector(s);
-    function setStatus(s){ $('#status').textContent = s || ''; }
-    function clearRequeueTimer(){ if(requeueTimer){ clearTimeout(requeueTimer); requeueTimer=null; } }
-
-    function preferMime(){
-      const candidates = ['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'];
-      for (const t of candidates) if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
-      return '';
-    }
-
-    function blobToB64(blob){
-      return new Promise((resolve,reject)=>{
-        const fr = new FileReader();
-        fr.onload = () => {
-          const url = fr.result; // data:<mime>;base64,XXXX
-          resolve(url.slice(url.indexOf(',')+1));
-        };
-        fr.onerror = reject;
-        fr.readAsDataURL(blob);
-      });
-    }
-    function b64ToBlob(b64, mime){
-      const bin = atob(b64), len = bin.length, u8 = new Uint8Array(len);
-      for (let i=0;i<len;i++) u8[i] = bin.charCodeAt(i);
-      return new Blob([u8], { type: mime });
-    }
-    function playBlobInAudio(blob){
-      const a = $('#audio-player');
-      a.srcObject = null;
-      a.src = URL.createObjectURL(blob);
-      a.load();
-      a.play().catch(()=>{});
-    }
-    function isFresh(ts){ return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
-    function safeRemove(r){ try{ r && remove(r); }catch{} }
-
-    /***** Matchmaking (Realtime Database) *****/
-    function joinQueue(){
-      setStatus('Finding a random match…');
-
-      myTicketRef = push(ref(db, 'queue'));
-      set(myTicketRef, { peer: myPeerId, claimed: false, ts: serverTimestamp() });
-      onDisconnect(myTicketRef).remove();
-
-      myPairRef = ref(db, 'pairs/'+myPeerId);
-      onDisconnect(myPairRef).remove();
-      onValue(myPairRef, (snap)=>{
-        const v = snap.val();
-        if (v?.partner && !partnerId) {
-          partnerId = v.partner;
-          clearRequeueTimer();
-          setStatus('Matched! Connecting…');
-          connectToPartner();
-        }
-      });
-
-      cleanupStaleTickets(() => { importCandidatesAndClaim(); });
-
-      clearRequeueTimer();
-      requeueTimer = setTimeout(() => {
-        if (!partnerId) {
-          setStatus('No match yet. Re-queuing…');
-          safeRemove(myTicketRef);
-          safeRemove(myPairRef);
-          joinQueue();
-        }
-      }, QUEUE_TTL_MS);
-    }
-
-    function importCandidatesAndClaim(){
-      const q = query(ref(db, 'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
-      get(q).then((snap)=>{
-        const cands = [];
-        snap.forEach(cs=>{
-          const v = cs.val();
-          if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
-        });
-        tryClaim(cands, 0);
-      });
-    }
-
-    function tryClaim(list, i){
-      if (partnerId || i >= list.length) { setStatus('Waiting for someone…'); return; }
-      const cand = list[i];
-      const claimPath = ref(db, `queue/${cand.key}/claimed`);
-      runTransaction(claimPath, cur => cur === false ? myPeerId : cur)
-        .then(res=>{
-          if (res.committed && res.snapshot.val() === myPeerId) {
-            const updates = {};
-            updates[`pairs/${myPeerId}`] = { partner: cand.peer, ts: Date.now() };
-            updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
-            updates[`queue/${myTicketRef.key}`] = null;
-            updates[`queue/${cand.key}`] = null;
-            update(ref(db), updates).then(()=>{
-              partnerId = cand.peer;
-              clearRequeueTimer();
-              setStatus('Matched! Connecting…');
-              connectToPartner();
+            myPairRef = ref(db, 'pairs/' + myPeerId);
+            onDisconnect(myPairRef).remove();
+            onValue(myPairRef, (snap) => {
+                const v = snap.val();
+                if (v?.partner && !partnerId) {
+                    partnerId = v.partner;
+                    clearRequeueTimer();
+                    setStatus('Matched! Connecting…');
+                    connectToPartner();
+                }
             });
-          } else {
-            tryClaim(list, i+1);
-          }
-        })
-        .catch(()=> tryClaim(list, i+1));
-    }
 
-    function cleanupStaleTickets(done){
-      const cutoff = Date.now() - QUEUE_TTL_MS;
-      const q = query(ref(db, 'queue'), orderByChild('ts'), endAt(cutoff), limitToFirst(25));
-      get(q).then((snap)=>{
-        const updates = {};
-        snap.forEach(cs=>{
-          const v = cs.val();
-          if (v && v.ts && v.ts < cutoff) updates[`queue/${cs.key}`] = null;
+            cleanupStaleTickets(() => importCandidatesAndClaim());
+
+            clearRequeueTimer();
+            requeueTimer = setTimeout(() => {
+                if (!partnerId) {
+                    setStatus('No match yet. Re-queuing…');
+                    safeRemove(myTicketRef);
+                    safeRemove(myPairRef);
+                    joinQueue();
+                }
+            }, QUEUE_TTL_MS);
+        }
+
+        function importCandidatesAndClaim() {
+            const q = query(ref(db, 'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
+            get(q).then((snap) => {
+                const cands = [];
+                snap.forEach(cs => {
+                    const v = cs.val();
+                    if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
+                });
+                tryClaim(cands, 0);
+            }).catch(e => console.error('Queue fetch error:', e));
+        }
+
+        function tryClaim(list, i) {
+            if (partnerId || i >= list.length) { setStatus('Waiting for someone…'); return; }
+            const cand = list[i];
+            const claimPath = ref(db, `queue/${cand.key}/claimed`);
+            runTransaction(claimPath, cur => cur === false ? myPeerId : cur)
+                .then(res => {
+                    if (res.committed && res.snapshot.val() === myPeerId) {
+                        const updates = {};
+                        updates[`pairs/${myPeerId}`] = { partner: cand.peer, ts: Date.now() };
+                        updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
+                        updates[`queue/${myTicketRef.key}`] = null;
+                        updates[`queue/${cand.key}`] = null;
+                        update(ref(db), updates).then(() => {
+                            partnerId = cand.peer;
+                            clearRequeueTimer();
+                            setStatus('Matched! Connecting…');
+                            connectToPartner();
+                        }).catch(e => console.error('Pair update error:', e));
+                    } else {
+                        tryClaim(list, i + 1);
+                    }
+                }).catch(() => tryClaim(list, i + 1));
+        }
+
+        function cleanupStaleTickets(done) {
+            const cutoff = Date.now() - QUEUE_TTL_MS;
+            const q = query(ref(db, 'queue'), orderByChild('ts'), endAt(cutoff), limitToFirst(25));
+            get(q).then((snap) => {
+                const updates = {};
+                snap.forEach(cs => {
+                    const v = cs.val();
+                    if (v && v.ts && v.ts < cutoff) updates[`queue/${cs.key}`] = null;
+                });
+                if (Object.keys(updates).length) update(ref(db), updates).finally(() => done && done());
+                else done && done();
+            }).catch(e => console.error('Cleanup error:', e));
+        }
+
+        /***** PeerJS (WebRTC) *****/
+        async function initPeer() {
+            peer = new Peer({
+                debug: 2,
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' }
+                    ]
+                }
+            });
+
+            peer.on('open', id => {
+                myPeerId = id;
+                $('#me-line').classList.remove('hidden');
+                $('#me-line').textContent = `Your ID: ${id}`;
+                joinQueue();
+            });
+
+            peer.on('connection', (connection) => {
+                conn = connection;
+                wireConn(conn);
+                if (conn.open) conn.send({ type: 'profile', data: userProfile });
+            });
+
+            peer.on('call', async (call) => {
+                activeCall = call;
+                call.answer();
+                call.on('stream', (remoteStream) => {
+                    const audio = $('#audio-player');
+                    audio.srcObject = remoteStream;
+                    audio.play().catch(e => {
+                        console.error('Audio playback error:', e);
+                        setStatus('Playback failed. Ensure audio permissions are enabled.');
+                    });
+                });
+                call.on('close', onPartnerDisconnected);
+                call.on('error', onPartnerDisconnected);
+            });
+
+            peer.on('disconnected', () => { try { peer.reconnect(); } catch {} });
+            peer.on('error', e => console.error('Peer error:', e));
+        }
+
+        function connectToPartner() {
+            try {
+                conn = peer.connect(partnerId, { reliable: true });
+                wireConn(conn);
+            } catch (e) { setStatus('Failed to connect to partner.'); }
+        }
+
+        function wireConn(c) {
+            c.on('open', () => {
+                setStatus('Connected! Drop your best line.');
+                $('#profile-form').classList.add('hidden');
+                $('#main-section').classList.remove('hidden');
+                c.send({ type: 'profile', data: userProfile });
+            });
+            c.on('data', handleData);
+            c.on('close', onPartnerDisconnected);
+            c.on('error', onPartnerDisconnected);
+        }
+
+        function onPartnerDisconnected() {
+            setStatus('Partner disconnected. Re-queuing…');
+            if (activeCall) activeCall.close();
+            $('#audio-player').srcObject = null;
+            audioChunks = [];
+            matched = false;
+            partnerId = null;
+            $('#listen-section').classList.add('hidden');
+            $('#match-section').classList.add('hidden');
+            $('#main-section').classList.remove('hidden');
+            clearRequeueTimer();
+            joinQueue();
+        }
+
+        /***** UI *****/
+        $('#enter-btn').addEventListener('click', async () => {
+            userProfile.name = ($('#display-name').value || '').trim() || 'Rizzler';
+            $('#profile-form').classList.add('hidden');
+            $('#main-section').classList.remove('hidden');
+            setStatus('Initializing…');
+            await initPeer();
         });
-        if (Object.keys(updates).length) update(ref(db), updates).finally(()=>done && done());
-        else done && done();
-      });
-    }
 
-    /***** PeerJS (WebRTC) *****/
-    async function initPeer(){
-      peer = new Peer(undefined,{
-        debug:2,
-        config:{ iceServers:[
-          {urls:'stun:stun.l.google.com:19302'},
-          {urls:'stun:stun1.l.google.com:19302'},
-          {urls:'stun:stun2.l.google.com:19302'}
-        ]}
-      });
+        $('#speak-btn').addEventListener('click', () => {
+            const btn = $('#speak-btn');
+            btn.dataset.state === 'recording' ? stopRecording() : startRecording();
+        });
 
-      peer.on('open', id => {
-        myPeerId = id;
-        $('#me-line').classList.remove('hidden');
-        $('#me-line').textContent = `Your ID: ${id}`;
-        joinQueue();
-      });
+        $('#listen-btn').addEventListener('click', () => {
+            $('#main-section').classList.add('hidden');
+            $('#listen-section').classList.remove('hidden');
+            const a = $('#audio-player');
+            a.muted = false;
+            a.play().catch(() => {});
+            setStatus((conn && conn.open) ? 'Listening…' : 'Listening… waiting for match');
+        });
 
-      // inbound data channel
-      peer.on('connection', (connection)=>{
-        conn = connection;
-        wireConn(conn);
-        if (conn.open) conn.send({ type:'profile', data:userProfile });
-      });
+        $('#accept-btn').addEventListener('click', () => {
+            if (conn && conn.open) {
+                matched = true;
+                conn.send({ type: 'accept', data: userProfile });
+                showMatch(remoteProfile || userProfile);
+            }
+        });
 
-      // inbound media call
-      peer.on('call', async (call)=>{
-        try{
-          const s = await navigator.mediaDevices.getUserMedia({ audio:true });
-          liveLocalStream = s;
-          call.answer(s);
-          liveCall = call;
-          call.on('stream', attachRemoteLive);
-          call.on('close', onPartnerDisconnected);
-          call.on('error', onPartnerDisconnected);
-        }catch(e){ console.error('Mic error answering call:', e); }
-      });
+        $('#next-btn').addEventListener('click', nextLine);
 
-      peer.on('disconnected', ()=>{ try{peer.reconnect();}catch{} });
-      peer.on('error', e => console.error('Peer error:', e));
-    }
+        $('#send-btn').addEventListener('click', sendMessage);
 
-    function connectToPartner(){
-      try{
-        conn = peer.connect(partnerId, { reliable:true });
-        wireConn(conn);
-      }catch(e){ setStatus('Failed to connect to partner.'); }
-    }
-
-    function wireConn(c){
-      c.on('open', () => {
-        setStatus('Connected! Drop your best line.');
-        $('#profile-form').classList.add('hidden');
-        $('#main-section').classList.remove('hidden');
-        c.send({ type:'profile', data:userProfile });
-
-        // Flush queued recordings
-        while (pendingAudioBlobs.length) {
-          const { blob, mime } = pendingAudioBlobs.shift();
-          reallySendAudio(blob, mime);
-        }
-      });
-      c.on('data', handleData);
-      c.on('close', onPartnerDisconnected);
-      c.on('error', onPartnerDisconnected);
-    }
-
-    function onPartnerDisconnected(){
-      setStatus('Partner disconnected. Re-queuing…');
-      cleanupLiveCall();
-      partnerId = null; acceptedLocal = false; acceptedRemote = false;
-      $('#listen-section').classList.add('hidden');
-      $('#match-section').classList.add('hidden');
-      $('#main-section').classList.remove('hidden');
-      clearRequeueTimer();
-      joinQueue();
-    }
-
-    /***** UI *****/
-    $('#enter-btn').addEventListener('click', async () => {
-      userProfile.name = ($('#display-name').value || '').trim() || 'Rizzler';
-      $('#profile-form').classList.add('hidden');
-      $('#main-section').classList.remove('hidden');
-      setStatus('Initializing…');
-      await initPeer();
-    });
-
-    $('#speak-btn').addEventListener('click', () => {
-      const btn = $('#speak-btn');
-      btn.dataset.state === 'recording' ? stopRec() : startRec();
-    });
-
-    $('#listen-btn').addEventListener('click', () => {
-      $('#main-section').classList.add('hidden');
-      $('#listen-section').classList.remove('hidden');
-      const a = $('#audio-player');
-      a.muted = false;
-      a.play().catch(()=>{});
-      setStatus((conn && conn.open) ? 'Listening…' : 'Listening… waiting for match');
-    });
-
-    $('#accept-btn').addEventListener('click', () => { acceptedLocal = true; acceptLine(); });
-    $('#next-btn').addEventListener('click', nextLine);
-    $('#send-btn').addEventListener('click', sendMsg);
-    $('#photo-btn').addEventListener('click', () => $('#photo-input').click());
-    $('#photo-input').addEventListener('change', e => {
-      const f = e.target.files?.[0]; if (!f || !(conn && conn.open)) return;
-      f.arrayBuffer().then(buf => {
-        const b = new Blob([buf], { type: f.type || 'image/jpeg' });
-        appendImg(b, true); sendImg(b, f.name || 'photo.jpg'); e.target.value = '';
-      });
-    });
-
-    /***** Recording → Send pickup line (base64 chunks) *****/
-    function startRec(){
-      navigator.mediaDevices.getUserMedia({ audio:true }).then(s=>{
-        recordingStream = s;
-        const mime = preferMime();
-        try{ mediaRecorder = new MediaRecorder(s, mime?{mimeType:mime}:{}) }catch(e){ alert('Recorder failed: '+e.message); return; }
-        audioChunks = [];
-        mediaRecorder.ondataavailable = e => { if (e.data && e.data.size>0) audioChunks.push(e.data); };
-        mediaRecorder.onstop = async () => {
-          recordingStream.getTracks().forEach(t => t.stop());
-          const finalMime = mediaRecorder.mimeType || mime || 'audio/webm';
-          const b = new Blob(audioChunks, { type: finalMime });
-
-          if (conn && conn.open) {
-            reallySendAudio(b, finalMime);
-          } else {
-            pendingAudioBlobs.push({ blob: b, mime: finalMime });
-            setStatus('Recorded! Will send when matched…');
-          }
-
-          const btn = $('#speak-btn'); btn.innerText='Speak & Rizz'; btn.dataset.state='';
-        };
-        mediaRecorder.start(100);
-        const btn = $('#speak-btn'); btn.innerText='Stop'; btn.dataset.state='recording';
-        setStatus('Recording…');
-      }).catch(e => alert('Mic denied: '+e.message));
-    }
-    function stopRec(){ if (mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop(); }
-
-    async function reallySendAudio(blob, mimeType){
-      if (!(conn && conn.open)) return;
-      conn.send({ type:'audio-start', mime: mimeType, size: blob.size });
-      let offset = 0;
-      while (offset < blob.size) {
-        const slice = blob.slice(offset, offset + CHUNK_SIZE);
-        const b64 = await blobToB64(slice);
-        conn.send({ type:'audio-chunk-b64', data: b64 });
-        offset += CHUNK_SIZE;
-      }
-      conn.send({ type:'audio-end' });
-      setStatus('Line sent!');
-    }
-
-    /***** Accept → Live audio *****/
-    function acceptLine(){
-      if (!(conn && conn.open)) return;
-      conn.send({ type:'accept', data:userProfile });
-      showMatch(remoteProfile || userProfile);
-      tryLive();
-    }
-    function tryLive(){
-      if (!acceptedLocal || !acceptedRemote) return;
-      if (!myPeerId || !partnerId) return;
-      const iInitiate = myPeerId < partnerId;
-      if (iInitiate) startCall();
-    }
-    async function startCall(){
-      try{
-        const s = await navigator.mediaDevices.getUserMedia({ audio:true });
-        liveLocalStream = s;
-        liveCall = peer.call(partnerId, s);
-        liveCall.on('stream', attachRemoteLive);
-        liveCall.on('close', onPartnerDisconnected);
-        liveCall.on('error', onPartnerDisconnected);
-      }catch(e){ console.error('Mic error placing call:', e); }
-    }
-    function attachRemoteLive(rs){
-      const el = $('#live-remote');
-      el.classList.remove('hidden');
-      el.srcObject = rs;
-      el.play().catch(()=>{});
-    }
-    function cleanupLiveCall(){
-      const el = $('#live-remote');
-      el.pause(); el.srcObject = null; el.classList.add('hidden');
-      if (liveLocalStream){ liveLocalStream.getTracks().forEach(t=>t.stop()); liveLocalStream = null; }
-      liveCall = null;
-    }
-
-    /***** Next match *****/
-    function nextLine(){
-      try{ conn?.close(); }catch{}
-      $('#audio-player').src = '';
-      cleanupLiveCall();
-      remoteProfile = null; acceptedLocal = false; acceptedRemote = false;
-      $('#listen-section').classList.add('hidden');
-      $('#match-section').classList.add('hidden');
-      $('#main-section').classList.remove('hidden');
-      partnerId = null;
-      clearRequeueTimer();
-      joinQueue();
-    }
-
-    function showMatch(other){
-      $('#listen-section').classList.add('hidden');
-      $('#match-section').classList.remove('hidden');
-      $('#match-info').innerHTML = `Matched with ${other.name || 'Mystery'}!`;
-    }
-
-    /***** Chat & Photos (base64 chunks) *****/
-    function sendMsg(){
-      const input = $('#chat-input'); const msg = input.value.trim();
-      if (!msg) return;
-      if (conn && conn.open) {
-        conn.send({ type:'message', data: msg });
-        dispMsg(msg, true); input.value='';
-      } else {
-        setStatus('Not connected yet — message not sent.');
-      }
-    }
-    function dispMsg(m, sent){
-      const box = $('#chat-window');
-      const d = document.createElement('div');
-      d.className = 'chat-message ' + (sent?'sent':'received');
-      d.textContent = m;
-      box.appendChild(d);
-      box.scrollTop = box.scrollHeight;
-    }
-
-    async function sendImg(blob, name){
-      if (!(conn && conn.open)) return;
-      conn.send({ type:'image-start', mime: blob.type, name, size: blob.size });
-      let offset = 0;
-      while (offset < blob.size) {
-        const slice = blob.slice(offset, offset + CHUNK_SIZE);
-        const b64 = await blobToB64(slice);
-        conn.send({ type:'image-chunk-b64', data: b64 });
-        offset += CHUNK_SIZE;
-      }
-      conn.send({ type:'image-end' });
-    }
-
-    function appendImg(b, sent){
-      const box = $('#chat-window');
-      const url = URL.createObjectURL(b);
-      const d = document.createElement('div');
-      d.className = 'chat-message ' + (sent?'sent':'received');
-      const i = document.createElement('img');
-      i.src = url; i.style.maxWidth='220px'; i.style.borderRadius='10px'; i.style.display='block';
-      d.appendChild(i); box.appendChild(d); box.scrollTop = box.scrollHeight;
-    }
-
-    /***** Incoming data *****/
-    function handleData(msg){
-      if (!msg || !msg.type) return;
-      switch(msg.type){
-        case 'profile':
-          remoteProfile = msg.data || null;
-          break;
-
-        // AUDIO (base64)
-        case 'audio-start':
-          incomingB64=[]; incomingMime=msg.mime || 'audio/webm;codecs=opus';
-          setStatus('Receiving line…');
-          break;
-        case 'audio-chunk-b64':
-          if (typeof msg.data === 'string' && msg.data.length) incomingB64.push(msg.data);
-          break;
-        case 'audio-end': {
-          const blob = b64ToBlob(incomingB64.join(''), incomingMime);
-          playBlobInAudio(blob);
-          setStatus('Line received!');
-          break;
+        /***** Recording → Live Stream *****/
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(s => {
+                stream = s;
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.start();
+                $('#speak-btn').innerText = 'Stop Recording';
+                $('#speak-btn').dataset.state = 'recording';
+                $('#speak-btn').onclick = stopRecording;
+                setStatus('Recording…');
+                if (partnerId && conn && conn.open) callPeer();
+            }).catch(e => {
+                console.error('Microphone error:', e);
+                setStatus('Microphone access denied: ' + e.message);
+            });
         }
 
-        // ACCEPT → live
-        case 'accept':
-          acceptedRemote = true; showMatch(remoteProfile || {}); tryLive();
-          break;
-
-        // CHAT
-        case 'message':
-          dispMsg(msg.data, false);
-          break;
-
-        // IMAGE (base64)
-        case 'image-start':
-          rxImageB64=[]; rxImageMeta={ mime: msg.mime || 'image/jpeg', name: msg.name || 'photo.jpg' };
-          break;
-        case 'image-chunk-b64':
-          if (typeof msg.data === 'string' && msg.data.length) rxImageB64.push(msg.data);
-          break;
-        case 'image-end': {
-          const blob = b64ToBlob(rxImageB64.join(''), rxImageMeta.mime);
-          appendImg(blob, false);
-          rxImageB64=[];
-          break;
+        function stopRecording() {
+            mediaRecorder.stop();
+            mediaRecorder.onstop = () => {
+                stream.getTracks().forEach(track => track.stop());
+                $('#speak-btn').innerText = 'Speak Your Line';
+                $('#speak-btn').dataset.state = '';
+                $('#speak-btn').onclick = startRecording;
+                setStatus('Line recorded! Ready to speak again.');
+            };
         }
-      }
-    }
-  </script>
+
+        function callPeer() {
+            if (stream && partnerId && conn && conn.open) {
+                activeCall = peer.call(partnerId, stream);
+                activeCall.on('stream', (remoteStream) => {
+                    console.log('Received remote stream');
+                });
+                activeCall.on('error', (err) => console.error('Call error:', err));
+                setStatus('Streaming your line…');
+            } else {
+                setStatus('Cannot stream: not connected yet.');
+            }
+        }
+
+        /***** Match Navigation *****/
+        function nextLine() {
+            if (conn) conn.close();
+            if (activeCall) activeCall.close();
+            $('#audio-player').srcObject = null;
+            audioChunks = [];
+            matched = false;
+            partnerId = null;
+            $('#listen-section').classList.add('hidden');
+            $('#match-section').classList.add('hidden');
+            $('#main-section').classList.remove('hidden');
+            clearRequeueTimer();
+            joinQueue();
+        }
+
+        function showMatch(other) {
+            $('#listen-section').classList.add('hidden');
+            $('#match-section').classList.remove('hidden');
+            $('#match-info').innerHTML = `Matched with ${other.name || 'Mystery'}!`;
+        }
+
+        /***** Chat *****/
+        function sendMessage() {
+            const input = $('#chat-input');
+            const msg = input.value.trim();
+            if (!msg || !(conn && conn.open)) {
+                setStatus('Not connected yet — message not sent.');
+                return;
+            }
+            conn.send({ type: 'message', data: msg });
+            dispMsg(msg, true);
+            input.value = '';
+        }
+
+        function dispMsg(m, sent) {
+            const box = $('#chat-window');
+            const d = document.createElement('div');
+            d.className = `chat-message ${sent ? 'sent' : 'received'}`;
+            d.textContent = m;
+            box.appendChild(d);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        /***** Incoming Data *****/
+        function handleData(msg) {
+            if (!msg || !msg.type) return;
+            switch (msg.type) {
+                case 'profile':
+                    remoteProfile = msg.data || null;
+                    break;
+                case 'accept':
+                    matched = true;
+                    showMatch(remoteProfile || {});
+                    break;
+                case 'message':
+                    dispMsg(msg.data, false);
+                    break;
+            }
+        }
+    </script>
 </body>
 </html>
