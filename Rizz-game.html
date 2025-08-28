@@ -7,29 +7,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body{font-family:'Montserrat',sans-serif;background:#000;color:#fff;text-align:center;padding:20px;margin:0;overflow:hidden}
-    .container{max-width:600px;margin:0 auto;border:2px solid #e1bf78;border-radius:15px;padding:20px;box-shadow:0 0 20px #e1bf78}
+    .container{max-width:640px;margin:0 auto;border:2px solid #e1bf78;border-radius:15px;padding:20px;box-shadow:0 0 20px #e1bf78}
     h1{font-size:2em;color:#e1bf78;margin-bottom:10px;text-shadow:0 0 10px #e1bf78}
-    h1 span{color:#e1bf78;animation:pulse 2s infinite}
-    button{padding:15px 30px;margin:10px;font-size:1.2em;border:none;border-radius:25px;cursor:pointer;transition:transform .2s,box-shadow .2s;color:#fff}
-    button:hover{transform:scale(1.1);box-shadow:0 0 15px currentColor}
+    h1 span{animation:pulse 2s infinite}
+    button{padding:12px 20px;margin:8px;font-size:1em;border:none;border-radius:22px;cursor:pointer;transition:transform .2s,box-shadow .2s;color:#fff}
+    button:hover{transform:scale(1.06);box-shadow:0 0 15px currentColor}
     #speak-btn{background:#06954E}
     #listen-btn{background:#064D95}
     #accept-btn,#send-btn{background:#950606}
     #next-btn{background:#950606}
     #profile-form,#listen-section,#match-section{margin-top:20px}
-    input{padding:10px;margin:5px;border:1px solid #e1bf78;border-radius:10px;background:#222;color:#fff;font-family:'Montserrat',sans-serif}
-    #audio-player{margin:20px auto;width:100%}
-    #chat-window{height:200px;overflow-y:auto;border:1px solid #e1bf78;border-radius:10px;padding:10px;background:#111;margin-bottom:10px;text-align:left}
-    .chat-message{padding:8px;margin:5px 0;border-radius:15px;max-width:80%;word-wrap:break-word;animation:slideIn 0.3s ease-out}
+    input[type="text"]{padding:10px;margin:5px;border:1px solid #e1bf78;border-radius:10px;background:#222;color:#fff;font-family:'Montserrat',sans-serif;width:calc(100% - 24px)}
+    #me-line{opacity:.85;margin:6px 0 12px}
+    #audio-player{margin:16px auto;width:100%}
+    #chat-window{height:260px;overflow-y:auto;border:1px solid #e1bf78;border-radius:10px;padding:10px;background:#111;margin-bottom:10px;text-align:left}
+    .chat-message{padding:8px 10px;margin:6px 0;border-radius:12px;max-width:85%;word-wrap:break-word;animation:slideIn .3s ease-out;display:inline-block}
     .sent{background:#06954E;margin-left:auto}
     .received{background:#064D95;margin-right:auto}
-    .hidden{display:none}
     .toolbar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:8px}
     .toolbar input[type="text"]{flex:1;min-width:180px}
     .icon-btn{background:#064D95}
+    .hidden{display:none}
     #live-remote{width:100%;margin-top:8px}
     @keyframes pulse{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
-    @keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+    @keyframes slideIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
     body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(225,191,120,.1) 0%,rgba(0,0,0,0) 100%);z-index:-1}
   </style>
 </head>
@@ -37,36 +38,45 @@
   <div class="container">
     <h1>Rizzler: Unleash Your <span>Rizz!</span></h1>
 
+    <!-- LOGIN / HANDLE -->
     <div id="profile-form">
-      <input type="text" id="username" placeholder="Your name (required)" required>
+      <input type="text" id="username" placeholder="Choose your username (becomes your @handle)" required>
       <input type="text" id="photo-url" placeholder="Photo URL (optional)">
       <button id="enter-btn">Enter the Game</button>
+      <div id="target-form" class="hidden">
+        <input type="text" id="target-id" placeholder="Tune to username / station (optional)">
+        <small style="display:block;opacity:.7">Leave blank to wait for someone to tune to you. You can also deep-link with ?to=@name</small>
+      </div>
+      <div id="me-line" class="hidden"></div>
     </div>
 
+    <!-- MAIN -->
     <div id="main-section" class="hidden">
       <button id="speak-btn">Speak Your Line</button>
       <button id="listen-btn">Listen & Rizz</button>
     </div>
 
-    <!-- LISTEN: hears pickup line (kept exactly) -->
+    <!-- LISTEN (pickup line playback) -->
     <div id="listen-section" class="hidden">
       <audio id="audio-player" controls crossorigin="anonymous" playsinline></audio>
-      <button id="accept-btn">Accept & Match</button>
-      <button id="next-btn">Next Line</button>
+      <div>
+        <button id="accept-btn">Accept & Match</button>
+        <button id="next-btn">Next Line</button>
+      </div>
     </div>
 
-    <!-- MATCH: live audio room + chat -->
+    <!-- MATCH: live audio + chat -->
     <div id="match-section" class="hidden">
       <h2>Match! Let the Sparks Fly!</h2>
       <p id="match-info"></p>
 
-      <!-- Live audio (remote) -->
+      <!-- Live audio room (remote) -->
       <audio id="live-remote" class="hidden" controls autoplay playsinline></audio>
 
       <div id="chat-window"></div>
 
       <div class="toolbar">
-        <input type="text" id="chat-input" placeholder="Type your flirty message...">
+        <input type="text" id="chat-input" placeholder="Type your flirty message…">
         <button id="send-btn">Send</button>
 
         <!-- Photo upload -->
@@ -78,41 +88,49 @@
 
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <script>
+    // --- Globals ---
     let peer, conn;
     let myPeerId = null;
     let userProfile = {};
     let remoteProfile = null;
-    let currentPeerId = null;   // who we connected TO (when we initiate)
-    let remotePeerId = null;    // who’s on the other end (either side)
+    let currentPeerId = null; // who we tune to
+    let remotePeerId = null;  // who is on the other end
     let matched = false;
 
-    // Accept handshake
-    let acceptedLocal = false;
-    let acceptedRemote = false;
+    // Accept handshake for live audio
+    let acceptedLocal = false, acceptedRemote = false;
+    let liveCall = null, liveLocalStream = null;
 
-    // Recording (pickup line) vars — keep your working flow
-    let mediaRecorder, recordingStream;
-    let audioChunks = [];
-    let incomingChunks = [];
-    let incomingMime = 'audio/webm;codecs=opus';
-    let incomingSize = 0;
+    // Pickup line recording flow (keep working behavior)
+    let mediaRecorder, recordingStream, audioChunks = [];
+    let incomingChunks = [], incomingMime = 'audio/webm;codecs=opus', incomingSize = 0;
 
-    // Live call references
-    let liveCall = null;
-    let liveLocalStream = null;
+    // Image transfer buffer
+    let rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg', size: 0 };
 
-    // -------- Helpers (unchanged pickup-line codec detect) --------
+    // --- Username persistence ---
+    function getSavedUsername(){ return localStorage.getItem('rizz_username') || ''; }
+    function saveUsername(u){ localStorage.setItem('rizz_username', u); }
+
+    // --- Toast helper ---
+    function toast(msg) {
+      const el = document.createElement('div');
+      el.textContent = msg;
+      el.style.cssText = 'position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:#222;padding:10px 14px;border:1px solid #e1bf78;border-radius:10px;z-index:9999';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(), 2200);
+    }
+
+    // --- Codec detection for recording ---
     function getSupportedMime() {
       const tryTypes = [
         'audio/webm;codecs=opus',
         'audio/webm',
-        'audio/mp4', // iOS Safari often supports mp4
+        'audio/mp4',              // iOS Safari often supports this
         'audio/ogg;codecs=opus'
       ];
       for (const t of tryTypes) {
-        if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) {
-          return t;
-        }
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) return t;
       }
       return '';
     }
@@ -126,27 +144,42 @@
       audio.play().catch(()=>{});
     }
 
-    function ensureConnectionForSending() {
-      if (conn && conn.open) return true;
-      if (!currentPeerId) {
-        currentPeerId = prompt('Enter the Peer ID to send your line to:');
-        if (!currentPeerId) return false;
-      }
-      conn = peer.connect(currentPeerId);
-      wireConn(conn);
-      return true;
+    // --- Peer init with desired username as PeerID (fallback if taken) ---
+    async function initPeerWithId(desiredId) {
+      return new Promise((resolve) => {
+        let idTried = desiredId;
+        function makePeer(id) {
+          const p = new Peer(id);
+          p.on('open', (id) => resolve({ peer: p, id }));
+          p.on('error', (err) => {
+            if (err?.type === 'unavailable-id') {
+              const suffix = Math.random().toString(36).slice(2,5);
+              idTried = `${desiredId}-${suffix}`;
+              makePeer(idTried);
+            } else {
+              alert('Peer error: ' + err.type);
+            }
+          });
+        }
+        makePeer(idTried);
+      });
     }
 
-    // -------- Peer setup --------
-    function initPeer() {
-      peer = new Peer();
-      peer.on('open', (id) => {
-        myPeerId = id;
-        console.log('Your Peer ID:', id);
-        alert('Share this Peer ID with others: ' + id);
-      });
+    async function initPeer() {
+      const saved = getSavedUsername();
+      const baseName = saved || (userProfile.name || '').replace(/\s+/g,'').toLowerCase();
+      if (!baseName) { alert('Missing username'); return; }
 
-      // Data connection (text, control, images, pickup-line blobs)
+      const { peer: p, id } = await initPeerWithId(baseName);
+      peer = p; myPeerId = id; saveUsername(id);
+
+      // Show handle & helper
+      const me = document.getElementById('me-line');
+      me.textContent = `You are live as @${id}`;
+      me.classList.remove('hidden');
+      toast('You are live as @' + id);
+
+      // Incoming data connections
       peer.on('connection', (connection) => {
         conn = connection;
         remotePeerId = connection.peer;
@@ -154,9 +187,8 @@
         if (conn.open) conn.send({ type: 'profile', data: userProfile });
       });
 
-      // Media call (live audio)
+      // Incoming media calls (live audio room)
       peer.on('call', async (call) => {
-        // We answer with our mic stream (live audio room)
         try {
           const s = await navigator.mediaDevices.getUserMedia({ audio: true });
           liveLocalStream = s;
@@ -174,22 +206,45 @@
     }
 
     function wireConn(c) {
-      c.on('open', () => {
-        c.send({ type: 'profile', data: userProfile });
-      });
+      c.on('open', () => c.send({ type: 'profile', data: userProfile }));
       c.on('data', handleData);
       c.on('close', () => console.log('Connection closed'));
       c.on('error', (e) => console.error('Conn error:', e));
     }
 
-    // -------- UI wiring --------
-    document.getElementById('enter-btn').addEventListener('click', () => {
-      userProfile.name = document.getElementById('username').value.trim();
-      userProfile.photo = document.getElementById('photo-url').value.trim() || 'No photo';
-      if (!userProfile.name) { alert('Name is required!'); return; }
+    // --- Ensure a connection using "Tune to" field (no prompts) ---
+    function ensureConnectionForSending() {
+      if (conn && conn.open) return true;
+      const val = (document.getElementById('target-id').value || '').trim();
+      if (!val) { alert('Enter a username/station in the field above to tune.'); return false; }
+      currentPeerId = val;
+      conn = peer.connect(currentPeerId);
+      wireConn(conn);
+      return true;
+    }
+
+    // --- UI wiring ---
+    document.getElementById('enter-btn').addEventListener('click', async () => {
+      const nameInput = document.getElementById('username');
+      const photoInput = document.getElementById('photo-url');
+      const targetForm = document.getElementById('target-form');
+
+      let desiredUsername = nameInput.value.trim() || getSavedUsername();
+      if (!desiredUsername) { alert('Choose a username'); return; }
+
+      userProfile.name = desiredUsername;  // username doubles as display name
+      userProfile.photo = photoInput.value.trim() || 'No photo';
+
       document.getElementById('profile-form').classList.add('hidden');
       document.getElementById('main-section').classList.remove('hidden');
-      initPeer();
+      targetForm.classList.remove('hidden');
+
+      await initPeer();
+
+      // Deep-link support: ?to=username
+      const params = new URLSearchParams(location.search);
+      const to = (params.get('to') || '').replace(/^@/,'');
+      if (to) document.getElementById('target-id').value = to;
     });
 
     document.getElementById('speak-btn').addEventListener('click', () => {
@@ -202,22 +257,19 @@
     document.getElementById('accept-btn').addEventListener('click', acceptLine);
     document.getElementById('next-btn').addEventListener('click', nextLine);
     document.getElementById('send-btn').addEventListener('click', sendMessage);
-
     document.getElementById('photo-btn').addEventListener('click', () => {
       document.getElementById('photo-input').click();
     });
     document.getElementById('photo-input').addEventListener('change', handlePhotoChosen);
 
-    // -------- Pickup line: record -> send (unchanged) --------
+    // --- Pickup line record → send (kept working behavior) ---
     function startRecording() {
       if (!ensureConnectionForSending()) return;
-
       navigator.mediaDevices.getUserMedia({ audio: true }).then((s) => {
         recordingStream = s;
         const mimeType = getSupportedMime();
-        try {
-          mediaRecorder = new MediaRecorder(recordingStream, mimeType ? { mimeType } : {});
-        } catch (e) { alert('MediaRecorder failed to start: ' + e.message); return; }
+        try { mediaRecorder = new MediaRecorder(recordingStream, mimeType ? { mimeType } : {}); }
+        catch (e) { alert('MediaRecorder failed to start: ' + e.message); return; }
 
         audioChunks = [];
         mediaRecorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) audioChunks.push(e.data); };
@@ -257,40 +309,30 @@
       readNext();
     }
 
-    // -------- Listen to a pickup line --------
+    // --- Listening to pickup lines (no prompts) ---
     function startListening() {
       document.getElementById('main-section').classList.add('hidden');
       document.getElementById('listen-section').classList.remove('hidden');
-
       if (!peer) { initPeer(); }
-      currentPeerId = prompt('Enter the Peer ID of someone to connect with:');
-      if (currentPeerId) {
-        conn = peer.connect(currentPeerId);
-        remotePeerId = currentPeerId;
-        wireConn(conn);
-      }
+      if (!ensureConnectionForSending()) return;
     }
 
-    // -------- Accept -> live audio chat handshake --------
+    // --- Accept -> Live audio room handshake ---
     function acceptLine() {
       if (!(conn && conn.open)) return;
       acceptedLocal = true;
       conn.send({ type: 'accept', data: userProfile });
-      tryStartLiveRoom();              // if they already accepted, this starts the call
-      // show match immediately (use remote if known)
       showMatch(remoteProfile || userProfile);
+      tryStartLiveRoom();
     }
 
     function tryStartLiveRoom() {
       if (!acceptedLocal || !acceptedRemote) return;
-      // Decide who initiates the call (avoid double-call): lexicographically smaller peer ID calls
       if (!myPeerId || !remotePeerId) return;
+      // Avoid double call — lexicographically smaller PeerID initiates
       const iInitiate = myPeerId < remotePeerId;
-
-      if (iInitiate) {
-        startOutgoingLiveCall();
-      }
-      // The non-initiator will auto-answer in peer.on('call') above
+      if (iInitiate) startOutgoingLiveCall();
+      // other side auto-answers in peer.on('call')
     }
 
     async function startOutgoingLiveCall() {
@@ -315,12 +357,8 @@
 
     function cleanupLiveCall() {
       const el = document.getElementById('live-remote');
-      el.pause(); el.srcObject = null;
-      el.classList.add('hidden');
-      if (liveLocalStream) {
-        liveLocalStream.getTracks().forEach(t=>t.stop());
-        liveLocalStream = null;
-      }
+      el.pause(); el.srcObject = null; el.classList.add('hidden');
+      if (liveLocalStream) { liveLocalStream.getTracks().forEach(t=>t.stop()); liveLocalStream = null; }
       liveCall = null;
     }
 
@@ -330,9 +368,7 @@
       document.getElementById('audio-player').src = '';
       cleanupLiveCall();
       remoteProfile = null;
-      acceptedLocal = false;
-      acceptedRemote = false;
-      matched = false;
+      acceptedLocal = false; acceptedRemote = false; matched = false;
       startListening();
     }
 
@@ -347,13 +383,13 @@
       }`;
     }
 
-    // -------- Text chat (unchanged) --------
+    // --- Text chat (auto shows on both ends) ---
     function sendMessage() {
       const input = document.getElementById('chat-input');
       const message = input.value.trim();
       if (!message || !(conn && conn.open)) return;
       conn.send({ type: 'message', data: message });
-      displayMessage(message, true);
+      displayMessage(message, true);   // local bubble
       input.value = '';
     }
 
@@ -366,16 +402,14 @@
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    // -------- Photo sending (chunked) --------
+    // --- Photo sending (chunked) ---
     function handlePhotoChosen(e) {
       const file = e.target.files && e.target.files[0];
       if (!file || !(conn && conn.open)) return;
 
       file.arrayBuffer().then(buf => {
         const blob = new Blob([buf], { type: file.type || 'image/jpeg' });
-        // local echo
-        appendImage(blob, true);
-        // send
+        appendImage(blob, true);              // local echo
         sendImageBlob(blob, file.name || 'photo.jpg');
         e.target.value = '';
       });
@@ -398,34 +432,31 @@
     function appendImage(blob, sent) {
       const chatWindow = document.getElementById('chat-window');
       const url = URL.createObjectURL(blob);
-      const imgWrap = document.createElement('div');
-      imgWrap.className = `chat-message ${sent ? 'sent' : 'received'}`;
+      const wrap = document.createElement('div');
+      wrap.className = `chat-message ${sent ? 'sent' : 'received'}`;
       const img = document.createElement('img');
       img.src = url;
       img.style.maxWidth = '220px';
       img.style.borderRadius = '10px';
       img.style.display = 'block';
-      imgWrap.appendChild(img);
-      chatWindow.appendChild(imgWrap);
+      wrap.appendChild(img);
+      chatWindow.appendChild(wrap);
       chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    // -------- Incoming data handler --------
-    let rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg', size: 0 };
-
+    // --- Incoming data handler (profiles, audio chunks, accept, text, images) ---
     function handleData(msg) {
       if (!msg || !msg.type) return;
 
       switch (msg.type) {
         case 'profile':
           remoteProfile = msg.data || null;
+          remotePeerId = conn?.peer || remotePeerId;
           break;
 
-        // Working pickup-line path (unchanged)
+        // pickup line receive (kept working)
         case 'audio-start':
-          incomingChunks = [];
-          incomingMime = msg.mime || 'audio/webm;codecs=opus';
-          incomingSize = msg.size || 0;
+          incomingChunks = []; incomingMime = msg.mime || 'audio/webm;codecs=opus'; incomingSize = msg.size || 0;
           break;
         case 'audio-chunk':
           incomingChunks.push(msg.data);
@@ -436,21 +467,21 @@
           break;
         }
 
-        // Accept handshake for live audio room
+        // accept handshake (live audio room)
         case 'accept':
           acceptedRemote = true;
           matched = true;
-          if (msg.data) remoteProfile = msg.data;  // keep who they are
+          if (msg.data) remoteProfile = msg.data;
           showMatch(remoteProfile || { name: 'Mystery' });
           tryStartLiveRoom();
           break;
 
-        // Text chat
+        // text chat (auto shows here)
         case 'message':
           if (matched) displayMessage(msg.data, false);
           break;
 
-        // Photo transfer
+        // image receive
         case 'image-start':
           rxImage = { parts: [], mime: msg.mime || 'image/jpeg', name: msg.name || 'photo.jpg', size: msg.size || 0 };
           break;
