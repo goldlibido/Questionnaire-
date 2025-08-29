@@ -3,33 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Rizzler: One-Way Push-to-Talk</title>
+  <title>Rizzler: Drop Your Best Line</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root{--gold:#e1bf78;--blue:#064D95;--green:#06954E;--red:#c40018;--redBright:#ff1e2d;}
     body{font-family:'Montserrat',sans-serif;background:#000;color:#fff;text-align:center;padding:20px;margin:0;overflow:hidden}
     .container{max-width:640px;margin:0 auto;border:2px solid var(--gold);border-radius:15px;padding:20px;box-shadow:0 0 20px var(--gold)}
     h1{font-size:2em;color:var(--gold);margin-bottom:10px}
-    h1 .rizz{color:var(--redBright);display:inline-block;animation:rizzPulse 1.4s ease-in-out infinite}
-    @keyframes rizzPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-    button{padding:12px 22px;margin:8px;font-size:1em;border:none;border-radius:22px;cursor:pointer;transition:transform .2s;background:#333;color:#fff}
-    button:hover{transform:scale(1.06)}
+    h1 .pulse{color:var(--redBright);display:inline-block;animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+    button{padding:14px 26px;margin:10px;font-size:1.05em;border:none;border-radius:24px;cursor:pointer;transition:transform .2s,box-shadow .2s;color:#fff}
+    button:hover{transform:scale(1.06);box-shadow:0 0 10px currentColor}
     #enter-btn{background:var(--red)}
     #speak-btn{background:var(--green)}
     #listen-btn{background:var(--blue)}
-    #stop-btn{background:#6b6b6b}
     #next-btn{background:var(--red)}
+    #profile-form,#listen-section{margin-top:18px}
     input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff;width:calc(100% - 24px)}
     .hidden{display:none}
-    #me-line{opacity:.95;margin:10px 0 6px}
-    #status{opacity:.9;margin:8px 0 2px;min-height:1.2em}
-    #remote-audio{margin:16px auto;width:100%}
+    #me-line{opacity:.9;margin:10px 0 6px}
+    #status{opacity:.9;min-height:1.2em}
+    #audio-player{margin:16px auto;width:100%}
     body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(225,191,120,.1) 0%,rgba(0,0,0,0) 100%);z-index:-1}
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Rizzler: Unleash Your <span class="rizz">Rizz</span>!</h1>
+    <h1>Rizzler: Unleash Your <span class="pulse">Rizz</span>!</h1>
 
     <div id="profile-form">
       <input type="text" id="display-name" placeholder="Your display name (optional)">
@@ -39,20 +39,20 @@
     </div>
 
     <div id="main-section" class="hidden">
-      <div style="margin-bottom:6px;">Choose your role each round:</div>
       <button id="speak-btn">Speak & Rizz</button>
       <button id="listen-btn">Listen & Get Rizzed</button>
-      <button id="stop-btn" class="hidden">Stop</button>
       <button id="next-btn">Next Match</button>
+    </div>
 
-      <audio id="remote-audio" controls autoplay playsinline class="hidden"></audio>
+    <div id="listen-section" class="hidden">
+      <audio id="audio-player" controls crossorigin="anonymous" playsinline></audio>
     </div>
   </div>
 
-  <!-- PeerJS (for WebRTC) -->
+  <!-- PeerJS -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
-  <!-- App logic (ES module): uses your firebase-config.js exporting `db` -->
+  <!-- App (ES module) -->
   <script type="module">
     /********** Imports **********/
     import { db } from './firebase-config.js';
@@ -65,38 +65,97 @@
     /********** Config **********/
     const QUEUE_TTL_MS = 30000;
     const CLAIM_BATCH  = 8;
+    const CHUNK_SIZE   = 16 * 1024;
 
     /********** State **********/
-    let peer;
-    let myPeerId = null;
-    let partnerId = null;
+    let peer;               // PeerJS Peer
+    let myPeerId = null;    // my random id
+    let partnerId = null;   // matched partner id
+    let conn = null;        // PeerJS DataConnection (for chunks/messages)
 
-    let userProfile = {};
-    let role = 'none'; // 'speaker' | 'listener' | 'none'
-    let listeningArmed = false;
+    // Recorder state (matches your working snippet)
+    let mediaRecorder = null;
+    let recordingStream = null;
+    let audioChunks = [];
 
-    // WebRTC call state
-    let outgoingCall = null;        // when we initiate (speaker)
-    let incomingCall = null;        // when we receive (listener)
-    let localMicStream = null;      // mic stream while speaking
-    let pendingRemoteStream = null; // if stream arrives before user arms listening
+    // Receiver reassembly buffers (matches your working snippet)
+    let incomingChunks = [];
+    let incomingMime = 'audio/webm;codecs=opus';
+    let incomingSize = 0;
 
-    // Firebase matchmaking refs
+    // Firebase refs
     let myTicketRef = null;
     let myPairRef = null;
     let requeueTimer = null;
 
-    /********** DOM helpers **********/
-    const $ = sel => document.querySelector(sel);
-    const statusEl = $('#status');
-    function setStatus(t){ statusEl.textContent = t || ''; }
+    // UI helpers
+    const $ = s => document.querySelector(s);
+    function setStatus(s){ $('#status').textContent = s || ''; }
     function show(el){ el.classList.remove('hidden'); }
     function hide(el){ el.classList.add('hidden'); }
+
+    /********** EXACT working helpers from your snippet **********/
+    function getSupportedMime() {
+      const tryTypes = [
+        'audio/webm;codecs=opus',
+        'audio/webm',
+        'audio/mp4',            // iOS Safari often supports this
+        'audio/ogg;codecs=opus'
+      ];
+      for (const t of tryTypes) {
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) {
+          return t;
+        }
+      }
+      return '';
+    }
+
+    function playBlobInAudio(blob) {
+      const audio = $('#audio-player');
+      const url = URL.createObjectURL(blob);
+      audio.srcObject = null;
+      audio.src = url;
+      audio.load();
+      // User will tap play (or it may auto-play if already interacted)
+      audio.play().catch(()=>{});
+    }
+
+    // Chunked send over data channel — EXACT pattern you provided
+    function sendBlobInChunks(blob, mimeType) {
+      if (!conn || !conn.open) {
+        alert('Not connected to a peer to send your line.');
+        return;
+      }
+      conn.send({ type: 'audio-start', mime: mimeType, size: blob.size });
+
+      const reader = new FileReader();
+      let offset = 0;
+
+      reader.onload = (e) => {
+        const arr = new Uint8Array(e.target.result);
+        conn.send({ type: 'audio-chunk', data: arr });
+        offset += arr.length;
+
+        if (offset < blob.size) {
+          readNextChunk();
+        } else {
+          conn.send({ type: 'audio-end' });
+          setStatus('Line sent!');
+        }
+      };
+
+      function readNextChunk() {
+        const slice = blob.slice(offset, offset + CHUNK_SIZE);
+        reader.readAsArrayBuffer(slice);
+      }
+
+      readNextChunk();
+    }
 
     /********** PeerJS **********/
     async function initPeer(){
       peer = new Peer(undefined,{
-        debug:2,
+        debug: 2,
         config:{ iceServers:[
           {urls:'stun:stun.l.google.com:19302'},
           {urls:'stun:stun1.l.google.com:19302'},
@@ -108,54 +167,75 @@
         myPeerId = id;
         show($('#me-line'));
         $('#me-line').textContent = `Your ID: ${id}`;
-        setStatus('Looking for a match…');
+        setStatus('Finding a random match…');
         joinQueue();
       });
 
-      // LISTENER side: receive a call; answer with NO local stream (pure receive)
-      peer.on('call', (call) => {
-        // If we've chosen speaker role, we ignore incoming (one-way design)
-        if (role === 'speaker') {
-          // Politely reject to avoid loop
-          try { call.close(); } catch {}
-          return;
-        }
-
-        incomingCall?.close();
-        incomingCall = call;
-        role = (role === 'none') ? 'listener' : role;
-
-        // Answer without a stream (receive-only)
-        try { call.answer(); } catch { call.answer(); }
-
-        call.on('stream', (remoteStream) => {
-          pendingRemoteStream = remoteStream;
-          attachRemoteIfArmed();
-          setStatus('Receiving live audio…');
-        });
-
-        call.on('close', () => {
-          teardownRemoteAudio();
-          setStatus('Sender ended.');
-          incomingCall = null;
-        });
-
-        call.on('error', () => {
-          setStatus('Call error.');
-          incomingCall = null;
-        });
+      // If the OTHER side initiates the data connection
+      peer.on('connection', (connection) => {
+        // Accept inbound connection; wire up handlers
+        establishConn(connection, /*openedByUs=*/false);
       });
 
-      peer.on('disconnected', ()=>{ try{ peer.reconnect(); }catch {} });
-      peer.on('error', (e)=>{ console.error('Peer error:', e); setStatus('Network issue. Reconnecting…'); });
+      // We are NOT doing PeerJS media calls here (no live stream), only data channel
+      peer.on('call', (call) => {
+        // In case someone tries to call, immediately close — this build uses only recorded clips
+        try { call.close(); } catch {}
+      });
+
+      peer.on('disconnected', ()=>{ try{peer.reconnect();}catch{} });
+      peer.on('error', e => console.error('Peer error:', e));
     }
 
-    /********** Matchmaking (Firebase) **********/
+    // Create (or accept) a single data connection and wire events
+    function establishConn(connection, openedByUs){
+      if (conn && conn.open && connection.peer !== conn.peer) { try{ connection.close(); }catch{} return; }
+      conn = connection;
+
+      conn.on('open', () => {
+        setStatus('Matched! You can Speak or Listen.');
+        hide($('#profile-form'));
+        show($('#main-section'));
+        // No need to send profile payloads; we only exchange audio chunks
+      });
+
+      conn.on('data', handleData);
+
+      conn.on('close', () => {
+        setStatus('Partner left. Re-queuing…');
+        conn = null;
+        partnerId = null;
+        joinQueue();
+      });
+
+      conn.on('error', (e) => {
+        console.error('Conn error:', e);
+        setStatus('Connection error. Re-queuing…');
+        conn = null;
+        partnerId = null;
+        joinQueue();
+      });
+    }
+
+    // If we are the lexicographically smaller ID, we initiate the data channel to avoid double dials
+    function maybeInitiateConnection(){
+      if (!partnerId || !myPeerId) return;
+      if (conn && conn.open) return;
+      if (myPeerId < partnerId) {
+        const c = peer.connect(partnerId, { reliable:true });
+        establishConn(c, /*openedByUs=*/true);
+      }
+      // Else: wait for the other side's connect()
+    }
+
+    /********** Firebase matchmaking **********/
     function joinQueue(){
+      // 1) create my ticket
       myTicketRef = push(ref(db, 'queue'));
       set(myTicketRef, { peer: myPeerId, claimed: false, ts: serverTimestamp() });
       onDisconnect(myTicketRef).remove();
 
+      // 2) watch if someone pairs us
       myPairRef = ref(db, 'pairs/'+myPeerId);
       onDisconnect(myPairRef).remove();
       onValue(myPairRef, (snap)=>{
@@ -163,12 +243,14 @@
         if (v?.partner && !partnerId) {
           partnerId = v.partner;
           clearTimeout(requeueTimer);
-          setStatus('Matched! Choose Speak or Listen.');
+          maybeInitiateConnection();
         }
       });
 
+      // 3) clean & try to claim a partner
       cleanupStaleTickets(importCandidatesAndClaim);
 
+      // 4) re-queue if nobody soon
       requeueTimer = setTimeout(() => {
         if (!partnerId) {
           setStatus('No match yet. Re-queuing…');
@@ -208,7 +290,7 @@
             update(ref(db), updates).then(()=>{
               partnerId = cand.peer;
               clearTimeout(requeueTimer);
-              setStatus('Matched! Choose Speak or Listen.');
+              maybeInitiateConnection();
             });
           } else {
             tryClaim(list, i+1);
@@ -234,125 +316,102 @@
     function isFresh(ts){ return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
     function safeRemove(r){ try{ r && remove(r); }catch{} }
 
-    /********** One-way Push-to-Talk **********/
-    async function startSpeaking(){
-      if (!partnerId) { setStatus('Matching… then you can talk.'); return; }
-      if (role === 'listener') { setStatus('You’re the listener this round. Hit Next Match to switch.'); return; }
-      if (localMicStream) return;
-
-      try{
-        localMicStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-      }catch(e){
-        console.error(e);
-        setStatus('Mic permission needed.');
-        return;
-      }
-
-      // Place one-way call to partner (we send mic; we don’t expect remote audio)
-      outgoingCall?.close();
-      try{
-        outgoingCall = peer.call(partnerId, localMicStream);
-      }catch(e){
-        console.error(e);
-        setStatus('Call failed. Try again.');
-        stopSpeaking();
-        return;
-      }
-
-      role = 'speaker';
-      $('#speak-btn').textContent = 'Speaking…';
-      show($('#stop-btn'));
-      setStatus('Sending live audio…');
-
-      // If the other side calls us back (shouldn’t), we ignore in peer.on('call') because role==='speaker'
-    }
-
-    function stopSpeaking(){
-      // stop local mic
-      if (localMicStream){
-        localMicStream.getTracks().forEach(t=>t.stop());
-        localMicStream = null;
-      }
-      // end the call we placed
-      try{ outgoingCall?.close(); }catch{}
-      outgoingCall = null;
-
-      $('#speak-btn').textContent = 'Speak & Rizz';
-      hide($('#stop-btn'));
-      setStatus('Live message ended.');
-      // keep role, but no active stream now
-    }
-
-    function armListening(){
-      if (role === 'speaker') { setStatus('You’re the speaker this round. Hit Stop or Next Match to switch.'); return; }
-      role = 'listener';
-      listeningArmed = true;
-
-      // prepare audio element to satisfy autoplay policies
-      const a = $('#remote-audio');
-      show(a);
-      a.muted = false;
-      a.play().catch(()=>{}); // pre-warm
-
-      attachRemoteIfArmed();
-      setStatus(partnerId ? 'Ready to hear a live line…' : 'Armed to listen… waiting for match');
-    }
-
-    function attachRemoteIfArmed(){
-      if (!listeningArmed || !pendingRemoteStream) return;
-      const a = $('#remote-audio');
-      a.srcObject = pendingRemoteStream;
-      a.play().catch(()=>{}); // should be allowed after user gesture
-      pendingRemoteStream = null;
-    }
-
-    function teardownRemoteAudio(){
-      const a = $('#remote-audio');
-      try { a.pause(); } catch {}
-      a.srcObject = null;
-      hide(a);
-    }
-
-    function nextMatch(){
-      // hang up anything + reset roles
-      stopSpeaking();
-      try{ incomingCall?.close(); }catch{}
-      incomingCall = null;
-      teardownRemoteAudio();
-
-      role = 'none';
-      listeningArmed = false;
-      pendingRemoteStream = null;
-
-      // clear pairing and requeue
-      partnerId = null;
-      setStatus('Re-matching…');
-      joinQueue();
-    }
-
-    /********** UI **********/
+    /********** UI: recording & listening **********/
     $('#enter-btn').addEventListener('click', async () => {
-      userProfile.name = ($('#display-name').value || '').trim() || 'Rizzler';
       hide($('#profile-form'));
       show($('#main-section'));
       setStatus('Initializing…');
       await initPeer();
     });
 
+    // RECORD → SEND (uses your working flow)
     $('#speak-btn').addEventListener('click', () => {
-      if (localMicStream) return; // already speaking
-      startSpeaking();
+      if (!conn || !conn.open) { setStatus('Connecting… please wait a sec.'); return; }
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        // stop
+        mediaRecorder.stop();
+        return;
+      }
+      // start
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((s) => {
+        recordingStream = s;
+
+        const mimeType = getSupportedMime(); // same choice order as your code
+        try {
+          mediaRecorder = new MediaRecorder(recordingStream, mimeType ? { mimeType } : {});
+        } catch (e) {
+          alert('MediaRecorder failed to start: ' + e.message);
+          return;
+        }
+
+        audioChunks = [];
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            audioChunks.push(e.data);
+          }
+        };
+        mediaRecorder.onstop = () => {
+          // Stop mic
+          recordingStream.getTracks().forEach(t => t.stop());
+          // Build final blob and send in chunks — IDENTICAL to your working logic
+          const finalMime = mediaRecorder.mimeType || mimeType || 'audio/webm';
+          const blob = new Blob(audioChunks, { type: finalMime });
+          sendBlobInChunks(blob, finalMime);
+          $('#speak-btn').textContent = 'Speak & Rizz';
+        };
+
+        mediaRecorder.start(100); // collect 100ms chunks
+        $('#speak-btn').textContent = 'Stop Recording';
+        setStatus('Recording…');
+      }).catch((e) => {
+        alert('Microphone access denied: ' + e.message);
+      });
     });
 
-    $('#stop-btn').addEventListener('click', () => {
-      stopSpeaking();
-    });
-
+    // LISTEN — just shows the player and primes autoplay by a user gesture
     $('#listen-btn').addEventListener('click', () => {
-      armListening();
+      show($('#listen-section'));
+      const a = $('#audio-player');
+      a.muted = false;
+      a.play().catch(()=>{}); // primes autoplay after human gesture
+      setStatus('Armed to listen…');
     });
 
-    $('#next-btn').addEventListener('click', () => nextMatch());
+    // NEXT — drop current pairing and requeue
+    $('#next-btn').addEventListener('click', () => {
+      try{ conn?.close(); }catch{}
+      conn = null;
+      partnerId = null;
+      $('#audio-player').src = '';
+      setStatus('Re-matching…');
+      joinQueue();
+    });
+
+    /********** Incoming data handler — EXACT behavior you shared **********/
+    function handleData(msg) {
+      if (!msg || !msg.type) return;
+
+      switch (msg.type) {
+        case 'audio-start':
+          incomingChunks = [];
+          incomingMime = msg.mime || 'audio/webm;codecs=opus';
+          incomingSize = msg.size || 0;
+          setStatus('Receiving a line…');
+          break;
+
+        case 'audio-chunk':
+          // msg.data arrives as Uint8Array via PeerJS
+          incomingChunks.push(msg.data);
+          break;
+
+        case 'audio-end': {
+          const blob = new Blob(incomingChunks, { type: incomingMime });
+          playBlobInAudio(blob);
+          setStatus('Line received!');
+          break;
+        }
+      }
+    }
   </script>
 </body>
 </html>
