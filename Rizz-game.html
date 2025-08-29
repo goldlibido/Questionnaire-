@@ -6,492 +6,380 @@
   <title>Rizzler: Drop Your Best Line</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root{--gold:#e1bf78;--blue:#064D95;--green:#06954E;--red:#c40018;--redBright:#ff1e2d;}
     body{font-family:'Montserrat',sans-serif;background:#000;color:#fff;text-align:center;padding:20px;margin:0;overflow:hidden}
-    .container{max-width:640px;margin:0 auto;border:2px solid var(--gold);border-radius:15px;padding:20px;box-shadow:0 0 20px var(--gold)}
-    h1{font-size:2em;color:var(--gold);margin-bottom:10px}
-    h1 .rizz{color:var(--redBright);display:inline-block;animation:rizzPulse 1.4s ease-in-out infinite}
-    @keyframes rizzPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-    button{padding:14px 26px;margin:10px;font-size:1.05em;border:none;border-radius:24px;cursor:pointer;transition:transform .2s,box-shadow .2s;color:#fff}
-    button:hover{transform:scale(1.06);box-shadow:0 0 10px currentColor}
-    #enter-btn{background:var(--red)}
-    #speak-btn{background:var(--green)}
-    #listen-btn{background:var(--blue)}
-    #accept-btn{background:var(--red)}
-    input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff;width:calc(100% - 24px)}
+    .container{max-width:600px;margin:0 auto;border:2px solid #e1bf78;border-radius:15px;padding:20px;box-shadow:0 0 20px #e1bf78}
+    h1{font-size:2em;color:#e1bf78;margin-bottom:10px;text-shadow:0 0 10px #e1bf78}
+    h1 span{color:#e1bf78;animation:pulse 2s infinite}
+    button{padding:15px 30px;margin:10px;font-size:1.2em;border:none;border-radius:25px;cursor:pointer;transition:transform .2s,box-shadow .2s;color:#fff}
+    button:hover{transform:scale(1.1);box-shadow:0 0 15px currentColor}
+    #speak-btn{background:#06954E}
+    #listen-btn{background:#064D95}
+    #accept-btn,#send-btn{background:#950606}
+    #next-btn{background:#950606}
+    #profile-form,#listen-section,#match-section{margin-top:20px}
+    input{padding:10px;margin:5px;border:1px solid #e1bf78;border-radius:10px;background:#222;color:#fff;font-family:'Montserrat',sans-serif}
+    #audio-player{margin:20px auto;width:100%}
+    #chat-window{height:200px;overflow-y:auto;border:1px solid #e1bf78;border-radius:10px;padding:10px;background:#111;margin-bottom:10px;text-align:left}
+    .chat-message{padding:8px;margin:5px 0;border-radius:15px;max-width:80%;word-wrap:break-word;animation:slideIn .3s ease-out}
+    .sent{background:#06954E;margin-left:auto}
+    .received{background:#064D95;margin-right:auto}
     .hidden{display:none}
-    #me-line{opacity:.9;margin:10px 0 6px}
-    #status{opacity:.9;min-height:1.2em}
-    #audio-player{margin:16px auto;width:100%}
-    #chat-window{height:260px;overflow-y:auto;border:1px solid var(--gold);border-radius:10px;padding:10px;background:#111;margin-bottom:10px;text-align:left}
-    .chat-message{padding:8px 10px;margin:6px 0;border-radius:12px;max-width:85%;word-wrap:break-word;animation:slideIn .3s ease-out;display:inline-block}
-    .sent{background:var(--green);margin-left:auto}
-    .received{background:var(--blue);margin-right:auto}
-    .toolbar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:8px}
-    .toolbar input[type="text"]{flex:1;min-width:180px}
-    .icon-btn{background:var(--blue)}
-    @keyframes slideIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+    @keyframes pulse{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
+    @keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
     body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(225,191,120,.1) 0%,rgba(0,0,0,0) 100%);z-index:-1}
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Rizzler: Unleash Your <span class="rizz">Rizz</span>!</h1>
+    <h1>Rizzler: Unleash Your <span>Rizz!</span></h1>
 
-    <!-- Profile -->
     <div id="profile-form">
-      <input type="text" id="display-name" placeholder="Your display name (optional)">
+      <input type="text" id="username" placeholder="Your name (required)" required>
+      <input type="text" id="photo-url" placeholder="Photo URL (optional)">
       <button id="enter-btn">Enter the Game</button>
-      <div id="me-line" class="hidden"></div>
-      <div id="status"></div>
     </div>
 
-    <!-- Main actions -->
     <div id="main-section" class="hidden">
-      <button id="speak-btn">Speak & Rizz</button>
-      <button id="listen-btn">Listen & Get Rizzed</button>
+      <button id="speak-btn">Speak Your Line</button>
+      <button id="listen-btn">Listen & Rizz</button>
     </div>
 
-    <!-- Speak flow -->
-    <div id="speak-section" class="hidden">
-      <p><strong>Record your line:</strong></p>
-      <button id="record-toggle">Start Recording</button>
-      <div id="speak-hint" style="opacity:.85;margin-top:6px;"></div>
-    </div>
-
-    <!-- Listen flow -->
     <div id="listen-section" class="hidden">
-      <audio id="audio-player" controls crossorigin="anonymous" playsinline></audio>
-      <div style="margin-top:8px">
-        <button id="accept-btn" class="hidden">Accept & Match</button>
-      </div>
+      <audio id="audio-player" controls crossorigin="anonymous"></audio>
+      <button id="accept-btn">Accept & Match</button>
+      <button id="next-btn">Next Line</button>
     </div>
 
-    <!-- Match / Chat -->
     <div id="match-section" class="hidden">
       <h2>Match! Let the Sparks Fly!</h2>
       <p id="match-info"></p>
       <div id="chat-window"></div>
-      <div class="toolbar">
-        <input type="text" id="chat-input" placeholder="Type your message…">
-        <button id="send-btn">Send</button>
-        <input id="photo-input" class="hidden" type="file" accept="image/*" capture="environment">
-        <button id="photo-btn" class="icon-btn">📷 Photo</button>
-      </div>
+      <input type="text" id="chat-input" placeholder="Type your flirty message...">
+      <button id="send-btn">Send</button>
     </div>
   </div>
 
-  <!-- PeerJS -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-
-  <!-- App (ESM) -->
-  <script type="module">
-    /********** Imports **********/
-    import { db } from './firebase-config.js';
-    import {
-      ref, push, set, onValue, onDisconnect, remove, update, get,
-      runTransaction, serverTimestamp, query, orderByChild, equalTo,
-      limitToFirst, endAt
-    } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
-
-    /********** Config **********/
-    const QUEUE_TTL_MS = 30000;
-    const CLAIM_BATCH  = 8;
-    const CHUNK_SIZE   = 16 * 1024;
-
-    /********** State **********/
+  <script>
     let peer, conn;
-    let myPeerId = null;
-    let partnerId = null;
+    let mediaRecorder, recordingStream;
+    let audioChunks = [];
     let userProfile = {};
-    let remoteProfile = {};
+    let currentPeerId = null;
     let matched = false;
 
-    // Recorder (Safari-friendly)
-    let mediaRecorder = null, recordingStream = null, audioChunks = [];
-    // Receiver reassembly (Uint8Array chunks)
-    let incomingChunks = [], incomingMime = 'audio/webm;codecs=opus', incomingSize = 0;
-    // Image RX
-    let rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg' };
+    // Receiver-side reassembly buffers
+    let incomingChunks = [];
+    let incomingMime = 'audio/webm;codecs=opus';
+    let incomingSize = 0;
 
-    // Firebase refs
-    let myTicketRef = null, myPairRef = null, requeueTimer = null;
-
-    /********** DOM helpers **********/
-    const $ = s => document.querySelector(s);
-    const setStatus = s => $('#status').textContent = s || '';
-    const show = el => el.classList.remove('hidden');
-    const hide = el => el.classList.add('hidden');
-
-    /********** iOS-friendly MIME choice **********/
+    // --- Helpers ---
     function getSupportedMime() {
-      // Prefer iOS-compatible first
-      const types = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
-      for (const t of types) {
-        if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
+      const tryTypes = [
+        'audio/webm;codecs=opus',
+        'audio/webm',
+        'audio/mp4',           // iOS Safari often supports this
+        'audio/ogg;codecs=opus'
+      ];
+      for (const t of tryTypes) {
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) {
+          return t;
+        }
       }
+      // Fallback to whatever the browser gives
       return '';
     }
 
+    function ensureConnectionForSending() {
+      if (conn && conn.open) return true;
+      if (!currentPeerId) {
+        currentPeerId = prompt('Enter the Peer ID to send your line to:');
+        if (!currentPeerId) return false;
+      }
+      conn = peer.connect(currentPeerId);
+      conn.on('data', handleData);
+      conn.on('open', () => {
+        // Send my profile when we connect
+        conn.send({ type: 'profile', data: userProfile });
+      });
+      conn.on('close', () => console.log('Connection closed'));
+      conn.on('error', (e) => console.error('Conn error:', e));
+      return true;
+    }
+
     function playBlobInAudio(blob) {
-      const audio = $('#audio-player');
+      const audio = document.getElementById('audio-player');
       const url = URL.createObjectURL(blob);
       audio.srcObject = null;
       audio.src = url;
       audio.load();
-      audio.play().catch(()=>{}); // will work after user tapped Listen
+      // Autoplay may be blocked; the user can tap play. Try anyway:
+      audio.play().catch(() => {/* ignore autoplay block */});
     }
 
-    /********** PeerJS **********/
-    async function initPeer(){
-      peer = new Peer(undefined,{
-        debug:2,
-        config:{ iceServers:[
-          {urls:'stun:stun.l.google.com:19302'},
-          {urls:'stun:stun1.l.google.com:19302'},
-          {urls:'stun:stun2.l.google.com:19302'}
-        ]}
+    // --- Peer setup ---
+    function initPeer() {
+      peer = new Peer();
+      peer.on('open', (id) => {
+        console.log('Your Peer ID:', id);
+        alert('Share this Peer ID with others: ' + id);
       });
-
-      peer.on('open', id => {
-        myPeerId = id;
-        show($('#me-line'));
-        $('#me-line').textContent = `Your ID: ${id}`;
-        setStatus('Finding a random match…');
-        joinQueue();
-      });
-
-      // If the OTHER side connects to us
       peer.on('connection', (connection) => {
-        establishConn(connection);
-      });
-
-      // We are not doing media calls here; only data channel
-      peer.on('call', call => { try{ call.close(); }catch{} });
-
-      peer.on('disconnected', ()=>{ try{peer.reconnect();}catch{} });
-      peer.on('error', e => console.error('Peer error:', e));
-    }
-
-    function establishConn(connection){
-      // ensure single conn
-      if (conn && conn.open && connection.peer !== conn.peer) { try{connection.close();}catch{}; return; }
-      conn = connection;
-
-      conn.on('open', () => {
-        setStatus('Matched! Choose Speak or Listen.');
-        hide($('#profile-form'));
-        show($('#main-section'));
-        // optional: exchange profiles if you want names/photos later
-        // conn.send({ type:'profile', data:userProfile });
-      });
-      conn.on('data', handleData);
-      conn.on('close', onDisconnect);
-      conn.on('error', onDisconnect);
-    }
-
-    function maybeInitiateConnection(){
-      if (!partnerId || !myPeerId) return;
-      if (conn && conn.open) return;
-      if (myPeerId < partnerId) {
-        const c = peer.connect(partnerId, { reliable:true });
-        establishConn(c);
-      }
-      // else wait for the other side to connect
-    }
-
-    function onDisconnect(){
-      setStatus('Partner left. Matching again…');
-      conn = null; partnerId = null; matched = false;
-      hide($('#speak-section'));
-      hide($('#listen-section'));
-      hide($('#match-section'));
-      show($('#main-section'));
-      joinQueue();
-    }
-
-    /********** Firebase matchmaking **********/
-    function joinQueue(){
-      myTicketRef = push(ref(db, 'queue'));
-      set(myTicketRef, { peer: myPeerId, claimed:false, ts: serverTimestamp() });
-      onDisconnect(myTicketRef).remove();
-
-      myPairRef = ref(db, 'pairs/'+myPeerId);
-      onDisconnect(myPairRef).remove();
-      onValue(myPairRef, (snap)=>{
-        const v = snap.val();
-        if (v?.partner && !partnerId) {
-          partnerId = v.partner;
-          clearTimeout(requeueTimer);
-          maybeInitiateConnection();
-        }
-      });
-
-      cleanupStaleTickets(importCandidatesAndClaim);
-
-      requeueTimer = setTimeout(() => {
-        if (!partnerId) {
-          setStatus('No match yet. Re-queuing…');
-          safeRemove(myTicketRef); safeRemove(myPairRef);
-          joinQueue();
-        }
-      }, QUEUE_TTL_MS);
-    }
-
-    function importCandidatesAndClaim(){
-      const q = query(ref(db, 'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
-      get(q).then((snap)=>{
-        const cands = [];
-        snap.forEach(cs=>{
-          const v = cs.val();
-          if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
+        conn = connection;
+        conn.on('data', handleData);
+        conn.on('open', () => {
+          // Send my profile to the other side
+          conn.send({ type: 'profile', data: userProfile });
         });
-        tryClaim(cands, 0);
       });
-    }
 
-    function tryClaim(list, i){
-      if (partnerId || i >= list.length) { setStatus('Waiting for someone…'); return; }
-      const cand = list[i];
-      const claimPath = ref(db, `queue/${cand.key}/claimed`);
-      runTransaction(claimPath, cur => cur === false ? myPeerId : cur)
-        .then(res=>{
-          if (res.committed && res.snapshot.val() === myPeerId) {
-            const updates = {};
-            updates[`pairs/${myPeerId}`] = { partner: cand.peer, ts: Date.now() };
-            updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
-            updates[`queue/${myTicketRef.key}`] = null;
-            updates[`queue/${cand.key}`] = null;
-            update(ref(db), updates).then(()=>{
-              partnerId = cand.peer;
-              clearTimeout(requeueTimer);
-              maybeInitiateConnection();
-            });
-          } else {
-            tryClaim(list, i+1);
-          }
-        })
-        .catch(()=> tryClaim(list, i+1));
-    }
-
-    function cleanupStaleTickets(done){
-      const cutoff = Date.now() - QUEUE_TTL_MS;
-      const q = query(ref(db, 'queue'), orderByChild('ts'), endAt(cutoff), limitToFirst(25));
-      get(q).then((snap)=>{
-        const updates = {};
-        snap.forEach(cs=>{
-          const v = cs.val();
-          if (v && v.ts && v.ts < cutoff) updates[`queue/${cs.key}`] = null;
+      // Optional: live streaming path (not required for blob flow)
+      peer.on('call', (call) => {
+        // Answer without sending back a stream (receive-only)
+        call.answer();
+        call.on('stream', (remoteStream) => {
+          const audio = document.getElementById('audio-player');
+          audio.srcObject = remoteStream;
+          audio.muted = false;
+          audio.play().catch(e => console.error('Audio play error:', e));
         });
-        if (Object.keys(updates).length) update(ref(db), updates).finally(()=>done && done());
-        else done && done();
       });
+
+      peer.on('error', (e) => console.error('Peer error:', e));
     }
 
-    function isFresh(ts){ return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
-    function safeRemove(r){ try{ r && remove(r); }catch{} }
-
-    /********** UI Flow **********/
-    $('#enter-btn').addEventListener('click', async () => {
-      userProfile.name = ($('#display-name').value || '').trim() || 'Rizzler';
-      hide($('#profile-form'));
-      show($('#main-section'));
-      setStatus('Initializing…');
-      await initPeer();
+    // --- Profile save / UI wiring ---
+    document.getElementById('enter-btn').addEventListener('click', () => {
+      userProfile.name = document.getElementById('username').value.trim();
+      userProfile.photo = document.getElementById('photo-url').value.trim() || 'No photo';
+      if (!userProfile.name) { alert('Name is required!'); return; }
+      document.getElementById('profile-form').classList.add('hidden');
+      document.getElementById('main-section').classList.remove('hidden');
+      initPeer();
     });
 
-    // SPEAK & RIZZ
-    $('#speak-btn').addEventListener('click', () => {
-      if (!conn || !conn.open) { setStatus('Connecting…'); return; }
-      hide($('#listen-section'));
-      show($('#speak-section'));
-      $('#speak-hint').textContent = 'Tap Start Recording, say your line, then Stop Recording to send.';
-    });
-
-    // Start/Stop Recording (Safari-safe)
-    $('#record-toggle').addEventListener('click', () => {
-      if (!mediaRecorder || mediaRecorder.state !== 'recording') {
-        // START
-        navigator.mediaDevices.getUserMedia({ audio:true }).then(s=>{
-          recordingStream = s;
-          const mimeType = getSupportedMime(); // prefers audio/mp4 on iOS
-          try {
-            mediaRecorder = new MediaRecorder(recordingStream, mimeType?{ mimeType }: {});
-          } catch(e){
-            alert('Recorder failed: '+e.message);
-            return;
-          }
-          audioChunks = [];
-          mediaRecorder.ondataavailable = e => { if (e.data && e.data.size>0) audioChunks.push(e.data); };
-          mediaRecorder.onstop = () => {
-            recordingStream.getTracks().forEach(t=>t.stop());
-            const finalMime = mediaRecorder.mimeType || mimeType || 'audio/webm';
-            const blob = new Blob(audioChunks, { type: finalMime });
-            sendBlobInChunks(blob, finalMime);
-            $('#record-toggle').textContent = 'Start Recording';
-            setStatus('Line sent!');
-          };
-          mediaRecorder.start(100);
-          $('#record-toggle').textContent = 'Stop Recording';
-          setStatus('Recording…');
-        }).catch(e=>{
-          alert('Microphone access denied: ' + e.message);
-        });
+    document.getElementById('speak-btn').addEventListener('click', () => {
+      const btn = document.getElementById('speak-btn');
+      if (btn.dataset.state === 'recording') {
+        stopRecording();
       } else {
-        // STOP
+        startRecording();
+      }
+    });
+
+    document.getElementById('listen-btn').addEventListener('click', startListening);
+    document.getElementById('accept-btn').addEventListener('click', acceptLine);
+    document.getElementById('next-btn').addEventListener('click', nextLine);
+    document.getElementById('send-btn').addEventListener('click', sendMessage);
+
+    // --- Recording flow (record → send blob over data channel) ---
+    function startRecording() {
+      // Make sure we know who to send to (or establish a connection)
+      if (!ensureConnectionForSending()) return;
+
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((s) => {
+        recordingStream = s;
+
+        const mimeType = getSupportedMime();
+        try {
+          mediaRecorder = new MediaRecorder(recordingStream, mimeType ? { mimeType } : {});
+        } catch (e) {
+          alert('MediaRecorder failed to start: ' + e.message);
+          return;
+        }
+
+        audioChunks = [];
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            audioChunks.push(e.data);
+          }
+        };
+        mediaRecorder.onstop = async () => {
+          // Stop mic
+          recordingStream.getTracks().forEach(t => t.stop());
+
+          // Build the final blob
+          const finalMime = mediaRecorder.mimeType || mimeType || 'audio/webm';
+          const blob = new Blob(audioChunks, { type: finalMime });
+
+          // Immediately play locally for the speaker (optional)
+          // playBlobInAudio(blob);
+
+          // Send to peer in chunks so we don’t overflow the data channel
+          sendBlobInChunks(blob, finalMime);
+
+          // Reset UI
+          const btn = document.getElementById('speak-btn');
+          btn.innerText = 'Speak Your Line';
+          btn.dataset.state = '';
+        };
+
+        mediaRecorder.start(100); // collect data every 100ms
+        const btn = document.getElementById('speak-btn');
+        btn.innerText = 'Stop Recording';
+        btn.dataset.state = 'recording';
+      }).catch((e) => {
+        alert('Microphone access denied: ' + e.message);
+      });
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
       }
-    });
-
-    // LISTEN & GET RIZZED
-    $('#listen-btn').addEventListener('click', () => {
-      if (!conn || !conn.open) { setStatus('Connecting…'); return; }
-      hide($('#speak-section'));
-      show($('#listen-section'));
-      const a = $('#audio-player');
-      a.muted = false;
-      // Prime autoplay by a user gesture on iOS
-      a.play().catch(()=>{});
-      setStatus('Armed to listen…');
-    });
-
-    // Accept & Match → open chat (text + photo)
-    $('#accept-btn').addEventListener('click', () => {
-      if (!conn || !conn.open) return;
-      conn.send({ type:'accept', data: userProfile });
-      matched = true;
-      showMatch(remoteProfile || { name:'Mystery' });
-    });
-
-    /********** Chat **********/
-    $('#send-btn').addEventListener('click', () => {
-      const input = $('#chat-input');
-      const msg = input.value.trim();
-      if (!msg || !(conn && conn.open)) return;
-      conn.send({ type:'message', data: msg });
-      displayMessage(msg, true);
-      input.value = '';
-    });
-
-    $('#photo-btn').addEventListener('click', () => $('#photo-input').click());
-    $('#photo-input').addEventListener('change', e => {
-      const f = e.target.files?.[0]; if (!f || !(conn && conn.open)) return;
-      f.arrayBuffer().then(buf => {
-        const b = new Blob([buf], { type: f.type || 'image/jpeg' });
-        appendImg(b, true);
-        sendImg(b, f.name || 'photo.jpg');
-        e.target.value = '';
-      });
-    });
-
-    function showMatch(other){
-      hide($('#listen-section'));
-      hide($('#speak-section'));
-      show($('#match-section'));
-      $('#match-info').textContent = `Matched with ${other.name || 'Mystery'}!`;
-    }
-    function displayMessage(message, isSent) {
-      const box = $('#chat-window');
-      const d = document.createElement('div');
-      d.className = 'chat-message ' + (isSent?'sent':'received');
-      d.textContent = message;
-      box.appendChild(d);
-      box.scrollTop = box.scrollHeight;
-    }
-    function appendImg(b, sent){
-      const box = $('#chat-window');
-      const url = URL.createObjectURL(b);
-      const d = document.createElement('div');
-      d.className = 'chat-message ' + (sent?'sent':'received');
-      const i = document.createElement('img');
-      i.src = url; i.style.maxWidth='220px'; i.style.borderRadius='10px'; i.style.display='block';
-      d.appendChild(i); box.appendChild(d); box.scrollTop = box.scrollHeight;
-    }
-    function sendImg(blob, name){
-      conn.send({ type:'image-start', mime: blob.type, name, size: blob.size });
-      const r = new FileReader(); let o = 0;
-      r.onload = e => {
-        conn.send({ type:'image-chunk', data:new Uint8Array(e.target.result) });
-        o += e.target.result.byteLength;
-        if (o < blob.size) readNext(); else conn.send({ type:'image-end' });
-      };
-      function readNext(){ r.readAsArrayBuffer(blob.slice(o, o + CHUNK_SIZE)); }
-      readNext();
     }
 
-    /********** Data channel: EXACT audio-chunking that worked for you **********/
+    // Chunked send over data channel
     function sendBlobInChunks(blob, mimeType) {
-      if (!conn || !conn.open) { alert('Not connected to a peer to send your line.'); return; }
+      if (!conn || !conn.open) {
+        alert('Not connected to a peer to send your line.');
+        return;
+      }
+      // Announce start and mime
       conn.send({ type: 'audio-start', mime: mimeType, size: blob.size });
-      const reader = new FileReader(); let offset = 0;
+
+      const chunkSize = 16 * 1024; // 16KB
+      const reader = new FileReader();
+      let offset = 0;
+
       reader.onload = (e) => {
         const arr = new Uint8Array(e.target.result);
         conn.send({ type: 'audio-chunk', data: arr });
         offset += arr.length;
-        if (offset < blob.size) readNextChunk(); else conn.send({ type: 'audio-end' });
+
+        if (offset < blob.size) {
+          readNextChunk();
+        } else {
+          conn.send({ type: 'audio-end' });
+          console.log('Audio sent.');
+        }
       };
-      function readNextChunk(){ reader.readAsArrayBuffer(blob.slice(offset, offset + CHUNK_SIZE)); }
+
+      function readNextChunk() {
+        const slice = blob.slice(offset, offset + chunkSize);
+        reader.readAsArrayBuffer(slice);
+      }
+
       readNextChunk();
     }
 
-    /********** Incoming data **********/
-    function handleData(msg){
-      if (!msg || !msg.type) return;
-      switch(msg.type){
-        // optional profile exchange (not required)
-        case 'profile': remoteProfile = msg.data || {}; break;
+    // --- Listening flow ---
+    function startListening() {
+      document.getElementById('main-section').classList.add('hidden');
+      document.getElementById('listen-section').classList.remove('hidden');
 
-        // AUDIO
+      if (!peer) { initPeer(); }
+
+      // For MVP, prompt for peer ID to pull from
+      currentPeerId = prompt('Enter the Peer ID of someone to connect with:');
+      if (currentPeerId) {
+        conn = peer.connect(currentPeerId);
+        conn.on('open', () => {
+          conn.send({ type: 'profile', data: userProfile });
+          console.log('Connection open');
+        });
+        conn.on('data', handleData);
+        conn.on('close', () => console.log('Connection closed'));
+        conn.on('error', (e) => console.error('Conn error:', e));
+      }
+    }
+
+    // --- Data handler (profiles, messages, audio chunks, match) ---
+    function handleData(msg) {
+      if (!msg || !msg.type) return;
+
+      switch (msg.type) {
+        case 'profile':
+          // Got the other side's profile; nothing to do yet
+          break;
+
         case 'audio-start':
           incomingChunks = [];
           incomingMime = msg.mime || 'audio/webm;codecs=opus';
           incomingSize = msg.size || 0;
-          show($('#listen-section')); // ensure player visible
-          setStatus('Receiving a line…');
           break;
 
         case 'audio-chunk':
+          // msg.data is Uint8Array
           incomingChunks.push(msg.data);
           break;
 
         case 'audio-end': {
+          // Reassemble
           const blob = new Blob(incomingChunks, { type: incomingMime });
+          // (Optional) sanity check size
+          // console.log('Received bytes:', incomingChunks.reduce((a, b) => a + b.length, 0), 'expected:', incomingSize);
           playBlobInAudio(blob);
-          show($('#accept-btn'));   // allow listener to accept after hearing
-          setStatus('Line received!');
           break;
         }
 
-        // ACCEPT → open chat on sender side too
         case 'accept':
-          matched = true;
-          showMatch(msg.data || { name: 'Mystery' });
+          if (!matched) {
+            matched = true;
+            showMatch(msg.data);
+          }
           break;
 
-        // TEXT MSG
         case 'message':
-          displayMessage(msg.data, false);
+          if (matched) {
+            displayMessage(msg.data, false);
+          }
           break;
 
-        // IMAGE
-        case 'image-start':
-          rxImage = { parts: [], mime: msg.mime || 'image/jpeg', name: msg.name || 'photo.jpg' };
-          break;
-        case 'image-chunk':
-          rxImage.parts.push(msg.data);
-          break;
-        case 'image-end': {
-          const blob = new Blob(rxImage.parts, { type: rxImage.mime });
-          appendImg(blob, false);
-          rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg' };
-          break;
-        }
+        default:
+          console.log('Unknown message type:', msg.type);
       }
     }
 
-    /********** Utils **********/
-    // (all used by matchmaking)
-    // already defined: isFresh, safeRemove
+    // --- Match / Chat ---
+    function acceptLine() {
+      if (conn && conn.open) {
+        matched = true;
+        conn.send({ type: 'accept', data: userProfile });
+
+        // Show other profile if we cached it; for MVP show mine if not sent yet
+        showMatch(userProfile);
+      }
+    }
+
+    function nextLine() {
+      if (conn) try { conn.close(); } catch {}
+      const audio = document.getElementById('audio-player');
+      audio.srcObject = null;
+      audio.src = '';
+      startListening();
+    }
+
+    function showMatch(otherProfile) {
+      document.getElementById('listen-section').classList.add('hidden');
+      document.getElementById('match-section').classList.remove('hidden');
+      const matchInfo = document.getElementById('match-info');
+      matchInfo.innerHTML = `Matched with ${otherProfile.name}! ${
+        otherProfile.photo !== 'No photo'
+          ? `<br><img src="${otherProfile.photo}" alt="Profile Photo" style="max-width: 150px; border-radius: 50%; border: 2px solid #e1bf78;">`
+          : ''
+      }`;
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+      if (!message) return;
+      if (conn && conn.open) {
+        conn.send({ type: 'message', data: message });
+        displayMessage(message, true);
+        input.value = '';
+      }
+    }
+
+    function displayMessage(message, isSent) {
+      const chatWindow = document.getElementById('chat-window');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chat-message ${isSent ? 'sent' : 'received'}`;
+      messageDiv.textContent = message;
+      chatWindow.appendChild(messageDiv);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
   </script>
 </body>
 </html>
