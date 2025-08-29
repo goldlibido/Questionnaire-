@@ -2,478 +2,351 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Rizzler</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Rizzler — Audio Swipe</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root{--gold:#e1bf78;--blue:#064D95;--green:#06954E;--red:#c40018;--redBright:#ff1e2d;}
-  body{font-family:'Montserrat',sans-serif;background:#000;color:#fff;text-align:center;padding:20px;margin:0}
-  .container{max-width:680px;margin:0 auto;border:2px solid var(--gold);border-radius:14px;padding:18px;box-shadow:0 0 18px var(--gold)}
-  h1{font-size:1.9em;color:var(--gold);margin:0 0 10px}
-  .pulse{color:var(--redBright);display:inline-block;animation:pulse 1.4s ease-in-out infinite}
-  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-  button{padding:12px 22px;margin:8px;font-size:1.05em;border:none;border-radius:24px;cursor:pointer;transition:transform .2s,box-shadow .2s;color:#fff}
-  button:hover{transform:scale(1.05);box-shadow:0 0 10px currentColor}
-  #speak-btn{background:var(--green)}
-  #listen-btn{background:var(--blue)}
-  #accept-btn{background:var(--red)}
-  #send-btn,#audio-send-btn{background:var(--green)}
-  #photo-btn{background:var(--blue)}
-  input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff}
-  .hidden{display:none}
-  #status{opacity:.95;min-height:1.6em;margin:6px 0 10px}
-  #status.error{color:#ff5b6e}
-  #status.ok{color:#9bffa6}
-  #badge{display:inline-block;padding:2px 8px;border-radius:10px;border:1px solid #555;background:#222;font-size:.8em;margin-bottom:8px}
-  #audio-player{margin:12px auto;width:100%}
-  #chat-window{height:260px;overflow-y:auto;border:1px solid var(--gold);border-radius:10px;padding:10px;background:#111;margin-bottom:10px;text-align:left}
-  .chat-message{padding:8px 10px;margin:6px 0;border-radius:12px;max-width:85%;word-wrap:break-word;animation:slideIn .25s ease-out;display:inline-block}
-  .sent{background:var(--green);margin-left:auto}
-  .received{background:var(--blue);margin-right:auto}
-  @keyframes slideIn{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
-  .row{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap}
-  .tiny{font-size:.9em;opacity:.85}
+  :root{--gold:#e1bf78;--blue:#064D95;--green:#06954E;--red:#c40018;--ink:#111;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#000;color:#fff;font-family:'Montserrat',sans-serif}
+  .wrap{max-width:840px;margin:0 auto;padding:16px}
+  .card{border:2px solid var(--gold);border-radius:14px;background:#0b0b0b;box-shadow:0 0 18px rgba(225,191,120,.5);padding:14px;margin:10px 0}
+  h1{margin:2px 0 10px;color:var(--gold);font-size:1.7rem;text-align:center}
+  label{display:block;margin:8px 0 4px}
+  input[type="text"]{width:100%;padding:10px;border:1px solid var(--gold);border-radius:10px;background:#1c1c1c;color:#fff}
+  button{padding:12px 16px;border:none;border-radius:24px;color:#fff;background:#333;cursor:pointer;margin:6px 6px 0 0;font-size:1rem;transition:transform .15s,box-shadow .15s}
+  button:hover{transform:scale(1.04);box-shadow:0 0 10px currentColor}
+  .btn-green{background:var(--green)} .btn-blue{background:var(--blue)} .btn-red{background:var(--red)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .center{display:flex;justify-content:center}
+  audio{width:100%;background:#000;margin:6px 0}
+  #status{min-height:1.3em;opacity:.95;margin-top:6px}
+  #status.ok{color:#9bffa6} #status.err{color:#ff7b86}
+  #browse-none{opacity:.85}
+  #chat{max-height:360px;overflow-y:auto;border:1px solid var(--gold);border-radius:10px;background:var(--ink);padding:10px;margin-top:10px}
+  .bubble{display:inline-block;max-width:78%; padding:8px 10px;margin:6px 0;border-radius:12px;animation:fade .2s ease-out}
+  .me{background:var(--green);margin-left:auto} .them{background:var(--blue);margin-right:auto}
+  .bubble img{max-width:220px;border-radius:10px;display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .muted{opacity:.7}
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>Unleash Your <span class="pulse">Rizz</span></h1>
+<div class="wrap">
+  <h1>Rizzler — Audio Swipe</h1>
 
-  <div id="badge" class="hidden"></div>
-  <div id="status">Initializing…</div>
-
-  <!-- Main actions -->
-  <div id="main" class="hidden">
-    <button id="speak-btn">Speak & Rizz</button>
-    <button id="listen-btn">Listen & Get Rizzed</button>
-  </div>
-
-  <!-- Speak flow -->
-  <div id="speak-section" class="hidden">
-    <p><strong>Record your line:</strong></p>
-    <button id="record-toggle">Start Recording</button>
-    <div class="tiny">Tap once to start; tap again to stop & send.</div>
-  </div>
-
-  <!-- Listen flow -->
-  <div id="listen-section" class="hidden">
-    <audio id="audio-player" controls crossorigin="anonymous" playsinline></audio><br>
-    <button id="accept-btn" class="hidden">Accept & Match</button>
-    <div class="tiny">Your match’s line will play here.</div>
-  </div>
-
-  <!-- Match / Chat -->
-  <div id="match-section" class="hidden">
-    <h2>Chat</h2>
-    <div id="chat-window"></div>
+  <!-- Onboarding -->
+  <div class="card" id="onboard">
+    <label>Your display name</label>
+    <input id="name" type="text" placeholder="e.g., Venus" />
     <div class="row">
-      <input type="text" id="chat-input" placeholder="Type your message…" style="flex:1;min-width:180px">
-      <button id="send-btn">Send</button>
-      <input id="photo-input" class="hidden" type="file" accept="image/*" capture="environment">
-      <button id="photo-btn" title="Send photo">📷</button>
-      <button id="audio-send-btn" title="Record/send audio">🎙️</button>
+      <button id="go" class="btn-green">Start</button>
+      <div id="status" class="muted">Say your best line, then browse others.</div>
+    </div>
+  </div>
+
+  <!-- Record my line -->
+  <div class="card" id="record" hidden>
+    <strong>Record your pick-up line</strong>
+    <div class="row">
+      <button id="rec-btn" class="btn-green">🎙️ Start recording</button>
+      <button id="submit-line" class="btn-blue" disabled>Upload line</button>
+      <span id="rec-hint" class="muted">Tap to start, tap again to stop.</span>
+    </div>
+    <audio id="my-preview" controls hidden></audio>
+  </div>
+
+  <!-- Browse audio cards -->
+  <div class="card" id="browse" hidden>
+    <strong>Browse daters</strong>
+    <audio id="card-audio" controls></audio>
+    <div id="card-meta" class="muted"></div>
+    <div class="row center">
+      <button id="pass" class="btn-red">Pass</button>
+      <button id="like" class="btn-green">Like</button>
+      <button id="next" class="btn-blue">Next</button>
+    </div>
+    <div id="browse-none" class="center muted" hidden>No more lines right now — try again in a bit.</div>
+  </div>
+
+  <!-- Match + chat -->
+  <div class="card" id="chat-card" hidden>
+    <strong id="chat-title">Match!</strong>
+    <div id="chat"></div>
+    <div class="row">
+      <input id="msg" type="text" placeholder="Type a message…">
+      <button id="send" class="btn-green">Send</button>
+
+      <input id="photo" type="file" accept="image/*" hidden>
+      <button id="send-photo" class="btn-blue">📷 Photo</button>
+
+      <button id="send-voice" class="btn-blue">🎙️ Voice</button>
     </div>
   </div>
 </div>
 
-<!-- PeerJS -->
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-
-<!-- App -->
 <script type="module">
-/* ====== UI helpers ====== */
+/* ===== Firebase ===== */
+import { db } from './firebase-config.js';
+import {
+  ref, push, set, get, update, remove, serverTimestamp,
+  onChildAdded, onValue, query, orderByChild, limitToLast
+} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
+
+/* ===== Helpers ===== */
 const $ = s => document.querySelector(s);
-const setStatus = (s, cls) => { const el=$('#status'); el.textContent=s||''; el.className = cls?(''+cls):''; };
-const show = el => el.classList.remove('hidden');
-const hide = el => el.classList.add('hidden');
+const uid = () => (crypto.randomUUID? crypto.randomUUID(): Math.random().toString(36).slice(2));
+const setStatus = (t, cls='') => { const el=$('#status'); el.textContent=t||''; el.className=cls; };
+function b64FromBlob(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(blob); }); }
+function blobFromB64(b64, mime){ const bin = atob(b64); const len = bin.length; const arr = new Uint8Array(len); for(let i=0;i<len;i++) arr[i]=bin.charCodeAt(i); return new Blob([arr], {type:mime}); }
+function ts(){ return Date.now(); }
 
-/* ====== Global state ====== */
-let peer, conn, myPeerId=null, partnerId=null;
+/* ===== State ===== */
+let me = { id: uid(), name: "" };
+let myLine = null; // { mime, b64, dur }
+let rec, recChunks=[], recStream=null;
 
-let mediaRecorder=null, recordingStream=null, audioChunks=[];
-let chatRecorder=null, chatStream=null, chatChunks=[];
-let incomingChunks=[], incomingMime='audio/webm;codecs=opus';
-let rxChat={parts:[],mime:'audio/webm;codecs=opus'};
-let rxImage={parts:[],mime:'image/jpeg',name:'photo.jpg'};
+let feed = []; let feedPos = -1;
+let currentCard = null; // {userId, name, mime, b64, ts}
+let matchId = null;
 
-const CHUNK_SIZE = 16*1024;
+/* ===== Onboarding ===== */
+$('#go').addEventListener('click', async ()=>{
+  me.name = ($('#name').value||'').trim() || 'Rizzler';
+  $('#onboard').hidden = true;
+  $('#record').hidden = false;
+  // create presence
+  await update(ref(db, `users/${me.id}`), { name: me.name, active: true, ts: ts() });
+});
 
-/* ====== Safari-friendly MIME ====== */
-function pickMime(){
-  const t=['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'];
-  for (const x of t) if (window.MediaRecorder?.isTypeSupported?.(x)) return x;
+/* ===== Recording my line ===== */
+function bestMime(){
+  const types = ['audio/webm;codecs=opus','audio/mp4','audio/webm','audio/ogg;codecs=opus'];
+  for (const t of types) if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
   return '';
 }
-function playBlob(b){
-  const a=$('#audio-player'); const url=URL.createObjectURL(b);
-  a.srcObject=null; a.src=url; a.load(); a.play().catch(()=>{});
-}
-
-/* ====== PeerJS ====== */
-function initPeer(){
-  return new Promise(resolve=>{
-    peer = new Peer(undefined,{
-      debug:2,
-      config:{ iceServers:[
-        {urls:'stun:stun.l.google.com:19302'},
-        {urls:'stun:stun1.l.google.com:19302'},
-        {urls:'stun:stun2.l.google.com:19302'}
-      ]}
-    });
-
-    peer.on('open', id => { myPeerId=id; resolve(); });
-    peer.on('connection', c => establish(c));
-    peer.on('call', c => { try{c.close();}catch{} });
-    peer.on('disconnected', ()=>{ try{peer.reconnect();}catch{} });
-    peer.on('error', e => console.error('Peer error:', e));
-  });
-}
-
-function establish(c){
-  if (conn && conn.open && c.peer !== conn.peer) { try{c.close();}catch{}; return; }
-  conn = c;
-  conn.on('open', () => {
-    setStatus('Matched! Choose Speak or Listen.', 'ok');
-    show($('#main'));
-  });
-  conn.on('data', handleData);
-  conn.on('close', onDisconnect);
-  conn.on('error', onDisconnect);
-}
-
-function onDisconnect(){
-  setStatus('Partner disconnected. Matching again…');
-  conn=null; partnerId=null;
-  hide($('#speak-section')); hide($('#listen-section')); hide($('#match-section'));
-  show($('#main'));
-  if (matchmakingOK) joinQueue(); // re-queue if firebase ok
-}
-
-/* ====== Firebase dynamic load + health check ====== */
-let db=null, rtdb=null, matchmakingOK=false;
-
-async function loadFirebase(){
-  try{
-    const cfg = await import('./firebase-config.js'); // your file (must export `db`)
-    db   = cfg.db;
-    rtdb = await import('https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js');
-
-    // HEALTH CHECK: try a write+read+delete under /health
-    const testRef = rtdb.ref(db, 'health/' + Math.random().toString(36).slice(2));
-    await rtdb.set(testRef, {ok:true, ts: Date.now()});
-    const snap = await rtdb.get(testRef);
-    if (!snap.exists()) throw new Error('RTDB read-back failed');
-    await rtdb.remove(testRef);
-
-    matchmakingOK = true;
-    $('#badge').textContent = 'Auto-match: ON'; show($('#badge'));
-    setStatus('Connecting to the pool…','ok');
-    return true;
-  }catch(err){
-    console.warn('Firebase unavailable:', err);
-    matchmakingOK = false;
-    $('#badge').textContent = 'Auto-match: OFF (manual fallback)'; show($('#badge'));
-    setStatus('Auto-match is off. You can still connect via prompt when you tap Speak/Listen.', 'error');
-    return false;
-  }
-}
-
-/* ====== Auto-match (queue) ====== */
-const QUEUE_TTL_MS=30000, CLAIM_BATCH=8;
-let myTicketRef=null, myPairRef=null, requeueTimer=null;
-
-function isFresh(ts){ return !ts || (Date.now()-ts) < QUEUE_TTL_MS; }
-function clearTimer(){ if(requeueTimer){ clearTimeout(requeueTimer); requeueTimer=null; } }
-
-function joinQueue(){
-  if (!matchmakingOK || !myPeerId) return;
-
-  const { ref, push, set, onValue, onDisconnect, remove, update, get,
-          runTransaction, serverTimestamp, query, orderByChild, equalTo,
-          limitToFirst, endAt } = rtdb;
-
-  setStatus('Finding a random match…');
-
-  // 1) my ticket
-  myTicketRef = push(ref(db,'queue'));
-  set(myTicketRef,{peer:myPeerId,claimed:false,ts:serverTimestamp()});
-  onDisconnect(myTicketRef).remove();
-
-  // 2) watch if someone pairs us
-  myPairRef = ref(db,'pairs/'+myPeerId);
-  onDisconnect(myPairRef).remove();
-  onValue(myPairRef, snap=>{
-    const v=snap.val();
-    if (v?.partner && !partnerId){
-      partnerId=v.partner;
-      clearTimer();
-      maybeConnect();
-    }
-  });
-
-  // 3) clean & try claim
-  cleanup(()=>queryAndClaim());
-
-  // 4) auto requeue if no partner
-  clearTimer();
-  requeueTimer=setTimeout(()=>{
-    if (!partnerId){
-      safeRemove(myTicketRef); safeRemove(myPairRef);
-      joinQueue();
-    }
-  }, QUEUE_TTL_MS);
-
-  function safeRemove(r){ try{ r && remove(r); }catch{} }
-  function cleanup(done){
-    const cutoff=Date.now()-QUEUE_TTL_MS;
-    const q=query(ref(db,'queue'), orderByChild('ts'), endAt(cutoff), limitToFirst(25));
-    get(q).then(snap=>{
-      const updates={};
-      snap.forEach(cs=>{
-        const v=cs.val();
-        if (v && v.ts && v.ts < cutoff) updates[`queue/${cs.key}`] = null;
-      });
-      if (Object.keys(updates).length) update(ref(db),updates).finally(()=>done&&done());
-      else done&&done();
-    });
-  }
-  function queryAndClaim(){
-    const q=query(ref(db,'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
-    get(q).then(snap=>{
-      const cands=[];
-      snap.forEach(cs=>{
-        const v=cs.val();
-        if (v && v.peer && v.peer!==myPeerId && isFresh(v.ts)) cands.push({key:cs.key,peer:v.peer,ts:v.ts});
-      });
-      tryClaim(cands,0);
-    });
-  }
-  function tryClaim(list,i){
-    if (partnerId || i>=list.length){ setStatus('Waiting for someone…'); return; }
-    const cand=list[i];
-    const claimPath=ref(db,`queue/${cand.key}/claimed`);
-    runTransaction(claimPath, cur => (cur===false ? myPeerId : cur))
-      .then(res=>{
-        if (res.committed && res.snapshot.val()===myPeerId){
-          const updates={};
-          updates[`pairs/${myPeerId}`] = {partner:cand.peer, ts:Date.now()};
-          updates[`pairs/${cand.peer}`] = {partner:myPeerId, ts:Date.now()};
-          updates[`queue/${myTicketRef.key}`] = null;
-          updates[`queue/${cand.key}`] = null;
-          update(ref(db),updates).then(()=>{
-            partnerId=cand.peer; clearTimer(); maybeConnect();
-          });
-        } else {
-          tryClaim(list,i+1);
-        }
-      })
-      .catch(()=> tryClaim(list,i+1));
-  }
-}
-
-function maybeConnect(){
-  if (!partnerId || !myPeerId) return;
-  if (conn && conn.open) return;
-  // deterministic initiator (lexicographic)
-  if (myPeerId < partnerId){
-    establish(peer.connect(partnerId, {reliable:true}));
-  }
-  // else wait for inbound
-}
-
-/* ====== Manual fallback connect (prompt) ====== */
-function ensureManualConnection(){
-  if (conn && conn.open) return true;
-  const pid = prompt('Enter your partner’s ID');
-  if (!pid) return false;
-  establish(peer.connect(pid, {reliable:true}));
-  return true;
-}
-
-/* ====== Buttons ====== */
-$('#speak-btn').addEventListener('click', ()=>{
-  if (matchmakingOK){
-    if (!conn || !conn.open){ setStatus('Matching…'); return; }
-  } else {
-    if (!ensureManualConnection()) return;
-  }
-  hide($('#listen-section')); show($('#speak-section'));
-});
-$('#listen-btn').addEventListener('click', ()=>{
-  if (matchmakingOK){
-    if (!conn || !conn.open){ setStatus('Matching…'); return; }
-  } else {
-    if (!ensureManualConnection()) return;
-  }
-  hide($('#speak-section')); show($('#listen-section'));
-  const a=$('#audio-player'); a.muted=false; a.play().catch(()=>{}); // iOS priming
-});
-
-/* ====== Speak record/send ====== */
-$('#record-toggle').addEventListener('click', ()=>{
-  if (!conn || !conn.open){ setStatus('Not connected yet…'); return; }
-
-  if (!mediaRecorder || mediaRecorder.state!=='recording'){
-    navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{
-      recordingStream=s;
-      const mt=pickMime();
-      try{ mediaRecorder=new MediaRecorder(s, mt?{mimeType:mt}:{}) }catch(e){ alert('Recorder failed: '+e.message); return; }
-      audioChunks=[];
-      mediaRecorder.ondataavailable=e=>{ if (e.data && e.data.size>0) audioChunks.push(e.data); };
-      mediaRecorder.onstop=()=>{
-        recordingStream.getTracks().forEach(t=>t.stop());
-        const finalMime=mediaRecorder.mimeType || mt || 'audio/webm';
-        const blob=new Blob(audioChunks,{type:finalMime});
-        sendAudio(blob, finalMime);
-        $('#record-toggle').textContent='Start Recording';
-        setStatus('Line sent!');
+$('#rec-btn').addEventListener('click', async ()=>{
+  if (!rec || rec.state === 'inactive'){
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      recStream = stream;
+      const mt = bestMime();
+      recChunks = [];
+      rec = new MediaRecorder(stream, mt?{mimeType:mt}:{});
+      rec.ondataavailable = e=>{ if (e.data && e.data.size) recChunks.push(e.data); };
+      rec.onstop = async ()=>{
+        recStream.getTracks().forEach(t=>t.stop());
+        const mime = rec.mimeType || mt || 'audio/webm';
+        const blob = new Blob(recChunks, {type:mime});
+        const url = URL.createObjectURL(blob);
+        $('#my-preview').hidden = false;
+        $('#my-preview').src = url;
+        $('#submit-line').disabled = false;
+        setStatus('Ready to upload your line.','ok');
       };
-      mediaRecorder.start(100);
-      $('#record-toggle').textContent='Stop Recording';
+      rec.start(100);
+      $('#rec-btn').textContent = '⏹️ Stop';
       setStatus('Recording…');
-    }).catch(e=> alert('Mic access denied: '+e.message));
+    }catch(e){
+      setStatus('Microphone blocked — enable mic permissions.', 'err');
+    }
   }else{
-    mediaRecorder.stop();
+    rec.stop();
+    $('#rec-btn').textContent = '🎙️ Start recording';
   }
 });
 
-function sendAudio(blob,mime){
-  conn.send({type:'audio-start', mime, size:blob.size});
-  const r=new FileReader(); let o=0;
-  r.onload=e=>{
-    conn.send({type:'audio-chunk', data:new Uint8Array(e.target.result)});
-    o+=e.target.result.byteLength;
-    if (o<blob.size) read(); else conn.send({type:'audio-end'});
-  };
-  function read(){ r.readAsArrayBuffer(blob.slice(o, o+CHUNK_SIZE)); }
-  read();
-}
+$('#submit-line').addEventListener('click', async ()=>{
+  if (!recChunks.length){ setStatus('Record first.','err'); return; }
+  const mime = $('#my-preview').src.includes('audio/mp4') ? 'audio/mp4' : (rec?.mimeType || bestMime() || 'audio/webm');
+  const blob = new Blob(recChunks, {type:mime});
+  const b64 = await b64FromBlob(blob);
 
-/* ====== Accept -> Chat ====== */
-$('#accept-btn').addEventListener('click', ()=>{
-  if (!conn || !conn.open) return;
-  conn.send({type:'accept'});
-  openChat();
-});
-function openChat(){
-  hide($('#listen-section')); hide($('#speak-section')); show($('#match-section'));
-}
-
-/* ====== Chat (text/photo/audio) ====== */
-$('#send-btn').addEventListener('click', ()=>{
-  const input=$('#chat-input'); const msg=input.value.trim();
-  if (!msg || !(conn&&conn.open)) return;
-  conn.send({type:'msg', data:msg});
-  addMsg(msg,true); input.value='';
-});
-$('#photo-btn').addEventListener('click', ()=> $('#photo-input').click());
-$('#photo-input').addEventListener('change', e=>{
-  const f=e.target.files?.[0]; if (!f || !(conn&&conn.open)) return;
-  f.arrayBuffer().then(buf=>{
-    const b=new Blob([buf],{type:f.type||'image/jpeg'});
-    addImg(b,true); sendImg(b, f.name||'photo.jpg'); e.target.value='';
+  // (re)publish my line at /lines/{me.id}
+  await set(ref(db, `lines/${me.id}`), {
+    uid: me.id, name: me.name, mime, b64, ts: serverTimestamp()
   });
+
+  myLine = { mime, b64 };
+  $('#record').hidden = true;
+  await loadFeed();
+  $('#browse').hidden = false;
+  setStatus('Line uploaded. Start browsing!','ok');
 });
-$('#audio-send-btn').addEventListener('click', ()=>{
-  if (!chatRecorder || chatRecorder.state!=='recording'){
-    navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{
-      chatStream=s;
-      const mt=pickMime();
-      try{ chatRecorder=new MediaRecorder(s, mt?{mimeType:mt}:{}) }catch(e){ alert('Recorder failed: '+e.message); return; }
-      chatChunks=[];
-      chatRecorder.ondataavailable=e=>{ if (e.data && e.data.size>0) chatChunks.push(e.data); };
-      chatRecorder.onstop=()=>{
-        chatStream.getTracks().forEach(t=>t.stop());
-        const finalMime=chatRecorder.mimeType || mt || 'audio/webm';
-        const blob=new Blob(chatChunks,{type:finalMime});
-        sendChatAudio(blob, finalMime);
-        $('#audio-send-btn').textContent='🎙️';
-      };
-      chatRecorder.start(100);
-      $('#audio-send-btn').textContent='⏹️';
-      setStatus('Recording audio message…');
-    }).catch(e=> alert('Mic blocked: '+e.message));
+
+/* ===== Browse feed ===== */
+async function loadFeed(){
+  // pull latest 30 lines (excluding me)
+  const snap = await get(query(ref(db,'lines'), orderByChild('ts'), limitToLast(30)));
+  feed = [];
+  snap.forEach(s=>{
+    const v = s.val();
+    if (v && v.uid !== me.id) feed.push(v);
+  });
+  // newest first
+  feed.sort((a,b)=>(b.ts||0)-(a.ts||0));
+  feedPos = -1;
+  nextCard();
+}
+function nextCard(){
+  $('#browse-none').hidden = true;
+  for (let i=feedPos+1; i<feed.length; i++){
+    const v = feed[i];
+    currentCard = v;
+    feedPos = i;
+    renderCard(v);
+    return;
+  }
+  currentCard = null;
+  $('#card-audio').src = '';
+  $('#card-meta').textContent = '';
+  $('#browse-none').hidden = false;
+}
+function renderCard(v){
+  const blob = blobFromB64(v.b64, v.mime||'audio/webm');
+  const url  = URL.createObjectURL(blob);
+  $('#card-audio').src = url;
+  $('#card-meta').textContent = `${v.name||'Rizzler'} • tap play to listen`;
+}
+
+/* actions */
+$('#next').addEventListener('click', nextCard);
+$('#pass').addEventListener('click', async ()=>{
+  if (!currentCard) return; // mark viewed (optional)
+  await set(ref(db, `passes/${me.id}/${currentCard.uid}`), true);
+  nextCard();
+});
+$('#like').addEventListener('click', async ()=>{
+  if (!currentCard) return;
+  // write my like
+  await set(ref(db, `likes/${me.id}/${currentCard.uid}`), true);
+
+  // check mutual
+  const snap = await get(ref(db, `likes/${currentCard.uid}/${me.id}`));
+  if (snap.exists()){
+    // create match id & room
+    const a = [me.id, currentCard.uid].sort();
+    matchId = `${a[0]}_${a[1]}`;
+    await update(ref(db, `matches/${matchId}`), {
+      a: a[0], b: a[1], ts: serverTimestamp()
+    });
+    // small notifications (optional)
+    await set(ref(db, `notifs/${currentCard.uid}/${matchId}`), {ts: serverTimestamp(), from: me.id});
+
+    openChat(currentCard);
   }else{
-    chatRecorder.stop();
+    setStatus('Like sent — if they like you back, you’ll match!','ok');
+    nextCard();
   }
 });
 
-function sendChatAudio(blob,mime){
-  conn.send({type:'chat-start', mime, size:blob.size});
-  const r=new FileReader(); let o=0;
-  r.onload=e=>{
-    conn.send({type:'chat-chunk', data:new Uint8Array(e.target.result)});
-    o+=e.target.result.byteLength;
-    if (o<blob.size) read(); else conn.send({type:'chat-end'});
-  };
-  function read(){ r.readAsArrayBuffer(blob.slice(o, o+CHUNK_SIZE)); }
-  read();
-}
-function sendImg(blob,name){
-  conn.send({type:'img-start', mime:blob.type, name, size:blob.size});
-  const r=new FileReader(); let o=0;
-  r.onload=e=>{
-    conn.send({type:'img-chunk', data:new Uint8Array(e.target.result)});
-    o+=e.target.result.byteLength;
-    if (o<blob.size) read(); else conn.send({type:'img-end'});
-  };
-  function read(){ r.readAsArrayBuffer(blob.slice(o, o+CHUNK_SIZE)); }
-  read();
+/* ===== Chat ===== */
+let chatUnsub = null;
+function openChat(partner){
+  $('#browse').hidden = true;
+  $('#chat-card').hidden = false;
+  $('#chat-title').textContent = `Chat with ${partner.name||'Match'}`;
+  $('#chat').innerHTML = '';
+
+  // live stream messages
+  if (chatUnsub) chatUnsub();
+  const msgsRef = ref(db, `chats/${matchId}/messages`);
+  chatUnsub = onChildAdded(msgsRef, (snap)=>{
+    const m = snap.val(); renderMsg(m);
+  });
 }
 
-/* ====== Incoming data ====== */
-function handleData(msg){
-  if (!msg || !msg.type) return;
-  switch(msg.type){
-    case 'audio-start':
-      incomingChunks=[]; incomingMime=msg.mime||'audio/webm;codecs=opus';
-      show($('#listen-section')); setStatus('Receiving a line…'); break;
-    case 'audio-chunk':
-      incomingChunks.push(msg.data); break;
-    case 'audio-end':
-      playBlob(new Blob(incomingChunks,{type:incomingMime}));
-      show($('#accept-btn')); setStatus('Line received!'); break;
+function renderMsg(m){
+  const box = $('#chat');
+  const b = document.createElement('div');
+  b.className = 'bubble ' + (m.from===me.id ? 'me':'them');
 
-    case 'accept': openChat(); break;
-
-    case 'msg': addMsg(msg.data,false); break;
-
-    case 'chat-start': rxChat={parts:[],mime:msg.mime||'audio/webm;codecs=opus'}; break;
-    case 'chat-chunk': rxChat.parts.push(msg.data); break;
-    case 'chat-end': addAudio(new Blob(rxChat.parts,{type:rxChat.mime}),false); rxChat={parts:[],mime:'audio/webm;codecs=opus'}; break;
-
-    case 'img-start': rxImage={parts:[],mime:msg.mime||'image/jpeg',name:msg.name||'photo.jpg'}; break;
-    case 'img-chunk': rxImage.parts.push(msg.data); break;
-    case 'img-end': addImg(new Blob(rxImage.parts,{type:rxImage.mime}),false); rxImage={parts:[],mime:'image/jpeg',name:'photo.jpg'}; break;
+  if (m.type==='text'){
+    b.textContent = m.text;
+  } else if (m.type==='image'){
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(blobFromB64(m.b64, m.mime||'image/jpeg'));
+    b.appendChild(img);
+  } else if (m.type==='audio'){
+    const a = document.createElement('audio');
+    a.controls = true;
+    a.src = URL.createObjectURL(blobFromB64(m.b64, m.mime||'audio/webm'));
+    b.appendChild(a);
   }
+  box.appendChild(b);
+  box.scrollTop = box.scrollHeight;
 }
 
-function addMsg(m, sent){
-  const box=$('#chat-window'); const d=document.createElement('div');
-  d.className='chat-message '+(sent?'sent':'received'); d.textContent=m;
-  box.appendChild(d); box.scrollTop=box.scrollHeight;
-}
-function addImg(b, sent){
-  const box=$('#chat-window'); const d=document.createElement('div');
-  d.className='chat-message '+(sent?'sent':'received');
-  const i=document.createElement('img'); i.src=URL.createObjectURL(b); i.style.maxWidth='220px'; i.style.borderRadius='10px';
-  d.appendChild(i); box.appendChild(d); box.scrollTop=box.scrollHeight;
-}
-function addAudio(b, sent){
-  const box=$('#chat-window'); const d=document.createElement('div');
-  d.className='chat-message '+(sent?'sent':'received');
-  const a=document.createElement('audio'); a.controls=true; a.src=URL.createObjectURL(b); a.preload='metadata';
-  d.appendChild(a); box.appendChild(d); box.scrollTop=box.scrollHeight;
-}
+/* send text */
+$('#send').addEventListener('click', async ()=>{
+  const t = ($('#msg').value||'').trim();
+  if (!t || !matchId) return;
+  await push(ref(db, `chats/${matchId}/messages`), {
+    from: me.id, type:'text', text:t, ts: serverTimestamp()
+  });
+  $('#msg').value = '';
+});
 
-/* ====== Boot ====== */
-(async ()=>{
-  setStatus('Starting…');
-  await initPeer();
-  const ok = await loadFirebase();   // tries to load + write + read + delete
-  show($('#main'));
-  if (ok){ joinQueue(); }
-})();
+/* send photo */
+$('#send-photo').addEventListener('click', ()=> $('#photo').click());
+$('#photo').addEventListener('change', async (e)=>{
+  const f = e.target.files?.[0]; if (!f || !matchId) return;
+  const array = await f.arrayBuffer();
+  const b64 = btoa(String.fromCharCode(...new Uint8Array(array)));
+  await push(ref(db, `chats/${matchId}/messages`), {
+    from: me.id, type:'image', mime: f.type||'image/jpeg', b64, ts: serverTimestamp()
+  });
+  e.target.value = '';
+});
+
+/* send voice memo */
+let memoRec=null, memoChunks=[], memoStream=null;
+$('#send-voice').addEventListener('click', async ()=>{
+  if (!matchId) return;
+  if (!memoRec || memoRec.state==='inactive'){
+    try{
+      const s = await navigator.mediaDevices.getUserMedia({audio:true});
+      memoStream = s;
+      memoChunks = [];
+      const mt = bestMime();
+      memoRec = new MediaRecorder(s, mt?{mimeType:mt}:{});
+      memoRec.ondataavailable = e=>{ if (e.data && e.data.size) memoChunks.push(e.data); };
+      memoRec.onstop = async ()=>{
+        memoStream.getTracks().forEach(t=>t.stop());
+        const mime = memoRec.mimeType || mt || 'audio/webm';
+        const blob = new Blob(memoChunks, {type:mime});
+        const b64 = await b64FromBlob(blob);
+        await push(ref(db, `chats/${matchId}/messages`), {
+          from: me.id, type:'audio', mime, b64, ts: serverTimestamp()
+        });
+        $('#send-voice').textContent = '🎙️ Voice';
+      };
+      memoRec.start(100);
+      $('#send-voice').textContent = '⏹️ Stop';
+    }catch(e){
+      alert('Mic permission needed for voice memos.');
+    }
+  }else{
+    memoRec.stop();
+  }
+});
+
+/* ===== Live updates: if someone likes me and we liked them earlier → open chat ===== */
+onValue(ref(db, `likes/${me.id}`), async (snap)=>{
+  const mine = snap.val()||{};
+  // check mutuals: if someone liked me and I already liked them, open chat
+  for (const otherId of Object.keys(mine)){
+    const back = await get(ref(db, `likes/${otherId}/${me.id}`));
+    if (back.exists()){
+      const a = [me.id, otherId].sort();
+      matchId = `${a[0]}_${a[1]}`;
+      const partnerSnap = await get(ref(db, `users/${otherId}`));
+      const partner = partnerSnap.val() || {name:'Match', uid:otherId};
+      openChat({uid:otherId, name:partner.name});
+      break;
+    }
+  }
+});
 </script>
 </body>
 </html>
