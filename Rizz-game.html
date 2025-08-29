@@ -86,28 +86,29 @@
 </div>
 
 <script type="module">
-/* ===== Firebase ===== */
-import { db } from './firebase-config.js';
+/* ===== Firebase (your config file) ===== */
+import { app, db } from './firebase-config.js';
 import {
-  ref, push, set, get, update, remove, serverTimestamp,
+  ref, push, set, get, update, serverTimestamp,
   onChildAdded, onValue, query, orderByChild, limitToLast
 } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
+import {
+  getStorage, ref as sRef, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
+
+/* ===== Setup ===== */
+const storage = getStorage(app);
 
 /* ===== Helpers ===== */
 const $ = s => document.querySelector(s);
 const uid = () => (crypto.randomUUID? crypto.randomUUID(): Math.random().toString(36).slice(2));
 const setStatus = (t, cls='') => { const el=$('#status'); el.textContent=t||''; el.className=cls; };
-function b64FromBlob(blob){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(blob); }); }
-function blobFromB64(b64, mime){ const bin = atob(b64); const len = bin.length; const arr = new Uint8Array(len); for(let i=0;i<len;i++) arr[i]=bin.charCodeAt(i); return new Blob([arr], {type:mime}); }
 function ts(){ return Date.now(); }
 
 /* ===== State ===== */
 let me = { id: uid(), name: "" };
-let myLine = null; // { mime, b64, dur }
 let rec, recChunks=[], recStream=null;
-
-let feed = []; let feedPos = -1;
-let currentCard = null; // {userId, name, mime, b64, ts}
+let feed = []; let feedPos = -1; let currentCard = null;
 let matchId = null;
 
 /* ===== Onboarding ===== */
@@ -115,11 +116,10 @@ $('#go').addEventListener('click', async ()=>{
   me.name = ($('#name').value||'').trim() || 'Rizzler';
   $('#onboard').hidden = true;
   $('#record').hidden = false;
-  // create presence
   await update(ref(db, `users/${me.id}`), { name: me.name, active: true, ts: ts() });
 });
 
-/* ===== Recording my line ===== */
+/* ===== Recording ===== */
 function bestMime(){
   const types = ['audio/webm;codecs=opus','audio/mp4','audio/webm','audio/ogg;codecs=opus'];
   for (const t of types) if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
@@ -134,13 +134,11 @@ $('#rec-btn').addEventListener('click', async ()=>{
       recChunks = [];
       rec = new MediaRecorder(stream, mt?{mimeType:mt}:{});
       rec.ondataavailable = e=>{ if (e.data && e.data.size) recChunks.push(e.data); };
-      rec.onstop = async ()=>{
+      rec.onstop = ()=>{
         recStream.getTracks().forEach(t=>t.stop());
-        const mime = rec.mimeType || mt || 'audio/webm';
-        const blob = new Blob(recChunks, {type:mime});
-        const url = URL.createObjectURL(blob);
+        const blob = new Blob(recChunks, {type: rec.mimeType || mt || 'audio/webm'});
         $('#my-preview').hidden = false;
-        $('#my-preview').src = url;
+        $('#my-preview').src = URL.createObjectURL(blob);
         $('#submit-line').disabled = false;
         setStatus('Ready to upload your line.','ok');
       };
@@ -156,34 +154,43 @@ $('#rec-btn').addEventListener('click', async ()=>{
   }
 });
 
+/* ===== Upload to Storage + write to RTDB ===== */
 $('#submit-line').addEventListener('click', async ()=>{
   if (!recChunks.length){ setStatus('Record first.','err'); return; }
-  const mime = $('#my-preview').src.includes('audio/mp4') ? 'audio/mp4' : (rec?.mimeType || bestMime() || 'audio/webm');
-  const blob = new Blob(recChunks, {type:mime});
-  const b64 = await b64FromBlob(blob);
+  try{
+    setStatus('Uploading…');
+    const mime = rec.mimeType || bestMime() || 'audio/webm';
+    const blob = new Blob(recChunks, {type:mime});
+    // 1) upload file to Storage
+    const key = `${me.id}-${Date.now()}.webm`; // extension is fine for opus/mp4 too
+    const fileRef = sRef(storage, `lines/${me.id}/${key}`);
+    await uploadBytes(fileRef, blob, { contentType: mime });
+    const url = await getDownloadURL(fileRef);
 
-  // (re)publish my line at /lines/{me.id}
-  await set(ref(db, `lines/${me.id}`), {
-    uid: me.id, name: me.name, mime, b64, ts: serverTimestamp()
-  });
+    // 2) save/overwrite line reference in RTDB
+    await set(ref(db, `lines/${me.id}`), {
+      uid: me.id, name: me.name, mime, url, ts: serverTimestamp()
+    });
 
-  myLine = { mime, b64 };
-  $('#record').hidden = true;
-  await loadFeed();
-  $('#browse').hidden = false;
-  setStatus('Line uploaded. Start browsing!','ok');
+    // 3) proceed to feed
+    $('#record').hidden = true;
+    await loadFeed();
+    $('#browse').hidden = false;
+    setStatus('Line uploaded. Start browsing!','ok');
+  }catch(err){
+    console.error(err);
+    setStatus('Upload failed. Check your Firebase Storage rules & CORS.', 'err');
+  }
 });
 
-/* ===== Browse feed ===== */
+/* ===== Feed ===== */
 async function loadFeed(){
-  // pull latest 30 lines (excluding me)
-  const snap = await get(query(ref(db,'lines'), orderByChild('ts'), limitToLast(30)));
+  const snap = await get(query(ref(db,'lines'), orderByChild('ts'), limitToLast(40)));
   feed = [];
   snap.forEach(s=>{
     const v = s.val();
     if (v && v.uid !== me.id) feed.push(v);
   });
-  // newest first
   feed.sort((a,b)=>(b.ts||0)-(a.ts||0));
   feedPos = -1;
   nextCard();
@@ -203,36 +210,23 @@ function nextCard(){
   $('#browse-none').hidden = false;
 }
 function renderCard(v){
-  const blob = blobFromB64(v.b64, v.mime||'audio/webm');
-  const url  = URL.createObjectURL(blob);
-  $('#card-audio').src = url;
+  $('#card-audio').src = v.url; // stream directly from Storage
   $('#card-meta').textContent = `${v.name||'Rizzler'} • tap play to listen`;
 }
-
-/* actions */
 $('#next').addEventListener('click', nextCard);
 $('#pass').addEventListener('click', async ()=>{
-  if (!currentCard) return; // mark viewed (optional)
+  if (!currentCard) return;
   await set(ref(db, `passes/${me.id}/${currentCard.uid}`), true);
   nextCard();
 });
 $('#like').addEventListener('click', async ()=>{
   if (!currentCard) return;
-  // write my like
   await set(ref(db, `likes/${me.id}/${currentCard.uid}`), true);
-
-  // check mutual
-  const snap = await get(ref(db, `likes/${currentCard.uid}/${me.id}`));
-  if (snap.exists()){
-    // create match id & room
+  const back = await get(ref(db, `likes/${currentCard.uid}/${me.id}`));
+  if (back.exists()){
     const a = [me.id, currentCard.uid].sort();
     matchId = `${a[0]}_${a[1]}`;
-    await update(ref(db, `matches/${matchId}`), {
-      a: a[0], b: a[1], ts: serverTimestamp()
-    });
-    // small notifications (optional)
-    await set(ref(db, `notifs/${currentCard.uid}/${matchId}`), {ts: serverTimestamp(), from: me.id});
-
+    await update(ref(db, `matches/${matchId}`), { a:a[0], b:a[1], ts: serverTimestamp() });
     openChat(currentCard);
   }else{
     setStatus('Like sent — if they like you back, you’ll match!','ok');
@@ -247,67 +241,55 @@ function openChat(partner){
   $('#chat-card').hidden = false;
   $('#chat-title').textContent = `Chat with ${partner.name||'Match'}`;
   $('#chat').innerHTML = '';
-
-  // live stream messages
   if (chatUnsub) chatUnsub();
-  const msgsRef = ref(db, `chats/${matchId}/messages`);
-  chatUnsub = onChildAdded(msgsRef, (snap)=>{
-    const m = snap.val(); renderMsg(m);
-  });
+  chatUnsub = onChildAdded(ref(db, `chats/${matchId}/messages`), (snap)=> renderMsg(snap.val()));
 }
-
 function renderMsg(m){
   const box = $('#chat');
   const b = document.createElement('div');
   b.className = 'bubble ' + (m.from===me.id ? 'me':'them');
-
   if (m.type==='text'){
     b.textContent = m.text;
   } else if (m.type==='image'){
     const img = document.createElement('img');
-    img.src = URL.createObjectURL(blobFromB64(m.b64, m.mime||'image/jpeg'));
+    img.src = m.url; // served from Storage
     b.appendChild(img);
   } else if (m.type==='audio'){
     const a = document.createElement('audio');
-    a.controls = true;
-    a.src = URL.createObjectURL(blobFromB64(m.b64, m.mime||'audio/webm'));
+    a.controls = true; a.src = m.url;
     b.appendChild(a);
   }
-  box.appendChild(b);
-  box.scrollTop = box.scrollHeight;
+  box.appendChild(b); box.scrollTop = box.scrollHeight;
 }
-
 /* send text */
 $('#send').addEventListener('click', async ()=>{
-  const t = ($('#msg').value||'').trim();
-  if (!t || !matchId) return;
-  await push(ref(db, `chats/${matchId}/messages`), {
-    from: me.id, type:'text', text:t, ts: serverTimestamp()
-  });
+  const t = ($('#msg').value||'').trim(); if (!t || !matchId) return;
+  await push(ref(db, `chats/${matchId}/messages`), { from: me.id, type:'text', text:t, ts: serverTimestamp() });
   $('#msg').value = '';
 });
 
-/* send photo */
+/* send photo (to Storage) */
 $('#send-photo').addEventListener('click', ()=> $('#photo').click());
 $('#photo').addEventListener('change', async (e)=>{
   const f = e.target.files?.[0]; if (!f || !matchId) return;
-  const array = await f.arrayBuffer();
-  const b64 = btoa(String.fromCharCode(...new Uint8Array(array)));
-  await push(ref(db, `chats/${matchId}/messages`), {
-    from: me.id, type:'image', mime: f.type||'image/jpeg', b64, ts: serverTimestamp()
-  });
+  try{
+    const key = `${me.id}-${Date.now()}-${f.name}`;
+    const r = sRef(storage, `chat/${matchId}/${key}`);
+    await uploadBytes(r, f, { contentType: f.type||'image/jpeg' });
+    const url = await getDownloadURL(r);
+    await push(ref(db, `chats/${matchId}/messages`), { from: me.id, type:'image', url, ts: serverTimestamp() });
+  }catch(err){ alert('Photo upload failed.'); }
   e.target.value = '';
 });
 
-/* send voice memo */
+/* send voice memo (to Storage) */
 let memoRec=null, memoChunks=[], memoStream=null;
 $('#send-voice').addEventListener('click', async ()=>{
   if (!matchId) return;
   if (!memoRec || memoRec.state==='inactive'){
     try{
       const s = await navigator.mediaDevices.getUserMedia({audio:true});
-      memoStream = s;
-      memoChunks = [];
+      memoStream = s; memoChunks = [];
       const mt = bestMime();
       memoRec = new MediaRecorder(s, mt?{mimeType:mt}:{});
       memoRec.ondataavailable = e=>{ if (e.data && e.data.size) memoChunks.push(e.data); };
@@ -315,35 +297,33 @@ $('#send-voice').addEventListener('click', async ()=>{
         memoStream.getTracks().forEach(t=>t.stop());
         const mime = memoRec.mimeType || mt || 'audio/webm';
         const blob = new Blob(memoChunks, {type:mime});
-        const b64 = await b64FromBlob(blob);
-        await push(ref(db, `chats/${matchId}/messages`), {
-          from: me.id, type:'audio', mime, b64, ts: serverTimestamp()
-        });
+        try{
+          const key = `${me.id}-${Date.now()}.webm`;
+          const r = sRef(storage, `chat/${matchId}/${key}`);
+          await uploadBytes(r, blob, { contentType: mime });
+          const url = await getDownloadURL(r);
+          await push(ref(db, `chats/${matchId}/messages`), { from: me.id, type:'audio', url, ts: serverTimestamp() });
+        }catch(err){ alert('Audio upload failed.'); }
         $('#send-voice').textContent = '🎙️ Voice';
       };
       memoRec.start(100);
       $('#send-voice').textContent = '⏹️ Stop';
-    }catch(e){
-      alert('Mic permission needed for voice memos.');
-    }
+    }catch(e){ alert('Mic permission needed.'); }
   }else{
     memoRec.stop();
   }
 });
 
-/* ===== Live updates: if someone likes me and we liked them earlier → open chat ===== */
+/* ===== Mutual-like auto-open ===== */
 onValue(ref(db, `likes/${me.id}`), async (snap)=>{
   const mine = snap.val()||{};
-  // check mutuals: if someone liked me and I already liked them, open chat
   for (const otherId of Object.keys(mine)){
     const back = await get(ref(db, `likes/${otherId}/${me.id}`));
     if (back.exists()){
-      const a = [me.id, otherId].sort();
-      matchId = `${a[0]}_${a[1]}`;
+      const a = [me.id, otherId].sort(); matchId = `${a[0]}_${a[1]}`;
       const partnerSnap = await get(ref(db, `users/${otherId}`));
       const partner = partnerSnap.val() || {name:'Match', uid:otherId};
-      openChat({uid:otherId, name:partner.name});
-      break;
+      openChat({uid:otherId, name:partner.name}); break;
     }
   }
 });
