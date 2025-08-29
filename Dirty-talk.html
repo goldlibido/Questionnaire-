@@ -2,170 +2,139 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Rizzler: Rate Your Rizz</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dirty Talk — Rate Your Rizz</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --gold:#e1bf78; --blue:#064D95; --green:#06954E;
-    --red:#c40018; --redBright:#ff1e2d;
-  }
+  :root{--gold:#e1bf78;--green:#06954E;--blue:#064D95;--red:#ff1e2d;}
   *{box-sizing:border-box}
   body{
-    margin:0; background:#000; color:#fff; font-family:'Montserrat',sans-serif;
-    display:flex; align-items:flex-start; justify-content:center; padding:16px;
+    margin:0;background:#000;color:#fff;font-family:'Montserrat',sans-serif;
+    display:flex;align-items:center;justify-content:center;min-height:100vh;padding:10px;
   }
-  .shell{width:100%; max-width:780px}
-  h1{margin:6px 0 10px; text-align:center; color:var(--gold); font-size:2rem}
-  .pulse{color:var(--redBright); display:inline-block; animation:pulse 1.4s ease-in-out infinite}
-  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-
+  .wrap{width:100%;max-width:950px}
   .panel{
-    border:2px solid var(--gold); border-radius:14px; box-shadow:0 0 18px rgba(225,191,120,.6);
-    padding:14px; margin-bottom:14px; background:#0b0b0b;
+    border:2px solid var(--gold);border-radius:14px;background:#0b0b0b;
+    box-shadow:0 0 22px rgba(225,191,120,.5);padding:12px;
   }
 
-  /* Stage: your image with heart overlay sized to the image */
-  .stage{
-    position:relative; width:100%; overflow:hidden; border-radius:12px;
+  /* Stage: your big image */
+  .stage{position:relative;width:100%;overflow:hidden;border-radius:12px}
+  .stage img{width:100%;display:block;height:auto;border-radius:12px;user-select:none;-webkit-user-drag:none}
+  .overlay{position:absolute;inset:0;pointer-events:none}
+
+  /* Heart overlay using your exact PNG */
+  .heart{
+    position:absolute;width:66px;height:66px;transform:translate(-50%,-50%) scale(1);
+    background:url('heart.png') center/contain no-repeat;opacity:0;will-change:transform,opacity;
+    filter: drop-shadow(0 0 8px rgba(255,30,45,.6));
   }
-  .stage img{
-    width:100%; display:block; height:auto; border-radius:12px;
-    user-select:none; -webkit-user-drag:none;
+  .heart.in{
+    animation:heartMove 900ms cubic-bezier(.2,.9,.2,1) forwards;
   }
-  .overlay{
-    position:absolute; inset:0; pointer-events:none; /* hearts catch no clicks */
+  @keyframes heartMove{
+    0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+    40%{opacity:1}
+    100%{opacity:1;transform:translate(var(--tx), var(--ty)) scale(1)}
   }
 
+  .controls{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+  input[type="text"]{
+    flex:1;min-width:200px;padding:12px;border:1px solid var(--gold);border-radius:10px;
+    background:#1b1b1b;color:#fff;
+  }
   button{
-    padding:12px 18px; border:none; border-radius:22px; color:#fff; cursor:pointer;
-    font-size:1rem; margin:6px 6px 0 0; transition:transform .15s, box-shadow .15s;
-    background:#333;
+    border:none;border-radius:22px;color:#fff;cursor:pointer;font-size:1rem;
+    padding:12px 16px;background:#333;transition:transform .15s, box-shadow .15s
   }
-  button:hover{transform:scale(1.05); box-shadow:0 0 10px currentColor}
+  button:hover{transform:scale(1.05);box-shadow:0 0 10px currentColor}
   #submit-btn{background:var(--green)}
   #voice-btn{background:var(--blue)}
-  #try-again-btn{background:var(--red)}
-
-  input[type="text"]{
-    width:100%; padding:12px; border:1px solid var(--gold); border-radius:10px;
-    background:#1e1e1e; color:#fff; margin:6px 0 8px;
-  }
-  #result{min-height:1.6em; margin-top:8px; color:var(--gold); text-align:center}
-
-  /* Hearts */
-  .heart{
-    position:absolute; width:56px; height:56px; transform:translate(-50%,-50%);
-    background-repeat:no-repeat; background-position:center; background-size:contain;
-    will-change:transform, opacity;
-  }
-  .heart.target{
-    background-image:url('data:image/svg+xml;utf8,\
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 24 24\" fill=\"%23e1bf78\">\
-    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z\"/></svg>');
-    filter: drop-shadow(0 0 6px rgba(225,191,120,.7));
-    animation:fadeIn .35s ease-out both;
-  }
-  .heart.moving{
-    background-image:url('data:image/svg+xml;utf8,\
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 24 24\" fill=\"%23ff1e2d\">\
-    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z\"/></svg>');
-    animation:moveHeart 900ms cubic-bezier(.2,.9,.2,1) forwards;
-  }
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-  @keyframes moveHeart{
-    0%{opacity:0; transform:translate(-50%,-50%) scale(.1)}
-    40%{opacity:1}
-    100%{opacity:1; transform:translate(var(--tx), var(--ty)) scale(1)}
-  }
-
-  .controls{display:flex; flex-wrap:wrap; gap:8px; justify-content:center}
+  #try-again-btn{background:#c40018}
+  #mute-btn{background:#4a4a4a}
+  #result{min-height:1.6em;text-align:center;margin-top:8px;color:var(--gold)}
+  .hint{opacity:.9;font-size:.9rem;text-align:center;margin-top:6px}
+  .hidden{display:none}
 </style>
 </head>
 <body>
-  <div class="shell">
-    <h1><span class="pulse">Dirty Talk</span> — Rate Your Rizz</h1>
-
+  <div class="wrap">
     <div class="panel">
+      <!-- Big background image (replace filename if needed) -->
       <div class="stage" id="stage">
-        <!-- 🔁 Replace the SRC below with YOUR exact filename -->
-        <img id="bg" src="dirty-talk-stage.jpg" alt="Dirty Talk Stage">
-        <div class="overlay" id="overlay" aria-hidden="true"></div>
+        <img id="bg" src="dirty-talk-stage.png" alt="Dirty Talk Stage">
+        <div id="overlay" class="overlay" aria-hidden="true"></div>
       </div>
 
       <div class="controls">
-        <input type="text" id="line" placeholder="Type or dictate your pick-up line…">
-        <button id="voice-btn" title="Dictate your line">🎙️ Speak</button>
-        <button id="submit-btn">Submit Line</button>
+        <input id="line" type="text" placeholder="Type or dictate your pick-up line…" />
+        <button id="voice-btn" title="Speak your line">🎙️ Speak</button>
+        <button id="submit-btn">Submit</button>
         <button id="try-again-btn" class="hidden">Try Again</button>
+        <button id="mute-btn" title="Toggle music/sfx">🔈 Mute</button>
       </div>
 
       <div id="result"></div>
+      <div class="hint">Higher score ⇒ the heart lands closer to center (bull’s-eye).</div>
     </div>
   </div>
 
 <script>
+/* ------------------ Helpers ------------------ */
 const $ = s => document.querySelector(s);
 const overlay = $('#overlay');
-const stage   = $('#stage');
 const result  = $('#result');
 
-let recognition = null;
+function clamp(n,min,max){ return Math.min(max,Math.max(min,n)); }
 
-/* ---------- Speech-to-text (Safari/Chrome) ---------- */
-function ensureSTT(){
+/* ------------------ Speech to Text ------------------ */
+let recognition = null;
+function ensureSpeech(){
   if (recognition) return recognition;
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR){
-    alert('Speech recognition not supported in this browser. Use the text box instead.');
+    alert('Speech recognition not supported in this browser. Please type your line.');
     return null;
   }
-  recognition = new SR();
-  recognition.continuous = false;
-  recognition.interimResults = false;
-  recognition.lang = 'en-US';
-  recognition.onresult = (e)=>{
+  const rec = new SR();
+  rec.continuous = false;
+  rec.interimResults = false;
+  rec.lang = 'en-US';
+  rec.onresult = (e)=>{
     const t = e.results[0][0].transcript || '';
     $('#line').value = t;
-    rateAndAnimate(t);
+    onSubmit();
   };
-  recognition.onerror = (e)=>{
-    console.warn('Speech error:', e.error);
+  rec.onerror = (e)=> {
+    console.warn('Speech error:', e?.error);
     result.textContent = 'Voice error — try typing your line!';
   };
-  return recognition;
+  recognition = rec;
+  return rec;
 }
 
-/* ---------- “AI” rating (lightweight, local) ---------- */
+/* ------------------ Scoring logic (client-side “AI”) ------------------ */
 function scoreLine(line){
-  if (!line) return 0;
+  if (!line.trim()) return {score:0, feedback:'Say something first 😅'};
   const txt = line.toLowerCase();
 
-  // basic heuristics
-  const positive = ['love','beautiful','eyes','heart','smile','cute','amazing','perfect','gorgeous','stunning','date','drink','tonight','your','you'];
-  const cheesy   = ['heaven','angel','mirror','maps','google','hot','phone number','number'];
-  const cringe   = ['ur','babe','bb','seks','sex','naughty','nsfw'];
+  const positive = ['love','beautiful','eyes','heart','smile','cute','amazing','perfect','gorgeous','stunning','date','drink','you','your'];
+  const cheesy   = ['heaven','angel','google','maps','mirror','library','wifi','phone number','pickup','pick-up'];
+  const cringe   = ['ur','babe','bb','sex','naughty','nsfw'];
 
   let score = 0;
-  // length: up to 45
-  score += Math.min(45, Math.max(0, (txt.length-8))) * 1.0;
-
-  // positive words: up to 35
-  const posCount = positive.filter(w=>txt.includes(w)).length;
-  score += Math.min(35, posCount * 8);
-
-  // uniqueness: up to 15
+  // useful length 8–140 chars → up to 45 pts
+  score += clamp((txt.length - 8) * 1.0, 0, 45);
+  // positive words → up to 35 pts
+  score += clamp(positive.filter(w=>txt.includes(w)).length * 8, 0, 35);
+  // uniqueness → up to 15 pts
   const uniq = new Set(txt.split(/\W+/).filter(Boolean));
-  score += Math.min(15, Math.max(0, uniq.size-4) * 1.5);
+  score += clamp((uniq.size - 4) * 1.5, 0, 15);
+  // penalties
+  score -= clamp(cheesy.filter(w=>txt.includes(w)).length * 5, 0, 10);
+  score -= clamp(cringe.filter(w=>txt.includes(w)).length * 12.5, 0, 25);
 
-  // cheesy penalty: -10
-  score -= Math.min(10, cheesy.filter(w=>txt.includes(w)).length * 5);
-
-  // cringe penalty: -25
-  score -= Math.min(25, cringe.filter(w=>txt.includes(w)).length * 12.5);
-
-  // clamp
-  score = Math.max(0, Math.min(100, Math.round(score)));
+  score = clamp(Math.round(score), 0, 100);
 
   let feedback = 'Work on your rizz! 😅';
   if (score >= 85) feedback = 'Perfect rizz! 🔥';
@@ -175,54 +144,130 @@ function scoreLine(line){
   return {score, feedback};
 }
 
-/* ---------- Heart animation ---------- */
-function animateHearts(score){
-  overlay.innerHTML = ''; // clear
-
-  // center (target) — place at center of image box
-  const target = document.createElement('div');
-  target.className = 'heart target';
-  target.style.left = '50%';
-  target.style.top  = '50%';
-  overlay.appendChild(target);
-
-  // moving heart — destination based on score
+/* ------------------ Heart animation ------------------ */
+function animateHeart(score){
+  overlay.innerHTML = '';
   const mover = document.createElement('div');
-  mover.className = 'heart moving';
+  mover.className = 'heart in';
   overlay.appendChild(mover);
 
-  // compute travel in PX relative to overlay size
+  // center of overlay; distance based on score
   const rect = overlay.getBoundingClientRect();
-  const maxD = Math.min(rect.width, rect.height) * 0.38; // radius from center
-  const dist = maxD * (1 - score/100);                   // higher score → closer
+  const maxD = Math.min(rect.width, rect.height) * 0.40;  // max radius
+  const dist = maxD * (1 - score/100);                    // higher score → closer
   const ang  = Math.random() * Math.PI * 2;
   const dx   = Math.cos(ang) * dist;
   const dy   = Math.sin(ang) * dist;
 
-  // translate from center in PX to CSS translate values
   mover.style.setProperty('--tx', `calc(-50% + ${dx}px)`);
   mover.style.setProperty('--ty', `calc(-50% + ${dy}px)`);
 }
 
-/* ---------- Glue ---------- */
+/* ------------------ Audio: music + SFX (Web Audio) ------------------ */
+let AC = null, masterGain = null, isMuted = false;
+function ensureAudio(){
+  if (AC) return AC;
+  AC = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = AC.createGain();
+  masterGain.gain.value = 0.35; // overall volume
+  masterGain.connect(AC.destination);
+  startPad(); // background pad
+  return AC;
+}
+
+function startPad(){
+  // gentle triad pad using three detuned oscillators
+  const base = 220; // A3
+  [0, 4, 7].forEach((semi, i)=>{
+    const o = AC.createOscillator();
+    const g = AC.createGain();
+    o.type = 'sine';
+    o.frequency.value = base * Math.pow(2, semi/12);
+    g.gain.value = 0.0001;
+    o.connect(g).connect(masterGain);
+    o.start();
+
+    // fade in/out loop
+    const t = AC.currentTime + i * 0.25;
+    g.gain.linearRampToValueAtTime(0.12, t + 1.5);
+    g.gain.linearRampToValueAtTime(0.05, t + 5.0);
+    // keep gently modulating
+    const LFO = AC.createOscillator();
+    const LG  = AC.createGain();
+    LFO.type='sine'; LFO.frequency.value = 0.05 + i*0.02;
+    LG.gain.value = 0.03;
+    LFO.connect(LG).connect(g.gain);
+    LFO.start();
+  });
+}
+
+// score-based SFX
+function playSfx(score){
+  const t = AC.currentTime;
+  const g = AC.createGain(); g.gain.value = 0.0; g.connect(masterGain);
+
+  if (score >= 80){
+    // pleasant chime (two sine blips)
+    const o1 = AC.createOscillator(); o1.type='sine'; o1.frequency.setValueAtTime(880, t);
+    const o2 = AC.createOscillator(); o2.type='sine'; o2.frequency.setValueAtTime(1320, t);
+    o1.connect(g); o2.connect(g);
+    g.gain.linearRampToValueAtTime(0.25, t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.6);
+    o1.start(t); o2.start(t+0.03);
+    o1.stop(t+0.7); o2.stop(t+0.7);
+  } else if (score >= 50){
+    // neutral tick
+    const o = AC.createOscillator(); o.type='triangle'; o.frequency.setValueAtTime(520, t);
+    o.connect(g);
+    g.gain.linearRampToValueAtTime(0.18, t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.25);
+    o.start(t); o.stop(t+0.3);
+  } else {
+    // soft thump
+    const o = AC.createOscillator(); o.type='sine';
+    const f = o.frequency; f.setValueAtTime(180, t); f.exponentialRampToValueAtTime(60, t+0.25);
+    o.connect(g);
+    g.gain.linearRampToValueAtTime(0.22, t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.28);
+    o.start(t); o.stop(t+0.35);
+  }
+}
+
+function toggleMute(){
+  if (!AC){ ensureAudio(); }
+  isMuted = !isMuted;
+  masterGain.gain.value = isMuted ? 0 : 0.35;
+  $('#mute-btn').textContent = isMuted ? '🔇 Unmute' : '🔈 Mute';
+}
+
+/* ------------------ Submit flow ------------------ */
 function rateAndAnimate(line){
   const {score, feedback} = scoreLine(line);
   result.textContent = `Score: ${score}/100 — ${feedback}`;
-  animateHearts(score);
+  animateHeart(score);
+  if (!AC) ensureAudio();
+  if (!isMuted) playSfx(score);
   $('#try-again-btn').classList.remove('hidden');
 }
 
-$('#submit-btn').addEventListener('click', ()=>{
+function onSubmit(){
   const line = $('#line').value.trim();
-  if (!line){ result.textContent = 'Enter or speak a pick-up line first!'; return; }
+  if (!line){
+    result.textContent = 'Enter or speak a pick-up line first!';
+    return;
+  }
   rateAndAnimate(line);
-});
+}
+
+/* ------------------ Events ------------------ */
+$('#submit-btn').addEventListener('click', onSubmit);
 
 $('#voice-btn').addEventListener('click', ()=>{
-  const rec = ensureSTT();
+  const rec = ensureSpeech();
   if (!rec) return;
+  if (!AC) ensureAudio(); // user gesture — unlock audio on iOS
   result.textContent = 'Listening… say your line!';
-  rec.start();
+  try { rec.start(); } catch { /* ignore if already running */ }
 });
 
 $('#try-again-btn').addEventListener('click', ()=>{
@@ -232,16 +277,16 @@ $('#try-again-btn').addEventListener('click', ()=>{
   $('#try-again-btn').classList.add('hidden');
 });
 
-/* Keep overlay sized to image bounds on resize/load */
-function syncOverlaySize(){
-  const img = $('#bg');
-  const r   = img.getBoundingClientRect();
-  overlay.style.width  = img.clientWidth + 'px';
-  overlay.style.height = img.clientHeight + 'px';
-}
-window.addEventListener('resize', syncOverlaySize);
-window.addEventListener('load', syncOverlaySize);
-document.addEventListener('readystatechange', syncOverlaySize);
+$('#mute-btn').addEventListener('click', toggleMute);
+
+// keep overlay sized to the image box
+function syncOverlay(){ overlay.style.width = $('#bg').clientWidth+'px'; overlay.style.height=$('#bg').clientHeight+'px'; }
+window.addEventListener('load', syncOverlay);
+window.addEventListener('resize', syncOverlay);
+document.addEventListener('readystatechange', syncOverlay);
+
+// Start audio engine on first click/touch anywhere (helps iOS)
+window.addEventListener('pointerdown', ()=>{ if (!AC) ensureAudio(); }, {once:true});
 </script>
 </body>
 </html>
