@@ -17,9 +17,7 @@
     #enter-btn{background:var(--red)}
     #speak-btn{background:var(--green)}
     #listen-btn{background:var(--blue)}
-    #accept-btn{background:var(--red)}
-    #send-btn,#audio-send-btn{background:var(--green)}
-    #photo-btn{background:var(--blue)}
+    #accept-btn,#send-btn,#reply-record-btn{background:var(--red)}
     input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff;width:calc(100% - 24px)}
     .hidden{display:none}
     #me-line{opacity:.9;margin:10px 0 6px}
@@ -30,8 +28,9 @@
     .sent{background:var(--green);margin-left:auto}
     .received{background:var(--blue);margin-right:auto}
     .toolbar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:8px}
-    .toolbar input[type="text"]{flex:1;min-width:160px}
-    .tiny{font-size:.9em;opacity:.85;margin-top:6px}
+    .toolbar input[type="text"]{flex:1;min-width:180px}
+    .icon-btn{background:var(--blue)}
+    audio.inline{display:block;margin-top:6px;width:260px}
     @keyframes slideIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
     body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(225,191,120,.1) 0%,rgba(0,0,0,0) 100%);z-index:-1}
   </style>
@@ -58,7 +57,7 @@
     <div id="speak-section" class="hidden">
       <p><strong>Record your line:</strong></p>
       <button id="record-toggle">Start Recording</button>
-      <div class="tiny">Tap once to start; tap again to stop & send.</div>
+      <div id="speak-hint" style="opacity:.85;margin-top:6px;"></div>
     </div>
 
     <!-- Listen flow -->
@@ -67,7 +66,6 @@
       <div style="margin-top:8px">
         <button id="accept-btn" class="hidden">Accept & Match</button>
       </div>
-      <div class="tiny">Audio will play here when a line arrives.</div>
     </div>
 
     <!-- Match / Chat -->
@@ -78,13 +76,10 @@
       <div class="toolbar">
         <input type="text" id="chat-input" placeholder="Type your message…">
         <button id="send-btn">Send</button>
-
         <input id="photo-input" class="hidden" type="file" accept="image/*" capture="environment">
-        <button id="photo-btn">📷 Photo</button>
-
-        <button id="audio-send-btn" title="Tap to record an audio reply">🎙️ Audio</button>
+        <button id="photo-btn" class="icon-btn">📷 Photo</button>
+        <button id="reply-record-btn" title="Record audio reply">🎙️ Audio Reply</button>
       </div>
-      <div class="tiny">Tip: tap 🎙️ to record and send an audio reply.</div>
     </div>
   </div>
 
@@ -108,19 +103,18 @@
 
     /********** State **********/
     let peer, conn;
-    let myPeerId = null, partnerId = null;
-    let userProfile = {}, remoteProfile = {};
+    let myPeerId = null;
+    let partnerId = null;
+    let userProfile = {};
+    let remoteProfile = {};
     let matched = false;
 
-    // Recorder state (for speak & chat audio)
+    // Recorder (Safari-friendly)
     let mediaRecorder = null, recordingStream = null, audioChunks = [];
-    let chatRecorder = null, chatStream = null, chatChunks = [];
-
-    // Receiver reassembly
+    // Receiver reassembly (Uint8Array chunks)
     let incomingChunks = [], incomingMime = 'audio/webm;codecs=opus', incomingSize = 0;
-    // For chat audio (separate buffer)
-    let rxChat = { parts: [], mime: 'audio/webm;codecs=opus' };
-
+    // Chat audio RX
+    let rxChat = { parts: [], mime: 'audio/webm;codecs=opus', size: 0 };
     // Image RX
     let rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg' };
 
@@ -132,9 +126,11 @@
     const setStatus = s => $('#status').textContent = s || '';
     const show = el => el.classList.remove('hidden');
     const hide = el => el.classList.add('hidden');
+    function scrollChat(){ const box = $('#chat-window'); box.scrollTop = box.scrollHeight; }
 
     /********** iOS-friendly MIME choice **********/
     function getSupportedMime() {
+      // Prefer iOS-compatible first
       const types = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
       for (const t of types) {
         if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
@@ -148,7 +144,21 @@
       audio.srcObject = null;
       audio.src = url;
       audio.load();
-      audio.play().catch(()=>{}); // permitted after Listen tap
+      audio.play().catch(()=>{}); // will work after user tapped Listen
+    }
+
+    function appendAudioToChat(blob, sent){
+      const url = URL.createObjectURL(blob);
+      const box = $('#chat-window');
+      const wrap = document.createElement('div');
+      wrap.className = 'chat-message ' + (sent?'sent':'received');
+      const a = document.createElement('audio');
+      a.className = 'inline';
+      a.controls = true;
+      a.src = url;
+      wrap.appendChild(a);
+      box.appendChild(wrap);
+      scrollChat();
     }
 
     /********** PeerJS **********/
@@ -170,12 +180,12 @@
         joinQueue();
       });
 
-      // Accept inbound data channel
+      // Accept inbound data connection
       peer.on('connection', (connection) => {
         establishConn(connection);
       });
 
-      // We do NOT use PeerJS media calls here (only data channel)
+      // We are not doing media calls; only data channel
       peer.on('call', call => { try{ call.close(); }catch{} });
 
       peer.on('disconnected', ()=>{ try{peer.reconnect();}catch{} });
@@ -190,9 +200,10 @@
         setStatus('Matched! Choose Speak or Listen.');
         hide($('#profile-form'));
         show($('#main-section'));
-        // exchange names if desired
-        conn.send({ type:'profile', data:userProfile });
+        // exchange profile if you want names later
+        // conn.send({ type:'profile', data:userProfile });
       });
+
       conn.on('data', handleData);
       conn.on('close', onDisconnect);
       conn.on('error', onDisconnect);
@@ -205,12 +216,15 @@
         const c = peer.connect(partnerId, { reliable:true });
         establishConn(c);
       }
+      // otherwise wait for their connect()
     }
 
     function onDisconnect(){
       setStatus('Partner left. Matching again…');
       conn = null; partnerId = null; matched = false;
-      hide($('#speak-section')); hide($('#listen-section')); hide($('#match-section'));
+      hide($('#speak-section'));
+      hide($('#listen-section'));
+      hide($('#match-section'));
       show($('#main-section'));
       joinQueue();
     }
@@ -305,61 +319,73 @@
       await initPeer();
     });
 
-    // SPEAK & RIZZ → uses your working MediaRecorder→Blob→chunk flow
+    // SPEAK & RIZZ → open record controls
     $('#speak-btn').addEventListener('click', () => {
       if (!conn || !conn.open) { setStatus('Connecting…'); return; }
-      hide($('#listen-section')); show($('#speak-section'));
+      hide($('#listen-section'));
+      show($('#speak-section'));
+      $('#speak-hint').textContent = 'Tap Start Recording, say your line, then Stop Recording to send.';
     });
 
-    // Start/Stop Recording (Safari-friendly: called only on click)
+    // Start/Stop Recording (Safari-safe)
     $('#record-toggle').addEventListener('click', () => {
       if (!mediaRecorder || mediaRecorder.state !== 'recording') {
         // START
         navigator.mediaDevices.getUserMedia({ audio:true }).then(s=>{
           recordingStream = s;
-          const mimeType = getSupportedMime();
-          try { mediaRecorder = new MediaRecorder(recordingStream, mimeType?{ mimeType }:{}); }
-          catch(e){ alert('Recorder failed: '+e.message); return; }
-
+          const mimeType = getSupportedMime(); // prefers audio/mp4 on iOS
+          try {
+            mediaRecorder = new MediaRecorder(recordingStream, mimeType?{ mimeType }: {});
+          } catch(e){
+            alert('Recorder failed: '+e.message);
+            return;
+          }
           audioChunks = [];
           mediaRecorder.ondataavailable = e => { if (e.data && e.data.size>0) audioChunks.push(e.data); };
           mediaRecorder.onstop = () => {
             recordingStream.getTracks().forEach(t=>t.stop());
             const finalMime = mediaRecorder.mimeType || mimeType || 'audio/webm';
             const blob = new Blob(audioChunks, { type: finalMime });
-            sendAudioBlob(blob, finalMime); // <— chunked send
+            sendBlobInChunks(blob, finalMime);     // *** same working chunk-sender ***
             $('#record-toggle').textContent = 'Start Recording';
             setStatus('Line sent!');
           };
           mediaRecorder.start(100);
           $('#record-toggle').textContent = 'Stop Recording';
           setStatus('Recording…');
-        }).catch(e=>{ alert('Microphone access denied: ' + e.message); });
+        }).catch(e=>{
+          alert('Microphone access denied: ' + e.message);
+        });
       } else {
         // STOP
         mediaRecorder.stop();
       }
     });
 
-    // LISTEN & GET RIZZED → primes autoplay
+    // LISTEN & GET RIZZED
     $('#listen-btn').addEventListener('click', () => {
       if (!conn || !conn.open) { setStatus('Connecting…'); return; }
-      hide($('#speak-section')); show($('#listen-section'));
-      const a = $('#audio-player'); a.muted = false; a.play().catch(()=>{});
+      hide($('#speak-section'));
+      show($('#listen-section'));
+      const a = $('#audio-player');
+      a.muted = false;
+      // Prime autoplay by a user gesture on iOS
+      a.play().catch(()=>{});
       setStatus('Armed to listen…');
     });
 
-    // ACCEPT → open chat
+    // Accept & Match → open chat (text + photo + audio replies)
     $('#accept-btn').addEventListener('click', () => {
       if (!conn || !conn.open) return;
-      conn.send({ type:'accept', data:userProfile });
+      conn.send({ type:'accept', data: userProfile });
       matched = true;
       showMatch(remoteProfile || { name:'Mystery' });
     });
 
-    /********** Chat: text, photo, audio replies **********/
+    /********** Chat **********/
     $('#send-btn').addEventListener('click', () => {
-      const input = $('#chat-input'); const msg = input.value.trim();
+      const input = $('#chat-input');
+      const msg = input.value.trim();
       if (!msg || !(conn && conn.open)) return;
       conn.send({ type:'message', data: msg });
       displayMessage(msg, true);
@@ -377,36 +403,43 @@
       });
     });
 
-    // Tap to record an audio reply (toggles start/stop)
-    $('#audio-send-btn').addEventListener('click', () => {
-      if (!chatRecorder || chatRecorder.state !== 'recording') {
-        navigator.mediaDevices.getUserMedia({ audio:true }).then(s=>{
-          chatStream = s;
-          const mimeType = getSupportedMime();
-          try { chatRecorder = new MediaRecorder(chatStream, mimeType?{ mimeType }:{}); }
-          catch(e){ alert('Recorder failed: '+e.message); return; }
-          chatChunks = [];
-          chatRecorder.ondataavailable = e => { if (e.data && e.data.size>0) chatChunks.push(e.data); };
-          chatRecorder.onstop = () => {
-            chatStream.getTracks().forEach(t=>t.stop());
-            const finalMime = chatRecorder.mimeType || mimeType || 'audio/webm';
-            const blob = new Blob(chatChunks, { type: finalMime });
-            // send as chat-audio (separate type from first-line audio)
-            sendChatAudioBlob(blob, finalMime);
-            setStatus('Audio message sent!');
-            $('#audio-send-btn').textContent = '🎙️ Audio';
-          };
-          chatRecorder.start(100);
-          $('#audio-send-btn').textContent = '⏹️ Stop';
-          setStatus('Recording audio message…');
-        }).catch(e=>{ alert('Mic blocked: ' + e.message); });
-      } else {
-        chatRecorder.stop();
+    // Record & send an AUDIO REPLY within chat (same chunking, different message key)
+    $('#reply-record-btn').addEventListener('click', async () => {
+      if (!conn || !conn.open) return;
+      if (mediaRecorder && mediaRecorder.state === 'recording') return; // avoid overlap
+
+      try{
+        const s = await navigator.mediaDevices.getUserMedia({ audio:true });
+        const mimeType = getSupportedMime();
+        mediaRecorder = new MediaRecorder(s, mimeType?{ mimeType }: {});
+        audioChunks = [];
+        mediaRecorder.ondataavailable = e => { if (e.data && e.data.size>0) audioChunks.push(e.data); };
+        mediaRecorder.onstop = () => {
+          s.getTracks().forEach(t=>t.stop());
+          const finalMime = mediaRecorder.mimeType || mimeType || 'audio/webm';
+          const blob = new Blob(audioChunks, { type: finalMime });
+          // send as chat-audio
+          sendChatAudio(blob, finalMime);
+          appendAudioToChat(blob, true);
+          setStatus('Audio reply sent!');
+        };
+        mediaRecorder.start(100);
+        // simple UX: stop after another tap
+        $('#reply-record-btn').textContent = '⏹️ Stop';
+        const stopOnce = () => {
+          $('#reply-record-btn').removeEventListener('click', stopOnce);
+          mediaRecorder?.stop();
+          $('#reply-record-btn').textContent = '🎙️ Audio Reply';
+        };
+        $('#reply-record-btn').addEventListener('click', stopOnce);
+      }catch(e){
+        alert('Mic denied: '+e.message);
       }
     });
 
     function showMatch(other){
-      hide($('#listen-section')); hide($('#speak-section'));
+      hide($('#listen-section'));
+      hide($('#speak-section'));
       show($('#match-section'));
       $('#match-info').textContent = `Matched with ${other.name || 'Mystery'}!`;
     }
@@ -415,45 +448,51 @@
       const d = document.createElement('div');
       d.className = 'chat-message ' + (isSent?'sent':'received');
       d.textContent = message;
-      box.appendChild(d); box.scrollTop = box.scrollHeight;
+      box.appendChild(d);
+      scrollChat();
     }
     function appendImg(b, sent){
-      const box = $('#chat-window');
       const url = URL.createObjectURL(b);
+      const box = $('#chat-window');
       const d = document.createElement('div');
       d.className = 'chat-message ' + (sent?'sent':'received');
       const i = document.createElement('img');
       i.src = url; i.style.maxWidth='220px'; i.style.borderRadius='10px'; i.style.display='block';
-      d.appendChild(i); box.appendChild(d); box.scrollTop = box.scrollHeight;
+      d.appendChild(i); box.appendChild(d); scrollChat();
     }
 
-    /********** Chunked send helpers (audio & image) **********/
-    function sendAudioBlob(blob, mimeType){
-      if (!(conn && conn.open)) { alert('Not connected to a partner.'); return; }
-      conn.send({ type:'audio-start', mime: mimeType, size: blob.size });
+    /********** Chunk send helpers **********/
+    // Pickup line (initial clip)
+    function sendBlobInChunks(blob, mimeType) {
+      if (!conn || !conn.open) { alert('Not connected to a peer to send your line.'); return; }
+      conn.send({ type: 'audio-start', mime: mimeType, size: blob.size });
       const reader = new FileReader(); let offset = 0;
       reader.onload = (e) => {
-        conn.send({ type:'audio-chunk', data:new Uint8Array(e.target.result) });
-        offset += e.target.result.byteLength;
-        if (offset < blob.size) readNext(); else conn.send({ type:'audio-end' });
+        const arr = new Uint8Array(e.target.result);
+        conn.send({ type: 'audio-chunk', data: arr });
+        offset += arr.length;
+        if (offset < blob.size) readNext(); else conn.send({ type: 'audio-end' });
       };
       function readNext(){ reader.readAsArrayBuffer(blob.slice(offset, offset + CHUNK_SIZE)); }
       readNext();
     }
 
-    function sendChatAudioBlob(blob, mimeType){
-      if (!(conn && conn.open)) return;
+    // Chat audio reply
+    function sendChatAudio(blob, mimeType){
+      if (!conn || !conn.open) return;
       conn.send({ type:'chat-audio-start', mime: mimeType, size: blob.size });
-      const reader = new FileReader(); let offset = 0;
-      reader.onload = (e) => {
-        conn.send({ type:'chat-audio-chunk', data:new Uint8Array(e.target.result) });
-        offset += e.target.result.byteLength;
-        if (offset < blob.size) readNext(); else conn.send({ type:'chat-audio-end' });
+      const r = new FileReader(); let o = 0;
+      r.onload = (e) => {
+        const arr = new Uint8Array(e.target.result);
+        conn.send({ type:'chat-audio-chunk', data: arr });
+        o += arr.length;
+        if (o < blob.size) readNext(); else conn.send({ type:'chat-audio-end' });
       };
-      function readNext(){ reader.readAsArrayBuffer(blob.slice(offset, offset + CHUNK_SIZE)); }
+      function readNext(){ r.readAsArrayBuffer(blob.slice(o, o + CHUNK_SIZE)); }
       readNext();
     }
 
+    // Photos in chat
     function sendImg(blob, name){
       if (!(conn && conn.open)) return;
       conn.send({ type:'image-start', mime: blob.type, name, size: blob.size });
@@ -467,70 +506,72 @@
       readNext();
     }
 
-    /********** Incoming data (your working pattern + chat/audio/photo) **********/
+    /********** Incoming data **********/
     function handleData(msg){
       if (!msg || !msg.type) return;
+
       switch(msg.type){
+        // optional profile exchange
         case 'profile': remoteProfile = msg.data || {}; break;
 
-        /* First-line audio */
+        // === INITIAL PICKUP AUDIO ===
         case 'audio-start':
           incomingChunks = [];
-          incomingMime   = msg.mime || 'audio/webm;codecs=opus';
-          incomingSize   = msg.size || 0;
+          incomingMime = msg.mime || 'audio/webm;codecs=opus';
+          incomingSize = msg.size || 0;
           show($('#listen-section'));
           setStatus('Receiving a line…');
           break;
+
         case 'audio-chunk':
           incomingChunks.push(msg.data);
           break;
+
         case 'audio-end': {
           const blob = new Blob(incomingChunks, { type: incomingMime });
           playBlobInAudio(blob);
-          show($('#accept-btn'));   // listener can accept after hearing
+          show($('#accept-btn'));   // let listener accept after hearing
           setStatus('Line received!');
           break;
         }
 
-        /* Chat audio */
+        // === CHAT AUDIO ===
         case 'chat-audio-start':
-          rxChat = { parts: [], mime: msg.mime || 'audio/webm;codecs=opus' };
+          rxChat = { parts: [], mime: msg.mime || 'audio/webm;codecs=opus', size: msg.size || 0 };
           break;
+
         case 'chat-audio-chunk':
           rxChat.parts.push(msg.data);
           break;
+
         case 'chat-audio-end': {
           const blob = new Blob(rxChat.parts, { type: rxChat.mime });
-          // show playable audio bubble in chat
-          const url = URL.createObjectURL(blob);
-          const box = $('#chat-window');
-          const wrap = document.createElement('div');
-          wrap.className = 'chat-message received';
-          const audio = document.createElement('audio');
-          audio.controls = true; audio.src = url; audio.preload = 'metadata'; audio.style.display='block';
-          wrap.appendChild(audio); box.appendChild(wrap); box.scrollTop = box.scrollHeight;
-          rxChat = { parts: [], mime: 'audio/webm;codecs=opus' };
+          appendAudioToChat(blob, false);
+          setStatus('New audio message');
+          rxChat = { parts: [], mime: 'audio/webm;codecs=opus', size: 0 };
           break;
         }
 
-        /* Accept → show chat both sides */
+        // === ACCEPT → open chat for both ===
         case 'accept':
           matched = true;
           showMatch(msg.data || { name:'Mystery' });
           break;
 
-        /* Text chat */
+        // === TEXT ===
         case 'message':
           displayMessage(msg.data, false);
           break;
 
-        /* Photo transfer */
+        // === IMAGE ===
         case 'image-start':
           rxImage = { parts: [], mime: msg.mime || 'image/jpeg', name: msg.name || 'photo.jpg' };
           break;
+
         case 'image-chunk':
           rxImage.parts.push(msg.data);
           break;
+
         case 'image-end': {
           const blob = new Blob(rxImage.parts, { type: rxImage.mime });
           appendImg(blob, false);
