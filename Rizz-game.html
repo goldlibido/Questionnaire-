@@ -17,7 +17,9 @@
     #enter-btn{background:var(--red)}
     #speak-btn{background:var(--green)}
     #listen-btn{background:var(--blue)}
-    #accept-btn,#send-btn,#reply-record-btn{background:var(--red)}
+    #accept-btn{background:var(--red)}
+    #send-btn,#audio-send-btn{background:var(--green)}
+    #photo-btn{background:var(--blue)}
     input[type="text"]{padding:10px;margin:5px;border:1px solid var(--gold);border-radius:10px;background:#222;color:#fff;width:calc(100% - 24px)}
     .hidden{display:none}
     #me-line{opacity:.9;margin:10px 0 6px}
@@ -28,11 +30,12 @@
     .sent{background:var(--green);margin-left:auto}
     .received{background:var(--blue);margin-right:auto}
     .toolbar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:8px}
-    .toolbar input[type="text"]{flex:1;min-width:180px}
-    .icon-btn{background:var(--blue)}
-    audio.inline{display:block;margin-top:6px;width:260px}
+    .toolbar input[type="text"]{flex:1;min-width:160px}
+    .tiny{font-size:.9em;opacity:.85;margin-top:6px}
     @keyframes slideIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
     body::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,rgba(225,191,120,.1) 0%,rgba(0,0,0,0) 100%);z-index:-1}
+    /* tiny status bubble for fallback/manual mode */
+    .badge{display:inline-block;padding:2px 8px;border-radius:10px;background:#333;border:1px solid #555;font-size:.75em}
   </style>
 </head>
 <body>
@@ -49,6 +52,7 @@
 
     <!-- Main actions -->
     <div id="main-section" class="hidden">
+      <div id="mode-indicator" class="badge hidden"></div>
       <button id="speak-btn">Speak & Rizz</button>
       <button id="listen-btn">Listen & Get Rizzed</button>
     </div>
@@ -57,7 +61,7 @@
     <div id="speak-section" class="hidden">
       <p><strong>Record your line:</strong></p>
       <button id="record-toggle">Start Recording</button>
-      <div id="speak-hint" style="opacity:.85;margin-top:6px;"></div>
+      <div class="tiny">Tap once to start; tap again to stop & send.</div>
     </div>
 
     <!-- Listen flow -->
@@ -66,6 +70,7 @@
       <div style="margin-top:8px">
         <button id="accept-btn" class="hidden">Accept & Match</button>
       </div>
+      <div class="tiny">Audio will play here when a line arrives.</div>
     </div>
 
     <!-- Match / Chat -->
@@ -76,161 +81,148 @@
       <div class="toolbar">
         <input type="text" id="chat-input" placeholder="Type your message…">
         <button id="send-btn">Send</button>
+
         <input id="photo-input" class="hidden" type="file" accept="image/*" capture="environment">
-        <button id="photo-btn" class="icon-btn">📷 Photo</button>
-        <button id="reply-record-btn" title="Record audio reply">🎙️ Audio Reply</button>
+        <button id="photo-btn">📷 Photo</button>
+
+        <button id="audio-send-btn" title="Tap to record an audio reply">🎙️ Audio</button>
       </div>
+      <div class="tiny">Tip: tap 🎙️ to record and send an audio reply.</div>
     </div>
   </div>
 
   <!-- PeerJS -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
-  <!-- App (ESM) -->
-  <script type="module">
-    /********** Imports **********/
-    import { db } from './firebase-config.js';
-    import {
-      ref, push, set, onValue, onDisconnect, remove, update, get,
-      runTransaction, serverTimestamp, query, orderByChild, equalTo,
-      limitToFirst, endAt
-    } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
-
-    /********** Config **********/
-    const QUEUE_TTL_MS = 30000;
-    const CLAIM_BATCH  = 8;
-    const CHUNK_SIZE   = 16 * 1024;
-
-    /********** State **********/
+  <!-- App (dynamic imports; works even if firebase-config.js is missing) -->
+  <script>
+    /* ====== Global state ====== */
     let peer, conn;
-    let myPeerId = null;
-    let partnerId = null;
-    let userProfile = {};
-    let remoteProfile = {};
+    let myPeerId = null, partnerId = null;
+    let userProfile = {}, remoteProfile = {};
     let matched = false;
 
-    // Recorder (Safari-friendly)
+    // Recorder (for speak & chat audio)
     let mediaRecorder = null, recordingStream = null, audioChunks = [];
-    // Receiver reassembly (Uint8Array chunks)
+    let chatRecorder = null, chatStream = null, chatChunks = [];
+
+    // Receiver reassembly
     let incomingChunks = [], incomingMime = 'audio/webm;codecs=opus', incomingSize = 0;
-    // Chat audio RX
-    let rxChat = { parts: [], mime: 'audio/webm;codecs=opus', size: 0 };
-    // Image RX
+    let rxChat = { parts: [], mime: 'audio/webm;codecs=opus' };
     let rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg' };
 
-    // Firebase refs
+    // Firebase (optional)
+    let useMatchmaking = false;
+    let db = null;
+    let rtdb = {}; // will fill if loaded
     let myTicketRef = null, myPairRef = null, requeueTimer = null;
 
-    /********** DOM helpers **********/
+    // helpers
     const $ = s => document.querySelector(s);
-    const setStatus = s => $('#status').textContent = s || '';
+    const setStatus = s => { $('#status').textContent = s || ''; };
     const show = el => el.classList.remove('hidden');
     const hide = el => el.classList.add('hidden');
-    function scrollChat(){ const box = $('#chat-window'); box.scrollTop = box.scrollHeight; }
 
-    /********** iOS-friendly MIME choice **********/
+    /* ====== iOS-friendly MIME choice ====== */
     function getSupportedMime() {
-      // Prefer iOS-compatible first
       const types = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
       for (const t of types) {
-        if (window.MediaRecorder?.isTypeSupported?.(t)) return t;
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) return t;
       }
       return '';
     }
-
     function playBlobInAudio(blob) {
       const audio = $('#audio-player');
       const url = URL.createObjectURL(blob);
       audio.srcObject = null;
       audio.src = url;
       audio.load();
-      audio.play().catch(()=>{}); // will work after user tapped Listen
+      audio.play().catch(()=>{});
     }
 
-    function appendAudioToChat(blob, sent){
-      const url = URL.createObjectURL(blob);
-      const box = $('#chat-window');
-      const wrap = document.createElement('div');
-      wrap.className = 'chat-message ' + (sent?'sent':'received');
-      const a = document.createElement('audio');
-      a.className = 'inline';
-      a.controls = true;
-      a.src = url;
-      wrap.appendChild(a);
-      box.appendChild(wrap);
-      scrollChat();
-    }
+    /* ====== PeerJS ====== */
+    function initPeer() {
+      return new Promise((resolve) => {
+        peer = new Peer(undefined,{
+          debug:2,
+          config:{ iceServers:[
+            {urls:'stun:stun.l.google.com:19302'},
+            {urls:'stun:stun1.l.google.com:19302'},
+            {urls:'stun:stun2.l.google.com:19302'}
+          ]}
+        });
 
-    /********** PeerJS **********/
-    async function initPeer(){
-      peer = new Peer(undefined,{
-        debug:2,
-        config:{ iceServers:[
-          {urls:'stun:stun.l.google.com:19302'},
-          {urls:'stun:stun1.l.google.com:19302'},
-          {urls:'stun:stun2.l.google.com:19302'}
-        ]}
+        peer.on('open', id => {
+          myPeerId = id;
+          show($('#me-line'));
+          $('#me-line').textContent = `Your ID: ${id}`;
+          resolve();
+        });
+
+        // inbound data channel
+        peer.on('connection', (connection) => {
+          establishConn(connection);
+        });
+
+        // we don’t use media calls here
+        peer.on('call', call => { try{ call.close(); }catch{} });
+
+        peer.on('disconnected', ()=>{ try{peer.reconnect();}catch{} });
+        peer.on('error', e => console.error('Peer error:', e));
       });
-
-      peer.on('open', id => {
-        myPeerId = id;
-        show($('#me-line'));
-        $('#me-line').textContent = `Your ID: ${id}`;
-        setStatus('Finding a random match…');
-        joinQueue();
-      });
-
-      // Accept inbound data connection
-      peer.on('connection', (connection) => {
-        establishConn(connection);
-      });
-
-      // We are not doing media calls; only data channel
-      peer.on('call', call => { try{ call.close(); }catch{} });
-
-      peer.on('disconnected', ()=>{ try{peer.reconnect();}catch{} });
-      peer.on('error', e => console.error('Peer error:', e));
     }
 
     function establishConn(connection){
-      if (conn && conn.open && connection.peer !== conn.peer) { try{connection.close();}catch{}; return; }
+      if (conn && conn.open && connection.peer !== conn.peer) { try{ connection.close(); }catch{}; return; }
       conn = connection;
 
       conn.on('open', () => {
-        setStatus('Matched! Choose Speak or Listen.');
-        hide($('#profile-form'));
-        show($('#main-section'));
-        // exchange profile if you want names later
-        // conn.send({ type:'profile', data:userProfile });
+        setStatus(useMatchmaking ? 'Matched! Choose Speak or Listen.' : 'Connected! Choose Speak or Listen.');
+        hide($('#profile-form')); show($('#main-section'));
+        conn.send({ type:'profile', data:userProfile });
       });
-
       conn.on('data', handleData);
       conn.on('close', onDisconnect);
       conn.on('error', onDisconnect);
     }
 
-    function maybeInitiateConnection(){
-      if (!partnerId || !myPeerId) return;
-      if (conn && conn.open) return;
-      if (myPeerId < partnerId) {
-        const c = peer.connect(partnerId, { reliable:true });
-        establishConn(c);
-      }
-      // otherwise wait for their connect()
-    }
-
     function onDisconnect(){
-      setStatus('Partner left. Matching again…');
+      setStatus('Partner left.');
       conn = null; partnerId = null; matched = false;
-      hide($('#speak-section'));
-      hide($('#listen-section'));
-      hide($('#match-section'));
+      hide($('#speak-section')); hide($('#listen-section')); hide($('#match-section'));
       show($('#main-section'));
-      joinQueue();
+      if (useMatchmaking) joinQueue();
+      else setStatus(`Share your ID (${myPeerId}) or enter theirs when prompted.`);
     }
 
-    /********** Firebase matchmaking **********/
+    /* ====== Firebase matchmaking (optional) ====== */
+    async function tryLoadFirebase() {
+      try {
+        const cfg = await import('./firebase-config.js'); // must be same folder & https
+        db = cfg.db;
+        const r = await import('https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js');
+        rtdb = r; // stash functions module-like
+        useMatchmaking = true;
+        $('#mode-indicator').textContent = 'Auto-match mode'; show($('#mode-indicator'));
+        return true;
+      } catch (e) {
+        useMatchmaking = false;
+        $('#mode-indicator').textContent = 'Manual mode'; show($('#mode-indicator'));
+        setStatus('Firebase not loaded — falling back to manual connect (works fine).');
+        return false;
+      }
+    }
+
     function joinQueue(){
+      const { ref, push, set, onValue, onDisconnect, remove, update, get,
+              runTransaction, serverTimestamp, query, orderByChild, equalTo,
+              limitToFirst, endAt } = rtdb;
+
+      const QUEUE_TTL_MS = 30000, CLAIM_BATCH = 8;
+
+      function isFresh(ts){ return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
+      function safeRemove(r){ try{ r && remove(r); }catch{} }
+
       myTicketRef = push(ref(db, 'queue'));
       set(myTicketRef, { peer: myPeerId, claimed:false, ts: serverTimestamp() });
       onDisconnect(myTicketRef).remove();
@@ -255,331 +247,163 @@
           joinQueue();
         }
       }, QUEUE_TTL_MS);
-    }
 
-    function importCandidatesAndClaim(){
-      const q = query(ref(db, 'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
-      get(q).then((snap)=>{
-        const cands = [];
-        snap.forEach(cs=>{
-          const v = cs.val();
-          if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
+      function cleanupStaleTickets(done){
+        const cutoff = Date.now() - QUEUE_TTL_MS;
+        const q = query(ref(db, 'queue'), orderByChild('ts'), endAt(cutoff), limitToFirst(25));
+        get(q).then((snap)=>{
+          const updates = {};
+          snap.forEach(cs=>{
+            const v = cs.val();
+            if (v && v.ts && v.ts < cutoff) updates[`queue/${cs.key}`] = null;
+          });
+          if (Object.keys(updates).length) update(ref(db), updates).finally(()=>done && done());
+          else done && done();
         });
-        tryClaim(cands, 0);
-      });
-    }
+      }
 
-    function tryClaim(list, i){
-      if (partnerId || i >= list.length) { setStatus('Waiting for someone…'); return; }
-      const cand = list[i];
-      const claimPath = ref(db, `queue/${cand.key}/claimed`);
-      runTransaction(claimPath, cur => cur === false ? myPeerId : cur)
-        .then(res=>{
-          if (res.committed && res.snapshot.val() === myPeerId) {
-            const updates = {};
-            updates[`pairs/${myPeerId}`] = { partner: cand.peer, ts: Date.now() };
-            updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
-            updates[`queue/${myTicketRef.key}`] = null;
-            updates[`queue/${cand.key}`] = null;
-            update(ref(db), updates).then(()=>{
-              partnerId = cand.peer;
-              clearTimeout(requeueTimer);
-              maybeInitiateConnection();
-            });
-          } else {
-            tryClaim(list, i+1);
-          }
-        })
-        .catch(()=> tryClaim(list, i+1));
-    }
-
-    function cleanupStaleTickets(done){
-      const cutoff = Date.now() - QUEUE_TTL_MS;
-      const q = query(ref(db, 'queue'), orderByChild('ts'), endAt(cutoff), limitToFirst(25));
-      get(q).then((snap)=>{
-        const updates = {};
-        snap.forEach(cs=>{
-          const v = cs.val();
-          if (v && v.ts && v.ts < cutoff) updates[`queue/${cs.key}`] = null;
+      function importCandidatesAndClaim(){
+        const q = query(ref(db, 'queue'), orderByChild('claimed'), equalTo(false), limitToFirst(CLAIM_BATCH));
+        get(q).then((snap)=>{
+          const cands = [];
+          snap.forEach(cs=>{
+            const v = cs.val();
+            if (v && v.peer && v.peer !== myPeerId && isFresh(v.ts)) cands.push({ key: cs.key, peer: v.peer, ts: v.ts });
+          });
+          tryClaim(cands, 0);
         });
-        if (Object.keys(updates).length) update(ref(db), updates).finally(()=>done && done());
-        else done && done();
-      });
+      }
+
+      function tryClaim(list, i){
+        if (partnerId || i >= list.length) { setStatus('Waiting for someone…'); return; }
+        const cand = list[i];
+        const claimPath = ref(db, `queue/${cand.key}/claimed`);
+        runTransaction(claimPath, cur => cur === false ? myPeerId : cur)
+          .then(res=>{
+            if (res.committed && res.snapshot.val() === myPeerId) {
+              const updates = {};
+              updates[`pairs/${myPeerId}`] = { partner: cand.peer, ts: Date.now() };
+              updates[`pairs/${cand.peer}`] = { partner: myPeerId, ts: Date.now() };
+              updates[`queue/${myTicketRef.key}`] = null;
+              updates[`queue/${cand.key}`] = null;
+              update(ref(db), updates).then(()=>{
+                partnerId = cand.peer;
+                clearTimeout(requeueTimer);
+                maybeInitiateConnection();
+              });
+            } else {
+              tryClaim(list, i+1);
+            }
+          })
+          .catch(()=> tryClaim(list, i+1));
+      }
     }
 
-    function isFresh(ts){ return !ts || (Date.now() - ts) < QUEUE_TTL_MS; }
-    function safeRemove(r){ try{ r && remove(r); }catch{} }
+    function maybeInitiateConnection(){
+      if (!partnerId || !myPeerId) return;
+      if (conn && conn.open) return;
+      if (myPeerId < partnerId) {
+        const c = peer.connect(partnerId, { reliable:true });
+        establishConn(c);
+      }
+      // else wait for inbound connect
+    }
 
-    /********** UI Flow **********/
+    /* ====== Manual connect fallback ====== */
+    function ensureManualConnectionForSending(){
+      if (conn && conn.open) return true;
+      const other = prompt('Enter the Partner Peer ID to connect:');
+      if (!other) return false;
+      const c = peer.connect(other, { reliable:true });
+      establishConn(c);
+      return true;
+    }
+
+    /* ====== UI wiring ====== */
     $('#enter-btn').addEventListener('click', async () => {
       userProfile.name = ($('#display-name').value || '').trim() || 'Rizzler';
-      hide($('#profile-form'));
-      show($('#main-section'));
+
+      // 1) init peer first (never blocks)
+      hide($('#profile-form')); show($('#main-section'));
       setStatus('Initializing…');
       await initPeer();
+
+      // 2) attempt to load firebase & auto-match; if it fails we fallback automatically
+      const ok = await tryLoadFirebase();
+      if (ok) { setStatus('Finding a random match…'); joinQueue(); }
+      else {
+        setStatus(`Manual mode: share your ID (${myPeerId}) or click a button to connect & test.`);
+      }
     });
 
-    // SPEAK & RIZZ → open record controls
+    // SPEAK & RIZZ
     $('#speak-btn').addEventListener('click', () => {
-      if (!conn || !conn.open) { setStatus('Connecting…'); return; }
-      hide($('#listen-section'));
-      show($('#speak-section'));
-      $('#speak-hint').textContent = 'Tap Start Recording, say your line, then Stop Recording to send.';
+      if (useMatchmaking) {
+        if (!conn || !conn.open) { setStatus('Matching… one moment.'); return; }
+      } else {
+        if (!ensureManualConnectionForSending()) return;
+      }
+      hide($('#listen-section')); show($('#speak-section'));
     });
 
-    // Start/Stop Recording (Safari-safe)
+    // Start/Stop Recording (Safari-friendly: user gesture only)
     $('#record-toggle').addEventListener('click', () => {
       if (!mediaRecorder || mediaRecorder.state !== 'recording') {
-        // START
         navigator.mediaDevices.getUserMedia({ audio:true }).then(s=>{
           recordingStream = s;
-          const mimeType = getSupportedMime(); // prefers audio/mp4 on iOS
-          try {
-            mediaRecorder = new MediaRecorder(recordingStream, mimeType?{ mimeType }: {});
-          } catch(e){
-            alert('Recorder failed: '+e.message);
-            return;
-          }
+          const mimeType = getSupportedMime();
+          try { mediaRecorder = new MediaRecorder(recordingStream, mimeType?{ mimeType }:{}); }
+          catch(e){ alert('Recorder failed: '+e.message); return; }
+
           audioChunks = [];
           mediaRecorder.ondataavailable = e => { if (e.data && e.data.size>0) audioChunks.push(e.data); };
           mediaRecorder.onstop = () => {
             recordingStream.getTracks().forEach(t=>t.stop());
             const finalMime = mediaRecorder.mimeType || mimeType || 'audio/webm';
             const blob = new Blob(audioChunks, { type: finalMime });
-            sendBlobInChunks(blob, finalMime);     // *** same working chunk-sender ***
+            sendAudioBlob(blob, finalMime);
             $('#record-toggle').textContent = 'Start Recording';
             setStatus('Line sent!');
           };
           mediaRecorder.start(100);
           $('#record-toggle').textContent = 'Stop Recording';
           setStatus('Recording…');
-        }).catch(e=>{
-          alert('Microphone access denied: ' + e.message);
-        });
+        }).catch(e=>{ alert('Microphone access denied: ' + e.message); });
       } else {
-        // STOP
         mediaRecorder.stop();
       }
     });
 
     // LISTEN & GET RIZZED
     $('#listen-btn').addEventListener('click', () => {
-      if (!conn || !conn.open) { setStatus('Connecting…'); return; }
-      hide($('#speak-section'));
-      show($('#listen-section'));
-      const a = $('#audio-player');
-      a.muted = false;
-      // Prime autoplay by a user gesture on iOS
-      a.play().catch(()=>{});
+      if (useMatchmaking) {
+        if (!conn || !conn.open) { setStatus('Matching… one moment.'); return; }
+      } else {
+        if (!ensureManualConnectionForSending()) return; // in manual flow, we connect here too
+      }
+      hide($('#speak-section')); show($('#listen-section'));
+      const a = $('#audio-player'); a.muted = false; a.play().catch(()=>{});
       setStatus('Armed to listen…');
     });
 
-    // Accept & Match → open chat (text + photo + audio replies)
+    // ACCEPT → open chat
     $('#accept-btn').addEventListener('click', () => {
       if (!conn || !conn.open) return;
-      conn.send({ type:'accept', data: userProfile });
+      conn.send({ type:'accept', data:userProfile });
       matched = true;
       showMatch(remoteProfile || { name:'Mystery' });
     });
 
-    /********** Chat **********/
+    // Chat text
     $('#send-btn').addEventListener('click', () => {
-      const input = $('#chat-input');
-      const msg = input.value.trim();
+      const input = $('#chat-input'); const msg = input.value.trim();
       if (!msg || !(conn && conn.open)) return;
       conn.send({ type:'message', data: msg });
       displayMessage(msg, true);
       input.value = '';
     });
 
+    // Chat photo
     $('#photo-btn').addEventListener('click', () => $('#photo-input').click());
     $('#photo-input').addEventListener('change', e => {
-      const f = e.target.files?.[0]; if (!f || !(conn && conn.open)) return;
-      f.arrayBuffer().then(buf => {
-        const b = new Blob([buf], { type: f.type || 'image/jpeg' });
-        appendImg(b, true);
-        sendImg(b, f.name || 'photo.jpg');
-        e.target.value = '';
-      });
-    });
-
-    // Record & send an AUDIO REPLY within chat (same chunking, different message key)
-    $('#reply-record-btn').addEventListener('click', async () => {
-      if (!conn || !conn.open) return;
-      if (mediaRecorder && mediaRecorder.state === 'recording') return; // avoid overlap
-
-      try{
-        const s = await navigator.mediaDevices.getUserMedia({ audio:true });
-        const mimeType = getSupportedMime();
-        mediaRecorder = new MediaRecorder(s, mimeType?{ mimeType }: {});
-        audioChunks = [];
-        mediaRecorder.ondataavailable = e => { if (e.data && e.data.size>0) audioChunks.push(e.data); };
-        mediaRecorder.onstop = () => {
-          s.getTracks().forEach(t=>t.stop());
-          const finalMime = mediaRecorder.mimeType || mimeType || 'audio/webm';
-          const blob = new Blob(audioChunks, { type: finalMime });
-          // send as chat-audio
-          sendChatAudio(blob, finalMime);
-          appendAudioToChat(blob, true);
-          setStatus('Audio reply sent!');
-        };
-        mediaRecorder.start(100);
-        // simple UX: stop after another tap
-        $('#reply-record-btn').textContent = '⏹️ Stop';
-        const stopOnce = () => {
-          $('#reply-record-btn').removeEventListener('click', stopOnce);
-          mediaRecorder?.stop();
-          $('#reply-record-btn').textContent = '🎙️ Audio Reply';
-        };
-        $('#reply-record-btn').addEventListener('click', stopOnce);
-      }catch(e){
-        alert('Mic denied: '+e.message);
-      }
-    });
-
-    function showMatch(other){
-      hide($('#listen-section'));
-      hide($('#speak-section'));
-      show($('#match-section'));
-      $('#match-info').textContent = `Matched with ${other.name || 'Mystery'}!`;
-    }
-    function displayMessage(message, isSent) {
-      const box = $('#chat-window');
-      const d = document.createElement('div');
-      d.className = 'chat-message ' + (isSent?'sent':'received');
-      d.textContent = message;
-      box.appendChild(d);
-      scrollChat();
-    }
-    function appendImg(b, sent){
-      const url = URL.createObjectURL(b);
-      const box = $('#chat-window');
-      const d = document.createElement('div');
-      d.className = 'chat-message ' + (sent?'sent':'received');
-      const i = document.createElement('img');
-      i.src = url; i.style.maxWidth='220px'; i.style.borderRadius='10px'; i.style.display='block';
-      d.appendChild(i); box.appendChild(d); scrollChat();
-    }
-
-    /********** Chunk send helpers **********/
-    // Pickup line (initial clip)
-    function sendBlobInChunks(blob, mimeType) {
-      if (!conn || !conn.open) { alert('Not connected to a peer to send your line.'); return; }
-      conn.send({ type: 'audio-start', mime: mimeType, size: blob.size });
-      const reader = new FileReader(); let offset = 0;
-      reader.onload = (e) => {
-        const arr = new Uint8Array(e.target.result);
-        conn.send({ type: 'audio-chunk', data: arr });
-        offset += arr.length;
-        if (offset < blob.size) readNext(); else conn.send({ type: 'audio-end' });
-      };
-      function readNext(){ reader.readAsArrayBuffer(blob.slice(offset, offset + CHUNK_SIZE)); }
-      readNext();
-    }
-
-    // Chat audio reply
-    function sendChatAudio(blob, mimeType){
-      if (!conn || !conn.open) return;
-      conn.send({ type:'chat-audio-start', mime: mimeType, size: blob.size });
-      const r = new FileReader(); let o = 0;
-      r.onload = (e) => {
-        const arr = new Uint8Array(e.target.result);
-        conn.send({ type:'chat-audio-chunk', data: arr });
-        o += arr.length;
-        if (o < blob.size) readNext(); else conn.send({ type:'chat-audio-end' });
-      };
-      function readNext(){ r.readAsArrayBuffer(blob.slice(o, o + CHUNK_SIZE)); }
-      readNext();
-    }
-
-    // Photos in chat
-    function sendImg(blob, name){
-      if (!(conn && conn.open)) return;
-      conn.send({ type:'image-start', mime: blob.type, name, size: blob.size });
-      const r = new FileReader(); let o = 0;
-      r.onload = e => {
-        conn.send({ type:'image-chunk', data:new Uint8Array(e.target.result) });
-        o += e.target.result.byteLength;
-        if (o < blob.size) readNext(); else conn.send({ type:'image-end' });
-      };
-      function readNext(){ r.readAsArrayBuffer(blob.slice(o, o + CHUNK_SIZE)); }
-      readNext();
-    }
-
-    /********** Incoming data **********/
-    function handleData(msg){
-      if (!msg || !msg.type) return;
-
-      switch(msg.type){
-        // optional profile exchange
-        case 'profile': remoteProfile = msg.data || {}; break;
-
-        // === INITIAL PICKUP AUDIO ===
-        case 'audio-start':
-          incomingChunks = [];
-          incomingMime = msg.mime || 'audio/webm;codecs=opus';
-          incomingSize = msg.size || 0;
-          show($('#listen-section'));
-          setStatus('Receiving a line…');
-          break;
-
-        case 'audio-chunk':
-          incomingChunks.push(msg.data);
-          break;
-
-        case 'audio-end': {
-          const blob = new Blob(incomingChunks, { type: incomingMime });
-          playBlobInAudio(blob);
-          show($('#accept-btn'));   // let listener accept after hearing
-          setStatus('Line received!');
-          break;
-        }
-
-        // === CHAT AUDIO ===
-        case 'chat-audio-start':
-          rxChat = { parts: [], mime: msg.mime || 'audio/webm;codecs=opus', size: msg.size || 0 };
-          break;
-
-        case 'chat-audio-chunk':
-          rxChat.parts.push(msg.data);
-          break;
-
-        case 'chat-audio-end': {
-          const blob = new Blob(rxChat.parts, { type: rxChat.mime });
-          appendAudioToChat(blob, false);
-          setStatus('New audio message');
-          rxChat = { parts: [], mime: 'audio/webm;codecs=opus', size: 0 };
-          break;
-        }
-
-        // === ACCEPT → open chat for both ===
-        case 'accept':
-          matched = true;
-          showMatch(msg.data || { name:'Mystery' });
-          break;
-
-        // === TEXT ===
-        case 'message':
-          displayMessage(msg.data, false);
-          break;
-
-        // === IMAGE ===
-        case 'image-start':
-          rxImage = { parts: [], mime: msg.mime || 'image/jpeg', name: msg.name || 'photo.jpg' };
-          break;
-
-        case 'image-chunk':
-          rxImage.parts.push(msg.data);
-          break;
-
-        case 'image-end': {
-          const blob = new Blob(rxImage.parts, { type: rxImage.mime });
-          appendImg(blob, false);
-          rxImage = { parts: [], mime: 'image/jpeg', name: 'photo.jpg' };
-          break;
-        }
-      }
-    }
-  </script>
-</body>
-</html>
+      const f = e.target.files?.[0]; if (!f ||
