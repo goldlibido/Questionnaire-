@@ -9,7 +9,7 @@ const firebaseConfig = {
   authDomain: "le-libido-mvp.firebaseapp.com",
   databaseURL: "https://le-libido-mvp-default-rtdb.firebaseio.com",
   projectId: "le-libido-mvp",
-  storageBucket: "le-libido-mvp.firebasestorage.app",
+storageBucket: "le-libido-mvp.appspot.com",
   messagingSenderId: "131616941592",
   appId: "1:131616941592:web:e8773a0951f7b86c1a056d",
   measurementId: "G-8C9DXQ4M6T"
