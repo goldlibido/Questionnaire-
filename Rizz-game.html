@@ -6,48 +6,75 @@
 <title>Rizzler — Audio Dating</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root{--gold:#e1bf78;--blue:#064D95;--green:#06954E;--red:#c40018;--ink:#0b0b0b}
+  :root{--blue:#064D95;--green:#06954E;--red:#c40018}
   *{box-sizing:border-box}
   body{margin:0;background:#000;color:#fff;font-family:'Montserrat',sans-serif}
-  .wrap{max-width:980px;margin:0 auto;padding:16px}
-  .card{border:2px solid var(--gold);border-radius:14px;background:var(--ink);box-shadow:0 0 18px rgba(225,191,120,.35);padding:16px;margin:12px 0}
-  h1{margin:.2rem 0 12px;color:var(--gold);font-size:1.7rem;text-align:center}
-  h2{margin:.2rem 0 10px;font-size:1.2rem}
-  label{display:block;margin:8px 0 4px}
-  input[type="text"], select{width:100%;padding:10px;border:1px solid var(--gold);border-radius:10px;background:#1c1c1c;color:#fff}
-  button{padding:12px 16px;border:none;border-radius:24px;color:#fff;background:#333;cursor:pointer;margin:6px 6px 0 0;font-size:1rem;transition:transform .15s,box-shadow .15s}
-  button:hover{transform:scale(1.04);box-shadow:0 0 10px currentColor}
+  .wrap{max-width:820px;margin:0 auto;padding:16px}
+
+  /* Top logo */
+  .logo{display:block;margin:10px auto 16px auto; width:160px; height:auto}
+
+  /* Section cards (no borders) */
+  .section{background:#0f0f0f;border-radius:14px;padding:16px;margin:14px 0; box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  h1{margin:6px 0 10px; font-size:1.6rem; text-align:center}
+  h2{margin:.4rem 0 10px; font-size:1.15rem}
+
+  /* Vertical field stack */
+  .field{margin:10px 0}
+  .field label{display:block;margin:0 0 6px 2px; font-weight:600}
+  input[type="text"], select{
+    width:100%; padding:14px 12px; border-radius:12px; border:1px solid #2a2a2a;
+    background:#151515; color:#fff; font-size:16px;
+    -webkit-appearance:none; appearance:none; touch-action:manipulation;
+  }
+
+  /* Buttons */
+  button{padding:14px 16px;border:none;border-radius:26px;color:#fff;background:#333;cursor:pointer;margin:8px 8px 0 0;font-size:16px;transition:transform .12s}
+  button:hover{transform:scale(1.03)}
   .btn-green{background:var(--green)} .btn-blue{background:var(--blue)} .btn-red{background:var(--red)}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .grid{display:grid;gap:10px}
-  .g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .muted{opacity:.8}
-  audio{width:100%;background:#000;margin:6px 0}
-  .photos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-  .slot{position:relative;aspect-ratio:1;border:2px dashed var(--gold);border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;color:var(--gold);cursor:pointer;overflow:hidden}
-  .slot input{display:none}
+  .muted{opacity:.85}
+
+  /* Audio */
+  audio{width:100%;margin:10px 0;background:#000}
+
+  /* Photos: four square slots with live preview */
+  .photos{display:grid;grid-template-columns:1fr;gap:10px}
+  @media(min-width:540px){ .photos{grid-template-columns:repeat(2,1fr)} }
+  .slot{position:relative;aspect-ratio:1;border:1px dashed #444;border-radius:10px;background:#1a1a1a;
+        display:flex;align-items:center;justify-content:center;color:#aaa;cursor:pointer;overflow:hidden}
+  .slot input{position:absolute; inset:0; width:100%; height:100%; opacity:0}
   .slot img{width:100%;height:100%;object-fit:cover}
-  .slot .rm{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font-weight:700}
-  #status{min-height:1.3em;margin-top:6px}
-  #status.ok{color:#9bffa6} #status.err{color:#ff7b86}
-  #feed-none{display:none}
+  .slot .rm{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.65);
+            display:flex;align-items:center;justify-content:center;font-weight:700}
+
+  /* Browse / matches / chat */
   #tabs{display:flex;gap:8px;justify-content:center;margin:8px 0}
-  #tabs button.active{outline:2px solid var(--gold)}
-  #matches-list{max-height:260px;overflow:auto;border:1px solid var(--gold);border-radius:10px;padding:8px;background:#111}
-  .match-item{padding:8px;border-radius:8px;background:#1a1a1a;margin:6px 0;cursor:pointer}
-  #chat{max-height:360px;overflow:auto;border:1px solid var(--gold);border-radius:10px;background:#111;padding:10px}
-  .bubble{display:inline-block;max-width:78%;padding:8px 10px;margin:6px 0;border-radius:12px;animation:fade .2s ease-out}
+  #tabs button.active{outline:2px solid #777}
+  #matches-list{max-height:260px;overflow:auto;border-radius:10px;padding:8px;background:#0e0e0e}
+  .match-item{padding:10px;border-radius:10px;background:#171717;margin:6px 0;cursor:pointer}
+
+  #chat{max-height:360px;overflow:auto;border-radius:10px;background:#0e0e0e;padding:10px}
+  .bubble{display:inline-block;max-width:78%;padding:9px 11px;margin:6px 0;border-radius:12px;animation:fade .2s ease-out}
   .me{background:var(--green);margin-left:auto} .them{background:var(--blue);margin-right:auto}
   .bubble img{max-width:220px;border-radius:10px;display:block}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  #status{min-height:1.3em;margin:8px 2px 4px}
+  #status.ok{color:#9bffa6} #status.err{color:#ff7b86}
+  #feed-none{display:none;text-align:center;margin-top:10px;opacity:.85}
 </style>
 </head>
 <body>
 <div class="wrap">
+
+  <!-- Logo -->
+  <img class="logo" src="./golden-le-libido-logo.png" alt="Le Libido">
+
   <h1>Rizzler — Audio Dating</h1>
 
   <!-- Step 1: record line -->
-  <div class="card" id="step-record">
+  <div class="section" id="step-record">
     <h2>1) Record your pick-up line</h2>
     <div class="row">
       <button id="rec-toggle" class="btn-green">🎙️ Start recording</button>
@@ -57,102 +84,85 @@
     <audio id="line-preview" controls hidden></audio>
   </div>
 
-  <!-- Step 2: short profile -->
-  <div class="card" id="step-profile">
+  <!-- Step 2: profile (single column) -->
+  <div class="section" id="step-profile">
     <h2>2) Build your profile</h2>
 
-    <div class="photos" id="photoGrid">
-      <label class="slot"><span>+ Photo</span><input type="file" accept="image/*"></label>
-      <label class="slot"><span>+ Photo</span><input type="file" accept="image/*"></label>
-      <label class="slot"><span>+ Photo</span><input type="file" accept="image/*"></label>
-      <label class="slot"><span>+ Photo</span><input type="file" accept="image/*"></label>
+    <div class="field"><label>Name</label><input id="p_name" type="text" placeholder="Your display name"></div>
+    <div class="field"><label>Age</label><select id="p_age"></select></div>
+    <div class="field"><label>Height</label><select id="p_height"></select></div>
+    <div class="field">
+      <label>Gender</label>
+      <select id="p_gender">
+        <option value="" disabled selected>Select</option>
+        <option>Man</option><option>Woman</option><option>Non-binary</option><option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Sexual Orientation (who you want to hear)</label>
+      <select id="p_orientation">
+        <option value="" disabled selected>Select</option>
+        <option value="Women">Women</option><option value="Men">Men</option><option value="Both">Both</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Turn-on Vocabulary</label>
+      <select id="p_vocab">
+        <option value="" disabled selected>Select</option>
+        <option>Prefer not to say</option><option>babe</option><option>baby</option><option>sexy</option>
+        <option>fucker</option><option>brat</option><option>good boy</option><option>good girl</option>
+        <option>Goddess</option><option>master</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>My Type (Looks)</label>
+      <select id="p_looks">
+        <option value="" disabled selected>Select</option>
+        <option>Prefer not to say</option>
+        <option>Tall</option><option>Short</option><option>Thin & lean</option><option>Curvy & voluptuous</option>
+        <option>Muscular</option><option>Tan</option><option>Pale</option><option>Brunette</option><option>Blonde</option>
+        <option>Latin</option><option>Asian</option><option>Black</option><option>Jewish</option><option>Indian</option><option>Middle Eastern</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>My Type (Personality)</label>
+      <select id="p_personality">
+        <option value="" disabled selected>Select</option>
+        <option>Prefer not to say</option>
+        <option>Confident & powerful</option><option>Funny & witty</option><option>Smart & sophisticated</option>
+        <option>Flirty & provocative</option><option>Extroverted & friendly</option><option>Introverted & thoughtful</option>
+        <option>Athletic & sporty</option><option>Organized & orderly</option><option>Silly & goofy</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Fantasies</label>
+      <select id="p_fantasies">
+        <option value="" disabled selected>Select</option>
+        <option>Prefer not to say</option>
+        <option>Sex on the beach</option><option>Candlelit bath</option><option>Erotic massage</option>
+        <option>Mile High Club</option><option>Skinny dipping</option><option>Role-play</option>
+        <option>Light bondage</option><option>Sensory play</option><option>Impact play</option><option>Erotic hypnosis</option>
+      </select>
     </div>
 
-    <div class="grid g-2">
-      <div>
-        <label>Name</label>
-        <input id="p_name" type="text" placeholder="Your display name">
-      </div>
-      <div>
-        <label>Age</label>
-        <select id="p_age"></select>
-      </div>
-      <div>
-        <label>Height</label>
-        <select id="p_height"></select>
-      </div>
-      <div>
-        <label>Gender</label>
-        <select id="p_gender">
-          <option value="" disabled selected>Select</option>
-          <option>Man</option>
-          <option>Woman</option>
-          <option>Non-binary</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div>
-        <label>Sexual Orientation (who you want to hear)</label>
-        <select id="p_orientation">
-          <option value="" disabled selected>Select</option>
-          <option value="Women">Women</option>
-          <option value="Men">Men</option>
-          <option value="Both">Both</option>
-        </select>
-      </div>
-      <div>
-        <label>Turn-on Vocabulary</label>
-        <select id="p_vocab">
-          <option value="" disabled selected>Select</option>
-          <option>Prefer not to say</option>
-          <option>babe</option><option>baby</option><option>sexy</option>
-          <option>fucker</option><option>brat</option>
-          <option>good boy</option><option>good girl</option>
-          <option>Goddess</option><option>master</option>
-        </select>
-      </div>
-      <div>
-        <label>My Type (Looks)</label>
-        <select id="p_looks">
-          <option value="" disabled selected>Select</option>
-          <option>Prefer not to say</option>
-          <option>Tall</option><option>Short</option>
-          <option>Thin & lean</option><option>Curvy & voluptuous</option><option>Muscular</option>
-          <option>Tan</option><option>Pale</option>
-          <option>Brunette</option><option>Blonde</option>
-          <option>Latin</option><option>Asian</option><option>Black</option><option>Jewish</option><option>Indian</option><option>Middle Eastern</option>
-        </select>
-      </div>
-      <div>
-        <label>My Type (Personality)</label>
-        <select id="p_personality">
-          <option value="" disabled selected>Select</option>
-          <option>Prefer not to say</option>
-          <option>Confident & powerful</option><option>Funny & witty</option><option>Smart & sophisticated</option>
-          <option>Flirty & provocative</option><option>Extroverted & friendly</option><option>Introverted & thoughtful</option>
-          <option>Athletic & sporty</option><option>Organized & orderly</option><option>Silly & goofy</option>
-        </select>
-      </div>
-      <div>
-        <label>Fantasies</label>
-        <select id="p_fantasies">
-          <option value="" disabled selected>Select</option>
-          <option>Prefer not to say</option>
-          <option>Sex on the beach</option><option>Candlelit bath</option><option>Erotic massage</option>
-          <option>Mile High Club</option><option>Skinny dipping</option><option>Role-play</option>
-          <option>Light bondage</option><option>Sensory play</option><option>Impact play</option><option>Erotic hypnosis</option>
-        </select>
+    <!-- photos -->
+    <div class="field"><label>Photos (4)</label>
+      <div class="photos" id="photoGrid">
+        <label class="slot"><span>+ Photo</span><input type="file" accept="image/*"></label>
+        <label class="slot"><span>+ Photo</span><input type="file" accept="image/*"></label>
+        <label class="slot"><span>+ Photo</span><input type="file" accept="image/*"></label>
+        <label class="slot"><span>+ Photo</span><input type="file" accept="image/*"></label>
       </div>
     </div>
 
     <div class="row">
       <button id="save-profile" class="btn-green">Save Profile</button>
-      <span class="muted">Photos + fields save to your profile.</span>
+      <span class="muted">Upload line first, then save.</span>
     </div>
   </div>
 
-  <!-- Step 3: tabs for Browse / Matches / Chat -->
-  <div class="card" id="step-browse" hidden>
+  <!-- Step 3: Browse / Matches / Chat -->
+  <div class="section" id="step-browse" hidden>
     <div id="tabs">
       <button id="tab-browse" class="btn-blue active">Browse</button>
       <button id="tab-matches" class="btn-blue">Matches</button>
@@ -167,7 +177,7 @@
         <button id="like" class="btn-green">Like</button>
         <button id="next" class="btn-blue">Next</button>
       </div>
-      <div id="feed-none" class="muted" style="text-align:center;margin-top:10px">No more lines for now.</div>
+      <div id="feed-none">No more lines for now.</div>
     </div>
 
     <!-- Matches -->
@@ -182,15 +192,11 @@
       <div class="row">
         <input id="msg" type="text" placeholder="Type a message…" style="flex:1;min-width:180px">
         <button id="send" class="btn-green">Send</button>
-
         <input id="photo" type="file" accept="image/*" hidden>
         <button id="send-photo" class="btn-blue">📷 Photo</button>
-
         <button id="send-voice" class="btn-blue">🎙️ Voice</button>
       </div>
-      <div class="row">
-        <button id="back-to-matches" class="btn-blue">← Back to Matches</button>
-      </div>
+      <div class="row"><button id="back-to-matches" class="btn-blue">← Back to Matches</button></div>
     </div>
   </div>
 
@@ -216,87 +222,71 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 const $ = s => document.querySelector(s);
 const setStatus = (t,cls='')=>{ const el=$('#status'); el.textContent=t||''; el.className=cls; };
-const uid = () => (crypto.randomUUID? crypto.randomUUID(): Math.random().toString(36).slice(2));
-const now = () => Date.now();
 
 /* ========= State ========= */
 let my = { uid:null, name:'' };
 let lineRec=null, lineChunks=[], lineStream=null, lineMime='audio/webm';
 let myLineUrl=null, myLineUploaded=false;
 
-let photoFiles = [null,null,null,null]; // 4 photos (File objects)
-let photoUrls  = [null,null,null,null]; // download URLs after upload
+let photoFiles = [null,null,null,null];
+let photoUrls  = [null,null,null,null];
 
 let feed=[], feedPos=-1, currentCard=null;
 let myProfile=null;
-
 let currentMatchId=null, chatUnsub=null;
 
 /* ========= Auth (anonymous) ========= */
-signInAnonymously(auth).catch(console.error);
-onAuthStateChanged(auth, async (user)=>{
-  if (!user) return;
-  my.uid = user.uid;
-  setStatus('Signed in (anonymous).','ok');
-  initUI();
+onAuthStateChanged(auth, (user)=>{
+  if (user){ my.uid=user.uid; setStatus('Signed in (anonymous).','ok'); initUI(); }
+  else { signInAnonymously(auth).catch(console.error); }
 });
 
 /* ========= UI init ========= */
 function initUI(){
-  // Populate Age 18..80
-  const ageSel = $('#p_age'); for (let i=18;i<=80;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i; ageSel.appendChild(o); }
-  // Populate Height 4'0" .. 7'0"
-  const hSel = $('#p_height');
-  for (let ft=4; ft<=7; ft++){
-    for (let inch=0; inch<12; inch++){
-      if (ft===7 && inch>0) break;
-      const lab=`${ft}'${inch}"`; const o=document.createElement('option'); o.value=lab; o.textContent=lab; hSel.appendChild(o);
-    }
-  }
+  // Age 18..80
+  const ageSel=$('#p_age'); for(let i=18;i<=80;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i; ageSel.appendChild(o); }
+  // Height 4'0" .. 7'0"
+  const hSel=$('#p_height'); for(let ft=4;ft<=7;ft++){ for(let inch=0;inch<12;inch++){ if(ft===7&&inch>0) break; const lab=`${ft}'${inch}"`; const o=document.createElement('option'); o.value=lab; o.textContent=lab; hSel.appendChild(o); } }
 
-  // Photo handlers (4)
+  // Photo handlers
   [...document.querySelectorAll('#photoGrid .slot')].forEach((slot,idx)=>{
-    const input = slot.querySelector('input[type=file]');
-    slot.addEventListener('click', (e)=>{
-      if (e.target.classList.contains('rm')) return;
-      input.click();
-    });
+    const input=slot.querySelector('input[type=file]');
+    // Tap anywhere opens immediately (no double-tap)
+    slot.addEventListener('click', (e)=>{ if (e.target.classList.contains('rm')) return; input.click(); }, {passive:true});
+    input.addEventListener('click', e=>e.stopPropagation()); // ensure first tap focuses file dialog
     input.addEventListener('change', ()=>{
-      const f=input.files?.[0]; if (!f) return;
+      const f=input.files?.[0]; if(!f) return;
       photoFiles[idx]=f;
-      // preview
       slot.innerHTML='';
       const img=document.createElement('img'); img.src=URL.createObjectURL(f);
       const rm=document.createElement('div'); rm.textContent='×'; rm.className='rm';
-      rm.addEventListener('click',(ev)=>{ ev.stopPropagation(); photoFiles[idx]=null; photoUrls[idx]=null; slot.innerHTML='<span>+ Photo</span><input type="file" accept="image/*">'; slot.appendChild(input); });
+      rm.addEventListener('click', ev=>{ ev.stopPropagation(); photoFiles[idx]=null; photoUrls[idx]=null; slot.innerHTML='<span>+ Photo</span>'; slot.appendChild(input); });
       slot.appendChild(img); slot.appendChild(rm); slot.appendChild(input);
     });
   });
 
   // Recorder buttons
-  $('#rec-toggle').addEventListener('click', toggleRecord);
+  $('#rec-toggle').addEventListener('click', toggleRecord, {passive:true});
   $('#upload-line').addEventListener('click', uploadLine);
-
   // Save profile
   $('#save-profile').addEventListener('click', saveProfile);
-
   // Tabs
   $('#tab-browse').addEventListener('click', ()=>showTab('browse'));
   $('#tab-matches').addEventListener('click', ()=>showTab('matches'));
-
   // Browse controls
   $('#next').addEventListener('click', nextCard);
   $('#pass').addEventListener('click', async ()=>{
     if (!currentCard) return; await set(ref(db, `passes/${my.uid}/${currentCard.uid}`), true); nextCard();
   });
   $('#like').addEventListener('click', likeCurrent);
-
   // Chat controls
   $('#send').addEventListener('click', sendText);
   $('#send-photo').addEventListener('click', ()=>$('#photo').click());
   $('#photo').addEventListener('change', sendPhoto);
   $('#send-voice').addEventListener('click', sendVoiceMemo);
   $('#back-to-matches').addEventListener('click', ()=>showTab('matches'));
+
+  setStatus('Ready. Record your line to begin.','ok');
 }
 
 /* ========= Recording ========= */
@@ -309,7 +299,7 @@ async function toggleRecord(){
   if (!lineRec || lineRec.state==='inactive'){
     try{
       const s = await navigator.mediaDevices.getUserMedia({audio:true});
-      lineStream=s; lineChunks=[]; const mt = pickMime(); lineMime = mt||'audio/webm';
+      lineStream=s; lineChunks=[]; const mt=pickMime(); lineMime=mt||'audio/webm';
       lineRec = new MediaRecorder(s, mt?{mimeType:mt}:{});
       lineRec.ondataavailable=e=>{ if (e.data && e.data.size) lineChunks.push(e.data); };
       lineRec.onstop=()=>{
@@ -322,234 +312,44 @@ async function toggleRecord(){
       lineRec.start(100);
       $('#rec-toggle').textContent='⏹️ Stop';
       setStatus('Recording…');
-    }catch(e){
-      setStatus('Microphone blocked — enable permissions.', 'err');
-    }
+    }catch(e){ setStatus('Microphone blocked — enable permissions.', 'err'); }
   }else{
     lineRec.stop(); $('#rec-toggle').textContent='🎙️ Start recording';
   }
 }
+
+/* ========= Upload line (with ensured auth) ========= */
 async function uploadLine(){
   if (!lineChunks.length){ setStatus('Record first.','err'); return; }
   try{
+    if (!auth.currentUser) { await signInAnonymously(auth); }  // ensure signed-in
     setStatus('Uploading line…');
-    const blob=new Blob(lineChunks,{type:lineMime});
-    const key=`${my.uid}-${Date.now()}.webm`;
-    const r=sRef(storage, `lines/${my.uid}/${key}`);
-    await uploadBytes(r, blob, {contentType: lineMime});
-    myLineUrl = await getDownloadURL(r);
-    await set(ref(db, `lines/${my.uid}`), { uid: my.uid, name: $('#p_name').value||'Rizzler', url: myLineUrl, mime: lineMime, ts: serverTimestamp() });
+    const blob = new Blob(lineChunks, { type: lineMime });
+    const key  = `${(my.uid||auth.currentUser.uid)}-${Date.now()}.webm`;
+    const r    = sRef(storage, `lines/${(my.uid||auth.currentUser.uid)}/${key}`);
+
+    await uploadBytes(r, blob, { contentType: lineMime });
+    const url = await getDownloadURL(r);
+
+    myLineUrl = url;
+    await set(ref(db, `lines/${(my.uid||auth.currentUser.uid)}`), {
+      uid: (my.uid||auth.currentUser.uid),
+      name: ($('#p_name').value || 'Rizzler'),
+      url,
+      mime: lineMime,
+      ts: serverTimestamp()
+    });
+
     myLineUploaded = true;
     setStatus('Line uploaded. Now finish profile.','ok');
   }catch(err){
-    console.error(err); setStatus('Upload failed (Storage rules/CORS?).','err');
+    console.error(err);
+    const msg = (err && err.code) ? ` (${err.code})` : '';
+    setStatus('Upload failed. Check Storage rules & bucket name'+msg+'.','err');
   }
 }
 
 /* ========= Save Profile ========= */
 async function saveProfile(){
-  // minimal guard: require at least name + age + orientation + one photo + line uploaded
   const name = ($('#p_name').value||'').trim();
-  const age  = $('#p_age').value;
-  const height = $('#p_height').value;
-  const gender = $('#p_gender').value;
-  const orientation = $('#p_orientation').value;
-  if (!name || !age || !orientation){ setStatus('Please add Name, Age, Orientation.', 'err'); return; }
-  if (!myLineUploaded){ setStatus('Upload your pick-up line first.', 'err'); return; }
-
-  setStatus('Saving profile…');
-
-  // Upload photos that are chosen
-  for (let i=0;i<photoFiles.length;i++){
-    const f=photoFiles[i]; if (!f) continue;
-    const key=`${my.uid}-${i}-${Date.now()}-${f.name||'photo'}`;
-    const r=sRef(storage, `profiles/${my.uid}/${key}`);
-    await uploadBytes(r, f, {contentType: f.type||'image/jpeg'});
-    photoUrls[i] = await getDownloadURL(r);
-  }
-
-  // Profile object
-  myProfile = {
-    uid: my.uid,
-    name,
-    age,
-    height,
-    gender,
-    orientation, // Men / Women / Both (feed filter uses this)
-    vocab: $('#p_vocab').value || '',
-    looks: $('#p_looks').value || '',
-    personality: $('#p_personality').value || '',
-    fantasies: $('#p_fantasies').value || '',
-    photos: photoUrls.filter(Boolean),
-    ts: serverTimestamp()
-  };
-
-  await update(ref(db, `users/${my.uid}`), myProfile);
-  setStatus('Profile saved! Start browsing.','ok');
-
-  // Go to browse
-  $('#step-record').hidden=true;
-  $('#step-profile').hidden=true;
-  $('#step-browse').hidden=false;
-  showTab('browse');
-  await loadFeed();
-  loadMatchesList();
-}
-
-/* ========= Tabs ========= */
-function showTab(which){
-  $('#tab-browse').classList.toggle('active', which==='browse');
-  $('#tab-matches').classList.toggle('active', which==='matches');
-  $('#browse-pane').hidden = (which!=='browse');
-  $('#matches-pane').hidden = (which!=='matches');
-  $('#chat-pane').hidden = true;
-}
-
-/* ========= Feed ========= */
-async function loadFeed(){
-  const snap = await get(query(ref(db,'lines'), orderByChild('ts'), limitToLast(60)));
-  const want = (myProfile?.orientation || 'Both'); // whom I want to hear
-  feed=[];
-  snap.forEach(s=>{
-    const v=s.val(); if (!v || v.uid===my.uid) return;
-    feed.push(v);
-  });
-
-  // Filter by my orientation => requires reading poster's gender
-  // We’ll fetch minimal gender cache
-  const items=[];
-  for (const v of feed){
-    const uSnap = await get(ref(db, `users/${v.uid}/gender`));
-    const g = uSnap.exists()? uSnap.val() : null;
-    if (want==='Both' || (want==='Men' && g==='Man') || (want==='Women' && g==='Woman')){
-      items.push({...v, gender:g});
-    }
-  }
-  feed = items.sort((a,b)=>(b.ts||0)-(a.ts||0));
-  feedPos=-1; nextCard();
-}
-
-function renderCard(v){
-  $('#card-audio').src = v.url;
-  $('#card-meta').textContent = `${v.name||'Rizzler'} ${v.gender?('• '+v.gender):''}`;
-}
-function nextCard(){
-  $('#feed-none').style.display='none';
-  for (let i=feedPos+1;i<feed.length;i++){
-    currentCard=feed[i]; feedPos=i; renderCard(currentCard); return;
-  }
-  currentCard=null; $('#card-audio').src=''; $('#card-meta').textContent='';
-  $('#feed-none').style.display='block';
-}
-
-async function likeCurrent(){
-  if (!currentCard) return;
-  await set(ref(db, `likes/${my.uid}/${currentCard.uid}`), true);
-  // Mutual like?
-  const back = await get(ref(db, `likes/${currentCard.uid}/${my.uid}`));
-  if (back.exists()){
-    const a=[my.uid, currentCard.uid].sort(); const mid=`${a[0]}_${a[1]}`;
-    await update(ref(db, `matches/${mid}`), { a:a[0], b:a[1], ts: serverTimestamp() });
-    openChat(mid, currentCard.uid, currentCard.name||'Match');
-  } else {
-    setStatus('Like sent — you’ll match if they like you back.','ok');
-    nextCard();
-  }
-}
-
-/* ========= Matches ========= */
-async function loadMatchesList(){
-  $('#matches-list').innerHTML = '';
-  onValue(ref(db, 'matches'), (snap)=>{
-    const all = snap.val()||{};
-    const mine = Object.keys(all).filter(id=>{
-      const m=all[id]; return m && (m.a===my.uid || m.b===my.uid);
-    });
-    const list = $('#matches-list'); list.innerHTML='';
-    if (!mine.length){ list.innerHTML = '<div class="muted">No matches yet.</div>'; return; }
-    mine.sort((x,y)=> (all[y].ts?.seconds||0)-(all[x].ts?.seconds||0));
-    mine.forEach(id=>{
-      const m=all[id];
-      const other = (m.a===my.uid? m.b : m.a);
-      // fetch other name quickly
-      get(ref(db, `users/${other}/name`)).then(ns=>{
-        const name = ns.exists()? ns.val() : 'Match';
-        const div=document.createElement('div'); div.className='match-item'; div.textContent = name;
-        div.addEventListener('click', ()=> openChat(id, other, name));
-        list.appendChild(div);
-      });
-    });
-  });
-}
-
-/* ========= Chat ========= */
-function openChat(matchId, otherUid, otherName){
-  currentMatchId = matchId;
-  $('#chat-title').textContent = `Chat with ${otherName||'Match'}`;
-  $('#browse-pane').hidden = true; $('#matches-pane').hidden=true; $('#chat-pane').hidden=false;
-  $('#chat').innerHTML = '';
-
-  if (chatUnsub) chatUnsub();
-  chatUnsub = onChildAdded(ref(db, `chats/${matchId}/messages`), snap => renderMsg(snap.val()));
-}
-
-function renderMsg(m){
-  const box=$('#chat');
-  const b=document.createElement('div'); b.className='bubble '+(m.from===my.uid?'me':'them');
-  if (m.type==='text'){ b.textContent=m.text; }
-  else if (m.type==='image'){ const img=document.createElement('img'); img.src=m.url; b.appendChild(img); }
-  else if (m.type==='audio'){ const a=document.createElement('audio'); a.controls=true; a.src=m.url; b.appendChild(a); }
-  box.appendChild(b); box.scrollTop=box.scrollHeight;
-}
-
-async function sendText(){
-  const t = ($('#msg').value||'').trim(); if (!t || !currentMatchId) return;
-  await push(ref(db, `chats/${currentMatchId}/messages`), { from: my.uid, type:'text', text:t, ts: serverTimestamp() });
-  $('#msg').value='';
-}
-
-async function sendPhoto(e){
-  const f = e.target.files?.[0]; if (!f || !currentMatchId) return;
-  try{
-    const key = `${my.uid}-${Date.now()}-${f.name}`;
-    const r = sRef(storage, `chat/${currentMatchId}/${key}`);
-    await uploadBytes(r, f, { contentType: f.type||'image/jpeg' });
-    const url = await getDownloadURL(r);
-    await push(ref(db, `chats/${currentMatchId}/messages`), { from: my.uid, type:'image', url, ts: serverTimestamp() });
-  }catch(err){ alert('Photo upload failed.'); }
-  e.target.value='';
-}
-
-let memoRec=null, memoChunks=[], memoStream=null, memoMime='audio/webm';
-async function sendVoiceMemo(){
-  if (!currentMatchId) return;
-  if (!memoRec || memoRec.state==='inactive'){
-    try{
-      const s = await navigator.mediaDevices.getUserMedia({audio:true});
-      memoStream=s; memoChunks=[]; const mt=pickMime(); memoMime=mt||'audio/webm';
-      memoRec=new MediaRecorder(s, mt?{mimeType:mt}:{});
-      memoRec.ondataavailable=e=>{ if (e.data && e.data.size) memoChunks.push(e.data); };
-      memoRec.onstop=async ()=>{
-        memoStream.getTracks().forEach(t=>t.stop());
-        const blob = new Blob(memoChunks,{type:memoRec.mimeType||memoMime});
-        try{
-          const key=`${my.uid}-${Date.now()}.webm`;
-          const r=sRef(storage, `chat/${currentMatchId}/${key}`);
-          await uploadBytes(r, blob, {contentType: memoMime});
-          const url=await getDownloadURL(r);
-          await push(ref(db, `chats/${currentMatchId}/messages`), { from: my.uid, type:'audio', url, ts: serverTimestamp() });
-        }catch(err){ alert('Audio upload failed.'); }
-        $('#send-voice').textContent='🎙️ Voice';
-      };
-      memoRec.start(100); $('#send-voice').textContent='⏹️ Stop';
-    }catch(e){ alert('Mic permission needed.'); }
-  }else{
-    memoRec.stop();
-  }
-}
-
-/* ========= Boot status ========= */
-setStatus('Ready. Record your line to begin.','ok');
-</script>
-</body>
-</html>
+  const
