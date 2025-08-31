@@ -6,12 +6,8 @@
 <title>Le Libido — Blind Pickup Lines</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --gold:#e1bf78; --blue:#064D95; --green:#06954E; --red:#950606;
-    --bg:#0d0d0d; --card:#151515; --muted:#b9b9b9;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
+  :root{ --gold:#e1bf78; --blue:#064D95; --green:#06954E; --red:#950606; --bg:#0d0d0d; --card:#151515; --muted:#b9b9b9; }
+  *{box-sizing:border-box} html,body{height:100%}
   body{margin:0;background:var(--bg);font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#fff}
   .border-wrap{min-height:100vh;padding:2px;background:linear-gradient(100deg,var(--red),var(--blue),var(--green))}
   .app{min-height:calc(100vh - 4px);background:var(--bg);display:flex;flex-direction:column;align-items:center}
@@ -23,15 +19,12 @@
   .step-pill.active{opacity:1;border-color:var(--gold);box-shadow:0 0 14px rgba(225,191,120,.2) inset}
   .panel{width:min(1100px,94vw);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin:10px auto 28px;box-shadow:0 25px 60px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02)}
   .panel h2{margin:6px 8px 14px;font-size:18px;font-weight:800;letter-spacing:.3px}
-  .grid{display:grid;gap:14px}
-  .grid.cols-2{grid-template-columns:1fr 1fr}
-  @media (max-width:800px){.grid.cols-2{grid-template-columns:1fr}}
+  .grid{display:grid;gap:14px} .grid.cols-2{grid-template-columns:1fr 1fr} @media (max-width:800px){.grid.cols-2{grid-template-columns:1fr}}
   .btn{appearance:none;border:0;border-radius:12px;padding:14px 18px;background:linear-gradient(180deg,#1e1e1e,#121212);color:#fff;font-weight:700;letter-spacing:.3px;cursor:pointer;border:1px solid rgba(255,255,255,.08);transition:.2s transform,.2s box-shadow,.2s background}
   .btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
   .btn.gold{background:linear-gradient(180deg,#f4d796,#c9a760);color:#111;border:1px solid #d7b56f;text-shadow:0 1px 0 rgba(255,255,255,.35)}
   .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.18)}
-  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .hidden{display:none !important}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center} .hidden{display:none !important}
   label{font-size:12px;color:#e5e5e5;margin-bottom:6px;display:block}
   input[type="text"],select{width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px;touch-action:manipulation}
   .rec-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px}
@@ -66,8 +59,7 @@
   .them{align-self:flex-start;background:#141414;border:1px solid rgba(255,255,255,.12)}
   .composer{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.08);background:#101010}
   .composer input[type="text"]{flex:1;background:#0f0f0f;border:1px solid rgba(255,255,255,.12)}
-  .small{font-size:12px;color:var(--muted)}
-  .tip{color:var(--muted);font-size:12px;margin-top:6px}
+  .small{font-size:12px;color:var(--muted)} .tip{color:var(--muted);font-size:12px;margin-top:6px}
 </style>
 </head>
 <body>
@@ -86,7 +78,7 @@
       <div class="step-pill">4 • Chat</div>
     </div>
 
-    <!-- STEP 1: RECORD -->
+    <!-- STEP 1 -->
     <section class="panel" id="step1">
       <h2>Step 1 — Your pickup line</h2>
       <div class="grid cols-2">
@@ -95,7 +87,7 @@
             <button class="record-btn" id="recordBtn"><span id="recLabel">Start Recording</span></button>
             <div>
               <div class="small">Tap once to start, tap again to stop. Keep it under 10s for best vibes.</div>
-              <div class="tip">iOS/Safari supported. Works over HTTPS and requires microphone permission.</div>
+              <div class="tip">Use HTTPS and allow mic permission.</div>
             </div>
           </div>
           <div id="playerBlock" class="hidden">
@@ -116,94 +108,54 @@
           <ul style="margin-top:8px; color:#ddd; line-height:1.5">
             <li>Short, playful, unexpected</li>
             <li>Flirty without being cringey</li>
-            <li>Specific (reference the moment or setting)</li>
+            <li>Specific to the moment</li>
           </ul>
-          <div class="tip">Example: “If we matched, I’ll bring the coffee. You bring the story of how we met.”</div>
         </div>
       </div>
     </section>
 
-    <!-- STEP 2: PROFILE -->
+    <!-- STEP 2 -->
     <section class="panel hidden" id="step2">
       <h2>Step 2 — Build your profile</h2>
       <div class="grid cols-2">
         <div>
           <label>Photos (2×2 grid)</label>
           <div class="photo-grid" id="photoGrid">
-            <!-- 4 clickable slots -->
+            <!-- 4 slots -->
             <div class="photo" data-idx="0">
-              <input type="file" accept="image/*" />
-              <div class="hint">Tap to add</div>
-              <div class="overlay hidden">
-                <div class="pill change">Change</div>
-                <div class="pill remove">✕</div>
-              </div>
+              <input type="file" accept="image/*"><div class="hint">Tap to add</div>
+              <div class="overlay hidden"><div class="pill change">Change</div><div class="pill remove">✕</div></div>
             </div>
             <div class="photo" data-idx="1">
-              <input type="file" accept="image/*" />
-              <div class="hint">Tap to add</div>
-              <div class="overlay hidden">
-                <div class="pill change">Change</div>
-                <div class="pill remove">✕</div>
-              </div>
+              <input type="file" accept="image/*"><div class="hint">Tap to add</div>
+              <div class="overlay hidden"><div class="pill change">Change</div><div class="pill remove">✕</div></div>
             </div>
             <div class="photo" data-idx="2">
-              <input type="file" accept="image/*" />
-              <div class="hint">Tap to add</div>
-              <div class="overlay hidden">
-                <div class="pill change">Change</div>
-                <div class="pill remove">✕</div>
-              </div>
+              <input type="file" accept="image/*"><div class="hint">Tap to add</div>
+              <div class="overlay hidden"><div class="pill change">Change</div><div class="pill remove">✕</div></div>
             </div>
             <div class="photo" data-idx="3">
-              <input type="file" accept="image/*" />
-              <div class="hint">Tap to add</div>
-              <div class="overlay hidden">
-                <div class="pill change">Change</div>
-                <div class="pill remove">✕</div>
-              </div>
+              <input type="file" accept="image/*"><div class="hint">Tap to add</div>
+              <div class="overlay hidden"><div class="pill change">Change</div><div class="pill remove">✕</div></div>
             </div>
           </div>
           <div class="tip">Previews appear instantly. You can change or remove any photo.</div>
         </div>
         <div>
           <div class="grid cols-2">
-            <div>
-              <label>Name</label>
-              <input type="text" id="name" placeholder="Enter your first name" autocomplete="name">
-            </div>
-            <div>
-              <label>Age</label>
-              <select id="age"></select>
-            </div>
-            <div>
-              <label>Height</label>
-              <select id="height"></select>
-            </div>
-            <div>
-              <label>Gender</label>
-              <select id="gender">
-                <option value="" selected disabled>Choose</option>
-                <option>Man</option><option>Woman</option><option>Other</option>
-              </select>
-            </div>
-            <div>
-              <label>I’m into</label>
-              <select id="into">
-                <option value="" selected disabled>Choose</option>
-                <option>Men</option><option>Women</option><option>Both</option>
-              </select>
-            </div>
-            <div>
-              <label>Turn-on vocabulary</label>
+            <div><label>Name</label><input type="text" id="name" placeholder="First name" autocomplete="name"></div>
+            <div><label>Age</label><select id="age"></select></div>
+            <div><label>Height</label><select id="height"></select></div>
+            <div><label>Gender</label><select id="gender"><option value="" selected disabled>Choose</option><option>Man</option><option>Woman</option><option>Other</option></select></div>
+            <div><label>I’m into</label><select id="into"><option value="" selected disabled>Choose</option><option>Men</option><option>Women</option><option>Both</option></select></div>
+            <div><label>Turn-on vocabulary</label>
               <select id="vocab">
                 <option>Prefer not to say</option><option>Babe</option><option>Baby</option><option>Sexy</option>
                 <option>Fucker</option><option>Brat</option><option>Good girl</option><option>Good boy</option>
                 <option>Slave</option><option>Goddess</option><option>Master</option>
               </select>
             </div>
-            <div>
-              <label>My type (looks)</label>
+            <div><label>My type (looks)</label>
               <select id="looks">
                 <option>Prefer not to say</option><option>Tall</option><option>Short</option><option>Thin</option><option>Curvy</option>
                 <option>Muscular</option><option>Tan</option><option>Pale</option><option>Blonde</option><option>Brunette</option>
@@ -211,31 +163,27 @@
                 <option>Arab</option><option>Indian</option>
               </select>
             </div>
-            <div>
-              <label>My type (personality)</label>
-              <select id="personality">
-                <option>Prefer not to say</option><option>Funny</option><option>Smart</option><option>Playful</option>
-                <option>Bold</option><option>Chill</option><option>Talkative</option><option>Shy</option>
-              </select>
+            <div><label>My type (personality)</label>
+              <select id="personality"><option>Prefer not to say</option><option>Funny</option><option>Smart</option><option>Playful</option><option>Bold</option><option>Chill</option><option>Talkative</option><option>Shy</option></select>
             </div>
           </div>
           <div class="row" style="margin-top:14px">
             <button class="btn ghost" id="backToRecorder">← Back</button>
             <button class="btn gold" id="saveProfile">Save & Start Swiping →</button>
           </div>
-          <div class="tip">Your full profile is hidden. People only hear your pickup line unless you both match.</div>
+          <div class="tip">Your full profile stays hidden. Only your line is public until a mutual match.</div>
         </div>
       </div>
     </section>
 
-    <!-- STEP 3: SWIPE (demo deck kept) -->
+    <!-- STEP 3 -->
     <section class="panel hidden" id="step3">
       <h2>Step 3 — Swipe pickup lines</h2>
       <div class="deck" id="deck"></div>
       <div class="tip">Only the voice line shows here. Profiles unlock after a mutual like.</div>
     </section>
 
-    <!-- STEP 4: CHAT (local demo) -->
+    <!-- STEP 4 -->
     <section class="panel hidden" id="step4">
       <h2>Private Chat</h2>
       <div class="chat" id="chat">
@@ -247,7 +195,7 @@
           <button class="btn" id="chatVoiceBtn">🎙️</button>
           <button class="btn gold" id="chatSendBtn">Send</button>
         </div>
-        <div class="tip">You can exchange pictures and voice memos here.</div>
+        <div class="tip">Share pics and voice memos. Messages save to your match room.</div>
       </div>
     </section>
 
@@ -270,33 +218,26 @@
 <!-- Firebase + App logic -->
 <script type="module">
   /***** FIREBASE IMPORTS *****/
-  import { app, db } from './firebase-config.js'; // <- keep your file as provided
-  import {
-    getAuth, signInAnonymously, onAuthStateChanged
-  } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
-  import {
-    getStorage, ref as sRef, uploadBytes, getDownloadURL
-  } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js';
-  import {
-    ref as rRef, set, serverTimestamp
-  } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
+  import { app, db } from './firebase-config.js';
+  import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js';
+  import { ref as rRef, set, update, get, child, onValue, push, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
 
   const auth = getAuth(app);
   const storage = getStorage(app);
 
-  // Auto sign-in (required by your Storage/DB rules)
   let currentUser = null;
   try{ await signInAnonymously(auth); }catch(e){ console.error('Anon sign-in failed', e); }
   onAuthStateChanged(auth, u => { currentUser = u || null; });
 
-  /***** UTIL + NAV *****/
-  const $ = sel => document.querySelector(sel);
+  /***** BASIC NAV / STEP UI *****/
+  const $ = s => document.querySelector(s);
   const stepper = $('#stepper').children;
-  function go(idx){
-    ['#step1','#step2','#step3','#step4'].forEach((id,i)=>{
-      const el = document.querySelector(id);
-      if(i===idx){ el.classList.remove('hidden'); stepper[i].classList.add('active'); }
-      else { el.classList.add('hidden'); stepper[i].classList.remove('active'); }
+  function go(i){
+    ['#step1','#step2','#step3','#step4'].forEach((id,idx)=>{
+      const el = $(id);
+      if(idx===i){ el.classList.remove('hidden'); stepper[idx].classList.add('active'); }
+      else { el.classList.add('hidden'); stepper[idx].classList.remove('active'); }
     });
     window.scrollTo({top:0,behavior:'smooth'});
   }
@@ -304,10 +245,10 @@
     pill.style.cursor='pointer';
     pill.addEventListener('click', ()=>{
       if(idx===1 && !window.__recBlob){ alert('Record your pickup line first.'); return; }
-      if(idx===2 && !localStorage.getItem('ll_user_profile')){ /* allowed – user might go to swipe without save */ }
-      if(idx===3 && !localStorage.getItem('ll_user_profile')){ alert('Open a match from the swipe deck.'); return; }
+      if(idx===2 && !localStorage.getItem('ll_user_profile')){ /* allowed to view */ }
+      if(idx===3 && !window.__activeRoom){ alert('Open a match from the deck to chat.'); return; }
       go(idx);
-      if(idx===2 && !window.__deckInit){ initDeck(); }
+      if(idx===2 && !window.__deckInit) initDeck();
     });
   });
 
@@ -316,16 +257,10 @@
   const audioEl = $('#audio'), playerBlock = $('#playerBlock');
   const playToggle = $('#playToggle'), seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
   const toProfileBtn = $('#toProfileBtn'), retakeBtn = $('#retakeBtn');
-
-  function supportedMime(){
-    const c = ['audio/webm;codecs=opus','audio/mp4;codecs=aac','audio/webm','audio/ogg;codecs=opus','audio/mp4','audio/aac'];
-    for(const t of c){ if(window.MediaRecorder?.isTypeSupported?.(t)) return t; }
-    return '';
-  }
-
   let mediaRecorder, recChunks=[], recStream=null, recMime='', recording=false;
   window.__recBlob = null; // pickup line blob
 
+  function supportedMime(){ const c=['audio/webm;codecs=opus','audio/mp4;codecs=aac','audio/webm','audio/ogg;codecs=opus','audio/mp4','audio/aac']; for(const t of c){ if(window.MediaRecorder?.isTypeSupported?.(t)) return t; } return ''; }
   async function startRecording(){
     try{
       recMime = supportedMime();
@@ -336,155 +271,78 @@
       mediaRecorder.onstop = () => {
         window.__recBlob = new Blob(recChunks, { type: recMime || 'audio/webm' });
         const url = URL.createObjectURL(window.__recBlob);
-        audioEl.src = url;
-        playerBlock.classList.remove('hidden');
-        updateTime(0, audioEl.duration || 0);
+        audioEl.src = url; playerBlock.classList.remove('hidden'); updateTime(0, audioEl.duration || 0);
       };
-      mediaRecorder.start();
-      recording=true;
-      recLabel.innerHTML='<span class="rec-indicator"></span> Recording…';
-    }catch(err){
-      alert('Microphone access failed. Please allow mic permission and use HTTPS.');
-      console.error(err);
-    }
+      mediaRecorder.start(); recording=true; recLabel.innerHTML='<span class="rec-indicator"></span> Recording…';
+    }catch(err){ alert('Mic permission needed. Use HTTPS.'); console.error(err); }
   }
-  function stopRecording(){
-    if(mediaRecorder && recording){
-      mediaRecorder.stop();
-      recStream && recStream.getTracks().forEach(t=>t.stop());
-      recording=false; recLabel.textContent='Start Recording';
-    }
-  }
-  recordBtn.addEventListener('click', ()=> recording ? stopRecording() : startRecording());
+  function stopRecording(){ if(mediaRecorder && recording){ mediaRecorder.stop(); recStream?.getTracks().forEach(t=>t.stop()); recording=false; recLabel.textContent='Start Recording'; } }
+  recordBtn.addEventListener('click', ()=> recording?stopRecording():startRecording());
 
-  function fmt(s){ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; }
+  const fmt=s=>{ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; };
   function updateTime(c,d){ time.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`; }
   playToggle.addEventListener('click', ()=>{ if(audioEl.paused){ audioEl.play(); playToggle.textContent='⏸'; } else { audioEl.pause(); playToggle.textContent='▶'; }});
   audioEl.addEventListener('pause', ()=> playToggle.textContent='▶');
   audioEl.addEventListener('play', ()=> playToggle.textContent='⏸');
-  audioEl.addEventListener('timeupdate', ()=>{
-    const d=audioEl.duration||0, c=audioEl.currentTime||0, pct=d?(c/d)*100:0;
-    fill.style.inset=`0 ${100-pct}% 0 0`;
-    updateTime(c,d);
-  });
-  seekBar.addEventListener('click',(e)=>{ const r=seekBar.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width; if(audioEl.duration) audioEl.currentTime=x*audioEl.duration; });
+  audioEl.addEventListener('timeupdate', ()=>{ const d=audioEl.duration||0, c=audioEl.currentTime||0, pct=d?(c/d)*100:0; fill.style.inset=`0 ${100-pct}% 0 0`; updateTime(c,d); });
+  seekBar.addEventListener('click', (e)=>{ const r=seekBar.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width; if(audioEl.duration) audioEl.currentTime=x*audioEl.duration; });
   retakeBtn.addEventListener('click', ()=>{ if(!audioEl.paused) audioEl.pause(); playerBlock.classList.add('hidden'); window.__recBlob=null; audioEl.removeAttribute('src'); });
-
   toProfileBtn.addEventListener('click', ()=>{ if(!window.__recBlob){ alert('Record your pickup line first.'); return; } go(1); });
 
-  /***** PROFILE BUILDER *****/
+  /***** PROFILE BUILDER (select fixes + photos) *****/
   const ageSel = $('#age'), heightSel = $('#height');
-  (function buildAge(){
-    const frag=document.createDocumentFragment(); const ph=document.createElement('option');
-    ph.value=''; ph.textContent='Choose'; ph.disabled=true; ph.selected=true; frag.appendChild(ph);
-    for(let a=18;a<=99;a++){ const o=document.createElement('option'); o.textContent=a; frag.appendChild(o); }
-    ageSel.appendChild(frag);
-  })();
-  (function buildHeight(){
-    const frag=document.createDocumentFragment();
-    const u=document.createElement('option'); u.textContent='Under 5 feet'; frag.appendChild(u);
-    for(let f=5; f<=7; f++){ for(let i=0;i<12;i++){ const o=document.createElement('option'); o.textContent=`${f}’${i}”`; frag.appendChild(o); } }
-    const o7=document.createElement('option'); o7.textContent='Over 7 feet'; frag.appendChild(o7);
-    heightSel.appendChild(frag);
-  })();
-
-  // iOS first-tap picker fix
-  const selectIds = ['#age','#height','#gender','#into','#vocab','#looks','#personality'];
-  selectIds.forEach(id=>{
-    const el = document.querySelector(id);
-    el.addEventListener('pointerdown', (e)=>{
-      if(typeof el.showPicker === 'function'){ el.showPicker(); e.preventDefault(); }
-    }, {passive:false});
+  (function buildAge(){ const frag=document.createDocumentFragment(); const ph=document.createElement('option'); ph.value=''; ph.textContent='Choose'; ph.disabled=true; ph.selected=true; frag.appendChild(ph); for(let a=18;a<=99;a++){ const o=document.createElement('option'); o.textContent=a; frag.appendChild(o);} ageSel.appendChild(frag);})();
+  (function buildHeight(){ const frag=document.createDocumentFragment(); const u=document.createElement('option'); u.textContent='Under 5 feet'; frag.appendChild(u); for(let f=5;f<=7;f++){ for(let i=0;i<12;i++){ const o=document.createElement('option'); o.textContent=`${f}’${i}”`; frag.appendChild(o);} } const o7=document.createElement('option'); o7.textContent='Over 7 feet'; frag.appendChild(o7); heightSel.appendChild(frag);})();
+  ['#age','#height','#gender','#into','#vocab','#looks','#personality'].forEach(id=>{
+    const el=document.querySelector(id);
+    el.addEventListener('pointerdown',(e)=>{ if(typeof el.showPicker==='function'){ el.showPicker(); e.preventDefault(); } },{passive:false});
   });
-
   $('#backToRecorder').addEventListener('click', ()=> go(0));
 
-  // Photo grid state
-  const photoGrid = $('#photoGrid');
-  const photoFiles = [null,null,null,null]; // File objects per slot
-
-  // Make whole tile reliably clickable on iOS (no double-tap)
+  const photoGrid = $('#photoGrid'); const photoFiles=[null,null,null,null];
   photoGrid.querySelectorAll('.photo').forEach(tile=>{
-    const input = tile.querySelector('input[type="file"]');
-    const overlay = tile.querySelector('.overlay');
-    const idx = +tile.dataset.idx;
-
-    // click tile to open picker
-    tile.addEventListener('click', (e)=>{
-      // if clicking overlay buttons, ignore
-      if(e.target.classList.contains('change') || e.target.classList.contains('remove')) return;
-      if(input){ input.click(); }
-    });
-
-    // also open picker on first touch
-    tile.addEventListener('pointerdown', (e)=>{
-      if(e.pointerType==='touch' && e.target===tile && input){ input.click(); e.preventDefault(); }
-    }, {passive:false});
-
-    // change handler → preview & controls
-    input.addEventListener('change', ()=>{
-      const file = input.files?.[0];
-      if(!file) return;
-      photoFiles[idx] = file;
-      const img = tile.querySelector('img') || document.createElement('img');
-      tile.querySelector('.hint')?.remove();
-      const reader = new FileReader();
-      reader.onload = e => { img.src = e.target.result; tile.appendChild(img); overlay.classList.remove('hidden'); };
-      reader.readAsDataURL(file);
-    });
-
-    // overlay controls
+    const input=tile.querySelector('input[type="file"]'); const overlay=tile.querySelector('.overlay'); const idx=+tile.dataset.idx;
+    tile.addEventListener('click', (e)=>{ if(e.target.classList.contains('change')||e.target.classList.contains('remove')) return; input?.click(); });
+    tile.addEventListener('pointerdown', (e)=>{ if(e.pointerType==='touch' && e.target===tile){ input?.click(); e.preventDefault(); } }, {passive:false});
+    input.addEventListener('change', ()=>{ const file=input.files?.[0]; if(!file) return; photoFiles[idx]=file; const img=tile.querySelector('img')||document.createElement('img'); tile.querySelector('.hint')?.remove(); const r=new FileReader(); r.onload=e=>{ img.src=e.target.result; tile.appendChild(img); overlay.classList.remove('hidden'); }; r.readAsDataURL(file); });
     overlay.querySelector('.change').addEventListener('click', (e)=>{ e.stopPropagation(); input.click(); });
-    overlay.querySelector('.remove').addEventListener('click', (e)=>{
-      e.stopPropagation();
-      photoFiles[idx] = null;
-      input.value = '';
-      tile.querySelector('img')?.remove();
-      overlay.classList.add('hidden');
-      if(!tile.querySelector('.hint')){
-        const h=document.createElement('div'); h.className='hint'; h.textContent='Tap to add'; tile.appendChild(h);
-      }
-    });
+    overlay.querySelector('.remove').addEventListener('click', (e)=>{ e.stopPropagation(); photoFiles[idx]=null; input.value=''; tile.querySelector('img')?.remove(); overlay.classList.add('hidden'); if(!tile.querySelector('.hint')){ const h=document.createElement('div'); h.className='hint'; h.textContent='Tap to add'; tile.appendChild(h);} });
   });
 
-  // Save profile → upload audio+photos → DB
-  const profile = {};
+  /***** SAVE PROFILE → upload to Storage + DB *****/
+  const storagePaths = {
+    line: uid => `lines/${uid}/${Date.now()}.webm`,
+    photo: (uid,i,ext) => `profiles/${uid}/photo${i}.${ext}`
+  };
+
   $('#saveProfile').addEventListener('click', async ()=>{
-    if(!currentUser){ alert('Please wait, connecting…'); return; }
+    if(!currentUser){ alert('Connecting…'); return; }
     if(!window.__recBlob){ alert('Record your pickup line first.'); return; }
 
-    const required = {
-      name: $('#name').value.trim(), age: $('#age').value, gender: $('#gender').value, into: $('#into').value
-    };
+    const required = { name: $('#name').value.trim(), age: $('#age').value, gender: $('#gender').value, into: $('#into').value };
     if(!required.name || !required.age || !required.gender || !required.into){
-      alert('Please complete Name, Age, Gender, and I’m into.');
-      return;
+      alert('Please complete Name, Age, Gender, and I’m into.'); return;
     }
-
-    // minimal optimistic UI
     const btn = $('#saveProfile'); const old = btn.textContent; btn.disabled=true; btn.textContent='Saving…';
 
     try{
-      // 1) Upload pickup line
-      const ts = Date.now();
-      const audioPath = `lines/${currentUser.uid}/${ts}.webm`;
-      const audioRef = sRef(storage, audioPath);
-      await uploadBytes(audioRef, window.__recBlob, {contentType: window.__recBlob.type || 'audio/webm'});
-      const audioURL = await getDownloadURL(audioRef);
+      // Upload pickup line
+      const lineRef = sRef(storage, storagePaths.line(currentUser.uid));
+      await uploadBytes(lineRef, window.__recBlob, {contentType: window.__recBlob.type || 'audio/webm'});
+      const lineURL = await getDownloadURL(lineRef);
 
-      // 2) Upload photos (only selected)
-      const photoURLs = [];
+      // Upload selected photos
+      const photoURLs=[];
       for(let i=0;i<photoFiles.length;i++){
-        const f = photoFiles[i];
-        if(!f) { photoURLs.push(null); continue; }
-        const ext = (f.type && f.type.split('/')[1]) || 'jpg';
-        const imgRef = sRef(storage, `profiles/${currentUser.uid}/photo${i}.${ext}`);
+        const f=photoFiles[i];
+        if(!f){ photoURLs.push(null); continue; }
+        const ext=(f.type && f.type.split('/')[1]) || 'jpg';
+        const imgRef = sRef(storage, storagePaths.photo(currentUser.uid, i, ext));
         await uploadBytes(imgRef, f, {contentType:f.type || 'image/jpeg'});
-        const url = await getDownloadURL(imgRef);
-        photoURLs.push(url);
+        photoURLs.push(await getDownloadURL(imgRef));
       }
 
-      // 3) Write profile to RTDB
+      // Write profile
       const data = {
         uid: currentUser.uid,
         name: required.name,
@@ -496,71 +354,44 @@
         looks: $('#looks').value || 'Prefer not to say',
         personality: $('#personality').value || 'Prefer not to say',
         photos: photoURLs,
-        lineURL: audioURL,
+        lineURL,
         ts: serverTimestamp()
       };
       await set(rRef(db, `profiles/${currentUser.uid}`), data);
-
       localStorage.setItem('ll_user_profile', JSON.stringify(data));
-      // proceed to swipe
-      go(2);
-      initDeck();
-    }catch(err){
-      console.error(err);
-      alert('Save failed. Check internet / Firebase config and try again.');
-    }finally{
-      btn.disabled=false; btn.textContent=old;
-    }
+
+      go(2); initDeck();
+    }catch(err){ console.error(err); alert('Save failed. Check Firebase config/rules.'); }
+    finally{ btn.disabled=false; btn.textContent=old; }
   });
 
-  /***** SWIPE DEMO (same as before) *****/
-  const demoPeople = [
-    { id:'p1', name:'Ari', age:27, gender:'Woman', into:'Men', looks:'Brunette', personality:'Playful', line:'If we match, I call dibs on the first story.' },
-    { id:'p2', name:'Jules', age:31, gender:'Man', into:'Women', looks:'Tall', personality:'Bold', line:'Are you my algorithm? Because you just solved something.' },
-    { id:'p3', name:'Rowan', age:24, gender:'Other', into:'Both', looks:'Curvy', personality:'Smart', line:'Tell me your hot take. I’ll bring the popcorn.' },
-    { id:'p4', name:'Kai', age:29, gender:'Man', into:'Both', looks:'Muscular', personality:'Chill', line:'Two truths and a drink? I’ll start.' },
-    { id:'p5', name:'Sage', age:26, gender:'Woman', into:'Men', looks:'Blonde', personality:'Funny', line:'I’m collecting meet-cute stories. Want to be chapter one?' },
-  ];
-  async function makeBeepWav(seconds=1, freq=660){
-    const rate=44100, frames=rate*seconds, amp=0.2;
-    const buffer=new Float32Array(frames);
-    for(let i=0;i<frames;i++) buffer[i]=Math.sin(2*Math.PI*freq*(i/rate))*amp;
-    return pcm16ToWav(buffer, rate);
-  }
-  function pcm16ToWav(float32, sampleRate){
-    const bytesPerSample=2, blockAlign=bytesPerSample*1;
-    const buf=new ArrayBuffer(44 + float32.length*2); const v=new DataView(buf);
-    let o=0; const wstr=s=>{ for(let i=0;i<s.length;i++) v.setUint8(o++, s.charCodeAt(i)); };
-    const wint16=x=>{ v.setInt16(o,x,true); o+=2; };
-    const wuint16=x=>{ v.setUint16(o,x,true); o+=2; };
-    const wuint32=x=>{ v.setUint32(o,x,true); o+=4; };
-    wstr('RIFF'); wuint32(36+float32.length*2); wstr('WAVE'); wstr('fmt '); wuint32(16); wuint16(1); wuint16(1);
-    wuint32(sampleRate); wuint32(sampleRate*blockAlign); wuint16(blockAlign); wuint16(16); wstr('data'); wuint32(float32.length*2);
-    for(let i=0;i<float32.length;i++){ let s=Math.max(-1,Math.min(1,float32[i])); wint16(s<0 ? s*0x8000 : s*0x7FFF); }
-    return new Blob([buf], {type:'audio/wav'});
+  /***** SWIPE: REAL PROFILES *****/
+  const deckEl = $('#deck'); let deck=[], deckIdx=0; window.__deckInit=false;
+
+  function listenProfiles(){
+    // live list of others (exclude me), only those with lineURL
+    const pRef = rRef(db, 'profiles');
+    onValue(pRef, snap=>{
+      const all = snap.val() || {};
+      deck = Object.values(all).filter(p => p.uid !== currentUser?.uid && p.lineURL);
+      deckIdx = 0; renderCard();
+    });
   }
 
-  let deck=[], deckIdx=0; window.__deckInit=false;
-  async function initDeck(){
-    window.__deckInit=true;
-    deck = await Promise.all(demoPeople.map(async p => {
-      const b = await makeBeepWav(.9, 520 + Math.floor(Math.random()*260));
-      return {...p, audioUrl: URL.createObjectURL(b)};
-    }));
-    renderCard();
-  }
-  function renderCard(){
-    const container = $('#deck'); container.innerHTML='';
-    if(deckIdx>=deck.length){
-      const empty = document.createElement('div');
+  function initDeck(){ if(window.__deckInit) return; window.__deckInit=true; listenProfiles(); }
+
+  async function renderCard(){
+    deckEl.innerHTML='';
+    if(!deck.length || deckIdx>=deck.length){
+      const empty=document.createElement('div');
       empty.className='card';
-      empty.innerHTML = `<h3>That’s all for now</h3><div class="small">New pickup lines appear as more people join.</div>
-        <div class="row"><button class="btn gold" onclick="deckIdx=0; renderCard()">Replay demo</button></div>`;
-      container.appendChild(empty); return;
+      empty.innerHTML=`<h3>${deck.length? 'That’s all for now' : 'No lines yet'}</h3>
+        <div class="small">${deck.length? 'New pickup lines appear as more people join.' : 'Be the first—share your link and come back soon.'}</div>`;
+      deckEl.appendChild(empty); return;
     }
     const p = deck[deckIdx];
-    const card = document.createElement('div'); card.className='card';
-    card.innerHTML = `
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML=`
       <div class="small">🎧 Voice only. Profiles unlock on a match.</div>
       <div class="rec-wrap">
         <div class="player">
@@ -568,70 +399,135 @@
           <div class="bar"><div class="fill"></div></div>
           <div class="time">0:00</div>
         </div>
-        <div class="tip" style="margin-top:8px">Transcript: “${p.line}”</div>
         <audio preload="metadata" class="hidden"></audio>
       </div>
       <div class="row" style="margin-top:10px">
         <button class="pass">Pass</button>
         <button class="like">Like</button>
-      </div>
-    `;
-    container.appendChild(card);
-    const audio = card.querySelector('audio'); audio.src=p.audioUrl;
-    const playBtn = card.querySelector('.play-toggle');
-    const bar = card.querySelector('.bar'), fill = card.querySelector('.fill'), tm = card.querySelector('.time');
+      </div>`;
+    deckEl.appendChild(card);
 
-    const fmt = s=>{ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; };
+    const audio=card.querySelector('audio'); audio.src=p.lineURL;
+    const playBtn=card.querySelector('.play-toggle'); const bar=card.querySelector('.bar'); const fill=card.querySelector('.fill'); const tm=card.querySelector('.time');
+    const fmt=s=>{ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; };
     playBtn.addEventListener('click', ()=>{ if(audio.paused){ audio.play(); playBtn.textContent='⏸'; } else { audio.pause(); playBtn.textContent='▶'; }});
     audio.addEventListener('pause', ()=> playBtn.textContent='▶');
     audio.addEventListener('play', ()=> playBtn.textContent='⏸');
-    audio.addEventListener('timeupdate', ()=>{
-      const d=audio.duration||0, c=audio.currentTime||0, pct=d?(c/d)*100:0;
-      fill.style.inset=`0 ${100-pct}% 0 0`; tm.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`;
-    });
+    audio.addEventListener('timeupdate', ()=>{ const d=audio.duration||0, c=audio.currentTime||0, pct=d?(c/d)*100:0; fill.style.inset=`0 ${100-pct}% 0 0`; tm.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`; });
     bar.addEventListener('click',(e)=>{ const r=bar.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width; if(audio.duration) audio.currentTime=x*audio.duration; });
 
     card.querySelector('.pass').addEventListener('click', ()=>{ audio.pause(); deckIdx++; renderCard(); });
-    card.querySelector('.like').addEventListener('click', ()=>{
-      audio.pause();
-      if(Math.random()<0.5){ showMatch(p); } else { deckIdx++; renderCard(); }
-    });
-  }
-  function showMatch(person){
-    const m = document.getElementById('matchModal'); const box = document.getElementById('matchProfile');
-    const details = [
-      ['Name', person.name],['Age', person.age],['Gender', person.gender],['I’m into', person.into],
-      ['Looks', person.looks],['Personality', person.personality]
-    ].map(([k,v])=>`<div><strong>${k}:</strong> ${v}</div>`).join('');
-    box.innerHTML = details; m.style.display='flex';
-    document.getElementById('closeMatch').onclick = ()=>{ m.style.display='none'; deckIdx++; renderCard(); };
-    document.getElementById('openChat').onclick = ()=>{ m.style.display='none'; go(3); pushBubble('them', `Loved your line. Now that we matched, hi—I’m ${person.name}.`); };
+    card.querySelector('.like').addEventListener('click', ()=>{ audio.pause(); handleLike(p.uid); });
   }
 
-  /***** CHAT DEMO *****/
-  const chatLog = document.getElementById('chatLog');
+  /***** MATCHING *****/
+  function pairIdFor(a,b){ return [a,b].sort().join('_'); }
+
+  async function handleLike(themUid){
+    const me = currentUser.uid;
+    const myLikeRef = rRef(db, `likes/${me}/${themUid}`);
+    const theirLikeRef = rRef(db, `likes/${themUid}/${me}`);
+
+    // write my like
+    await set(myLikeRef, true);
+
+    // check reciprocal
+    const theirLikeSnap = await get(theirLikeRef);
+    const matched = !!theirLikeSnap.val();
+
+    if(!matched){ deckIdx++; renderCard(); return; }
+
+    // create pair + room if missing
+    const pid = pairIdFor(me, themUid);
+    const pairRef = rRef(db, `pairs/${pid}`);
+    const pairSnap = await get(pairRef);
+
+    if(!pairSnap.exists()){
+      // room id == pair id
+      await set(pairRef, { id: pid, a: me, b: themUid, roomId: pid, ts: serverTimestamp() });
+      await set(rRef(db, `rooms/${pid}`), { id: pid, a: me, b: themUid, created: serverTimestamp() });
+    }
+
+    // fetch other profile for reveal
+    const themSnap = await get(rRef(db, `profiles/${themUid}`));
+    const them = themSnap.val() || {};
+    showMatch(them, pid);
+  }
+
+  function showMatch(person, roomId){
+    const m = $('#matchModal'); const box = $('#matchProfile');
+    const rows = [
+      ['Name', person.name], ['Age', person.age], ['Gender', person.gender], ['I’m into', person.into],
+      ['Height', person.height], ['Looks', person.looks], ['Personality', person.personality]
+    ].map(([k,v])=>`<div><strong>${k}:</strong> ${v ?? ''}</div>`).join('');
+    box.innerHTML = rows;
+    m.style.display='flex';
+    $('#closeMatch').onclick = ()=>{ m.style.display='none'; deckIdx++; renderCard(); };
+    $('#openChat').onclick = ()=>{ m.style.display='none'; openChat(roomId, person); };
+  }
+
+  /***** CHAT (Realtime DB + Storage) *****/
+  let activeRoom = null; window.__activeRoom = null; let messagesUnsub = null;
+
   function pushBubble(who, content, type='text'){
-    const b=document.createElement('div'); b.className=`bubble ${who}`;
-    if(type==='text') b.textContent=content;
+    const log = $('#chatLog'); const b=document.createElement('div'); b.className=`bubble ${who}`;
+    if(type==='text'){ b.textContent = content; }
     if(type==='image'){ const img=document.createElement('img'); img.src=content; b.appendChild(img); }
     if(type==='audio'){ const a=document.createElement('audio'); a.controls=true; a.src=content; b.appendChild(a); }
-    chatLog.appendChild(b); chatLog.scrollTop=chatLog.scrollHeight;
+    log.appendChild(b); log.scrollTop = log.scrollHeight;
   }
-  document.getElementById('chatSendBtn').addEventListener('click', ()=>{
-    const input=document.getElementById('chatInput'); const val=input.value.trim(); if(!val) return;
-    pushBubble('me', val, 'text'); input.value='';
-    setTimeout(()=> pushBubble('them','Your voice has main-character energy.'), 1200);
-  });
-  document.getElementById('chatPhotoBtn').addEventListener('click', ()=> document.getElementById('chatPhoto').click());
-  document.getElementById('chatPhoto').addEventListener('change', ()=>{
-    const f = document.getElementById('chatPhoto').files?.[0]; if(!f) return;
-    const r=new FileReader(); r.onload=e=> pushBubble('me', e.target.result, 'image'); r.readAsDataURL(f);
+
+  function openChat(roomId, otherProfile){
+    activeRoom = roomId; window.__activeRoom = roomId;
+    $('#chatLog').innerHTML='';
+    go(3);
+
+    // live messages stream
+    const msgsRef = rRef(db, `rooms/${roomId}/messages`);
+    if(messagesUnsub) messagesUnsub(); // clean previous
+    messagesUnsub = onValue(msgsRef, snap=>{
+      $('#chatLog').innerHTML='';
+      const msgs = snap.val() || {};
+      // sort by key order (push keys roughly chronological)
+      Object.entries(msgs).forEach(([,m])=>{
+        const who = m.from === currentUser.uid ? 'me' : 'them';
+        if(m.type==='text') pushBubble(who, m.text, 'text');
+        if(m.type==='image') pushBubble(who, m.url, 'image');
+        if(m.type==='audio') pushBubble(who, m.url, 'audio');
+      });
+      $('#chatLog').scrollTop = $('#chatLog').scrollHeight;
+    });
+
+    // pre-fill playful opener (local only)
+    if(otherProfile?.name) setTimeout(()=> pushBubble('them', `Loved your line. Now that we matched, hi—I’m ${otherProfile.name}.`), 600);
+  }
+
+  // send text
+  $('#chatSendBtn').addEventListener('click', async ()=>{
+    const roomId = activeRoom; if(!roomId) return;
+    const input=$('#chatInput'); const text=input.value.trim(); if(!text) return;
+    input.value='';
+    const msgRef = push(rRef(db, `rooms/${roomId}/messages`));
+    await set(msgRef, { from: currentUser.uid, type:'text', text, ts: serverTimestamp() });
   });
 
-  // Simple voice memo in chat
+  // send image
+  $('#chatPhotoBtn').addEventListener('click', ()=> $('#chatPhoto').click());
+  $('#chatPhoto').addEventListener('change', async ()=>{
+    const roomId = activeRoom; if(!roomId) return;
+    const f = $('#chatPhoto').files?.[0]; if(!f) return;
+    const ext=(f.type && f.type.split('/')[1]) || 'jpg';
+    const ref = sRef(storage, `chats/${roomId}/images/${Date.now()}.${ext}`);
+    await uploadBytes(ref, f, {contentType:f.type || 'image/jpeg'});
+    const url = await getDownloadURL(ref);
+    const msgRef = push(rRef(db, `rooms/${roomId}/messages`));
+    await set(msgRef, { from: currentUser.uid, type:'image', url, ts: serverTimestamp() });
+  });
+
+  // send voice memo
   let chatRec=null, chatChunks=[], chatStream=null, chatMime='';
-  document.getElementById('chatVoiceBtn').addEventListener('click', async (e)=>{
-    const btn = e.currentTarget;
+  $('#chatVoiceBtn').addEventListener('click', async (e)=>{
+    const btn = e.currentTarget; const roomId = activeRoom; if(!roomId) return;
     if(!chatRec){
       try{
         chatMime = supportedMime();
@@ -639,10 +535,13 @@
         chatRec = new MediaRecorder(chatStream, chatMime?{mimeType:chatMime}:undefined);
         chatChunks = [];
         chatRec.ondataavailable = ev => { if(ev.data?.size) chatChunks.push(ev.data); };
-        chatRec.onstop = ()=>{
+        chatRec.onstop = async ()=>{
           const blob=new Blob(chatChunks,{type:chatMime||'audio/webm'});
-          const url=URL.createObjectURL(blob);
-          pushBubble('me', url, 'audio');
+          const ref = sRef(storage, `chats/${roomId}/voice/${Date.now()}.webm`);
+          await uploadBytes(ref, blob, {contentType: blob.type || 'audio/webm'});
+          const url = await getDownloadURL(ref);
+          const msgRef = push(rRef(db, `rooms/${roomId}/messages`));
+          await set(msgRef, { from: currentUser.uid, type:'audio', url, ts: serverTimestamp() });
         };
         chatRec.start(); btn.textContent='⏹️';
       }catch(err){ alert('Mic access needed.'); console.error(err); chatRec=null; chatStream?.getTracks().forEach(t=>t.stop()); }
@@ -651,7 +550,7 @@
     }
   });
 
-  // Start on step 1
+  /***** START APP *****/
   go(0);
 </script>
 </body>
