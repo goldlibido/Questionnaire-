@@ -26,7 +26,7 @@
   .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.18)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center} .hidden{display:none !important}
   label{font-size:12px;color:#e5e5e5;margin-bottom:6px;display:block}
-  input[type="text"],select{width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px;touch-action:manipulation}
+  input[type="text"],select,input[list]{width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px}
   .rec-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px}
   .record-btn{width:160px;height:160px;border-radius:999px;border:1px solid rgba(255,255,255,.15);cursor:pointer;background:radial-gradient(closest-side, rgba(225,191,120,.25) 0%, rgba(225,191,120,0) 78%),linear-gradient(180deg,#272727,#161616);color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 6px rgba(225,191,120,.08) inset}
   .rec-indicator{width:10px;height:10px;background:#f34a4a;border-radius:50%;box-shadow:0 0 12px rgba(243,74,74,.9);display:inline-block;margin-right:8px;vertical-align:middle;animation:pulse 1s infinite}
@@ -121,7 +121,6 @@
         <div>
           <label>Photos (2×2 grid)</label>
           <div class="photo-grid" id="photoGrid">
-            <!-- 4 slots -->
             <div class="photo" data-idx="0">
               <input type="file" accept="image/*"><div class="hint">Tap to add</div>
               <div class="overlay hidden"><div class="pill change">Change</div><div class="pill remove">✕</div></div>
@@ -148,23 +147,38 @@
             <div><label>Height</label><select id="height"></select></div>
             <div><label>Gender</label><select id="gender"><option value="" selected disabled>Choose</option><option>Man</option><option>Woman</option><option>Other</option></select></div>
             <div><label>I’m into</label><select id="into"><option value="" selected disabled>Choose</option><option>Men</option><option>Women</option><option>Both</option></select></div>
-            <div><label>Turn-on vocabulary</label>
-              <select id="vocab">
-                <option>Prefer not to say</option><option>Babe</option><option>Baby</option><option>Sexy</option>
-                <option>Fucker</option><option>Brat</option><option>Good girl</option><option>Good boy</option>
-                <option>Slave</option><option>Goddess</option><option>Master</option>
-              </select>
+
+            <!-- changed to typeahead inputs with datalist -->
+            <div>
+              <label>Turn-on vocabulary</label>
+              <input list="vocabOptions" id="vocabInput" placeholder="Type or pick…"/>
+              <datalist id="vocabOptions">
+                <option value="Prefer not to say"></option>
+                <option value="Babe"></option><option value="Baby"></option><option value="Sexy"></option>
+                <option value="Fucker"></option><option value="Brat"></option><option value="Good girl"></option><option value="Good boy"></option>
+                <option value="Slave"></option><option value="Goddess"></option><option value="Master"></option>
+              </datalist>
             </div>
-            <div><label>My type (looks)</label>
-              <select id="looks">
-                <option>Prefer not to say</option><option>Tall</option><option>Short</option><option>Thin</option><option>Curvy</option>
-                <option>Muscular</option><option>Tan</option><option>Pale</option><option>Blonde</option><option>Brunette</option>
-                <option>Redhead</option><option>Latin</option><option>Asian</option><option>Black</option><option>Jewish</option>
-                <option>Arab</option><option>Indian</option>
-              </select>
+            <div>
+              <label>My type (looks)</label>
+              <input list="looksOptions" id="looksInput" placeholder="Type or pick…"/>
+              <datalist id="looksOptions">
+                <option value="Prefer not to say"></option>
+                <option value="Tall"></option><option value="Short"></option><option value="Thin"></option><option value="Curvy"></option><option value="Muscular"></option>
+                <option value="Tan"></option><option value="Pale"></option>
+                <option value="Blonde"></option><option value="Brunette"></option><option value="Redhead"></option>
+                <option value="Latin"></option><option value="Asian"></option><option value="Black"></option>
+                <option value="Jewish"></option><option value="Arab"></option><option value="Indian"></option>
+              </datalist>
             </div>
-            <div><label>My type (personality)</label>
-              <select id="personality"><option>Prefer not to say</option><option>Funny</option><option>Smart</option><option>Playful</option><option>Bold</option><option>Chill</option><option>Talkative</option><option>Shy</option></select>
+            <div>
+              <label>My type (personality)</label>
+              <input list="personalityOptions" id="personalityInput" placeholder="Type or pick…"/>
+              <datalist id="personalityOptions">
+                <option value="Prefer not to say"></option>
+                <option value="Funny"></option><option value="Smart"></option><option value="Playful"></option>
+                <option value="Bold"></option><option value="Chill"></option><option value="Talkative"></option><option value="Shy"></option>
+              </datalist>
             </div>
           </div>
           <div class="row" style="margin-top:14px">
@@ -221,16 +235,15 @@
   import { app, db } from './firebase-config.js';
   import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js';
-  import { ref as rRef, set, update, get, child, onValue, push, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
+  import { ref as rRef, set, update, get, onValue, push, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
 
   const auth = getAuth(app);
   const storage = getStorage(app);
-
   let currentUser = null;
   try{ await signInAnonymously(auth); }catch(e){ console.error('Anon sign-in failed', e); }
   onAuthStateChanged(auth, u => { currentUser = u || null; });
 
-  /***** BASIC NAV / STEP UI *****/
+  /***** NAV / STEPS *****/
   const $ = s => document.querySelector(s);
   const stepper = $('#stepper').children;
   function go(i){
@@ -245,7 +258,6 @@
     pill.style.cursor='pointer';
     pill.addEventListener('click', ()=>{
       if(idx===1 && !window.__recBlob){ alert('Record your pickup line first.'); return; }
-      if(idx===2 && !localStorage.getItem('ll_user_profile')){ /* allowed to view */ }
       if(idx===3 && !window.__activeRoom){ alert('Open a match from the deck to chat.'); return; }
       go(idx);
       if(idx===2 && !window.__deckInit) initDeck();
@@ -258,7 +270,7 @@
   const playToggle = $('#playToggle'), seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
   const toProfileBtn = $('#toProfileBtn'), retakeBtn = $('#retakeBtn');
   let mediaRecorder, recChunks=[], recStream=null, recMime='', recording=false;
-  window.__recBlob = null; // pickup line blob
+  window.__recBlob = null;
 
   function supportedMime(){ const c=['audio/webm;codecs=opus','audio/mp4;codecs=aac','audio/webm','audio/ogg;codecs=opus','audio/mp4','audio/aac']; for(const t of c){ if(window.MediaRecorder?.isTypeSupported?.(t)) return t; } return ''; }
   async function startRecording(){
@@ -278,7 +290,6 @@
   }
   function stopRecording(){ if(mediaRecorder && recording){ mediaRecorder.stop(); recStream?.getTracks().forEach(t=>t.stop()); recording=false; recLabel.textContent='Start Recording'; } }
   recordBtn.addEventListener('click', ()=> recording?stopRecording():startRecording());
-
   const fmt=s=>{ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; };
   function updateTime(c,d){ time.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`; }
   playToggle.addEventListener('click', ()=>{ if(audioEl.paused){ audioEl.play(); playToggle.textContent='⏸'; } else { audioEl.pause(); playToggle.textContent='▶'; }});
@@ -289,27 +300,61 @@
   retakeBtn.addEventListener('click', ()=>{ if(!audioEl.paused) audioEl.pause(); playerBlock.classList.add('hidden'); window.__recBlob=null; audioEl.removeAttribute('src'); });
   toProfileBtn.addEventListener('click', ()=>{ if(!window.__recBlob){ alert('Record your pickup line first.'); return; } go(1); });
 
-  /***** PROFILE BUILDER (select fixes + photos) *****/
+  /***** PROFILE BUILDER *****/
   const ageSel = $('#age'), heightSel = $('#height');
   (function buildAge(){ const frag=document.createDocumentFragment(); const ph=document.createElement('option'); ph.value=''; ph.textContent='Choose'; ph.disabled=true; ph.selected=true; frag.appendChild(ph); for(let a=18;a<=99;a++){ const o=document.createElement('option'); o.textContent=a; frag.appendChild(o);} ageSel.appendChild(frag);})();
   (function buildHeight(){ const frag=document.createDocumentFragment(); const u=document.createElement('option'); u.textContent='Under 5 feet'; frag.appendChild(u); for(let f=5;f<=7;f++){ for(let i=0;i<12;i++){ const o=document.createElement('option'); o.textContent=`${f}’${i}”`; frag.appendChild(o);} } const o7=document.createElement('option'); o7.textContent='Over 7 feet'; frag.appendChild(o7); heightSel.appendChild(frag);})();
-  ['#age','#height','#gender','#into','#vocab','#looks','#personality'].forEach(id=>{
-    const el=document.querySelector(id);
-    el.addEventListener('pointerdown',(e)=>{ if(typeof el.showPicker==='function'){ el.showPicker(); e.preventDefault(); } },{passive:false});
-  });
   $('#backToRecorder').addEventListener('click', ()=> go(0));
 
-  const photoGrid = $('#photoGrid'); const photoFiles=[null,null,null,null];
+  // ===== PHOTO GRID (reliable previews with object URLs) =====
+  const photoGrid = document.getElementById('photoGrid');
+  const photoFiles = [null,null,null,null];
+  const photoURLs  = [null,null,null,null]; // object URLs for previews (revoke on change/remove)
+
   photoGrid.querySelectorAll('.photo').forEach(tile=>{
-    const input=tile.querySelector('input[type="file"]'); const overlay=tile.querySelector('.overlay'); const idx=+tile.dataset.idx;
-    tile.addEventListener('click', (e)=>{ if(e.target.classList.contains('change')||e.target.classList.contains('remove')) return; input?.click(); });
-    tile.addEventListener('pointerdown', (e)=>{ if(e.pointerType==='touch' && e.target===tile){ input?.click(); e.preventDefault(); } }, {passive:false});
-    input.addEventListener('change', ()=>{ const file=input.files?.[0]; if(!file) return; photoFiles[idx]=file; const img=tile.querySelector('img')||document.createElement('img'); tile.querySelector('.hint')?.remove(); const r=new FileReader(); r.onload=e=>{ img.src=e.target.result; tile.appendChild(img); overlay.classList.remove('hidden'); }; r.readAsDataURL(file); });
+    const input   = tile.querySelector('input[type="file"]');
+    const overlay = tile.querySelector('.overlay');
+    const idx     = +tile.dataset.idx;
+
+    tile.addEventListener('click', (e)=>{
+      if (e.target.classList.contains('change') || e.target.classList.contains('remove')) return;
+      input?.click();
+    });
+
+    const onPick = ()=>{
+      const file = input.files && input.files[0];
+      if (!file) return;
+      photoFiles[idx] = file;
+
+      if (photoURLs[idx]) { URL.revokeObjectURL(photoURLs[idx]); photoURLs[idx] = null; }
+      const url = URL.createObjectURL(file);
+      photoURLs[idx] = url;
+
+      let img = tile.querySelector('img');
+      if (!img) { img = document.createElement('img'); tile.appendChild(img); }
+      img.src = url;
+
+      tile.querySelector('.hint')?.remove();
+      overlay.classList.remove('hidden');
+    };
+    input.addEventListener('change', onPick);
+    input.addEventListener('input',  onPick); // extra safety for some mobile browsers
+
     overlay.querySelector('.change').addEventListener('click', (e)=>{ e.stopPropagation(); input.click(); });
-    overlay.querySelector('.remove').addEventListener('click', (e)=>{ e.stopPropagation(); photoFiles[idx]=null; input.value=''; tile.querySelector('img')?.remove(); overlay.classList.add('hidden'); if(!tile.querySelector('.hint')){ const h=document.createElement('div'); h.className='hint'; h.textContent='Tap to add'; tile.appendChild(h);} });
+    overlay.querySelector('.remove').addEventListener('click', (e)=>{
+      e.stopPropagation();
+      photoFiles[idx] = null;
+      input.value = '';
+      if (photoURLs[idx]) { URL.revokeObjectURL(photoURLs[idx]); photoURLs[idx] = null; }
+      tile.querySelector('img')?.remove();
+      overlay.classList.add('hidden');
+      if (!tile.querySelector('.hint')) {
+        const h = document.createElement('div'); h.className='hint'; h.textContent='Tap to add'; tile.appendChild(h);
+      }
+    });
   });
 
-  /***** SAVE PROFILE → upload to Storage + DB *****/
+  /***** SAVE PROFILE → Storage + DB *****/
   const storagePaths = {
     line: uid => `lines/${uid}/${Date.now()}.webm`,
     photo: (uid,i,ext) => `profiles/${uid}/photo${i}.${ext}`
@@ -332,28 +377,30 @@
       const lineURL = await getDownloadURL(lineRef);
 
       // Upload selected photos
-      const photoURLs=[];
+      const uploadedPhotoURLs=[];
       for(let i=0;i<photoFiles.length;i++){
         const f=photoFiles[i];
-        if(!f){ photoURLs.push(null); continue; }
+        if(!f){ uploadedPhotoURLs.push(null); continue; }
         const ext=(f.type && f.type.split('/')[1]) || 'jpg';
         const imgRef = sRef(storage, storagePaths.photo(currentUser.uid, i, ext));
         await uploadBytes(imgRef, f, {contentType:f.type || 'image/jpeg'});
-        photoURLs.push(await getDownloadURL(imgRef));
+        uploadedPhotoURLs.push(await getDownloadURL(imgRef));
       }
 
-      // Write profile
+      // Gather text inputs (typeahead fields)
+      const vocab = document.getElementById('vocabInput').value || 'Prefer not to say';
+      const looks = document.getElementById('looksInput').value || 'Prefer not to say';
+      const personality = document.getElementById('personalityInput').value || 'Prefer not to say';
+
       const data = {
         uid: currentUser.uid,
         name: required.name,
         age: required.age,
-        height: $('#height').value || '',
+        height: document.getElementById('height').value || '',
         gender: required.gender,
         into: required.into,
-        vocab: $('#vocab').value || 'Prefer not to say',
-        looks: $('#looks').value || 'Prefer not to say',
-        personality: $('#personality').value || 'Prefer not to say',
-        photos: photoURLs,
+        vocab, looks, personality,
+        photos: uploadedPhotoURLs,
         lineURL,
         ts: serverTimestamp()
       };
@@ -369,7 +416,6 @@
   const deckEl = $('#deck'); let deck=[], deckIdx=0; window.__deckInit=false;
 
   function listenProfiles(){
-    // live list of others (exclude me), only those with lineURL
     const pRef = rRef(db, 'profiles');
     onValue(pRef, snap=>{
       const all = snap.val() || {};
@@ -377,7 +423,6 @@
       deckIdx = 0; renderCard();
     });
   }
-
   function initDeck(){ if(window.__deckInit) return; window.__deckInit=true; listenProfiles(); }
 
   async function renderCard(){
@@ -408,11 +453,13 @@
     deckEl.appendChild(card);
 
     const audio=card.querySelector('audio'); audio.src=p.lineURL;
-    const playBtn=card.querySelector('.play-toggle'); const bar=card.querySelector('.bar'); const fill=card.querySelector('.fill'); const tm=card.querySelector('.time');
+    const playBtn=card.querySelector('play-toggle'.replace('play-','.') ); // play-toggle
+    const bar=card.querySelector('.bar'); const fill=card.querySelector('.fill'); const tm=card.querySelector('.time');
     const fmt=s=>{ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; };
-    playBtn.addEventListener('click', ()=>{ if(audio.paused){ audio.play(); playBtn.textContent='⏸'; } else { audio.pause(); playBtn.textContent='▶'; }});
-    audio.addEventListener('pause', ()=> playBtn.textContent='▶');
-    audio.addEventListener('play', ()=> playBtn.textContent='⏸');
+
+    card.querySelector('.play-toggle').addEventListener('click', ()=>{ if(audio.paused){ audio.play(); card.querySelector('.play-toggle').textContent='⏸'; } else { audio.pause(); card.querySelector('.play-toggle').textContent='▶'; }});
+    audio.addEventListener('pause', ()=> card.querySelector('.play-toggle').textContent='▶');
+    audio.addEventListener('play',  ()=> card.querySelector('.play-toggle').textContent='⏸');
     audio.addEventListener('timeupdate', ()=>{ const d=audio.duration||0, c=audio.currentTime||0, pct=d?(c/d)*100:0; fill.style.inset=`0 ${100-pct}% 0 0`; tm.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`; });
     bar.addEventListener('click',(e)=>{ const r=bar.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width; if(audio.duration) audio.currentTime=x*audio.duration; });
 
@@ -428,27 +475,22 @@
     const myLikeRef = rRef(db, `likes/${me}/${themUid}`);
     const theirLikeRef = rRef(db, `likes/${themUid}/${me}`);
 
-    // write my like
     await set(myLikeRef, true);
 
-    // check reciprocal
     const theirLikeSnap = await get(theirLikeRef);
     const matched = !!theirLikeSnap.val();
 
     if(!matched){ deckIdx++; renderCard(); return; }
 
-    // create pair + room if missing
     const pid = pairIdFor(me, themUid);
     const pairRef = rRef(db, `pairs/${pid}`);
     const pairSnap = await get(pairRef);
 
     if(!pairSnap.exists()){
-      // room id == pair id
       await set(pairRef, { id: pid, a: me, b: themUid, roomId: pid, ts: serverTimestamp() });
       await set(rRef(db, `rooms/${pid}`), { id: pid, a: me, b: themUid, created: serverTimestamp() });
     }
 
-    // fetch other profile for reveal
     const themSnap = await get(rRef(db, `profiles/${themUid}`));
     const them = themSnap.val() || {};
     showMatch(them, pid);
@@ -466,7 +508,7 @@
     $('#openChat').onclick = ()=>{ m.style.display='none'; openChat(roomId, person); };
   }
 
-  /***** CHAT (Realtime DB + Storage) *****/
+  /***** CHAT *****/
   let activeRoom = null; window.__activeRoom = null; let messagesUnsub = null;
 
   function pushBubble(who, content, type='text'){
@@ -482,13 +524,11 @@
     $('#chatLog').innerHTML='';
     go(3);
 
-    // live messages stream
     const msgsRef = rRef(db, `rooms/${roomId}/messages`);
-    if(messagesUnsub) messagesUnsub(); // clean previous
+    if(messagesUnsub) messagesUnsub();
     messagesUnsub = onValue(msgsRef, snap=>{
       $('#chatLog').innerHTML='';
       const msgs = snap.val() || {};
-      // sort by key order (push keys roughly chronological)
       Object.entries(msgs).forEach(([,m])=>{
         const who = m.from === currentUser.uid ? 'me' : 'them';
         if(m.type==='text') pushBubble(who, m.text, 'text');
@@ -498,11 +538,9 @@
       $('#chatLog').scrollTop = $('#chatLog').scrollHeight;
     });
 
-    // pre-fill playful opener (local only)
     if(otherProfile?.name) setTimeout(()=> pushBubble('them', `Loved your line. Now that we matched, hi—I’m ${otherProfile.name}.`), 600);
   }
 
-  // send text
   $('#chatSendBtn').addEventListener('click', async ()=>{
     const roomId = activeRoom; if(!roomId) return;
     const input=$('#chatInput'); const text=input.value.trim(); if(!text) return;
@@ -511,7 +549,6 @@
     await set(msgRef, { from: currentUser.uid, type:'text', text, ts: serverTimestamp() });
   });
 
-  // send image
   $('#chatPhotoBtn').addEventListener('click', ()=> $('#chatPhoto').click());
   $('#chatPhoto').addEventListener('change', async ()=>{
     const roomId = activeRoom; if(!roomId) return;
@@ -524,7 +561,6 @@
     await set(msgRef, { from: currentUser.uid, type:'image', url, ts: serverTimestamp() });
   });
 
-  // send voice memo
   let chatRec=null, chatChunks=[], chatStream=null, chatMime='';
   $('#chatVoiceBtn').addEventListener('click', async (e)=>{
     const btn = e.currentTarget; const roomId = activeRoom; if(!roomId) return;
@@ -550,7 +586,7 @@
     }
   });
 
-  /***** START APP *****/
+  /***** START *****/
   go(0);
 </script>
 </body>
