@@ -1,551 +1,789 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Rizzler — Audio Dating</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Le Libido — Blind Pickup Lines</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --gold:#e1bf78; --blue:#064D95; --green:#06954E; --red:#c40018;
-    --bg:#000; --ink:#0a0a0a; --muted:#b6b6b6;
+    --gold:#e1bf78;
+    --blue:#064D95;
+    --green:#06954E;
+    --red:#950606;
+    --bg:#0d0d0d;
+    --card:#151515;
+    --muted:#b9b9b9;
+    --accent:var(--gold);
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0;background:var(--bg);color:#fff;font-family:'Montserrat',sans-serif;display:flex;justify-content:center}
-  .page{width:100%;max-width:860px;padding:20px}
-  .logo-wrap{display:flex;justify-content:center;margin:8px 0 14px}
-  .logo{width:180px;height:auto}
-  /* gradient frame */
-  .frame{background:linear-gradient(90deg,var(--red),var(--blue),var(--green));
-         padding:1px;border-radius:16px}
-  .card{background:#0b0b0b;border-radius:16px;padding:16px}
-  h1{margin:0 0 6px;font-size:1.4rem;text-align:center;color:#fff}
-  h2{margin:12px 0 10px;font-size:1.05rem}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  button{padding:12px 16px;border:0;border-radius:22px;color:#fff;background:#222;cursor:pointer;
-    font-size:1rem;transition:transform .12s ease, box-shadow .12s ease}
-  button:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,0,0,.25)}
-  .btn-green{background:var(--green)} .btn-blue{background:var(--blue)} .btn-red{background:var(--red)}
-  .muted{color:var(--muted)}
-  #status{min-height:1.2em;margin-top:8px}
-  #status.ok{color:#9bffa6} #status.err{color:#ff8b95}
-  /* inputs vertical */
-  .field{margin:10px 0}
-  .field label{display:block;margin:0 0 6px;font-weight:700}
-  input[type="text"], select{
-    width:100%;padding:12px 14px;border-radius:12px;border:1px solid #2a2a2a;background:#121212;color:#fff;
-    font-size:1rem;appearance:none;cursor:pointer
+  body{
+    margin:0;background:var(--bg);font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#fff;
   }
-  input[type="text"]:focus, select:focus{outline:2px solid rgba(255,255,255,.15)}
-  /* photos grid (4) */
-  .photos{display:grid;grid-template-columns:1fr;gap:10px}
-  @media(min-width:560px){.photos{grid-template-columns:repeat(2,1fr)}}
-  .slot{position:relative;aspect-ratio:1;border:1px dashed rgba(255,255,255,.25);border-radius:12px;
-        background:#121212;display:flex;align-items:center;justify-content:center;color:#ccc;overflow:hidden}
-  .slot .prompt{pointer-events:none}
-  .slot input{position:absolute;inset:0;opacity:0;cursor:pointer}
-  .slot img{width:100%;height:100%;object-fit:cover;display:block}
-  .slot .rm{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;
-            background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-weight:800}
-  /* audio + lists */
-  audio{width:100%;margin:8px 0;background:#000}
-  #tabs{display:flex;gap:8px;justify-content:center;margin:8px 0}
-  #tabs button.active{outline:2px solid rgba(255,255,255,.25)}
-  #matches-list{max-height:260px;overflow:auto;background:#101010;border-radius:12px;padding:8px}
-  .match-item{padding:10px;background:#161616;border-radius:10px;margin:6px 0;cursor:pointer}
-  #chat{max-height:360px;overflow:auto;background:#101010;border-radius:12px;padding:10px}
-  .bubble{display:inline-block;max-width:78%;padding:8px 10px;margin:6px 0;border-radius:12px;animation:fade .2s ease-out}
-  .me{background:var(--green);margin-left:auto} .them{background:var(--blue);margin-right:auto}
-  .bubble img{max-width:220px;border-radius:10px;display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  /* Thin RGB border wrapper */
+  .border-wrap{
+    min-height:100vh; padding:2px;
+    background:linear-gradient(100deg,var(--red),var(--blue),var(--green));
+  }
+  .app{
+    min-height:calc(100vh - 4px);
+    background:var(--bg);
+    display:flex; flex-direction:column; align-items:center;
+  }
+  header{
+    width:100%; padding:22px 16px 8px; text-align:center;
+  }
+  header img{
+    width:120px; height:auto; display:block; margin:0 auto 10px;
+    filter: drop-shadow(0 0 10px rgba(225,191,120,.25));
+  }
+  .title{
+    font-weight:800; letter-spacing:.5px; font-size:clamp(20px,3vw,28px);
+    text-shadow:0 0 8px rgba(225,191,120,.25);
+  }
+  /* Stepper nav */
+  .steps{
+    display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
+    padding:6px 16px 14px; width:100%;
+  }
+  .step-pill{
+    padding:8px 12px; border:1px solid rgba(225,191,120,.3); border-radius:999px;
+    color:#fff; font-weight:600; font-size:12px; opacity:.6; user-select:none;
+  }
+  .step-pill.active{ opacity:1; border-color:var(--gold); box-shadow:0 0 14px rgba(225,191,120,.2) inset; }
+  /* Panels */
+  .panel{
+    width:min(1100px,94vw);
+    background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px; padding:18px; margin:10px auto 28px;
+    box-shadow:0 25px 60px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02);
+  }
+  .panel h2{
+    margin:6px 8px 14px; font-size:18px; font-weight:800; letter-spacing:.3px;
+  }
+  .grid{
+    display:grid; gap:14px;
+  }
+  .grid.cols-2{ grid-template-columns:1fr 1fr; }
+  .grid.cols-3{ grid-template-columns:1fr 1fr 1fr; }
+  @media (max-width:800px){
+    .grid.cols-2,.grid.cols-3{ grid-template-columns:1fr; }
+  }
+  /* Buttons */
+  .btn{
+    appearance:none; border:0; border-radius:12px; padding:14px 18px;
+    background:linear-gradient(180deg,#1e1e1e,#121212);
+    color:#fff; font-weight:700; letter-spacing:.3px; cursor:pointer;
+    border:1px solid rgba(255,255,255,.08);
+    transition:.2s transform, .2s box-shadow, .2s background;
+  }
+  .btn:hover{ transform: translateY(-1px); box-shadow:0 8px 24px rgba(0,0,0,.35); }
+  .btn.gold{
+    background:linear-gradient(180deg,#f4d796,#c9a760);
+    color:#111; border:1px solid #d7b56f;
+    text-shadow:0 1px 0 rgba(255,255,255,.35);
+  }
+  .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,.18); }
+  .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+  .spacer{height:10px}
+  .hidden{display:none !important}
+  label{font-size:12px; color:#e5e5e5; margin-bottom:6px; display:block}
+  input[type="text"], select{
+    width:100%; padding:12px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
+    background:#111; color:#fff; outline:none; font-size:14px;
+  }
+  /* Recorder block */
+  .rec-wrap{
+    background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
+    border:1px dashed rgba(255,255,255,.15); border-radius:14px; padding:16px;
+  }
+  .record-btn{
+    width:160px; height:160px; border-radius:999px; border:0; cursor:pointer;
+    background:
+      radial-gradient(closest-side, rgba(225,191,120,.25) 0%, rgba(225,191,120,0) 78%),
+      linear-gradient(180deg,#272727,#161616);
+    color:#fff; font-weight:800; font-size:15px; letter-spacing:.5px;
+    border:1px solid rgba(255,255,255,.15);
+    box-shadow:0 20px 60px rgba(0,0,0,.45), 0 0 0 6px rgba(225,191,120,.08) inset;
+    transition:.15s transform;
+  }
+  .record-btn:active{ transform:scale(.98) }
+  .rec-indicator{
+    width:10px; height:10px; background:#f34a4a; border-radius:50%;
+    box-shadow:0 0 12px rgba(243,74,74,.9);
+    display:inline-block; margin-right:8px; vertical-align:middle;
+    animation: pulse 1s infinite;
+  }
+  @keyframes pulse{
+    0%{ transform:scale(1); opacity:1 }
+    50%{ transform:scale(1.3); opacity:.65 }
+    100%{ transform:scale(1); opacity:1 }
+  }
+  /* Player timeline */
+  .player{
+    display:flex; align-items:center; gap:12px; margin-top:14px;
+  }
+  .play-toggle{
+    width:46px; height:46px; border-radius:50%; border:1px solid rgba(255,255,255,.15);
+    background:#151515; color:#fff; font-weight:800; cursor:pointer;
+  }
+  .bar{
+    flex:1; height:10px; background:#0f0f0f; border-radius:999px; position:relative;
+    border:1px solid rgba(255,255,255,.1); overflow:hidden; cursor:pointer;
+  }
+  .bar .fill{
+    position:absolute; inset:0 100% 0 0; background:linear-gradient(90deg,var(--red),var(--blue),var(--green));
+    border-right:2px solid rgba(255,255,255,.5);
+  }
+  .time{font-size:12px; color:var(--muted); width:60px; text-align:right}
+  /* 2x2 photo grid */
+  .photo-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  }
+  .photo{
+    position:relative; padding-top:100%; background:#0f0f0f; border:1px solid rgba(255,255,255,.1); border-radius:12px; overflow:hidden;
+  }
+  .photo input{ position:absolute; inset:0; opacity:0; cursor:pointer }
+  .photo .hint{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:12px;
+  }
+  .photo img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  }
+  /* Swipe deck */
+  .deck{
+    position:relative; height:420px; border-radius:16px; overflow:hidden;
+    background:#0f0f10; border:1px solid rgba(255,255,255,.08);
+  }
+  .card{
+    position:absolute; inset:0; padding:18px; display:flex; flex-direction:column; justify-content:flex-end;
+    background:
+      radial-gradient(1200px 500px at 100% -10%, rgba(255,255,255,.06), transparent 70%),
+      linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    backdrop-filter: blur(2px);
+  }
+  .card h3{ margin:0 0 10px; font-size:20px; font-weight:800 }
+  .card .only-voice{ font-size:13px; color:var(--muted); margin-bottom:10px }
+  .swipe-actions{ display:flex; gap:10px; }
+  .like, .pass{
+    flex:1; padding:12px 14px; border-radius:10px; font-weight:800; border:1px solid rgba(255,255,255,.12);
+    cursor:pointer;
+  }
+  .pass{ background:#151515; color:#ddd }
+  .like{ background:linear-gradient(180deg,#f4d796,#bf9a55); color:#111; }
+  .match-modal{
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.6); z-index:50;
+  }
+  .match-box{
+    width:min(520px,92vw); background:#121212; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:18px;
+    text-align:center;
+  }
+  .match-box h3{ margin:6px 0 8px; font-size:22px }
+  .match-box p{ margin:0 0 14px; color:#ddd }
+  /* Chat */
+  .chat{
+    height:420px; display:flex; flex-direction:column; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,.1);
+    background:#0f0f10;
+  }
+  .chat-log{
+    flex:1; overflow:auto; padding:14px; display:flex; flex-direction:column; gap:10px;
+  }
+  .bubble{
+    max-width:78%; padding:10px 12px; border-radius:12px; font-size:14px; line-height:1.35;
+  }
+  .me{ align-self:flex-end; background:#172015; border:1px solid rgba(225,191,120,.25) }
+  .them{ align-self:flex-start; background:#141414; border:1px solid rgba(255,255,255,.12) }
+  .bubble img{ max-width:220px; height:auto; border-radius:10px; display:block }
+  .bubble audio{ width:220px }
+  .composer{
+    display:flex; gap:8px; padding:10px; border-top:1px solid rgba(255,255,255,.08); background:#101010;
+  }
+  .composer input[type="text"]{
+    flex:1; background:#0f0f0f; border:1px solid rgba(255,255,255,.12)
+  }
+  .small{ font-size:12px; color:var(--muted) }
+  .tip{ color:var(--muted); font-size:12px; margin-top:6px }
 </style>
 </head>
 <body>
-  <div class="page">
-    <div class="logo-wrap">
-      <img class="logo" alt="Le Libido" src="golden-le-libido-logo.png">
+<div class="border-wrap">
+  <div class="app">
+    <header>
+      <img src="golden-le-libido-logo.png" alt="Le Libido" onerror="this.style.opacity=.0">
+      <div class="title">Blind Pickup Lines</div>
+      <div class="small">One line. Pure chemistry. Profiles unlock only on a match.</div>
+    </header>
+
+    <div class="steps" id="stepper">
+      <div class="step-pill active">1 • Record</div>
+      <div class="step-pill">2 • Profile</div>
+      <div class="step-pill">3 • Swipe</div>
+      <div class="step-pill">4 • Chat</div>
     </div>
 
-    <div class="frame"><div class="card">
-      <h1>Rizzler — Audio Dating</h1>
-
-      <!-- Step 1: record line -->
-      <section id="step-record" class="field">
-        <h2>1) Record your pick-up line</h2>
-        <div class="row">
-          <button id="rec-toggle" class="btn-green">🎙️ Start recording</button>
-          <button id="upload-line" class="btn-blue" disabled>Upload line</button>
-          <span id="rec-hint" class="muted">Tap to start; tap again to stop.</span>
-        </div>
-        <audio id="line-preview" controls hidden playsinline></audio>
-      </section>
-
-      <!-- Step 2: profile -->
-      <section id="step-profile">
-        <h2>2) Build your profile</h2>
-
-        <div class="photos" id="photoGrid">
-          <div class="slot">
-            <div class="prompt">+ Photo</div>
-            <input type="file" accept="image/*" data-idx="0">
+    <!-- STEP 1: RECORD -->
+    <section class="panel" id="step1">
+      <h2>Step 1 — Your pickup line</h2>
+      <div class="grid cols-2">
+        <div class="rec-wrap">
+          <div class="row" style="align-items:center; justify-content:center; gap:18px; margin-bottom:12px">
+            <button class="record-btn" id="recordBtn">
+              <span id="recLabel">Start Recording</span>
+            </button>
+            <div>
+              <div class="small">Tap once to start, tap again to stop. Keep it under 10s for best vibes.</div>
+              <div class="tip">iOS/Safari supported. Works over HTTPS and requires microphone permission.</div>
+            </div>
           </div>
-          <div class="slot">
-            <div class="prompt">+ Photo</div>
-            <input type="file" accept="image/*" data-idx="1">
-          </div>
-          <div class="slot">
-            <div class="prompt">+ Photo</div>
-            <input type="file" accept="image/*" data-idx="2">
-          </div>
-          <div class="slot">
-            <div class="prompt">+ Photo</div>
-            <input type="file" accept="image/*" data-idx="3">
+
+          <div id="playerBlock" class="hidden">
+            <div class="player">
+              <button class="play-toggle" id="playToggle">▶</button>
+              <div class="bar" id="seekBar"><div class="fill" id="fill"></div></div>
+              <div class="time" id="time">0:00</div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <button class="btn ghost" id="retakeBtn">Retake</button>
+              <button class="btn gold" id="toProfileBtn">Looks good →</button>
+            </div>
+            <audio id="audio" preload="metadata" class="hidden"></audio>
           </div>
         </div>
 
-        <div class="field">
-          <label for="p_name">Name</label>
-          <input id="p_name" type="text" placeholder="Your display name">
+        <div class="rec-wrap">
+          <strong>Great pickup lines are:</strong>
+          <ul style="margin-top:8px; color:#ddd; line-height:1.5">
+            <li>Short, playful, unexpected</li>
+            <li>Flirty without being cringey</li>
+            <li>Specific (reference the moment or setting)</li>
+          </ul>
+          <div class="tip">Example: “If we matched, I’ll bring the coffee. You bring the story of how we met.”</div>
         </div>
+      </div>
+    </section>
 
-        <div class="field">
-          <label for="p_age">Age</label>
-          <select id="p_age"></select>
-        </div>
-
-        <div class="field">
-          <label for="p_height">Height</label>
-          <select id="p_height"></select>
-        </div>
-
-        <div class="field">
-          <label for="p_gender">Gender</label>
-          <select id="p_gender">
-            <option value="" disabled selected>Select</option>
-            <option>Man</option>
-            <option>Woman</option>
-            <option>Non-binary</option>
-            <option>Other</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="p_orientation">Sexual Orientation (who you want to hear)</label>
-          <select id="p_orientation">
-            <option value="" disabled selected>Select</option>
-            <option value="Women">Women</option>
-            <option value="Men">Men</option>
-            <option value="Both">Both</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="p_vocab">Turn-on Vocabulary</label>
-          <select id="p_vocab">
-            <option value="" disabled selected>Select</option>
-            <option>Prefer not to say</option>
-            <option>babe</option><option>baby</option><option>sexy</option>
-            <option>fucker</option><option>brat</option>
-            <option>good boy</option><option>good girl</option>
-            <option>Goddess</option><option>master</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="p_looks">My Type (Looks)</label>
-          <select id="p_looks">
-            <option value="" disabled selected>Select</option>
-            <option>Prefer not to say</option>
-            <option>Tall</option><option>Short</option>
-            <option>Thin & lean</option><option>Curvy & voluptuous</option><option>Muscular</option>
-            <option>Tan</option><option>Pale</option>
-            <option>Brunette</option><option>Blonde</option>
-            <option>Latin</option><option>Asian</option><option>Black</option><option>Jewish</option><option>Indian</option><option>Middle Eastern</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="p_personality">My Type (Personality)</label>
-          <select id="p_personality">
-            <option value="" disabled selected>Select</option>
-            <option>Prefer not to say</option>
-            <option>Confident & powerful</option><option>Funny & witty</option><option>Smart & sophisticated</option>
-            <option>Flirty & provocative</option><option>Extroverted & friendly</option><option>Introverted & thoughtful</option>
-            <option>Athletic & sporty</option><option>Organized & orderly</option><option>Silly & goofy</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="p_fantasies">Fantasies</label>
-          <select id="p_fantasies">
-            <option value="" disabled selected>Select</option>
-            <option>Prefer not to say</option>
-            <option>Sex on the beach</option><option>Candlelit bath</option><option>Erotic massage</option>
-            <option>Mile High Club</option><option>Skinny dipping</option><option>Role-play</option>
-            <option>Light bondage</option><option>Sensory play</option><option>Impact play</option><option>Erotic hypnosis</option>
-          </select>
-        </div>
-
-        <div class="row">
-          <button id="save-profile" class="btn-green">Save Profile</button>
-          <span class="muted">Your line + photos + details will be saved.</span>
-        </div>
-      </section>
-
-      <!-- Step 3: Browse / Matches / Chat -->
-      <section id="step-browse" hidden>
-        <div id="tabs">
-          <button id="tab-browse" class="btn-blue active">Browse</button>
-          <button id="tab-matches" class="btn-blue">Matches</button>
-        </div>
-
-        <div id="browse-pane">
-          <audio id="card-audio" controls playsinline></audio>
-          <div id="card-meta" class="muted"></div>
-          <div class="row" style="justify-content:center">
-            <button id="pass" class="btn-red">Pass</button>
-            <button id="like" class="btn-green">Like</button>
-            <button id="next" class="btn-blue">Next</button>
+    <!-- STEP 2: PROFILE -->
+    <section class="panel hidden" id="step2">
+      <h2>Step 2 — Build your profile</h2>
+      <div class="grid cols-2">
+        <div>
+          <label>Photos (2×2 grid)</label>
+          <div class="photo-grid" id="photoGrid">
+            <!-- 4 slots -->
+            <div class="photo"><input type="file" accept="image/*" /><div class="hint">Tap to add</div></div>
+            <div class="photo"><input type="file" accept="image/*" /><div class="hint">Tap to add</div></div>
+            <div class="photo"><input type="file" accept="image/*" /><div class="hint">Tap to add</div></div>
+            <div class="photo"><input type="file" accept="image/*" /><div class="hint">Tap to add</div></div>
           </div>
-          <div id="feed-none" class="muted" style="text-align:center;margin-top:10px;display:none">No more lines for now.</div>
+          <div class="tip">Preview appears instantly so you know it worked.</div>
         </div>
-
-        <div id="matches-pane" hidden>
-          <div id="matches-list"></div>
-        </div>
-
-        <div id="chat-pane" hidden>
-          <h2 id="chat-title">Chat</h2>
-          <div id="chat"></div>
-          <div class="row">
-            <input id="msg" type="text" placeholder="Type a message…" style="flex:1;min-width:180px">
-            <button id="send" class="btn-green">Send</button>
-            <input id="photo" type="file" accept="image/*" hidden>
-            <button id="send-photo" class="btn-blue">📷 Photo</button>
-            <button id="send-voice" class="btn-blue">🎙️ Voice</button>
+        <div>
+          <div class="grid cols-2">
+            <div>
+              <label>Name</label>
+              <input type="text" id="name" placeholder="Enter your first name" autocomplete="name">
+            </div>
+            <div>
+              <label>Age</label>
+              <select id="age"></select>
+            </div>
+            <div>
+              <label>Height</label>
+              <select id="height"></select>
+            </div>
+            <div>
+              <label>Gender</label>
+              <select id="gender">
+                <option value="" selected disabled>Choose</option>
+                <option>Man</option>
+                <option>Woman</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label>I’m into</label>
+              <select id="into">
+                <option value="" selected disabled>Choose</option>
+                <option>Men</option>
+                <option>Women</option>
+                <option>Both</option>
+              </select>
+            </div>
+            <div>
+              <label>Turn-on vocabulary</label>
+              <select id="vocab">
+                <option>Prefer not to say</option>
+                <option>Babe</option>
+                <option>Baby</option>
+                <option>Sexy</option>
+                <option>Fucker</option>
+                <option>Brat</option>
+                <option>Good girl</option>
+                <option>Good boy</option>
+                <option>Slave</option>
+                <option>Goddess</option>
+                <option>Master</option>
+              </select>
+            </div>
+            <div>
+              <label>My type (looks)</label>
+              <select id="looks">
+                <option>Prefer not to say</option>
+                <option>Tall</option><option>Short</option><option>Thin</option><option>Curvy</option><option>Muscular</option>
+                <option>Tan</option><option>Pale</option><option>Blonde</option><option>Brunette</option><option>Redhead</option>
+                <option>Latin</option><option>Asian</option><option>Black</option><option>Jewish</option><option>Arab</option><option>Indian</option>
+              </select>
+            </div>
+            <div>
+              <label>My type (personality)</label>
+              <select id="personality">
+                <option>Prefer not to say</option>
+                <option>Funny</option><option>Smart</option><option>Playful</option><option>Bold</option><option>Chill</option><option>Talkative</option><option>Shy</option>
+              </select>
+            </div>
           </div>
-          <div class="row">
-            <button id="back-to-matches" class="btn-blue">← Back to Matches</button>
+          <div class="row" style="margin-top:14px">
+            <button class="btn ghost" id="backToRecorder">← Back</button>
+            <button class="btn gold" id="saveProfile">Save & Start Swiping →</button>
           </div>
+          <div class="tip">Your full profile is hidden. People only hear your pickup line unless you both match.</div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <div id="status" class="muted">Initializing…</div>
-    </div></div>
+    <!-- STEP 3: SWIPE -->
+    <section class="panel hidden" id="step3">
+      <h2>Step 3 — Swipe pickup lines</h2>
+      <div class="deck" id="deck">
+        <!-- cards injected here -->
+      </div>
+      <div class="tip">Only the voice line shows here. Profiles unlock after a mutual like.</div>
+    </section>
+
+    <!-- STEP 4: CHAT -->
+    <section class="panel hidden" id="step4">
+      <h2>Private Chat</h2>
+      <div class="chat" id="chat">
+        <div class="chat-log" id="chatLog"></div>
+        <div class="composer">
+          <input type="text" id="chatInput" placeholder="Type a message…" />
+          <input type="file" id="chatPhoto" accept="image/*" class="hidden">
+          <button class="btn" id="chatPhotoBtn">📷</button>
+          <button class="btn" id="chatVoiceBtn">🎙️</button>
+          <button class="btn gold" id="chatSendBtn">Send</button>
+        </div>
+        <div class="tip">You can exchange pictures and voice memos here.</div>
+      </div>
+    </section>
+
+    <!-- MATCH MODAL -->
+    <div class="match-modal" id="matchModal" role="dialog" aria-modal="true">
+      <div class="match-box">
+        <h3>It’s a Match!</h3>
+        <p>You both liked each other’s pickup line. Full profile unlocked.</p>
+        <div id="matchProfile" class="small" style="text-align:left; background:#0f0f0f; border:1px solid rgba(255,255,255,.1); padding:12px; border-radius:10px; margin-bottom:12px"></div>
+        <div class="row" style="justify-content:center">
+          <button class="btn ghost" id="closeMatch">Keep Swiping</button>
+          <button class="btn gold" id="openChat">Open Chat</button>
+        </div>
+      </div>
+    </div>
+
   </div>
+</div>
 
-<script type="module">
-/* ===== Imports ===== */
-import { app, db } from './firebase-config.js';
-import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
-import { ref, set, update, get, push, onValue, onChildAdded, serverTimestamp, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js';
-
-/* ===== Setup ===== */
-const auth = getAuth(app);
-const storage = getStorage(app);
-const $ = s => document.querySelector(s);
-const setStatus=(t,cls='')=>{const el=$('#status'); el.textContent=t||''; el.className=cls;};
-
-/* Make selects open on first tap (iOS) */
-for (const sel of document.querySelectorAll('select')) {
-  sel.addEventListener('touchstart', ()=> sel.focus(), {passive:true});
+<script>
+/* ===== UTILITIES ===== */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const stepper = $('#stepper').children;
+function go(stepIdx){
+  // stepIdx: 0..3
+  ['#step1','#step2','#step3','#step4'].forEach((id,i)=>{
+    const el = $(id);
+    if(i===stepIdx){ el.classList.remove('hidden'); stepper[i].classList.add('active'); }
+    else { el.classList.add('hidden'); stepper[i].classList.remove('active'); }
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ===== State ===== */
-let my={ uid:null };
-let lineRec=null, lineChunks=[], lineStream=null, lineMime='audio/webm';
-let myLineUrl=null, myLineUploaded=false;
-let photoFiles=[null,null,null,null], photoUrls=[null,null,null,null];
-let myProfile=null, feed=[], feedPos=-1, currentCard=null;
-let currentMatchId=null, chatUnsub=null;
+/* ====== STEP 1: RECORDING ====== */
+let mediaRecorder, recChunks = [], recBlob=null, recUrl=null, recStream=null, recMime='';
+let recording=false;
+const recordBtn = $('#recordBtn');
+const recLabel  = $('#recLabel');
+const audioEl   = $('#audio');
+const playerBlock = $('#playerBlock');
+const playToggle = $('#playToggle');
+const seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
+const toProfileBtn = $('#toProfileBtn');
+const retakeBtn = $('#retakeBtn');
 
-/* ===== Auth ===== */
-signInAnonymously(auth).catch(()=>{});
-onAuthStateChanged(auth, (user)=>{
-  if (!user) return;
-  my.uid = user.uid;
-  setStatus('Signed in.','ok');
-  initUI();
-});
-
-/* ===== UI init ===== */
-function initUI(){
-  // Age 18-80
-  const ageSel=$('#p_age'); for(let i=18;i<=80;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i; ageSel.appendChild(o); }
-  // Height 4'0" .. 7'0"
-  const hSel=$('#p_height');
-  for(let ft=4; ft<=7; ft++){ for(let inch=0; inch<12; inch++){ if(ft===7&&inch>0) break; const lab=`${ft}'${inch}"`; const o=document.createElement('option'); o.value=lab; o.textContent=lab; hSel.appendChild(o); } }
-
-  // Photo previews (single tap anywhere on slot)
-  $('#photoGrid').addEventListener('change', e=>{
-    const input=e.target.closest('input[type=file]'); if(!input) return;
-    const idx=+input.dataset.idx; const f=input.files?.[0]; if(!f) return;
-    photoFiles[idx]=f;
-    const slot=input.parentElement;
-    slot.innerHTML=''; // clear
-    const img=document.createElement('img'); img.src=URL.createObjectURL(f);
-    const rm=document.createElement('div'); rm.className='rm'; rm.textContent='×';
-    rm.addEventListener('click', ev=>{
-      ev.stopPropagation();
-      photoFiles[idx]=null; photoUrls[idx]=null;
-      slot.innerHTML='<div class="prompt">+ Photo</div>';
-      const re=document.createElement('input'); re.type='file'; re.accept='image/*'; re.dataset.idx=idx;
-      slot.appendChild(re);
-    });
-    slot.appendChild(img); slot.appendChild(rm);
-    const re=document.createElement('input'); re.type='file'; re.accept='image/*'; re.dataset.idx=idx;
-    slot.appendChild(re); // keep input so user can replace
-  });
-
-  // Recording
-  $('#rec-toggle').addEventListener('click', toggleRecord);
-  $('#upload-line').addEventListener('click', uploadLine);
-
-  // Profile save
-  $('#save-profile').addEventListener('click', saveProfile);
-
-  // Tabs
-  $('#tab-browse').addEventListener('click', ()=>showTab('browse'));
-  $('#tab-matches').addEventListener('click', ()=>showTab('matches'));
-  // Browse
-  $('#next').addEventListener('click', nextCard);
-  $('#pass').addEventListener('click', async ()=>{
-    if(!currentCard) return;
-    await set(ref(db,`passes/${my.uid}/${currentCard.uid}`), true);
-    nextCard();
-  });
-  $('#like').addEventListener('click', likeCurrent);
-
-  // Chat
-  $('#send').addEventListener('click', sendText);
-  $('#send-photo').addEventListener('click', ()=>$('#photo').click());
-  $('#photo').addEventListener('change', sendPhoto);
-  $('#send-voice').addEventListener('click', sendVoiceMemo);
-  $('#back-to-matches').addEventListener('click', ()=>showTab('matches'));
-}
-
-/* ===== Helpers ===== */
-function pickMime(){
-  const t=['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'];
-  for(const x of t){ if(window.MediaRecorder?.isTypeSupported?.(x)) return x; }
+function supportedMime(){
+  const candidates = ['audio/webm;codecs=opus','audio/mp4;codecs=aac','audio/webm','audio/ogg;codecs=opus','audio/mp4','audio/aac'];
+  for(const t of candidates){
+    if(window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) return t;
+  }
   return '';
 }
 
-/* ===== Recording ===== */
-async function toggleRecord(){
-  if(!lineRec || lineRec.state==='inactive'){
-    try{
-      const s = await navigator.mediaDevices.getUserMedia({audio:true});
-      lineStream=s; lineChunks=[]; const mt=pickMime(); lineMime=mt||'audio/webm';
-      lineRec = new MediaRecorder(s, mt?{mimeType:mt}:{});
-      lineRec.ondataavailable=e=>{ if(e.data && e.data.size) lineChunks.push(e.data); };
-      lineRec.onstop=()=>{
-        lineStream.getTracks().forEach(t=>t.stop());
-        const blob=new Blob(lineChunks,{type:lineRec.mimeType||lineMime});
-        const a=$('#line-preview'); a.hidden=false; a.src=URL.createObjectURL(blob); a.load();
-        $('#upload-line').disabled=false;
-        setStatus('Preview ready. Upload your line.','ok');
-      };
-      lineRec.start(100);
-      $('#rec-toggle').textContent='⏹️ Stop';
-      setStatus('Recording…');
-    }catch(e){
-      setStatus('Microphone blocked — enable permissions in Safari Settings.','err');
-    }
-  }else{
-    lineRec.stop(); $('#rec-toggle').textContent='🎙️ Start recording';
-  }
-}
-
-async function uploadLine(){
-  if(!lineChunks.length){ setStatus('Record first.','err'); return; }
+async function startRecording(){
   try{
-    if(!auth.currentUser){ await signInAnonymously(auth); }
-    setStatus('Uploading line…');
-    const blob=new Blob(lineChunks,{type:lineMime});
-    const key=`${my.uid}-${Date.now()}.webm`;
-    const r=sRef(storage, `lines/${my.uid}/${key}`);
-    await uploadBytes(r, blob, {contentType: lineMime});
-    myLineUrl = await getDownloadURL(r);
-    await set(ref(db,`lines/${my.uid}`), {
-      uid: my.uid, name: $('#p_name').value||'Rizzler',
-      url: myLineUrl, mime: lineMime, ts: serverTimestamp()
-    });
-    myLineUploaded=true;
-    setStatus('Line uploaded. Now finish profile.','ok');
+    recMime = supportedMime();
+    recStream = await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRecorder = new MediaRecorder(recStream, recMime ? {mimeType:recMime} : undefined);
+    recChunks = [];
+    mediaRecorder.ondataavailable = e => { if(e.data && e.data.size) recChunks.push(e.data) };
+    mediaRecorder.onstop = () => {
+      recBlob = new Blob(recChunks, { type: recMime || 'audio/webm' });
+      if(recUrl) URL.revokeObjectURL(recUrl);
+      recUrl = URL.createObjectURL(recBlob);
+      audioEl.src = recUrl;
+      playerBlock.classList.remove('hidden');
+      updateTime(0, audioEl.duration || 0);
+    };
+    mediaRecorder.start();
+    recording = true;
+    recLabel.innerHTML = '<span class="rec-indicator"></span> Recording…';
   }catch(err){
+    alert('Microphone access failed. Please allow mic permission and use HTTPS.');
     console.error(err);
-    setStatus('Upload failed. Check Storage rules / bucket / auth.', 'err');
   }
 }
 
-/* ===== Save Profile ===== */
-async function saveProfile(){
-  const name = ($('#p_name').value||'').trim();
-  const age  = $('#p_age').value;
-  const height = $('#p_height').value;
-  const gender = $('#p_gender').value;
-  const orientation = $('#p_orientation').value;
-  if(!name || !age || !orientation){ setStatus('Please add Name, Age, Orientation.','err'); return; }
-  if(!myLineUploaded){ setStatus('Upload your pick-up line first.','err'); return; }
-
-  setStatus('Saving profile…');
-
-  // upload chosen photos
-  for(let i=0;i<photoFiles.length;i++){
-    const f=photoFiles[i]; if(!f) continue;
-    const key=`${my.uid}-${i}-${Date.now()}-${f.name||'photo'}`;
-    const r=sRef(storage, `profiles/${my.uid}/${key}`);
-    await uploadBytes(r, f, {contentType: f.type||'image/jpeg'});
-    photoUrls[i] = await getDownloadURL(r);
+function stopRecording(){
+  if(mediaRecorder && recording){
+    mediaRecorder.stop();
+    recStream && recStream.getTracks().forEach(t=>t.stop());
+    recording=false;
+    recLabel.textContent='Start Recording';
   }
+}
 
-  myProfile = {
-    uid: my.uid, name, age, height, gender, orientation,
-    vocab: $('#p_vocab').value || '',
-    looks: $('#p_looks').value || '',
-    personality: $('#p_personality').value || '',
-    fantasies: $('#p_fantasies').value || '',
-    photos: photoUrls.filter(Boolean),
-    ts: serverTimestamp()
+recordBtn.addEventListener('click', ()=>{
+  if(!recording){ startRecording(); }
+  else{ stopRecording(); }
+});
+
+playToggle.addEventListener('click', ()=>{
+  if(audioEl.paused){ audioEl.play(); playToggle.textContent='⏸'; }
+  else{ audioEl.pause(); playToggle.textContent='▶'; }
+});
+audioEl.addEventListener('pause', ()=> playToggle.textContent='▶');
+audioEl.addEventListener('play', ()=> playToggle.textContent='⏸');
+audioEl.addEventListener('timeupdate', ()=>{
+  const d = audioEl.duration || 0, c = audioEl.currentTime || 0;
+  const pct = d ? (c/d)*100 : 0;
+  fill.style.inset = `0 ${100-pct}% 0 0`;
+  updateTime(c,d);
+});
+seekBar.addEventListener('click', (e)=>{
+  const rect = seekBar.getBoundingClientRect();
+  const x = (e.clientX - rect.left)/rect.width;
+  if(audioEl.duration) audioEl.currentTime = x * audioEl.duration;
+});
+function updateTime(c,d){
+  time.textContent = `${fmt(c)} / ${d?fmt(d):'0:00'}`;
+}
+function fmt(s){ s = Math.floor(s); const m=Math.floor(s/60), r = s%60; return `${m}:${r.toString().padStart(2,'0')}`; }
+
+retakeBtn.addEventListener('click', ()=>{
+  // reset
+  if(!audioEl.paused) audioEl.pause();
+  playerBlock.classList.add('hidden');
+  recBlob = null; recUrl && URL.revokeObjectURL(recUrl); recUrl=null;
+});
+
+toProfileBtn.addEventListener('click', ()=>{
+  if(!recBlob){ alert('Record your pickup line first.'); return; }
+  go(1);
+});
+
+/* ====== STEP 2: PROFILE BUILDER ====== */
+const ageSel = $('#age'), heightSel = $('#height');
+(function buildAge(){
+  const frag=document.createDocumentFragment();
+  const ph = document.createElement('option'); ph.value=''; ph.textContent='Choose'; ph.disabled=true; ph.selected=true;
+  frag.appendChild(ph);
+  for(let a=18;a<=99;a++){
+    const o=document.createElement('option'); o.textContent=a; frag.appendChild(o);
+  }
+  ageSel.appendChild(frag);
+})();
+(function buildHeight(){
+  const frag=document.createDocumentFragment();
+  const o1=document.createElement('option'); o1.textContent='Under 5 feet'; frag.appendChild(o1);
+  // 5'0" to 7'0"
+  for(let feet=5; feet<=7; feet++){
+    for(let inch=0; inch<12; inch++){
+      const label = `${feet}’${inch}”`;
+      const opt=document.createElement('option'); opt.textContent=label; frag.appendChild(opt);
+    }
+  }
+  const o2=document.createElement('option'); o2.textContent='Over 7 feet'; frag.appendChild(o2);
+  heightSel.appendChild(frag);
+})();
+
+$('#backToRecorder').addEventListener('click', ()=> go(0));
+
+const photoGrid = $('#photoGrid');
+photoGrid.querySelectorAll('input[type="file"]').forEach(input=>{
+  input.addEventListener('change', ()=>{
+    const file = input.files && input.files[0];
+    const box = input.parentElement;
+    if(file){
+      const img = box.querySelector('img') || document.createElement('img');
+      box.querySelector('.hint')?.remove();
+      const reader = new FileReader();
+      reader.onload = e => { img.src = e.target.result; box.appendChild(img); };
+      reader.readAsDataURL(file);
+    }
+  });
+});
+
+const profile = {}; // local demo
+$('#saveProfile').addEventListener('click', ()=>{
+  const required = {
+    name: $('#name').value.trim(),
+    age: $('#age').value,
+    gender: $('#gender').value,
+    into: $('#into').value
   };
-  await update(ref(db,`users/${my.uid}`), myProfile);
-
-  setStatus('Profile saved! Start browsing.','ok');
-  $('#step-record').hidden=true; $('#step-profile').hidden=true; $('#step-browse').hidden=false;
-  showTab('browse'); await loadFeed(); loadMatchesList();
-}
-
-/* ===== Tabs ===== */
-function showTab(which){
-  $('#tab-browse').classList.toggle('active', which==='browse');
-  $('#tab-matches').classList.toggle('active', which==='matches');
-  $('#browse-pane').hidden = (which!=='browse');
-  $('#matches-pane').hidden = (which!=='matches');
-  $('#chat-pane').hidden = true;
-}
-
-/* ===== Feed ===== */
-async function loadFeed(){
-  const snap = await get(query(ref(db,'lines'), orderByChild('ts'), limitToLast(60)));
-  const want = (myProfile?.orientation || 'Both');
-  feed=[]; snap.forEach(s=>{ const v=s.val(); if(v && v.uid!==my.uid) feed.push(v); });
-
-  // Filter by poster gender
-  const items=[];
-  for(const v of feed){
-    const gs = await get(ref(db,`users/${v.uid}/gender`));
-    const g = gs.exists()? gs.val() : null;
-    if (want==='Both' || (want==='Men'&&g==='Man') || (want==='Women'&&g==='Woman')) items.push({...v,gender:g});
+  if(!required.name || !required.age || !required.gender || !required.into){
+    alert('Please complete Name, Age, Gender, and I’m into.');
+    return;
   }
-  feed = items.sort((a,b)=>(b.ts||0)-(a.ts||0));
-  feedPos=-1; nextCard();
+  profile.name = required.name;
+  profile.age  = required.age;
+  profile.height = $('#height').value || '';
+  profile.gender = required.gender;
+  profile.into = required.into;
+  profile.vocab = $('#vocab').value || 'Prefer not to say';
+  profile.looks = $('#looks').value || 'Prefer not to say';
+  profile.personality = $('#personality').value || 'Prefer not to say';
+  // Save to localStorage for demo
+  localStorage.setItem('ll_user_profile', JSON.stringify(profile));
+  // keep audio blob url in memory for now
+  go(2);
+  initDeck();
+});
+
+/* ====== STEP 3: SWIPE ====== */
+// For demo, we generate short “audio beeps” so the experience works instantly.
+const demoPeople = [
+  { id:'p1', name:'Ari', age:27, gender:'Woman', into:'Men', looks:'Brunette', personality:'Playful', line:'If we match, I call dibs on the first story.' },
+  { id:'p2', name:'Jules', age:31, gender:'Man', into:'Women', looks:'Tall', personality:'Bold', line:'Are you my algorithm? Because you just solved something.' },
+  { id:'p3', name:'Rowan', age:24, gender:'Other', into:'Both', looks:'Curvy', personality:'Smart', line:'Tell me your hot take. I’ll bring the popcorn.' },
+  { id:'p4', name:'Kai', age:29, gender:'Man', into:'Both', looks:'Muscular', personality:'Chill', line:'Two truths and a drink? I’ll start.' },
+  { id:'p5', name:'Sage', age:26, gender:'Woman', into:'Men', looks:'Blonde', personality:'Funny', line:'I’m collecting meet-cute stories. Want to be chapter one?' },
+];
+// Minimal WAV encoder so we can create quick beeps
+async function makeBeepWav(seconds=1, freq=660){
+  const rate=44100, frames=rate*seconds, amp=0.2;
+  const buffer=new Float32Array(frames);
+  for(let i=0;i<frames;i++) buffer[i]=Math.sin(2*Math.PI*freq*(i/rate))*amp;
+  return pcm16ToWav(buffer, rate);
 }
-function renderCard(v){
-  $('#card-audio').src=v.url; $('#card-meta').textContent=`${v.name||'Rizzler'} ${v.gender?('• '+v.gender):''}`;
-}
-function nextCard(){
-  $('#feed-none').style.display='none';
-  for(let i=feedPos+1;i<feed.length;i++){ currentCard=feed[i]; feedPos=i; renderCard(currentCard); return; }
-  currentCard=null; $('#card-audio').src=''; $('#card-meta').textContent=''; $('#feed-none').style.display='block';
-}
-async function likeCurrent(){
-  if(!currentCard) return;
-  await set(ref(db,`likes/${my.uid}/${currentCard.uid}`), true);
-  const back = await get(ref(db,`likes/${currentCard.uid}/${my.uid}`));
-  if(back.exists()){
-    const a=[my.uid,currentCard.uid].sort(); const mid=`${a[0]}_${a[1]}`;
-    await update(ref(db,`matches/${mid}`), {a:a[0], b:a[1], ts: serverTimestamp()});
-    openChat(mid, currentCard.uid, currentCard.name||'Match');
-  } else {
-    setStatus('Like sent — you’ll match if they like you back.','ok');
-    nextCard();
+function pcm16ToWav(float32, sampleRate){
+  const bytesPerSample=2;
+  const blockAlign=bytesPerSample*1;
+  const buffer=new ArrayBuffer(44 + float32.length*2);
+  const view=new DataView(buffer);
+  let offset=0; function wstr(s){ for(let i=0;i<s.length;i++) view.setUint8(offset++, s.charCodeAt(i)); }
+  function wint16(v){ view.setInt16(offset, v, true); offset+=2; }
+  function wuint16(v){ view.setUint16(offset, v, true); offset+=2; }
+  function wuint32(v){ view.setUint32(offset, v, true); offset+=4; }
+  wstr('RIFF'); wuint32(36 + float32.length*2); wstr('WAVE');
+  wstr('fmt '); wuint32(16); wuint16(1); wuint16(1); wuint32(sampleRate); wuint32(sampleRate*blockAlign); wuint16(blockAlign); wuint16(16);
+  wstr('data'); wuint32(float32.length*2);
+  for(let i=0;i<float32.length;i++){
+    let s=Math.max(-1, Math.min(1, float32[i]));
+    wint16(s<0 ? s*0x8000 : s*0x7FFF);
   }
+  return new Blob([buffer], {type:'audio/wav'});
 }
 
-/* ===== Matches ===== */
-function loadMatchesList(){
-  onValue(ref(db,'matches'), (snap)=>{
-    const all=snap.val()||{}; const mine=Object.keys(all).filter(id=>{const m=all[id]; return m&&(m.a===my.uid||m.b===my.uid);});
-    const list=$('#matches-list'); list.innerHTML='';
-    if(!mine.length){ list.innerHTML='<div class="muted">No matches yet.</div>'; return; }
-    mine.sort((x,y)=>(all[y].ts?.seconds||0)-(all[x].ts?.seconds||0));
-    mine.forEach(id=>{
-      const m=all[id]; const other=(m.a===my.uid?m.b:m.a);
-      get(ref(db,`users/${other}/name`)).then(ns=>{
-        const name=ns.exists()?ns.val():'Match';
-        const div=document.createElement('div'); div.className='match-item'; div.textContent=name;
-        div.addEventListener('click',()=>openChat(id,other,name));
-        list.appendChild(div);
-      });
-    });
+let deck=[], deckIdx=0;
+async function initDeck(){
+  deck = demoPeople.map((p,i)=>({
+    ...p,
+    // lightweight audible cue
+    audioBlob: null,
+    audioUrl: null
+  }));
+  // generate audio beeps (asynchronous but fast)
+  for(const p of deck){
+    p.audioBlob = await makeBeepWav(.9, 520 + Math.floor(Math.random()*260));
+    p.audioUrl = URL.createObjectURL(p.audioBlob);
+  }
+  renderCard();
+}
+
+function renderCard(){
+  const container = $('#deck');
+  container.innerHTML='';
+  if(deckIdx>=deck.length){
+    const empty = document.createElement('div');
+    empty.className='card';
+    empty.innerHTML = `<h3>That’s all for now</h3><div class="only-voice">New pickup lines appear as more people join.</div>
+      <div class="row"><button class="btn gold" onclick="deckIdx=0; renderCard()">Replay demo</button></div>`;
+    container.appendChild(empty);
+    return;
+  }
+  const p = deck[deckIdx];
+  const card = document.createElement('div');
+  card.className='card';
+  card.innerHTML = `
+    <div class="only-voice">🎧 Voice only. Profiles unlock on a match.</div>
+    <div class="rec-wrap">
+      <div class="player">
+        <button class="play-toggle">▶</button>
+        <div class="bar"><div class="fill"></div></div>
+        <div class="time">0:00</div>
+      </div>
+      <div class="tip" style="margin-top:8px">Transcript: “${p.line}”</div>
+      <audio preload="metadata" class="hidden"></audio>
+    </div>
+    <div class="spacer"></div>
+    <div class="swipe-actions">
+      <button class="pass">Pass</button>
+      <button class="like">Like</button>
+    </div>
+  `;
+  container.appendChild(card);
+
+  const audio = card.querySelector('audio'); audio.src = p.audioUrl;
+  const playBtn = card.querySelector('.play-toggle');
+  const bar = card.querySelector('.bar'), fill = card.querySelector('.fill'), tm = card.querySelector('.time');
+
+  playBtn.addEventListener('click', ()=>{ if(audio.paused){ audio.play(); playBtn.textContent='⏸'; } else { audio.pause(); playBtn.textContent='▶'; } });
+  audio.addEventListener('pause', ()=> playBtn.textContent='▶');
+  audio.addEventListener('play', ()=> playBtn.textContent='⏸');
+  audio.addEventListener('timeupdate', ()=>{
+    const d=audio.duration||0, c=audio.currentTime||0, pct=d?(c/d)*100:0;
+    fill.style.inset=`0 ${100-pct}% 0 0`;
+    tm.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`;
+  });
+  bar.addEventListener('click', (e)=>{
+    const r = bar.getBoundingClientRect(); const x = (e.clientX - r.left)/r.width;
+    if(audio.duration) audio.currentTime = x*audio.duration;
+  });
+
+  // actions
+  card.querySelector('.pass').addEventListener('click', ()=>{
+    audio.pause(); deckIdx++; renderCard();
+  });
+  card.querySelector('.like').addEventListener('click', ()=>{
+    audio.pause();
+    // 50% chance they liked you back (demo)
+    const matched = Math.random() < 0.5;
+    if(matched){
+      showMatch(p);
+    }else{
+      deckIdx++; renderCard();
+    }
   });
 }
 
-/* ===== Chat ===== */
-function openChat(matchId, otherUid, otherName){
-  currentMatchId=matchId;
-  $('#chat-title').textContent=`Chat with ${otherName||'Match'}`;
-  $('#browse-pane').hidden=true; $('#matches-pane').hidden=true; $('#chat-pane').hidden=false;
-  $('#chat').innerHTML='';
-  if(chatUnsub) chatUnsub();
-  chatUnsub = onChildAdded(ref(db,`chats/${matchId}/messages`), snap=>renderMsg(snap.val()));
-}
-function renderMsg(m){
-  const box=$('#chat'); const b=document.createElement('div'); b.className='bubble '+(m.from===my.uid?'me':'them');
-  if(m.type==='text'){ b.textContent=m.text; }
-  else if(m.type==='image'){ const img=document.createElement('img'); img.src=m.url; b.appendChild(img); }
-  else if(m.type==='audio'){ const a=document.createElement('audio'); a.controls=true; a.src=m.url; a.playsinline=true; b.appendChild(a); }
-  box.appendChild(b); box.scrollTop=box.scrollHeight;
-}
-async function sendText(){
-  const t=($('#msg').value||'').trim(); if(!t||!currentMatchId) return;
-  await push(ref(db,`chats/${currentMatchId}/messages`), {from:my.uid,type:'text',text:t,ts:serverTimestamp()});
-  $('#msg').value='';
-}
-async function sendPhoto(e){
-  const f=e.target.files?.[0]; if(!f||!currentMatchId) return;
-  try{
-    const key=`${my.uid}-${Date.now()}-${f.name}`;
-    const r=sRef(storage,`chat/${currentMatchId}/${key}`);
-    await uploadBytes(r,f,{contentType:f.type||'image/jpeg'});
-    const url=await getDownloadURL(r);
-    await push(ref(db,`chats/${currentMatchId}/messages`), {from:my.uid,type:'image',url,ts:serverTimestamp()});
-  }catch(err){ alert('Photo upload failed.'); }
-  e.target.value='';
-}
-let memoRec=null,memoChunks=[],memoStream=null,memoMime='audio/webm';
-async function sendVoiceMemo(){
-  if(!currentMatchId) return;
-  if(!memoRec || memoRec.state==='inactive'){
-    try{
-      const s=await navigator.mediaDevices.getUserMedia({audio:true});
-      memoStream=s; memoChunks=[]; const mt=pickMime(); memoMime=mt||'audio/webm';
-      memoRec=new MediaRecorder(s, mt?{mimeType:mt}:{});
-      memoRec.ondataavailable=e=>{ if(e.data && e.data.size) memoChunks.push(e.data); };
-      memoRec.onstop=async ()=>{
-        memoStream.getTracks().forEach(t=>t.stop());
-        const blob=new Blob(memoChunks,{type:memoRec.mimeType||memoMime});
-        try{
-          const key=`${my.uid}-${Date.now()}.webm`;
-          const r=sRef(storage,`chat/${currentMatchId}/${key}`);
-          await uploadBytes(r, blob,{contentType:memoMime});
-          const url=await getDownloadURL(r);
-          await push(ref(db,`chats/${currentMatchId}/messages`), {from:my.uid,type:'audio',url,ts:serverTimestamp()});
-        }catch(err){ alert('Audio upload failed.'); }
-        $('#send-voice').textContent='🎙️ Voice';
-      };
-      memoRec.start(100); $('#send-voice').textContent='⏹️ Stop';
-    }catch(e){ alert('Mic permission needed.'); }
-  }else{
-    memoRec.stop();
-  }
+function showMatch(person){
+  const m = $('#matchModal'), box = $('#matchProfile');
+  const details = [
+    ['Name', person.name],
+    ['Age', person.age],
+    ['Gender', person.gender],
+    ['I’m into', person.into],
+    ['Looks', person.looks],
+    ['Personality', person.personality]
+  ].map(([k,v])=>`<div><strong>${k}:</strong> ${v}</div>`).join('');
+  box.innerHTML = details;
+  m.style.display='flex';
+
+  $('#closeMatch').onclick = ()=>{ m.style.display='none'; deckIdx++; renderCard(); };
+  $('#openChat').onclick = ()=>{
+    m.style.display='none';
+    go(3);
+    // seed chat with a playful opener
+    pushBubble('them', `Loved your line. Now that we matched, hi—I’m ${person.name}.`);
+  };
 }
 
-/* ===== Boot ===== */
-setStatus('Ready. Record your line to begin.','ok');
+/* ====== STEP 4: CHAT ====== */
+const chatLog = $('#chatLog');
+function pushBubble(who, content, type='text'){
+  const b = document.createElement('div'); b.className = `bubble ${who}`;
+  if(type==='text'){ b.textContent = content; }
+  if(type==='image'){
+    const img = document.createElement('img'); img.src = content; b.appendChild(img);
+  }
+  if(type==='audio'){
+    const a = document.createElement('audio'); a.controls=true; a.src=content; b.appendChild(a);
+  }
+  chatLog.appendChild(b);
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+$('#chatSendBtn').addEventListener('click', ()=>{
+  const val = $('#chatInput').value.trim();
+  if(!val) return;
+  pushBubble('me', val, 'text');
+  $('#chatInput').value='';
+  // demo auto-reply
+  setTimeout(()=> pushBubble('them','Your voice has main-character energy.'), 1200);
+});
+
+$('#chatPhotoBtn').addEventListener('click', ()=> $('#chatPhoto').click());
+$('#chatPhoto').addEventListener('change', ()=>{
+  const f = $('#chatPhoto').files?.[0]; if(!f) return;
+  const r = new FileReader(); r.onload = e=> pushBubble('me', e.target.result, 'image'); r.readAsDataURL(f);
+});
+
+let chatRec=null, chatChunks=[], chatUrl=null, chatStream=null, chatMime='';
+$('#chatVoiceBtn').addEventListener('click', async ()=>{
+  const btn = $('#chatVoiceBtn');
+  if(!chatRec){
+    try{
+      chatMime = supportedMime();
+      chatStream = await navigator.mediaDevices.getUserMedia({audio:true});
+      chatRec = new MediaRecorder(chatStream, chatMime?{mimeType:chatMime}:undefined);
+      chatChunks = [];
+      chatRec.ondataavailable = e=>{ if(e.data && e.data.size) chatChunks.push(e.data); }
+      chatRec.onstop = ()=>{
+        const blob = new Blob(chatChunks, {type: chatMime || 'audio/webm'});
+        chatUrl && URL.revokeObjectURL(chatUrl);
+        chatUrl = URL.createObjectURL(blob);
+        pushBubble('me', chatUrl, 'audio');
+        setTimeout(()=> pushBubble('them','🗣️ Sending you one back.'), 900);
+      };
+      chatRec.start();
+      btn.textContent='⏹️';
+    }catch(e){
+      alert('Mic access needed to record a voice memo.');
+      console.error(e);
+      chatRec=null; chatStream && chatStream.getTracks().forEach(t=>t.stop());
+    }
+  }else{
+    chatRec.stop(); chatStream && chatStream.getTracks().forEach(t=>t.stop());
+    chatRec=null; $('#chatVoiceBtn').textContent='🎙️';
+  }
+});
+
+/* ====== NAV FROM STEP 1 → 2 ALSO ON STEPPER CLICK (optional UX) ====== */
+Array.from(stepper).forEach((pill, idx)=>{
+  pill.style.cursor='pointer';
+  pill.addEventListener('click', ()=>{
+    // simple guardrails
+    if(idx===1 && !recBlob){ alert('Record your pickup line first.'); return; }
+    if(idx===2 && !localStorage.getItem('ll_user_profile')){ alert('Save your profile first.'); return; }
+    if(idx===3 && !localStorage.getItem('ll_user_profile')){ alert('Open a match from the swipe deck.'); return; }
+    go(idx);
+    if(idx===2 && !deck.length) initDeck();
+  });
+});
+
+/* Default to step 0 */
+go(0);
 </script>
 </body>
 </html>
