@@ -7,204 +7,67 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --gold:#e1bf78;
-    --blue:#064D95;
-    --green:#06954E;
-    --red:#950606;
-    --bg:#0d0d0d;
-    --card:#151515;
-    --muted:#b9b9b9;
-    --accent:var(--gold);
+    --gold:#e1bf78; --blue:#064D95; --green:#06954E; --red:#950606;
+    --bg:#0d0d0d; --card:#151515; --muted:#b9b9b9;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{
-    margin:0;background:var(--bg);font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#fff;
-  }
-  /* Thin RGB border wrapper */
-  .border-wrap{
-    min-height:100vh; padding:2px;
-    background:linear-gradient(100deg,var(--red),var(--blue),var(--green));
-  }
-  .app{
-    min-height:calc(100vh - 4px);
-    background:var(--bg);
-    display:flex; flex-direction:column; align-items:center;
-  }
-  header{
-    width:100%; padding:22px 16px 8px; text-align:center;
-  }
-  header img{
-    width:120px; height:auto; display:block; margin:0 auto 10px;
-    filter: drop-shadow(0 0 10px rgba(225,191,120,.25));
-  }
-  .title{
-    font-weight:800; letter-spacing:.5px; font-size:clamp(20px,3vw,28px);
-    text-shadow:0 0 8px rgba(225,191,120,.25);
-  }
-  /* Stepper nav */
-  .steps{
-    display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
-    padding:6px 16px 14px; width:100%;
-  }
-  .step-pill{
-    padding:8px 12px; border:1px solid rgba(225,191,120,.3); border-radius:999px;
-    color:#fff; font-weight:600; font-size:12px; opacity:.6; user-select:none;
-  }
-  .step-pill.active{ opacity:1; border-color:var(--gold); box-shadow:0 0 14px rgba(225,191,120,.2) inset; }
-  /* Panels */
-  .panel{
-    width:min(1100px,94vw);
-    background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:16px; padding:18px; margin:10px auto 28px;
-    box-shadow:0 25px 60px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02);
-  }
-  .panel h2{
-    margin:6px 8px 14px; font-size:18px; font-weight:800; letter-spacing:.3px;
-  }
-  .grid{
-    display:grid; gap:14px;
-  }
-  .grid.cols-2{ grid-template-columns:1fr 1fr; }
-  .grid.cols-3{ grid-template-columns:1fr 1fr 1fr; }
-  @media (max-width:800px){
-    .grid.cols-2,.grid.cols-3{ grid-template-columns:1fr; }
-  }
-  /* Buttons */
-  .btn{
-    appearance:none; border:0; border-radius:12px; padding:14px 18px;
-    background:linear-gradient(180deg,#1e1e1e,#121212);
-    color:#fff; font-weight:700; letter-spacing:.3px; cursor:pointer;
-    border:1px solid rgba(255,255,255,.08);
-    transition:.2s transform, .2s box-shadow, .2s background;
-  }
-  .btn:hover{ transform: translateY(-1px); box-shadow:0 8px 24px rgba(0,0,0,.35); }
-  .btn.gold{
-    background:linear-gradient(180deg,#f4d796,#c9a760);
-    color:#111; border:1px solid #d7b56f;
-    text-shadow:0 1px 0 rgba(255,255,255,.35);
-  }
-  .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,.18); }
-  .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
-  .spacer{height:10px}
+  body{margin:0;background:var(--bg);font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#fff}
+  .border-wrap{min-height:100vh;padding:2px;background:linear-gradient(100deg,var(--red),var(--blue),var(--green))}
+  .app{min-height:calc(100vh - 4px);background:var(--bg);display:flex;flex-direction:column;align-items:center}
+  header{width:100%;padding:22px 16px 8px;text-align:center}
+  header img{width:120px;height:auto;display:block;margin:0 auto 10px;filter:drop-shadow(0 0 10px rgba(225,191,120,.25))}
+  .title{font-weight:800;letter-spacing:.5px;font-size:clamp(20px,3vw,28px);text-shadow:0 0 8px rgba(225,191,120,.25)}
+  .steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:6px 16px 14px;width:100%}
+  .step-pill{padding:8px 12px;border:1px solid rgba(225,191,120,.3);border-radius:999px;color:#fff;font-weight:600;font-size:12px;opacity:.6;user-select:none}
+  .step-pill.active{opacity:1;border-color:var(--gold);box-shadow:0 0 14px rgba(225,191,120,.2) inset}
+  .panel{width:min(1100px,94vw);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin:10px auto 28px;box-shadow:0 25px 60px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.02)}
+  .panel h2{margin:6px 8px 14px;font-size:18px;font-weight:800;letter-spacing:.3px}
+  .grid{display:grid;gap:14px}
+  .grid.cols-2{grid-template-columns:1fr 1fr}
+  @media (max-width:800px){.grid.cols-2{grid-template-columns:1fr}}
+  .btn{appearance:none;border:0;border-radius:12px;padding:14px 18px;background:linear-gradient(180deg,#1e1e1e,#121212);color:#fff;font-weight:700;letter-spacing:.3px;cursor:pointer;border:1px solid rgba(255,255,255,.08);transition:.2s transform,.2s box-shadow,.2s background}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .btn.gold{background:linear-gradient(180deg,#f4d796,#c9a760);color:#111;border:1px solid #d7b56f;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.18)}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
   .hidden{display:none !important}
-  label{font-size:12px; color:#e5e5e5; margin-bottom:6px; display:block}
-  input[type="text"], select{
-    width:100%; padding:12px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
-    background:#111; color:#fff; outline:none; font-size:14px;
-  }
-  /* Recorder block */
-  .rec-wrap{
-    background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
-    border:1px dashed rgba(255,255,255,.15); border-radius:14px; padding:16px;
-  }
-  .record-btn{
-    width:160px; height:160px; border-radius:999px; border:0; cursor:pointer;
-    background:
-      radial-gradient(closest-side, rgba(225,191,120,.25) 0%, rgba(225,191,120,0) 78%),
-      linear-gradient(180deg,#272727,#161616);
-    color:#fff; font-weight:800; font-size:15px; letter-spacing:.5px;
-    border:1px solid rgba(255,255,255,.15);
-    box-shadow:0 20px 60px rgba(0,0,0,.45), 0 0 0 6px rgba(225,191,120,.08) inset;
-    transition:.15s transform;
-  }
-  .record-btn:active{ transform:scale(.98) }
-  .rec-indicator{
-    width:10px; height:10px; background:#f34a4a; border-radius:50%;
-    box-shadow:0 0 12px rgba(243,74,74,.9);
-    display:inline-block; margin-right:8px; vertical-align:middle;
-    animation: pulse 1s infinite;
-  }
-  @keyframes pulse{
-    0%{ transform:scale(1); opacity:1 }
-    50%{ transform:scale(1.3); opacity:.65 }
-    100%{ transform:scale(1); opacity:1 }
-  }
-  /* Player timeline */
-  .player{
-    display:flex; align-items:center; gap:12px; margin-top:14px;
-  }
-  .play-toggle{
-    width:46px; height:46px; border-radius:50%; border:1px solid rgba(255,255,255,.15);
-    background:#151515; color:#fff; font-weight:800; cursor:pointer;
-  }
-  .bar{
-    flex:1; height:10px; background:#0f0f0f; border-radius:999px; position:relative;
-    border:1px solid rgba(255,255,255,.1); overflow:hidden; cursor:pointer;
-  }
-  .bar .fill{
-    position:absolute; inset:0 100% 0 0; background:linear-gradient(90deg,var(--red),var(--blue),var(--green));
-    border-right:2px solid rgba(255,255,255,.5);
-  }
-  .time{font-size:12px; color:var(--muted); width:60px; text-align:right}
-  /* 2x2 photo grid */
-  .photo-grid{
-    display:grid; grid-template-columns:1fr 1fr; gap:12px;
-  }
-  .photo{
-    position:relative; padding-top:100%; background:#0f0f0f; border:1px solid rgba(255,255,255,.1); border-radius:12px; overflow:hidden;
-  }
-  .photo input{ position:absolute; inset:0; opacity:0; cursor:pointer }
-  .photo .hint{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:12px;
-  }
-  .photo img{
-    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  }
-  /* Swipe deck */
-  .deck{
-    position:relative; height:420px; border-radius:16px; overflow:hidden;
-    background:#0f0f10; border:1px solid rgba(255,255,255,.08);
-  }
-  .card{
-    position:absolute; inset:0; padding:18px; display:flex; flex-direction:column; justify-content:flex-end;
-    background:
-      radial-gradient(1200px 500px at 100% -10%, rgba(255,255,255,.06), transparent 70%),
-      linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
-    backdrop-filter: blur(2px);
-  }
-  .card h3{ margin:0 0 10px; font-size:20px; font-weight:800 }
-  .card .only-voice{ font-size:13px; color:var(--muted); margin-bottom:10px }
-  .swipe-actions{ display:flex; gap:10px; }
-  .like, .pass{
-    flex:1; padding:12px 14px; border-radius:10px; font-weight:800; border:1px solid rgba(255,255,255,.12);
-    cursor:pointer;
-  }
-  .pass{ background:#151515; color:#ddd }
-  .like{ background:linear-gradient(180deg,#f4d796,#bf9a55); color:#111; }
-  .match-modal{
-    position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.6); z-index:50;
-  }
-  .match-box{
-    width:min(520px,92vw); background:#121212; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:18px;
-    text-align:center;
-  }
-  .match-box h3{ margin:6px 0 8px; font-size:22px }
-  .match-box p{ margin:0 0 14px; color:#ddd }
-  /* Chat */
-  .chat{
-    height:420px; display:flex; flex-direction:column; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,.1);
-    background:#0f0f10;
-  }
-  .chat-log{
-    flex:1; overflow:auto; padding:14px; display:flex; flex-direction:column; gap:10px;
-  }
-  .bubble{
-    max-width:78%; padding:10px 12px; border-radius:12px; font-size:14px; line-height:1.35;
-  }
-  .me{ align-self:flex-end; background:#172015; border:1px solid rgba(225,191,120,.25) }
-  .them{ align-self:flex-start; background:#141414; border:1px solid rgba(255,255,255,.12) }
-  .bubble img{ max-width:220px; height:auto; border-radius:10px; display:block }
-  .bubble audio{ width:220px }
-  .composer{
-    display:flex; gap:8px; padding:10px; border-top:1px solid rgba(255,255,255,.08); background:#101010;
-  }
-  .composer input[type="text"]{
-    flex:1; background:#0f0f0f; border:1px solid rgba(255,255,255,.12)
-  }
-  .small{ font-size:12px; color:var(--muted) }
-  .tip{ color:var(--muted); font-size:12px; margin-top:6px }
+  label{font-size:12px;color:#e5e5e5;margin-bottom:6px;display:block}
+  input[type="text"],select{width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px;touch-action:manipulation}
+  .rec-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px}
+  .record-btn{width:160px;height:160px;border-radius:999px;border:1px solid rgba(255,255,255,.15);cursor:pointer;background:radial-gradient(closest-side, rgba(225,191,120,.25) 0%, rgba(225,191,120,0) 78%),linear-gradient(180deg,#272727,#161616);color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 6px rgba(225,191,120,.08) inset}
+  .rec-indicator{width:10px;height:10px;background:#f34a4a;border-radius:50%;box-shadow:0 0 12px rgba(243,74,74,.9);display:inline-block;margin-right:8px;vertical-align:middle;animation:pulse 1s infinite}
+  @keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.65}100%{transform:scale(1);opacity:1}}
+  .player{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .play-toggle{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:#151515;color:#fff;font-weight:800;cursor:pointer}
+  .bar{flex:1;height:10px;background:#0f0f0f;border-radius:999px;position:relative;border:1px solid rgba(255,255,255,.1);overflow:hidden;cursor:pointer}
+  .bar .fill{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--red),var(--blue),var(--green));border-right:2px solid rgba(255,255,255,.5)}
+  .time{font-size:12px;color:var(--muted);width:74px;text-align:right}
+  .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .photo{position:relative;padding-top:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+  .photo input{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2}
+  .photo .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;z-index:1}
+  .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+  .photo .overlay{position:absolute;left:8px;bottom:8px;display:flex;gap:6px;z-index:3}
+  .pill{padding:6px 9px;border-radius:999px;font-size:11px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(3px);cursor:pointer}
+  .pill:hover{background:rgba(0,0,0,.75)}
+  .deck{position:relative;height:420px;border-radius:16px;overflow:hidden;background:#0f0f10;border:1px solid rgba(255,255,255,.08)}
+  .card{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(1200px 500px at 100% -10%, rgba(255,255,255,.06), transparent 70%),linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01))}
+  .swipe-actions{display:flex;gap:10px}
+  .pass,.like{flex:1;padding:12px 14px;border-radius:10px;font-weight:800;border:1px solid rgba(255,255,255,.12);cursor:pointer}
+  .pass{background:#151515;color:#ddd}
+  .like{background:linear-gradient(180deg,#f4d796,#bf9a55);color:#111}
+  .match-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:50}
+  .match-box{width:min(520px,92vw);background:#121212;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:18px;text-align:center}
+  .chat{height:420px;display:flex;flex-direction:column;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#0f0f10}
+  .chat-log{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .bubble{max-width:78%;padding:10px 12px;border-radius:12px;font-size:14px;line-height:1.35}
+  .me{align-self:flex-end;background:#172015;border:1px solid rgba(225,191,120,.25)}
+  .them{align-self:flex-start;background:#141414;border:1px solid rgba(255,255,255,.12)}
+  .composer{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.08);background:#101010}
+  .composer input[type="text"]{flex:1;background:#0f0f0f;border:1px solid rgba(255,255,255,.12)}
+  .small{font-size:12px;color:var(--muted)}
+  .tip{color:var(--muted);font-size:12px;margin-top:6px}
 </style>
 </head>
 <body>
@@ -229,15 +92,12 @@
       <div class="grid cols-2">
         <div class="rec-wrap">
           <div class="row" style="align-items:center; justify-content:center; gap:18px; margin-bottom:12px">
-            <button class="record-btn" id="recordBtn">
-              <span id="recLabel">Start Recording</span>
-            </button>
+            <button class="record-btn" id="recordBtn"><span id="recLabel">Start Recording</span></button>
             <div>
               <div class="small">Tap once to start, tap again to stop. Keep it under 10s for best vibes.</div>
               <div class="tip">iOS/Safari supported. Works over HTTPS and requires microphone permission.</div>
             </div>
           </div>
-
           <div id="playerBlock" class="hidden">
             <div class="player">
               <button class="play-toggle" id="playToggle">▶</button>
@@ -251,7 +111,6 @@
             <audio id="audio" preload="metadata" class="hidden"></audio>
           </div>
         </div>
-
         <div class="rec-wrap">
           <strong>Great pickup lines are:</strong>
           <ul style="margin-top:8px; color:#ddd; line-height:1.5">
@@ -271,13 +130,41 @@
         <div>
           <label>Photos (2×2 grid)</label>
           <div class="photo-grid" id="photoGrid">
-            <!-- 4 slots -->
-            <div class="photo"><input type="file" accept="image/*" /><div class="hint">Tap to add</div></div>
-            <div class="photo"><input type="file" accept="image/*" /><div class="hint">Tap to add</div></div>
-            <div class="photo"><input type="file" accept="image/*" /><div class="hint">Tap to add</div></div>
-            <div class="photo"><input type="file" accept="image/*" /><div class="hint">Tap to add</div></div>
+            <!-- 4 clickable slots -->
+            <div class="photo" data-idx="0">
+              <input type="file" accept="image/*" />
+              <div class="hint">Tap to add</div>
+              <div class="overlay hidden">
+                <div class="pill change">Change</div>
+                <div class="pill remove">✕</div>
+              </div>
+            </div>
+            <div class="photo" data-idx="1">
+              <input type="file" accept="image/*" />
+              <div class="hint">Tap to add</div>
+              <div class="overlay hidden">
+                <div class="pill change">Change</div>
+                <div class="pill remove">✕</div>
+              </div>
+            </div>
+            <div class="photo" data-idx="2">
+              <input type="file" accept="image/*" />
+              <div class="hint">Tap to add</div>
+              <div class="overlay hidden">
+                <div class="pill change">Change</div>
+                <div class="pill remove">✕</div>
+              </div>
+            </div>
+            <div class="photo" data-idx="3">
+              <input type="file" accept="image/*" />
+              <div class="hint">Tap to add</div>
+              <div class="overlay hidden">
+                <div class="pill change">Change</div>
+                <div class="pill remove">✕</div>
+              </div>
+            </div>
           </div>
-          <div class="tip">Preview appears instantly so you know it worked.</div>
+          <div class="tip">Previews appear instantly. You can change or remove any photo.</div>
         </div>
         <div>
           <div class="grid cols-2">
@@ -297,50 +184,38 @@
               <label>Gender</label>
               <select id="gender">
                 <option value="" selected disabled>Choose</option>
-                <option>Man</option>
-                <option>Woman</option>
-                <option>Other</option>
+                <option>Man</option><option>Woman</option><option>Other</option>
               </select>
             </div>
             <div>
               <label>I’m into</label>
               <select id="into">
                 <option value="" selected disabled>Choose</option>
-                <option>Men</option>
-                <option>Women</option>
-                <option>Both</option>
+                <option>Men</option><option>Women</option><option>Both</option>
               </select>
             </div>
             <div>
               <label>Turn-on vocabulary</label>
               <select id="vocab">
-                <option>Prefer not to say</option>
-                <option>Babe</option>
-                <option>Baby</option>
-                <option>Sexy</option>
-                <option>Fucker</option>
-                <option>Brat</option>
-                <option>Good girl</option>
-                <option>Good boy</option>
-                <option>Slave</option>
-                <option>Goddess</option>
-                <option>Master</option>
+                <option>Prefer not to say</option><option>Babe</option><option>Baby</option><option>Sexy</option>
+                <option>Fucker</option><option>Brat</option><option>Good girl</option><option>Good boy</option>
+                <option>Slave</option><option>Goddess</option><option>Master</option>
               </select>
             </div>
             <div>
               <label>My type (looks)</label>
               <select id="looks">
-                <option>Prefer not to say</option>
-                <option>Tall</option><option>Short</option><option>Thin</option><option>Curvy</option><option>Muscular</option>
-                <option>Tan</option><option>Pale</option><option>Blonde</option><option>Brunette</option><option>Redhead</option>
-                <option>Latin</option><option>Asian</option><option>Black</option><option>Jewish</option><option>Arab</option><option>Indian</option>
+                <option>Prefer not to say</option><option>Tall</option><option>Short</option><option>Thin</option><option>Curvy</option>
+                <option>Muscular</option><option>Tan</option><option>Pale</option><option>Blonde</option><option>Brunette</option>
+                <option>Redhead</option><option>Latin</option><option>Asian</option><option>Black</option><option>Jewish</option>
+                <option>Arab</option><option>Indian</option>
               </select>
             </div>
             <div>
               <label>My type (personality)</label>
               <select id="personality">
-                <option>Prefer not to say</option>
-                <option>Funny</option><option>Smart</option><option>Playful</option><option>Bold</option><option>Chill</option><option>Talkative</option><option>Shy</option>
+                <option>Prefer not to say</option><option>Funny</option><option>Smart</option><option>Playful</option>
+                <option>Bold</option><option>Chill</option><option>Talkative</option><option>Shy</option>
               </select>
             </div>
           </div>
@@ -353,16 +228,14 @@
       </div>
     </section>
 
-    <!-- STEP 3: SWIPE -->
+    <!-- STEP 3: SWIPE (demo deck kept) -->
     <section class="panel hidden" id="step3">
       <h2>Step 3 — Swipe pickup lines</h2>
-      <div class="deck" id="deck">
-        <!-- cards injected here -->
-      </div>
+      <div class="deck" id="deck"></div>
       <div class="tip">Only the voice line shows here. Profiles unlock after a mutual like.</div>
     </section>
 
-    <!-- STEP 4: CHAT -->
+    <!-- STEP 4: CHAT (local demo) -->
     <section class="panel hidden" id="step4">
       <h2>Private Chat</h2>
       <div class="chat" id="chat">
@@ -394,396 +267,392 @@
   </div>
 </div>
 
-<script>
-/* ===== UTILITIES ===== */
-const $ = sel => document.querySelector(sel);
-const $$ = sel => Array.from(document.querySelectorAll(sel));
-const stepper = $('#stepper').children;
-function go(stepIdx){
-  // stepIdx: 0..3
-  ['#step1','#step2','#step3','#step4'].forEach((id,i)=>{
-    const el = $(id);
-    if(i===stepIdx){ el.classList.remove('hidden'); stepper[i].classList.add('active'); }
-    else { el.classList.add('hidden'); stepper[i].classList.remove('active'); }
-  });
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+<!-- Firebase + App logic -->
+<script type="module">
+  /***** FIREBASE IMPORTS *****/
+  import { app, db } from './firebase-config.js'; // <- keep your file as provided
+  import {
+    getAuth, signInAnonymously, onAuthStateChanged
+  } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+  import {
+    getStorage, ref as sRef, uploadBytes, getDownloadURL
+  } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js';
+  import {
+    ref as rRef, set, serverTimestamp
+  } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
 
-/* ====== STEP 1: RECORDING ====== */
-let mediaRecorder, recChunks = [], recBlob=null, recUrl=null, recStream=null, recMime='';
-let recording=false;
-const recordBtn = $('#recordBtn');
-const recLabel  = $('#recLabel');
-const audioEl   = $('#audio');
-const playerBlock = $('#playerBlock');
-const playToggle = $('#playToggle');
-const seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
-const toProfileBtn = $('#toProfileBtn');
-const retakeBtn = $('#retakeBtn');
+  const auth = getAuth(app);
+  const storage = getStorage(app);
 
-function supportedMime(){
-  const candidates = ['audio/webm;codecs=opus','audio/mp4;codecs=aac','audio/webm','audio/ogg;codecs=opus','audio/mp4','audio/aac'];
-  for(const t of candidates){
-    if(window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) return t;
+  // Auto sign-in (required by your Storage/DB rules)
+  let currentUser = null;
+  try{ await signInAnonymously(auth); }catch(e){ console.error('Anon sign-in failed', e); }
+  onAuthStateChanged(auth, u => { currentUser = u || null; });
+
+  /***** UTIL + NAV *****/
+  const $ = sel => document.querySelector(sel);
+  const stepper = $('#stepper').children;
+  function go(idx){
+    ['#step1','#step2','#step3','#step4'].forEach((id,i)=>{
+      const el = document.querySelector(id);
+      if(i===idx){ el.classList.remove('hidden'); stepper[i].classList.add('active'); }
+      else { el.classList.add('hidden'); stepper[i].classList.remove('active'); }
+    });
+    window.scrollTo({top:0,behavior:'smooth'});
   }
-  return '';
-}
-
-async function startRecording(){
-  try{
-    recMime = supportedMime();
-    recStream = await navigator.mediaDevices.getUserMedia({audio:true});
-    mediaRecorder = new MediaRecorder(recStream, recMime ? {mimeType:recMime} : undefined);
-    recChunks = [];
-    mediaRecorder.ondataavailable = e => { if(e.data && e.data.size) recChunks.push(e.data) };
-    mediaRecorder.onstop = () => {
-      recBlob = new Blob(recChunks, { type: recMime || 'audio/webm' });
-      if(recUrl) URL.revokeObjectURL(recUrl);
-      recUrl = URL.createObjectURL(recBlob);
-      audioEl.src = recUrl;
-      playerBlock.classList.remove('hidden');
-      updateTime(0, audioEl.duration || 0);
-    };
-    mediaRecorder.start();
-    recording = true;
-    recLabel.innerHTML = '<span class="rec-indicator"></span> Recording…';
-  }catch(err){
-    alert('Microphone access failed. Please allow mic permission and use HTTPS.');
-    console.error(err);
-  }
-}
-
-function stopRecording(){
-  if(mediaRecorder && recording){
-    mediaRecorder.stop();
-    recStream && recStream.getTracks().forEach(t=>t.stop());
-    recording=false;
-    recLabel.textContent='Start Recording';
-  }
-}
-
-recordBtn.addEventListener('click', ()=>{
-  if(!recording){ startRecording(); }
-  else{ stopRecording(); }
-});
-
-playToggle.addEventListener('click', ()=>{
-  if(audioEl.paused){ audioEl.play(); playToggle.textContent='⏸'; }
-  else{ audioEl.pause(); playToggle.textContent='▶'; }
-});
-audioEl.addEventListener('pause', ()=> playToggle.textContent='▶');
-audioEl.addEventListener('play', ()=> playToggle.textContent='⏸');
-audioEl.addEventListener('timeupdate', ()=>{
-  const d = audioEl.duration || 0, c = audioEl.currentTime || 0;
-  const pct = d ? (c/d)*100 : 0;
-  fill.style.inset = `0 ${100-pct}% 0 0`;
-  updateTime(c,d);
-});
-seekBar.addEventListener('click', (e)=>{
-  const rect = seekBar.getBoundingClientRect();
-  const x = (e.clientX - rect.left)/rect.width;
-  if(audioEl.duration) audioEl.currentTime = x * audioEl.duration;
-});
-function updateTime(c,d){
-  time.textContent = `${fmt(c)} / ${d?fmt(d):'0:00'}`;
-}
-function fmt(s){ s = Math.floor(s); const m=Math.floor(s/60), r = s%60; return `${m}:${r.toString().padStart(2,'0')}`; }
-
-retakeBtn.addEventListener('click', ()=>{
-  // reset
-  if(!audioEl.paused) audioEl.pause();
-  playerBlock.classList.add('hidden');
-  recBlob = null; recUrl && URL.revokeObjectURL(recUrl); recUrl=null;
-});
-
-toProfileBtn.addEventListener('click', ()=>{
-  if(!recBlob){ alert('Record your pickup line first.'); return; }
-  go(1);
-});
-
-/* ====== STEP 2: PROFILE BUILDER ====== */
-const ageSel = $('#age'), heightSel = $('#height');
-(function buildAge(){
-  const frag=document.createDocumentFragment();
-  const ph = document.createElement('option'); ph.value=''; ph.textContent='Choose'; ph.disabled=true; ph.selected=true;
-  frag.appendChild(ph);
-  for(let a=18;a<=99;a++){
-    const o=document.createElement('option'); o.textContent=a; frag.appendChild(o);
-  }
-  ageSel.appendChild(frag);
-})();
-(function buildHeight(){
-  const frag=document.createDocumentFragment();
-  const o1=document.createElement('option'); o1.textContent='Under 5 feet'; frag.appendChild(o1);
-  // 5'0" to 7'0"
-  for(let feet=5; feet<=7; feet++){
-    for(let inch=0; inch<12; inch++){
-      const label = `${feet}’${inch}”`;
-      const opt=document.createElement('option'); opt.textContent=label; frag.appendChild(opt);
-    }
-  }
-  const o2=document.createElement('option'); o2.textContent='Over 7 feet'; frag.appendChild(o2);
-  heightSel.appendChild(frag);
-})();
-
-$('#backToRecorder').addEventListener('click', ()=> go(0));
-
-const photoGrid = $('#photoGrid');
-photoGrid.querySelectorAll('input[type="file"]').forEach(input=>{
-  input.addEventListener('change', ()=>{
-    const file = input.files && input.files[0];
-    const box = input.parentElement;
-    if(file){
-      const img = box.querySelector('img') || document.createElement('img');
-      box.querySelector('.hint')?.remove();
-      const reader = new FileReader();
-      reader.onload = e => { img.src = e.target.result; box.appendChild(img); };
-      reader.readAsDataURL(file);
-    }
-  });
-});
-
-const profile = {}; // local demo
-$('#saveProfile').addEventListener('click', ()=>{
-  const required = {
-    name: $('#name').value.trim(),
-    age: $('#age').value,
-    gender: $('#gender').value,
-    into: $('#into').value
-  };
-  if(!required.name || !required.age || !required.gender || !required.into){
-    alert('Please complete Name, Age, Gender, and I’m into.');
-    return;
-  }
-  profile.name = required.name;
-  profile.age  = required.age;
-  profile.height = $('#height').value || '';
-  profile.gender = required.gender;
-  profile.into = required.into;
-  profile.vocab = $('#vocab').value || 'Prefer not to say';
-  profile.looks = $('#looks').value || 'Prefer not to say';
-  profile.personality = $('#personality').value || 'Prefer not to say';
-  // Save to localStorage for demo
-  localStorage.setItem('ll_user_profile', JSON.stringify(profile));
-  // keep audio blob url in memory for now
-  go(2);
-  initDeck();
-});
-
-/* ====== STEP 3: SWIPE ====== */
-// For demo, we generate short “audio beeps” so the experience works instantly.
-const demoPeople = [
-  { id:'p1', name:'Ari', age:27, gender:'Woman', into:'Men', looks:'Brunette', personality:'Playful', line:'If we match, I call dibs on the first story.' },
-  { id:'p2', name:'Jules', age:31, gender:'Man', into:'Women', looks:'Tall', personality:'Bold', line:'Are you my algorithm? Because you just solved something.' },
-  { id:'p3', name:'Rowan', age:24, gender:'Other', into:'Both', looks:'Curvy', personality:'Smart', line:'Tell me your hot take. I’ll bring the popcorn.' },
-  { id:'p4', name:'Kai', age:29, gender:'Man', into:'Both', looks:'Muscular', personality:'Chill', line:'Two truths and a drink? I’ll start.' },
-  { id:'p5', name:'Sage', age:26, gender:'Woman', into:'Men', looks:'Blonde', personality:'Funny', line:'I’m collecting meet-cute stories. Want to be chapter one?' },
-];
-// Minimal WAV encoder so we can create quick beeps
-async function makeBeepWav(seconds=1, freq=660){
-  const rate=44100, frames=rate*seconds, amp=0.2;
-  const buffer=new Float32Array(frames);
-  for(let i=0;i<frames;i++) buffer[i]=Math.sin(2*Math.PI*freq*(i/rate))*amp;
-  return pcm16ToWav(buffer, rate);
-}
-function pcm16ToWav(float32, sampleRate){
-  const bytesPerSample=2;
-  const blockAlign=bytesPerSample*1;
-  const buffer=new ArrayBuffer(44 + float32.length*2);
-  const view=new DataView(buffer);
-  let offset=0; function wstr(s){ for(let i=0;i<s.length;i++) view.setUint8(offset++, s.charCodeAt(i)); }
-  function wint16(v){ view.setInt16(offset, v, true); offset+=2; }
-  function wuint16(v){ view.setUint16(offset, v, true); offset+=2; }
-  function wuint32(v){ view.setUint32(offset, v, true); offset+=4; }
-  wstr('RIFF'); wuint32(36 + float32.length*2); wstr('WAVE');
-  wstr('fmt '); wuint32(16); wuint16(1); wuint16(1); wuint32(sampleRate); wuint32(sampleRate*blockAlign); wuint16(blockAlign); wuint16(16);
-  wstr('data'); wuint32(float32.length*2);
-  for(let i=0;i<float32.length;i++){
-    let s=Math.max(-1, Math.min(1, float32[i]));
-    wint16(s<0 ? s*0x8000 : s*0x7FFF);
-  }
-  return new Blob([buffer], {type:'audio/wav'});
-}
-
-let deck=[], deckIdx=0;
-async function initDeck(){
-  deck = demoPeople.map((p,i)=>({
-    ...p,
-    // lightweight audible cue
-    audioBlob: null,
-    audioUrl: null
-  }));
-  // generate audio beeps (asynchronous but fast)
-  for(const p of deck){
-    p.audioBlob = await makeBeepWav(.9, 520 + Math.floor(Math.random()*260));
-    p.audioUrl = URL.createObjectURL(p.audioBlob);
-  }
-  renderCard();
-}
-
-function renderCard(){
-  const container = $('#deck');
-  container.innerHTML='';
-  if(deckIdx>=deck.length){
-    const empty = document.createElement('div');
-    empty.className='card';
-    empty.innerHTML = `<h3>That’s all for now</h3><div class="only-voice">New pickup lines appear as more people join.</div>
-      <div class="row"><button class="btn gold" onclick="deckIdx=0; renderCard()">Replay demo</button></div>`;
-    container.appendChild(empty);
-    return;
-  }
-  const p = deck[deckIdx];
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <div class="only-voice">🎧 Voice only. Profiles unlock on a match.</div>
-    <div class="rec-wrap">
-      <div class="player">
-        <button class="play-toggle">▶</button>
-        <div class="bar"><div class="fill"></div></div>
-        <div class="time">0:00</div>
-      </div>
-      <div class="tip" style="margin-top:8px">Transcript: “${p.line}”</div>
-      <audio preload="metadata" class="hidden"></audio>
-    </div>
-    <div class="spacer"></div>
-    <div class="swipe-actions">
-      <button class="pass">Pass</button>
-      <button class="like">Like</button>
-    </div>
-  `;
-  container.appendChild(card);
-
-  const audio = card.querySelector('audio'); audio.src = p.audioUrl;
-  const playBtn = card.querySelector('.play-toggle');
-  const bar = card.querySelector('.bar'), fill = card.querySelector('.fill'), tm = card.querySelector('.time');
-
-  playBtn.addEventListener('click', ()=>{ if(audio.paused){ audio.play(); playBtn.textContent='⏸'; } else { audio.pause(); playBtn.textContent='▶'; } });
-  audio.addEventListener('pause', ()=> playBtn.textContent='▶');
-  audio.addEventListener('play', ()=> playBtn.textContent='⏸');
-  audio.addEventListener('timeupdate', ()=>{
-    const d=audio.duration||0, c=audio.currentTime||0, pct=d?(c/d)*100:0;
-    fill.style.inset=`0 ${100-pct}% 0 0`;
-    tm.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`;
-  });
-  bar.addEventListener('click', (e)=>{
-    const r = bar.getBoundingClientRect(); const x = (e.clientX - r.left)/r.width;
-    if(audio.duration) audio.currentTime = x*audio.duration;
+  Array.from(stepper).forEach((pill, idx)=>{
+    pill.style.cursor='pointer';
+    pill.addEventListener('click', ()=>{
+      if(idx===1 && !window.__recBlob){ alert('Record your pickup line first.'); return; }
+      if(idx===2 && !localStorage.getItem('ll_user_profile')){ /* allowed – user might go to swipe without save */ }
+      if(idx===3 && !localStorage.getItem('ll_user_profile')){ alert('Open a match from the swipe deck.'); return; }
+      go(idx);
+      if(idx===2 && !window.__deckInit){ initDeck(); }
+    });
   });
 
-  // actions
-  card.querySelector('.pass').addEventListener('click', ()=>{
-    audio.pause(); deckIdx++; renderCard();
-  });
-  card.querySelector('.like').addEventListener('click', ()=>{
-    audio.pause();
-    // 50% chance they liked you back (demo)
-    const matched = Math.random() < 0.5;
-    if(matched){
-      showMatch(p);
-    }else{
-      deckIdx++; renderCard();
-    }
-  });
-}
+  /***** RECORDING *****/
+  const recordBtn = $('#recordBtn'), recLabel = $('#recLabel');
+  const audioEl = $('#audio'), playerBlock = $('#playerBlock');
+  const playToggle = $('#playToggle'), seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
+  const toProfileBtn = $('#toProfileBtn'), retakeBtn = $('#retakeBtn');
 
-function showMatch(person){
-  const m = $('#matchModal'), box = $('#matchProfile');
-  const details = [
-    ['Name', person.name],
-    ['Age', person.age],
-    ['Gender', person.gender],
-    ['I’m into', person.into],
-    ['Looks', person.looks],
-    ['Personality', person.personality]
-  ].map(([k,v])=>`<div><strong>${k}:</strong> ${v}</div>`).join('');
-  box.innerHTML = details;
-  m.style.display='flex';
-
-  $('#closeMatch').onclick = ()=>{ m.style.display='none'; deckIdx++; renderCard(); };
-  $('#openChat').onclick = ()=>{
-    m.style.display='none';
-    go(3);
-    // seed chat with a playful opener
-    pushBubble('them', `Loved your line. Now that we matched, hi—I’m ${person.name}.`);
-  };
-}
-
-/* ====== STEP 4: CHAT ====== */
-const chatLog = $('#chatLog');
-function pushBubble(who, content, type='text'){
-  const b = document.createElement('div'); b.className = `bubble ${who}`;
-  if(type==='text'){ b.textContent = content; }
-  if(type==='image'){
-    const img = document.createElement('img'); img.src = content; b.appendChild(img);
+  function supportedMime(){
+    const c = ['audio/webm;codecs=opus','audio/mp4;codecs=aac','audio/webm','audio/ogg;codecs=opus','audio/mp4','audio/aac'];
+    for(const t of c){ if(window.MediaRecorder?.isTypeSupported?.(t)) return t; }
+    return '';
   }
-  if(type==='audio'){
-    const a = document.createElement('audio'); a.controls=true; a.src=content; b.appendChild(a);
-  }
-  chatLog.appendChild(b);
-  chatLog.scrollTop = chatLog.scrollHeight;
-}
 
-$('#chatSendBtn').addEventListener('click', ()=>{
-  const val = $('#chatInput').value.trim();
-  if(!val) return;
-  pushBubble('me', val, 'text');
-  $('#chatInput').value='';
-  // demo auto-reply
-  setTimeout(()=> pushBubble('them','Your voice has main-character energy.'), 1200);
-});
+  let mediaRecorder, recChunks=[], recStream=null, recMime='', recording=false;
+  window.__recBlob = null; // pickup line blob
 
-$('#chatPhotoBtn').addEventListener('click', ()=> $('#chatPhoto').click());
-$('#chatPhoto').addEventListener('change', ()=>{
-  const f = $('#chatPhoto').files?.[0]; if(!f) return;
-  const r = new FileReader(); r.onload = e=> pushBubble('me', e.target.result, 'image'); r.readAsDataURL(f);
-});
-
-let chatRec=null, chatChunks=[], chatUrl=null, chatStream=null, chatMime='';
-$('#chatVoiceBtn').addEventListener('click', async ()=>{
-  const btn = $('#chatVoiceBtn');
-  if(!chatRec){
+  async function startRecording(){
     try{
-      chatMime = supportedMime();
-      chatStream = await navigator.mediaDevices.getUserMedia({audio:true});
-      chatRec = new MediaRecorder(chatStream, chatMime?{mimeType:chatMime}:undefined);
-      chatChunks = [];
-      chatRec.ondataavailable = e=>{ if(e.data && e.data.size) chatChunks.push(e.data); }
-      chatRec.onstop = ()=>{
-        const blob = new Blob(chatChunks, {type: chatMime || 'audio/webm'});
-        chatUrl && URL.revokeObjectURL(chatUrl);
-        chatUrl = URL.createObjectURL(blob);
-        pushBubble('me', chatUrl, 'audio');
-        setTimeout(()=> pushBubble('them','🗣️ Sending you one back.'), 900);
+      recMime = supportedMime();
+      recStream = await navigator.mediaDevices.getUserMedia({audio:true});
+      mediaRecorder = new MediaRecorder(recStream, recMime?{mimeType:recMime}:undefined);
+      recChunks = [];
+      mediaRecorder.ondataavailable = e => { if(e.data?.size) recChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        window.__recBlob = new Blob(recChunks, { type: recMime || 'audio/webm' });
+        const url = URL.createObjectURL(window.__recBlob);
+        audioEl.src = url;
+        playerBlock.classList.remove('hidden');
+        updateTime(0, audioEl.duration || 0);
       };
-      chatRec.start();
-      btn.textContent='⏹️';
-    }catch(e){
-      alert('Mic access needed to record a voice memo.');
-      console.error(e);
-      chatRec=null; chatStream && chatStream.getTracks().forEach(t=>t.stop());
+      mediaRecorder.start();
+      recording=true;
+      recLabel.innerHTML='<span class="rec-indicator"></span> Recording…';
+    }catch(err){
+      alert('Microphone access failed. Please allow mic permission and use HTTPS.');
+      console.error(err);
     }
-  }else{
-    chatRec.stop(); chatStream && chatStream.getTracks().forEach(t=>t.stop());
-    chatRec=null; $('#chatVoiceBtn').textContent='🎙️';
   }
-});
+  function stopRecording(){
+    if(mediaRecorder && recording){
+      mediaRecorder.stop();
+      recStream && recStream.getTracks().forEach(t=>t.stop());
+      recording=false; recLabel.textContent='Start Recording';
+    }
+  }
+  recordBtn.addEventListener('click', ()=> recording ? stopRecording() : startRecording());
 
-/* ====== NAV FROM STEP 1 → 2 ALSO ON STEPPER CLICK (optional UX) ====== */
-Array.from(stepper).forEach((pill, idx)=>{
-  pill.style.cursor='pointer';
-  pill.addEventListener('click', ()=>{
-    // simple guardrails
-    if(idx===1 && !recBlob){ alert('Record your pickup line first.'); return; }
-    if(idx===2 && !localStorage.getItem('ll_user_profile')){ alert('Save your profile first.'); return; }
-    if(idx===3 && !localStorage.getItem('ll_user_profile')){ alert('Open a match from the swipe deck.'); return; }
-    go(idx);
-    if(idx===2 && !deck.length) initDeck();
+  function fmt(s){ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; }
+  function updateTime(c,d){ time.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`; }
+  playToggle.addEventListener('click', ()=>{ if(audioEl.paused){ audioEl.play(); playToggle.textContent='⏸'; } else { audioEl.pause(); playToggle.textContent='▶'; }});
+  audioEl.addEventListener('pause', ()=> playToggle.textContent='▶');
+  audioEl.addEventListener('play', ()=> playToggle.textContent='⏸');
+  audioEl.addEventListener('timeupdate', ()=>{
+    const d=audioEl.duration||0, c=audioEl.currentTime||0, pct=d?(c/d)*100:0;
+    fill.style.inset=`0 ${100-pct}% 0 0`;
+    updateTime(c,d);
   });
-});
+  seekBar.addEventListener('click',(e)=>{ const r=seekBar.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width; if(audioEl.duration) audioEl.currentTime=x*audioEl.duration; });
+  retakeBtn.addEventListener('click', ()=>{ if(!audioEl.paused) audioEl.pause(); playerBlock.classList.add('hidden'); window.__recBlob=null; audioEl.removeAttribute('src'); });
 
-/* Default to step 0 */
-go(0);
+  toProfileBtn.addEventListener('click', ()=>{ if(!window.__recBlob){ alert('Record your pickup line first.'); return; } go(1); });
+
+  /***** PROFILE BUILDER *****/
+  const ageSel = $('#age'), heightSel = $('#height');
+  (function buildAge(){
+    const frag=document.createDocumentFragment(); const ph=document.createElement('option');
+    ph.value=''; ph.textContent='Choose'; ph.disabled=true; ph.selected=true; frag.appendChild(ph);
+    for(let a=18;a<=99;a++){ const o=document.createElement('option'); o.textContent=a; frag.appendChild(o); }
+    ageSel.appendChild(frag);
+  })();
+  (function buildHeight(){
+    const frag=document.createDocumentFragment();
+    const u=document.createElement('option'); u.textContent='Under 5 feet'; frag.appendChild(u);
+    for(let f=5; f<=7; f++){ for(let i=0;i<12;i++){ const o=document.createElement('option'); o.textContent=`${f}’${i}”`; frag.appendChild(o); } }
+    const o7=document.createElement('option'); o7.textContent='Over 7 feet'; frag.appendChild(o7);
+    heightSel.appendChild(frag);
+  })();
+
+  // iOS first-tap picker fix
+  const selectIds = ['#age','#height','#gender','#into','#vocab','#looks','#personality'];
+  selectIds.forEach(id=>{
+    const el = document.querySelector(id);
+    el.addEventListener('pointerdown', (e)=>{
+      if(typeof el.showPicker === 'function'){ el.showPicker(); e.preventDefault(); }
+    }, {passive:false});
+  });
+
+  $('#backToRecorder').addEventListener('click', ()=> go(0));
+
+  // Photo grid state
+  const photoGrid = $('#photoGrid');
+  const photoFiles = [null,null,null,null]; // File objects per slot
+
+  // Make whole tile reliably clickable on iOS (no double-tap)
+  photoGrid.querySelectorAll('.photo').forEach(tile=>{
+    const input = tile.querySelector('input[type="file"]');
+    const overlay = tile.querySelector('.overlay');
+    const idx = +tile.dataset.idx;
+
+    // click tile to open picker
+    tile.addEventListener('click', (e)=>{
+      // if clicking overlay buttons, ignore
+      if(e.target.classList.contains('change') || e.target.classList.contains('remove')) return;
+      if(input){ input.click(); }
+    });
+
+    // also open picker on first touch
+    tile.addEventListener('pointerdown', (e)=>{
+      if(e.pointerType==='touch' && e.target===tile && input){ input.click(); e.preventDefault(); }
+    }, {passive:false});
+
+    // change handler → preview & controls
+    input.addEventListener('change', ()=>{
+      const file = input.files?.[0];
+      if(!file) return;
+      photoFiles[idx] = file;
+      const img = tile.querySelector('img') || document.createElement('img');
+      tile.querySelector('.hint')?.remove();
+      const reader = new FileReader();
+      reader.onload = e => { img.src = e.target.result; tile.appendChild(img); overlay.classList.remove('hidden'); };
+      reader.readAsDataURL(file);
+    });
+
+    // overlay controls
+    overlay.querySelector('.change').addEventListener('click', (e)=>{ e.stopPropagation(); input.click(); });
+    overlay.querySelector('.remove').addEventListener('click', (e)=>{
+      e.stopPropagation();
+      photoFiles[idx] = null;
+      input.value = '';
+      tile.querySelector('img')?.remove();
+      overlay.classList.add('hidden');
+      if(!tile.querySelector('.hint')){
+        const h=document.createElement('div'); h.className='hint'; h.textContent='Tap to add'; tile.appendChild(h);
+      }
+    });
+  });
+
+  // Save profile → upload audio+photos → DB
+  const profile = {};
+  $('#saveProfile').addEventListener('click', async ()=>{
+    if(!currentUser){ alert('Please wait, connecting…'); return; }
+    if(!window.__recBlob){ alert('Record your pickup line first.'); return; }
+
+    const required = {
+      name: $('#name').value.trim(), age: $('#age').value, gender: $('#gender').value, into: $('#into').value
+    };
+    if(!required.name || !required.age || !required.gender || !required.into){
+      alert('Please complete Name, Age, Gender, and I’m into.');
+      return;
+    }
+
+    // minimal optimistic UI
+    const btn = $('#saveProfile'); const old = btn.textContent; btn.disabled=true; btn.textContent='Saving…';
+
+    try{
+      // 1) Upload pickup line
+      const ts = Date.now();
+      const audioPath = `lines/${currentUser.uid}/${ts}.webm`;
+      const audioRef = sRef(storage, audioPath);
+      await uploadBytes(audioRef, window.__recBlob, {contentType: window.__recBlob.type || 'audio/webm'});
+      const audioURL = await getDownloadURL(audioRef);
+
+      // 2) Upload photos (only selected)
+      const photoURLs = [];
+      for(let i=0;i<photoFiles.length;i++){
+        const f = photoFiles[i];
+        if(!f) { photoURLs.push(null); continue; }
+        const ext = (f.type && f.type.split('/')[1]) || 'jpg';
+        const imgRef = sRef(storage, `profiles/${currentUser.uid}/photo${i}.${ext}`);
+        await uploadBytes(imgRef, f, {contentType:f.type || 'image/jpeg'});
+        const url = await getDownloadURL(imgRef);
+        photoURLs.push(url);
+      }
+
+      // 3) Write profile to RTDB
+      const data = {
+        uid: currentUser.uid,
+        name: required.name,
+        age: required.age,
+        height: $('#height').value || '',
+        gender: required.gender,
+        into: required.into,
+        vocab: $('#vocab').value || 'Prefer not to say',
+        looks: $('#looks').value || 'Prefer not to say',
+        personality: $('#personality').value || 'Prefer not to say',
+        photos: photoURLs,
+        lineURL: audioURL,
+        ts: serverTimestamp()
+      };
+      await set(rRef(db, `profiles/${currentUser.uid}`), data);
+
+      localStorage.setItem('ll_user_profile', JSON.stringify(data));
+      // proceed to swipe
+      go(2);
+      initDeck();
+    }catch(err){
+      console.error(err);
+      alert('Save failed. Check internet / Firebase config and try again.');
+    }finally{
+      btn.disabled=false; btn.textContent=old;
+    }
+  });
+
+  /***** SWIPE DEMO (same as before) *****/
+  const demoPeople = [
+    { id:'p1', name:'Ari', age:27, gender:'Woman', into:'Men', looks:'Brunette', personality:'Playful', line:'If we match, I call dibs on the first story.' },
+    { id:'p2', name:'Jules', age:31, gender:'Man', into:'Women', looks:'Tall', personality:'Bold', line:'Are you my algorithm? Because you just solved something.' },
+    { id:'p3', name:'Rowan', age:24, gender:'Other', into:'Both', looks:'Curvy', personality:'Smart', line:'Tell me your hot take. I’ll bring the popcorn.' },
+    { id:'p4', name:'Kai', age:29, gender:'Man', into:'Both', looks:'Muscular', personality:'Chill', line:'Two truths and a drink? I’ll start.' },
+    { id:'p5', name:'Sage', age:26, gender:'Woman', into:'Men', looks:'Blonde', personality:'Funny', line:'I’m collecting meet-cute stories. Want to be chapter one?' },
+  ];
+  async function makeBeepWav(seconds=1, freq=660){
+    const rate=44100, frames=rate*seconds, amp=0.2;
+    const buffer=new Float32Array(frames);
+    for(let i=0;i<frames;i++) buffer[i]=Math.sin(2*Math.PI*freq*(i/rate))*amp;
+    return pcm16ToWav(buffer, rate);
+  }
+  function pcm16ToWav(float32, sampleRate){
+    const bytesPerSample=2, blockAlign=bytesPerSample*1;
+    const buf=new ArrayBuffer(44 + float32.length*2); const v=new DataView(buf);
+    let o=0; const wstr=s=>{ for(let i=0;i<s.length;i++) v.setUint8(o++, s.charCodeAt(i)); };
+    const wint16=x=>{ v.setInt16(o,x,true); o+=2; };
+    const wuint16=x=>{ v.setUint16(o,x,true); o+=2; };
+    const wuint32=x=>{ v.setUint32(o,x,true); o+=4; };
+    wstr('RIFF'); wuint32(36+float32.length*2); wstr('WAVE'); wstr('fmt '); wuint32(16); wuint16(1); wuint16(1);
+    wuint32(sampleRate); wuint32(sampleRate*blockAlign); wuint16(blockAlign); wuint16(16); wstr('data'); wuint32(float32.length*2);
+    for(let i=0;i<float32.length;i++){ let s=Math.max(-1,Math.min(1,float32[i])); wint16(s<0 ? s*0x8000 : s*0x7FFF); }
+    return new Blob([buf], {type:'audio/wav'});
+  }
+
+  let deck=[], deckIdx=0; window.__deckInit=false;
+  async function initDeck(){
+    window.__deckInit=true;
+    deck = await Promise.all(demoPeople.map(async p => {
+      const b = await makeBeepWav(.9, 520 + Math.floor(Math.random()*260));
+      return {...p, audioUrl: URL.createObjectURL(b)};
+    }));
+    renderCard();
+  }
+  function renderCard(){
+    const container = $('#deck'); container.innerHTML='';
+    if(deckIdx>=deck.length){
+      const empty = document.createElement('div');
+      empty.className='card';
+      empty.innerHTML = `<h3>That’s all for now</h3><div class="small">New pickup lines appear as more people join.</div>
+        <div class="row"><button class="btn gold" onclick="deckIdx=0; renderCard()">Replay demo</button></div>`;
+      container.appendChild(empty); return;
+    }
+    const p = deck[deckIdx];
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML = `
+      <div class="small">🎧 Voice only. Profiles unlock on a match.</div>
+      <div class="rec-wrap">
+        <div class="player">
+          <button class="play-toggle">▶</button>
+          <div class="bar"><div class="fill"></div></div>
+          <div class="time">0:00</div>
+        </div>
+        <div class="tip" style="margin-top:8px">Transcript: “${p.line}”</div>
+        <audio preload="metadata" class="hidden"></audio>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="pass">Pass</button>
+        <button class="like">Like</button>
+      </div>
+    `;
+    container.appendChild(card);
+    const audio = card.querySelector('audio'); audio.src=p.audioUrl;
+    const playBtn = card.querySelector('.play-toggle');
+    const bar = card.querySelector('.bar'), fill = card.querySelector('.fill'), tm = card.querySelector('.time');
+
+    const fmt = s=>{ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; };
+    playBtn.addEventListener('click', ()=>{ if(audio.paused){ audio.play(); playBtn.textContent='⏸'; } else { audio.pause(); playBtn.textContent='▶'; }});
+    audio.addEventListener('pause', ()=> playBtn.textContent='▶');
+    audio.addEventListener('play', ()=> playBtn.textContent='⏸');
+    audio.addEventListener('timeupdate', ()=>{
+      const d=audio.duration||0, c=audio.currentTime||0, pct=d?(c/d)*100:0;
+      fill.style.inset=`0 ${100-pct}% 0 0`; tm.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`;
+    });
+    bar.addEventListener('click',(e)=>{ const r=bar.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width; if(audio.duration) audio.currentTime=x*audio.duration; });
+
+    card.querySelector('.pass').addEventListener('click', ()=>{ audio.pause(); deckIdx++; renderCard(); });
+    card.querySelector('.like').addEventListener('click', ()=>{
+      audio.pause();
+      if(Math.random()<0.5){ showMatch(p); } else { deckIdx++; renderCard(); }
+    });
+  }
+  function showMatch(person){
+    const m = document.getElementById('matchModal'); const box = document.getElementById('matchProfile');
+    const details = [
+      ['Name', person.name],['Age', person.age],['Gender', person.gender],['I’m into', person.into],
+      ['Looks', person.looks],['Personality', person.personality]
+    ].map(([k,v])=>`<div><strong>${k}:</strong> ${v}</div>`).join('');
+    box.innerHTML = details; m.style.display='flex';
+    document.getElementById('closeMatch').onclick = ()=>{ m.style.display='none'; deckIdx++; renderCard(); };
+    document.getElementById('openChat').onclick = ()=>{ m.style.display='none'; go(3); pushBubble('them', `Loved your line. Now that we matched, hi—I’m ${person.name}.`); };
+  }
+
+  /***** CHAT DEMO *****/
+  const chatLog = document.getElementById('chatLog');
+  function pushBubble(who, content, type='text'){
+    const b=document.createElement('div'); b.className=`bubble ${who}`;
+    if(type==='text') b.textContent=content;
+    if(type==='image'){ const img=document.createElement('img'); img.src=content; b.appendChild(img); }
+    if(type==='audio'){ const a=document.createElement('audio'); a.controls=true; a.src=content; b.appendChild(a); }
+    chatLog.appendChild(b); chatLog.scrollTop=chatLog.scrollHeight;
+  }
+  document.getElementById('chatSendBtn').addEventListener('click', ()=>{
+    const input=document.getElementById('chatInput'); const val=input.value.trim(); if(!val) return;
+    pushBubble('me', val, 'text'); input.value='';
+    setTimeout(()=> pushBubble('them','Your voice has main-character energy.'), 1200);
+  });
+  document.getElementById('chatPhotoBtn').addEventListener('click', ()=> document.getElementById('chatPhoto').click());
+  document.getElementById('chatPhoto').addEventListener('change', ()=>{
+    const f = document.getElementById('chatPhoto').files?.[0]; if(!f) return;
+    const r=new FileReader(); r.onload=e=> pushBubble('me', e.target.result, 'image'); r.readAsDataURL(f);
+  });
+
+  // Simple voice memo in chat
+  let chatRec=null, chatChunks=[], chatStream=null, chatMime='';
+  document.getElementById('chatVoiceBtn').addEventListener('click', async (e)=>{
+    const btn = e.currentTarget;
+    if(!chatRec){
+      try{
+        chatMime = supportedMime();
+        chatStream = await navigator.mediaDevices.getUserMedia({audio:true});
+        chatRec = new MediaRecorder(chatStream, chatMime?{mimeType:chatMime}:undefined);
+        chatChunks = [];
+        chatRec.ondataavailable = ev => { if(ev.data?.size) chatChunks.push(ev.data); };
+        chatRec.onstop = ()=>{
+          const blob=new Blob(chatChunks,{type:chatMime||'audio/webm'});
+          const url=URL.createObjectURL(blob);
+          pushBubble('me', url, 'audio');
+        };
+        chatRec.start(); btn.textContent='⏹️';
+      }catch(err){ alert('Mic access needed.'); console.error(err); chatRec=null; chatStream?.getTracks().forEach(t=>t.stop()); }
+    }else{
+      chatRec.stop(); chatStream?.getTracks().forEach(t=>t.stop()); chatRec=null; btn.textContent='🎙️';
+    }
+  });
+
+  // Start on step 1
+  go(0);
 </script>
 </body>
 </html>
