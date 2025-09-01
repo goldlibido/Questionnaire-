@@ -39,18 +39,26 @@
   .bar .fill{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--red),var(--blue),var(--green));border-right:2px solid rgba(255,255,255,.5)}
   .time{font-size:12px;color:var(--muted);width:74px;text-align:right}
   .editor-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px;margin-top:16px}
-  .timeline{position:relative;height:180px;background:#0f0f0f;border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:hidden}
+  .timeline{position:relative;height:180px;background:#0f0f0f;border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:visible}
   .timeline canvas{width:100%;height:100%}
   .segments-container{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible}
-  .segment{position:absolute;height:30px;background:rgba(225,191,120,.2);border:1px solid var(--gold);cursor:move;opacity:0.7;top:calc(var(--layer) * 35px);transition:opacity .2s}
-  .segment:hover{opacity:1}
+  .segment{position:absolute;height:30px;background:rgba(225,191,120,.2);border:1px solid var(--gold);cursor:move;opacity:0.7;top:calc(var(--layer) * 35px);transition:opacity .2s, transform .2s}
+  .segment:hover{opacity:1; transform:scale(1.02)}
   .segment.effect{background:rgba(6,149,78,.2);border-color:var(--green)}
-  .segment .volume-control{position:absolute;top:-30px;left:0;width:100px;padding:4px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
+  .segment .volume-control{position:absolute;top:-60px;left:0;width:100px;padding:4px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
   .segment:hover .volume-control{display:block}
-  .segment .effect-banner{position:absolute;top:-50px;padding:4px 8px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:4px;font-size:10px;cursor:pointer}
-  .segment .effect-params{position:absolute;top:-80px;padding:8px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
+  .segment .effect-banner{position:absolute;top:-30px;padding:4px 8px;border-radius:4px;font-size:10px;cursor:pointer}
+  .segment .effect-banner.echo{background:var(--green);border:1px solid rgba(6,149,78,.5)}
+  .segment .effect-banner.pitchUp{background:var(--blue);border:1px solid rgba(6,149,94,.5)}
+  .segment .effect-params{position:absolute;top:-90px;padding:8px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
+  .segment .trim-left, .segment .trim-right{position:absolute;top:50%;width:12px;height:12px;border:2px solid var(--gold);border-width:0 2px 2px 0;transform:rotate(135deg);background:#151515;cursor:ew-resize}
+  .segment .trim-left{left:-6px;transform:rotate(-45deg)}
+  .segment .trim-right{right:-6px}
+  .segment .keyframe-marker{position:absolute;top:-30px;width:10px;height:10px;border:2px solid var(--gold);transform:rotate(45deg);background:#151515;cursor:pointer}
+  .segment .keyframe-params{position:absolute;top:-90px;padding:8px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
   .effects{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
   .effect-btn{padding:6px 10px;border-radius:999px;background:#151515;border:1px solid rgba(255,255,255,.15);cursor:grab;font-size:12px;color:#fff}
+  .effect-btn.active{background:var(--gold);color:#111}
   .effect-item{padding:6px;border-radius:8px;background:rgba(0,0,0,.5);cursor:grab;border:1px solid rgba(255,255,255,.2);margin:5px;position:relative}
   .effect-item .delete{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;border-radius:50%;width:15px;height:15px;line-height:15px;text-align:center;cursor:pointer;font-size:10px}
   .deck{position:relative;height:420px;border-radius:16px;overflow:hidden;background:#0f0f10;border:1px solid rgba(255,255,255,.08)}
@@ -70,7 +78,7 @@
   .composer input[type="text"]{flex:1;background:#0f0f0f;border:1px solid rgba(255,255,255,.12)}
   .small{font-size:12px;color:var(--muted)} .tip{color:var(--muted);font-size:12px;margin-top:6px}
   .param-row{display:flex;gap:8px;align-items:center;margin-top:8px}
-  .snap-line{position:absolute;top:0;bottom:0;width:1px;background:rgba(225,191,120,.5);display:none}
+  .snap-line{position:absolute;top:0;bottom:0;width:2px;background:rgba(225,191,120,.5);box-shadow:0 0 8px rgba(225,191,120,.8);display:none}
 </style>
 </head>
 <body>
@@ -125,8 +133,8 @@
             <div class="effects">
               <button class="effect-btn" data-effect="echo" draggable="true">Echo</button>
               <button class="effect-btn" data-effect="pitchUp" draggable="true">Pitch Up</button>
-              <button class="effect-btn" id="trimBtn">Trim Clip</button>
-              <button class="effect-btn" id="keyframeBtn">Add Keyframe</button>
+              <button class="effect-btn" data-effect="trim" draggable="true">Trim Clip</button>
+              <button class="effect-btn" data-effect="keyframe" draggable="true">Add Keyframe</button>
             </div>
             <div class="row" style="margin-top:10px">
               <button class="btn" id="recordSoundBtn">Record New Sound</button>
@@ -230,10 +238,8 @@
   const audioEl = $('#audio'), playerBlock = $('#playerBlock');
   const playToggle = $('#playToggle'), seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
   const retakeBtn = $('#retakeBtn'), saveEditBtn = $('#saveEditBtn');
-  const undoBtn = $('#undoBtn'), redoBtn = $('#redoBtn');
   const trimBtn = $('#trimBtn'), keyframeBtn = $('#keyframeBtn');
   let mediaRecorder, recChunks = [], recStream = null, recMime = '', recording = false;
-  let trimMode = false, keyframeMode = false;
   window.__recBlob = null;
 
   function supportedMime() {
@@ -303,10 +309,6 @@
     $('#effectsList').innerHTML = '';
     $('#segmentsContainer').innerHTML = '';
     timelineCanvas.getContext('2d').clearRect(0, 0, timelineCanvas.width, timelineCanvas.height);
-    trimMode = false;
-    keyframeMode = false;
-    trimBtn.classList.remove('active');
-    keyframeBtn.classList.remove('active');
   });
 
   /***** AUDIO EDITOR *****/
@@ -324,7 +326,7 @@
     const resp = await fetch(url);
     const arrayBuf = await resp.arrayBuffer();
     const buffer = await audioCtx.decodeAudioData(arrayBuf);
-    segments = [{id: segmentCounter++, start: 0, duration: buffer.duration, buffer, type: 'main', layer: 0, volume: 1.0, effects: [], keyframes: [{time: 0, volume: 1.0}]}];
+    segments = [{id: segmentCounter++, start: 0, duration: buffer.duration, buffer, type: 'main', layer: 2, volume: 1.0, effects: [], keyframes: [{time: 0, volume: 1.0}]}];
     pushHistory();
     updateSegmentsUI();
     drawWaveform();
@@ -333,15 +335,26 @@
 
   function pushHistory() {
     history = history.slice(0, historyIndex + 1);
-    history.push(JSON.parse(JSON.stringify(segments.map(s => ({...s, buffer: null})))));
+    history.push({
+      segments: JSON.parse(JSON.stringify(segments.map(s => ({...s, buffer: null})))),
+      sounds: JSON.parse(JSON.stringify(sounds.map(s => ({...s, buffer: null}))))
+    });
     historyIndex = history.length - 1;
   }
 
-  undoBtn.addEventListener('click', async () => {
+  $('#undoBtn').addEventListener('click', async () => {
     if (historyIndex <= 0) return;
     historyIndex--;
-    const targetState = JSON.parse(JSON.stringify(history[historyIndex]));
-    segments = await Promise.all(targetState.map(async s => {
+    const state = history[historyIndex];
+    sounds = await Promise.all(state.sounds.map(async s => {
+      if (s.url) {
+        const resp = await fetch(s.url);
+        const arrayBuf = await resp.arrayBuffer();
+        return {...s, buffer: await audioCtx.decodeAudioData(arrayBuf)};
+      }
+      return s;
+    }));
+    segments = await Promise.all(state.segments.map(async s => {
       if (s.type === 'main') {
         const mainSeg = segments.find(seg => seg.type === 'main') || {buffer: await audioCtx.decodeAudioData(await (await fetch(audioEl.src)).arrayBuffer())};
         return {...s, buffer: mainSeg.buffer};
@@ -353,13 +366,22 @@
     updateSegmentsUI();
     drawWaveform();
     updatePreview();
+    updateSoundsUI();
   });
 
-  redoBtn.addEventListener('click', async () => {
+  $('#redoBtn').addEventListener('click', async () => {
     if (historyIndex >= history.length - 1) return;
     historyIndex++;
-    const targetState = JSON.parse(JSON.stringify(history[historyIndex]));
-    segments = await Promise.all(targetState.map(async s => {
+    const state = history[historyIndex];
+    sounds = await Promise.all(state.sounds.map(async s => {
+      if (s.url) {
+        const resp = await fetch(s.url);
+        const arrayBuf = await resp.arrayBuffer();
+        return {...s, buffer: await audioCtx.decodeAudioData(arrayBuf)};
+      }
+      return s;
+    }));
+    segments = await Promise.all(state.segments.map(async s => {
       if (s.type === 'main') {
         const mainSeg = segments.find(seg => seg.type === 'main') || {buffer: await audioCtx.decodeAudioData(await (await fetch(audioEl.src)).arrayBuffer())};
         return {...s, buffer: mainSeg.buffer};
@@ -371,6 +393,7 @@
     updateSegmentsUI();
     drawWaveform();
     updatePreview();
+    updateSoundsUI();
   });
 
   function drawWaveform() {
@@ -432,13 +455,15 @@
       div.style.left = `${(seg.start / maxDuration) * 100}%`;
       div.style.width = `${(seg.duration / maxDuration) * 100}%`;
       div.style.setProperty('--layer', seg.layer);
+
       const volControl = document.createElement('div');
       volControl.className = 'volume-control';
       volControl.innerHTML = `<input type="range" min="0" max="1" step="0.01" value="${seg.volume}" class="volume-slider">`;
       div.appendChild(volControl);
+
       seg.effects.forEach(effect => {
         const banner = document.createElement('div');
-        banner.className = 'effect-banner';
+        banner.className = `effect-banner ${effect.type}`;
         banner.textContent = effect.type.charAt(0).toUpperCase() + effect.type.slice(1);
         banner.dataset.effectType = effect.type;
         const paramsDiv = document.createElement('div');
@@ -452,8 +477,18 @@
           paramsDiv.innerHTML = `
             <label>Amount:</label><input type="range" min="0.5" max="2" step="0.1" value="${effect.params.amount}" class="pitch-amount">
           `;
+        } else if (effect.type === 'trim') {
+          const trimLeft = document.createElement('div');
+          trimLeft.className = 'trim-left';
+          const trimRight = document.createElement('div');
+          trimRight.className = 'trim-right';
+          div.appendChild(trimLeft);
+          div.appendChild(trimRight);
+          makeTrimHandle(trimLeft, seg, 'left', maxDuration);
+          makeTrimHandle(trimRight, seg, 'right', maxDuration);
         }
-        banner.addEventListener('click', () => {
+        banner.addEventListener('click', e => {
+          e.stopPropagation();
           paramsDiv.style.display = paramsDiv.style.display === 'block' ? 'none' : 'block';
         });
         paramsDiv.querySelectorAll('input').forEach(input => {
@@ -478,16 +513,42 @@
         div.appendChild(banner);
         div.appendChild(paramsDiv);
       });
+
+      seg.keyframes.forEach((kf, idx) => {
+        if (idx === 0) return; // Skip first keyframe (default)
+        const marker = document.createElement('div');
+        marker.className = 'keyframe-marker';
+        marker.dataset.index = idx;
+        marker.style.left = `${((kf.time - seg.start) / seg.duration) * 100}%`;
+        const paramsDiv = document.createElement('div');
+        paramsDiv.className = 'keyframe-params';
+        paramsDiv.innerHTML = `
+          <label>Volume:</label><input type="range" min="0" max="1" step="0.01" value="${kf.volume}" class="keyframe-volume">
+          <button class="btn" style="padding:4px 8px;font-size:10px">Delete</button>
+        `;
+        marker.addEventListener('click', e => {
+          e.stopPropagation();
+          paramsDiv.style.display = paramsDiv.style.display === 'block' ? 'none' : 'block';
+        });
+        paramsDiv.querySelector('.keyframe-volume').addEventListener('input', () => {
+          seg.keyframes[idx].volume = parseFloat(paramsDiv.querySelector('.keyframe-volume').value);
+          updatePreview();
+          pushHistory();
+        });
+        paramsDiv.querySelector('button').addEventListener('click', () => {
+          seg.keyframes.splice(idx, 1);
+          updateSegmentsUI();
+          updatePreview();
+          pushHistory();
+        });
+        div.appendChild(marker);
+        div.appendChild(paramsDiv);
+      });
+
       container.appendChild(div);
       makeDraggable(div, maxDuration);
       volControl.querySelector('.volume-slider').addEventListener('input', e => {
-        if (keyframeMode) {
-          const time = seg.start + (seg.duration * (e.offsetX / div.offsetWidth));
-          seg.keyframes.push({time, volume: parseFloat(e.target.value)});
-          seg.keyframes.sort((a, b) => a.time - b.time);
-        } else {
-          seg.volume = parseFloat(e.target.value);
-        }
+        seg.volume = parseFloat(e.target.value);
         updatePreview();
         pushHistory();
       });
@@ -495,27 +556,26 @@
   }
 
   function makeDraggable(el, maxDuration) {
-    let startX, startLeft, startWidth, startLayer, resizeDir = null;
+    let startX, startLeft, startWidth, startLayer;
     el.addEventListener('mousedown', e => {
-      if (trimMode) {
-        if (e.offsetX < 10) resizeDir = 'left';
-        else if (e.offsetX > el.offsetWidth - 10) resizeDir = 'right';
-        else return;
-      } else if (keyframeMode) {
-        const seg = segments.find(s => s.id == el.dataset.id);
-        const time = seg.start + (seg.duration * (e.offsetX / el.offsetWidth));
-        seg.keyframes.push({time, volume: seg.volume});
-        seg.keyframes.sort((a, b) => a.time - b.time);
-        updatePreview();
-        pushHistory();
-        return;
-      } else {
-        resizeDir = e.offsetX < 10 ? 'left' : e.offsetX > el.offsetWidth - 10 ? 'right' : null;
-      }
+      if (e.target.classList.contains('effect-banner') || e.target.classList.contains('keyframe-marker') || e.target.classList.contains('trim-left') || e.target.classList.contains('trim-right')) return;
       startX = e.clientX;
       startLeft = parseFloat(el.style.left) || 0;
       startWidth = parseFloat(el.style.width) || 0;
       startLayer = parseInt(el.style.getPropertyValue('--layer')) || 0;
+      let lastX = startX;
+      function onMove(e) {
+        const deltaPct = ((e.clientX - startX) / timelineCanvas.offsetWidth) * 100;
+        el.style.left = `${Math.max(0, startLeft + deltaPct)}%`;
+        requestAnimationFrame(() => lastX = e.clientX);
+      }
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        updateSegmentFromUI(el);
+        drawWaveform();
+        pushHistory();
+      }
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
       el.addEventListener('contextmenu', e => {
@@ -523,28 +583,41 @@
         const seg = segments.find(s => s.id == el.dataset.id);
         seg.layer = (seg.layer + 1) % maxLayers;
         el.style.setProperty('--layer', seg.layer);
+        updateSegmentsUI();
         pushHistory();
       });
     });
-    function onMove(e) {
-      const deltaPct = ((e.clientX - startX) / timelineCanvas.offsetWidth) * 100;
-      if (resizeDir === 'left') {
-        const newLeft = Math.max(0, startLeft + deltaPct);
-        el.style.left = `${newLeft}%`;
-        el.style.width = `${startWidth - (newLeft - startLeft)}%`;
-      } else if (resizeDir === 'right') {
-        el.style.width = `${Math.max(0, startWidth + deltaPct)}%`;
-      } else {
-        el.style.left = `${Math.max(0, startLeft + deltaPct)}%`;
+  }
+
+  function makeTrimHandle(handle, seg, side, maxDuration) {
+    let startX, startLeft, startWidth;
+    handle.addEventListener('mousedown', e => {
+      e.stopPropagation();
+      startX = e.clientX;
+      startLeft = parseFloat(handle.parentElement.style.left) || 0;
+      startWidth = parseFloat(handle.parentElement.style.width) || 0;
+      let lastX = startX;
+      function onMove(e) {
+        const deltaPct = ((e.clientX - startX) / timelineCanvas.offsetWidth) * 100;
+        if (side === 'left') {
+          const newLeft = Math.max(0, startLeft + deltaPct);
+          handle.parentElement.style.left = `${newLeft}%`;
+          handle.parentElement.style.width = `${startWidth - (newLeft - startLeft)}%`;
+        } else {
+          handle.parentElement.style.width = `${Math.max(0, startWidth + deltaPct)}%`;
+        }
+        requestAnimationFrame(() => lastX = e.clientX);
       }
-    }
-    function onUp() {
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-      updateSegmentFromUI(el);
-      drawWaveform();
-      pushHistory();
-    }
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        updateSegmentFromUI(handle.parentElement);
+        drawWaveform();
+        pushHistory();
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
   }
 
   function updateSegmentFromUI(el) {
@@ -554,21 +627,28 @@
     const seg = segments.find(s => s.id == el.dataset.id);
     if (seg) {
       const oldDuration = seg.duration;
+      const oldStart = seg.start;
       seg.start = leftPct * maxDuration;
       seg.duration = widthPct * maxDuration;
-      if (resizeDir) {
-        const startSample = resizeDir === 'left' ? Math.round((oldDuration - seg.duration) * seg.buffer.sampleRate) : 0;
-        seg.buffer = sliceBuffer(seg.buffer, startSample, seg.duration * seg.buffer.sampleRate);
+      if (oldDuration !== seg.duration || oldStart !== seg.start) {
+        const startSample = seg.start > oldStart ? Math.round((seg.start - oldStart) * seg.buffer.sampleRate) : 0;
+        const endSample = Math.round(seg.duration * seg.buffer.sampleRate);
+        seg.buffer = sliceBuffer(seg.buffer, startSample, endSample);
         seg.keyframes = seg.keyframes.map(kf => ({
-          time: seg.start + (kf.time - seg.start) * (seg.duration / oldDuration),
+          time: seg.start + (kf.time - oldStart) * (seg.duration / oldDuration),
           volume: kf.volume
         }));
+        seg.buffer = seg.originalBuffer ? seg.originalBuffer : seg.buffer;
+        seg.originalBuffer = seg.buffer;
+        seg.buffer = applyEffectsToBuffer(seg);
       }
     }
     updatePreview();
   }
 
-  function sliceBuffer(buffer, startSample, durationSamples) {
+  function sliceBuffer(buffer, startSample, endSample) {
+    const durationSamples = endSample - startSample;
+    if (durationSamples <= 0) return buffer;
     const newBuffer = audioCtx.createBuffer(buffer.numberOfChannels, durationSamples, buffer.sampleRate);
     for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
       newBuffer.copyToChannel(buffer.getChannelData(ch).subarray(startSample, startSample + durationSamples), ch);
@@ -582,24 +662,12 @@
     });
   });
 
-  trimBtn.addEventListener('click', () => {
-    trimMode = !trimMode;
-    keyframeMode = false;
-    trimBtn.classList.toggle('active');
-    keyframeBtn.classList.remove('active');
-  });
-
-  keyframeBtn.addEventListener('click', () => {
-    keyframeMode = !keyframeMode;
-    trimMode = false;
-    keyframeBtn.classList.toggle('active');
-    trimBtn.classList.remove('active');
-  });
-
   async function applyEffectsToBuffer(seg) {
-    let buffer = seg.buffer;
+    let buffer = seg.originalBuffer || seg.buffer;
     for (const effect of seg.effects) {
-      buffer = await applyEffectToBuffer(buffer, effect.type, effect.params);
+      if (effect.type !== 'trim') {
+        buffer = await applyEffectToBuffer(buffer, effect.type, effect.params);
+      }
     }
     return buffer;
   }
@@ -639,6 +707,12 @@
     return await offlineCtx.startRendering();
   }
 
+  function updateSoundsUI() {
+    const list = $('#effectsList');
+    list.innerHTML = '';
+    sounds.forEach(s => addSoundUI(s.id, s.name));
+  }
+
   let soundRecorder, soundChunks = [], soundStream;
   $('#recordSoundBtn').addEventListener('click', async () => {
     if (!soundRecorder) {
@@ -654,8 +728,9 @@
           const arrayBuf = await resp.arrayBuffer();
           const buf = await audioCtx.decodeAudioData(arrayBuf);
           const id = soundCounter++;
-          sounds.push({id, name: `Sound ${id + 1}`, buffer: buf});
+          sounds.push({id, name: `Sound ${id + 1}`, buffer: buf, url});
           addSoundUI(id, `Sound ${id + 1}`);
+          pushHistory();
         };
         soundRecorder.start();
         $('#recordSoundBtn').textContent = 'Stop Recording Sound';
@@ -677,8 +752,10 @@
       try {
         const buf = await audioCtx.decodeAudioData(ev.target.result);
         const id = soundCounter++;
-        sounds.push({id, name: file.name, buffer: buf});
+        const url = URL.createObjectURL(file);
+        sounds.push({id, name: file.name, buffer: buf, url});
         addSoundUI(id, file.name);
+        pushHistory();
       } catch (err) { alert('Invalid audio file.'); }
     };
     reader.readAsArrayBuffer(file);
@@ -749,6 +826,7 @@
           start: dropTime,
           duration: sound.buffer.duration,
           buffer: sound.buffer,
+          originalBuffer: sound.buffer,
           type: 'sound',
           layer: dropLayer,
           volume: 1.0,
@@ -763,9 +841,15 @@
           return dropX >= segStart && dropX <= segEnd && Math.floor(e.offsetY / 35) === s.layer;
         });
         if (!seg) return;
-        const params = effectType === 'echo' ? {delay: 0.3, decay: 0.5} : {amount: 1.2};
-        seg.effects.push({type: effectType, params});
-        seg.buffer = await applyEffectsToBuffer(seg);
+        if (effectType === 'keyframe') {
+          const time = dropTime;
+          seg.keyframes.push({time, volume: seg.volume});
+          seg.keyframes.sort((a, b) => a.time - b.time);
+        } else {
+          const params = effectType === 'echo' ? {delay: 0.3, decay: 0.5} : effectType === 'pitchUp' ? {amount: 1.2} : {};
+          seg.effects.push({type: effectType, params});
+          seg.buffer = await applyEffectsToBuffer(seg);
+        }
       }
       updateSegmentsUI();
       drawWaveform();
