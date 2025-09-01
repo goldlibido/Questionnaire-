@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Le Libido — Blind Pickup Lines</title>
+<title>Le Libido — Audio Pickup Editor</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{ --gold:#e1bf78; --blue:#064D95; --green:#06954E; --red:#950606; --bg:#0d0d0d; --card:#151515; --muted:#b9b9b9; }
@@ -36,16 +36,13 @@
   .bar{flex:1;height:10px;background:#0f0f0f;border-radius:999px;position:relative;border:1px solid rgba(255,255,255,.1);overflow:hidden;cursor:pointer}
   .bar .fill{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--red),var(--blue),var(--green));border-right:2px solid rgba(255,255,255,.5)}
   .time{font-size:12px;color:var(--muted);width:74px;text-align:right}
-  .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .photo{position:relative;padding-top:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
-  .photo input{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2}
-  .photo .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;z-index:1}
-  .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
-  .photo .overlay{position:absolute;left:8px;bottom:8px;display:flex;gap:6px;z-index:3}
-  .pill{padding:6px 9px;border-radius:999px;font-size:11px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(3px);cursor:pointer}
-  .pill:hover{background:rgba(0,0,0,.75)}
+  .editor-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:锻16px;margin-top:16px}
+  .timeline{height:60px;background:#0f0f0f;border:1px solid rgba(255,255,255,.1);border-radius:8px;position:relative;overflow:hidden}
+  .segment{position:absolute;height:100%;background:rgba(225,191,120,.2);cursor:move}
+  .effects{display:flex;gap:8px;margin-top:10px}
+  .effect-btn{padding:6px 10px;border-radius:999px;background:#151515;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-size:12px;color:#fff}
   .deck{position:relative;height:420px;border-radius:16px;overflow:hidden;background:#0f0f10;border:1px solid rgba(255,255,255,.08)}
-  .card{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(1200px 500px at 100% -10%, rgba(255,255,255,.06), transparent 70%),linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01))}
+  .card{position:absolute;inset:0;padding:18px;display:flex;flex Nurses:direction:column;justify-content:flex-end;background:radial-gradient(1200px 500px at 100% -10%, rgba(255,255,255,.06), transparent 70%),linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01))}
   .swipe-actions{display:flex;gap:10px}
   .pass,.like{flex:1;padding:12px 14px;border-radius:10px;font-weight:800;border:1px solid rgba(255,255,255,.12);cursor:pointer}
   .pass{background:#151515;color:#ddd}
@@ -67,26 +64,25 @@
   <div class="app">
     <header>
       <img src="golden-le-libido-logo.png" alt="Le Libido" onerror="this.style.opacity=.0">
-      <div class="title">Blind Pickup Lines</div>
-      <div class="small">One line. Pure chemistry. Profiles unlock only on a match.</div>
+      <div class="title">Blind Audio Pickup</div>
+      <div class="small">Craft your pickup line with effects. Match to unlock chats.</div>
     </header>
 
     <div class="steps" id="stepper">
-      <div class="step-pill active">1 • Record</div>
-      <div class="step-pill">2 • Profile</div>
-      <div class="step-pill">3 • Swipe</div>
-      <div class="step-pill">4 • Chat</div>
+      <div class="step-pill active">1 • Record & Edit</div>
+      <div class="step-pill">2 • Swipe</div>
+      <div class="step-pill">3 • Chat</div>
     </div>
 
-    <!-- STEP 1 -->
+    <!-- STEP 1: Record & Edit -->
     <section class="panel" id="step1">
-      <h2>Step 1 — Your pickup line</h2>
+      <h2>Step 1 — Craft your pickup line</h2>
       <div class="grid cols-2">
         <div class="rec-wrap">
           <div class="row" style="align-items:center; justify-content:center; gap:18px; margin-bottom:12px">
             <button class="record-btn" id="recordBtn"><span id="recLabel">Start Recording</span></button>
             <div>
-              <div class="small">Tap once to start, tap again to stop. Keep it under 10s for best vibes.</div>
+              <div class="small">Tap to record, edit with effects, keep under 15s.</div>
               <div class="tip">Use HTTPS and allow mic permission.</div>
             </div>
           </div>
@@ -98,93 +94,43 @@
             </div>
             <div class="row" style="margin-top:10px">
               <button class="btn ghost" id="retakeBtn">Retake</button>
-              <button class="btn gold" id="toProfileBtn">Looks good →</button>
             </div>
             <audio id="audio" preload="metadata" class="hidden"></audio>
+          </div>
+          <div id="editorBlock" class="editor-wrap hidden">
+            <h3>Edit Your Pickup</h3>
+            <div class="timeline" id="timeline"></div>
+            <div class="effects">
+              <button class="effect-btn" data-effect="echo">Echo</button>
+              <button class="effect-btn" data-effect="pitchUp">Pitch Up</button>
+              <button class="effect-btn" data-effect="addSound" data-sound="laugh">Add Laugh</button>
+              <button class="effect-btn" data-effect="addSound" data-sound="clap">Add Clap</button>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <button class="btn gold" id="saveEditBtn">Save & Swipe →</button>
+            </div>
           </div>
         </div>
         <div class="rec-wrap">
           <strong>Great pickup lines are:</strong>
           <ul style="margin-top:8px; color:#ddd; line-height:1.5">
-            <li>Short, playful, unexpected</li>
-            <li>Flirty without being cringey</li>
-            <li>Specific to the moment</li>
+            <li>Short, playful, creative with effects</li>
+            <li>Flirty and fun, not cheesy</li>
+            <li>Unique with sounds or vibe</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- STEP 2 -->
+    <!-- STEP 2: Swipe -->
     <section class="panel hidden" id="step2">
-      <h2>Step 2 — Build your profile</h2>
-      <div class="grid cols-2">
-        <div>
-          <label>Photos (2×2 grid)</label>
-          <div class="photo-grid" id="photoGrid">
-            <!-- 4 slots -->
-            <div class="photo" data-idx="0">
-              <input type="file" accept="image/*"><div class="hint">Tap to add</div>
-              <div class="overlay hidden"><div class="pill change">Change</div><div class="pill remove">✕</div></div>
-            </div>
-            <div class="photo" data-idx="1">
-              <input type="file" accept="image/*"><div class="hint">Tap to add</div>
-              <div class="overlay hidden"><div class="pill change">Change</div><div class="pill remove">✕</div></div>
-            </div>
-            <div class="photo" data-idx="2">
-              <input type="file" accept="image/*"><div class="hint">Tap to add</div>
-              <div class="overlay hidden"><div class="pill change">Change</div><div class="pill remove">✕</div></div>
-            </div>
-            <div class="photo" data-idx="3">
-              <input type="file" accept="image/*"><div class="hint">Tap to add</div>
-              <div class="overlay hidden"><div class="pill change">Change</div><div class="pill remove">✕</div></div>
-            </div>
-          </div>
-          <div class="tip">Previews appear instantly. You can change or remove any photo.</div>
-        </div>
-        <div>
-          <div class="grid cols-2">
-            <div><label>Name</label><input type="text" id="name" placeholder="First name" autocomplete="name"></div>
-            <div><label>Age</label><select id="age"></select></div>
-            <div><label>Height</label><select id="height"></select></div>
-            <div><label>Gender</label><select id="gender"><option value="" selected disabled>Choose</option><option>Man</option><option>Woman</option><option>Other</option></select></div>
-            <div><label>I’m into</label><select id="into"><option value="" selected disabled>Choose</option><option>Men</option><option>Women</option><option>Both</option></select></div>
-            <div><label>Turn-on vocabulary</label>
-              <select id="vocab">
-                <option>Prefer not to say</option><option>Babe</option><option>Baby</option><option>Sexy</option>
-                <option>Fucker</option><option>Brat</option><option>Good girl</option><option>Good boy</option>
-                <option>Slave</option><option>Goddess</option><option>Master</option>
-              </select>
-            </div>
-            <div><label>My type (looks)</label>
-              <select id="looks">
-                <option>Prefer not to say</option><option>Tall</option><option>Short</option><option>Thin</option><option>Curvy</option>
-                <option>Muscular</option><option>Tan</option><option>Pale</option><option>Blonde</option><option>Brunette</option>
-                <option>Redhead</option><option>Latin</option><option>Asian</option><option>Black</option><option>Jewish</option>
-                <option>Arab</option><option>Indian</option>
-              </select>
-            </div>
-            <div><label>My type (personality)</label>
-              <select id="personality"><option>Prefer not to say</option><option>Funny</option><option>Smart</option><option>Playful</option><option>Bold</option><option>Chill</option><option>Talkative</option><option>Shy</option></select>
-            </div>
-          </div>
-          <div class="row" style="margin-top:14px">
-            <button class="btn ghost" id="backToRecorder">← Back</button>
-            <button class="btn gold" id="saveProfile">Save & Start Swiping →</button>
-          </div>
-          <div class="tip">Your full profile stays hidden. Only your line is public until a mutual match.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 3 -->
-    <section class="panel hidden" id="step3">
-      <h2>Step 3 — Swipe pickup lines</h2>
+      <h2>Step 2 — Swipe pickup lines</h2>
       <div class="deck" id="deck"></div>
-      <div class="tip">Only the voice line shows here. Profiles unlock after a mutual like.</div>
+      <div class="tip">Hear creative lines. Like to match and unlock chats.</div>
     </section>
 
-    <!-- STEP 4 -->
-    <section class="panel hidden" id="step4">
+    <!-- STEP 3: Chat -->
+    <section class="panel hidden" id="step3">
       <h2>Private Chat</h2>
       <div class="chat" id="chat">
         <div class="chat-log" id="chatLog"></div>
@@ -193,9 +139,10 @@
           <input type="file" id="chatPhoto" accept="image/*" class="hidden">
           <button class="btn" id="chatPhotoBtn">📷</button>
           <button class="btn" id="chatVoiceBtn">🎙️</button>
+          <button class="btn" id="callBtn">📞</button>
           <button class="btn gold" id="chatSendBtn">Send</button>
         </div>
-        <div class="tip">Share pics and voice memos. Messages save to your match room.</div>
+        <div class="tip">Send texts, pics, voice memos, or start a voice call.</div>
       </div>
     </section>
 
@@ -203,15 +150,13 @@
     <div class="match-modal" id="matchModal" role="dialog" aria-modal="true">
       <div class="match-box">
         <h3>It’s a Match!</h3>
-        <p>You both liked each other’s pickup line. Full profile unlocked.</p>
-        <div id="matchProfile" class="small" style="text-align:left; background:#0f0f0f; border:1px solid rgba(255,255,255,.1); padding:12px; border-radius:10px; margin-bottom:12px"></div>
+        <p>You both liked each other’s pickup line. Chat unlocked!</p>
         <div class="row" style="justify-content:center">
           <button class="btn ghost" id="closeMatch">Keep Swiping</button>
           <button class="btn gold" id="openChat">Open Chat</button>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -221,34 +166,33 @@
   import { app, db } from './firebase-config.js';
   import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js';
-  import { ref as rRef, set, update, get, child, onValue, push, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
+  import { ref as rRef, set, get, onValue, push, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
 
   const auth = getAuth(app);
   const storage = getStorage(app);
 
   let currentUser = null;
-  try{ await signInAnonymously(auth); }catch(e){ console.error('Anon sign-in failed', e); }
+  try { await signInAnonymously(auth); } catch (e) { console.error('Anon sign-in failed', e); }
   onAuthStateChanged(auth, u => { currentUser = u || null; });
 
   /***** BASIC NAV / STEP UI *****/
   const $ = s => document.querySelector(s);
   const stepper = $('#stepper').children;
-  function go(i){
-    ['#step1','#step2','#step3','#step4'].forEach((id,idx)=>{
+  function go(i) {
+    ['#step1', '#step2', '#step3'].forEach((id, idx) => {
       const el = $(id);
-      if(idx===i){ el.classList.remove('hidden'); stepper[idx].classList.add('active'); }
+      if (idx === i) { el.classList.remove('hidden'); stepper[idx].classList.add('active'); }
       else { el.classList.add('hidden'); stepper[idx].classList.remove('active'); }
     });
-    window.scrollTo({top:0,behavior:'smooth'});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  Array.from(stepper).forEach((pill, idx)=>{
-    pill.style.cursor='pointer';
-    pill.addEventListener('click', ()=>{
-      if(idx===1 && !window.__recBlob){ alert('Record your pickup line first.'); return; }
-      if(idx===2 && !localStorage.getItem('ll_user_profile')){ /* allowed to view */ }
-      if(idx===3 && !window.__activeRoom){ alert('Open a match from the deck to chat.'); return; }
+  Array.from(stepper).forEach((pill, idx) => {
+    pill.style.cursor = 'pointer';
+    pill.addEventListener('click', () => {
+      if (idx === 1 && !window.__recBlob) { alert('Record and edit your pickup line first.'); return; }
+      if (idx === 2 && !window.__activeRoom) { alert('Open a match from the deck to chat.'); return; }
       go(idx);
-      if(idx===2 && !window.__deckInit) initDeck();
+      if (idx === 1 && !window.__deckInit) initDeck();
     });
   });
 
@@ -256,139 +200,245 @@
   const recordBtn = $('#recordBtn'), recLabel = $('#recLabel');
   const audioEl = $('#audio'), playerBlock = $('#playerBlock');
   const playToggle = $('#playToggle'), seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
-  const toProfileBtn = $('#toProfileBtn'), retakeBtn = $('#retakeBtn');
-  let mediaRecorder, recChunks=[], recStream=null, recMime='', recording=false;
+  const retakeBtn = $('#retakeBtn'), saveEditBtn = $('#saveEditBtn');
+  let mediaRecorder, recChunks = [], recStream = null, recMime = '', recording = false;
   window.__recBlob = null; // pickup line blob
 
-  function supportedMime(){ const c=['audio/webm;codecs=opus','audio/mp4;codecs=aac','audio/webm','audio/ogg;codecs=opus','audio/mp4','audio/aac']; for(const t of c){ if(window.MediaRecorder?.isTypeSupported?.(t)) return t; } return ''; }
-  async function startRecording(){
-    try{
+  function supportedMime() {
+    const c = ['audio/webm;codecs=opus', 'audio/mp4;codecs=aac', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/aac'];
+    for (const t of c) { if (window.MediaRecorder?.isTypeSupported?.(t)) return t; }
+    return '';
+  }
+  async function startRecording() {
+    try {
       recMime = supportedMime();
-      recStream = await navigator.mediaDevices.getUserMedia({audio:true});
-      mediaRecorder = new MediaRecorder(recStream, recMime?{mimeType:recMime}:undefined);
+      recStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(recStream, recMime ? { mimeType: recMime } : undefined);
       recChunks = [];
-      mediaRecorder.ondataavailable = e => { if(e.data?.size) recChunks.push(e.data); };
+      mediaRecorder.ondataavailable = e => { if (e.data?.size) recChunks.push(e.data); };
       mediaRecorder.onstop = () => {
         window.__recBlob = new Blob(recChunks, { type: recMime || 'audio/webm' });
         const url = URL.createObjectURL(window.__recBlob);
-        audioEl.src = url; playerBlock.classList.remove('hidden'); updateTime(0, audioEl.duration || 0);
+        audioEl.src = url;
+        playerBlock.classList.remove('hidden');
+        document.getElementById('editorBlock').classList.remove('hidden');
+        initEditor(url);
       };
-      mediaRecorder.start(); recording=true; recLabel.innerHTML='<span class="rec-indicator"></span> Recording…';
-    }catch(err){ alert('Mic permission needed. Use HTTPS.'); console.error(err); }
+      mediaRecorder.start();
+      recording = true;
+      recLabel.innerHTML = '<span class="rec-indicator"></span> Recording…';
+    } catch (err) { alert('Mic permission needed. Use HTTPS.'); console.error(err); }
   }
-  function stopRecording(){ if(mediaRecorder && recording){ mediaRecorder.stop(); recStream?.getTracks().forEach(t=>t.stop()); recording=false; recLabel.textContent='Start Recording'; } }
-  recordBtn.addEventListener('click', ()=> recording?stopRecording():startRecording());
-
-  const fmt=s=>{ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; };
-  function updateTime(c,d){ time.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`; }
-  playToggle.addEventListener('click', ()=>{ if(audioEl.paused){ audioEl.play(); playToggle.textContent='⏸'; } else { audioEl.pause(); playToggle.textContent='▶'; }});
-  audioEl.addEventListener('pause', ()=> playToggle.textContent='▶');
-  audioEl.addEventListener('play', ()=> playToggle.textContent='⏸');
-  audioEl.addEventListener('timeupdate', ()=>{ const d=audioEl.duration||0, c=audioEl.currentTime||0, pct=d?(c/d)*100:0; fill.style.inset=`0 ${100-pct}% 0 0`; updateTime(c,d); });
-  seekBar.addEventListener('click', (e)=>{ const r=seekBar.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width; if(audioEl.duration) audioEl.currentTime=x*audioEl.duration; });
-  retakeBtn.addEventListener('click', ()=>{ if(!audioEl.paused) audioEl.pause(); playerBlock.classList.add('hidden'); window.__recBlob=null; audioEl.removeAttribute('src'); });
-  toProfileBtn.addEventListener('click', ()=>{ if(!window.__recBlob){ alert('Record your pickup line first.'); return; } go(1); });
-
-  /***** PROFILE BUILDER (select fixes + photos) *****/
-  const ageSel = $('#age'), heightSel = $('#height');
-  (function buildAge(){ const frag=document.createDocumentFragment(); const ph=document.createElement('option'); ph.value=''; ph.textContent='Choose'; ph.disabled=true; ph.selected=true; frag.appendChild(ph); for(let a=18;a<=99;a++){ const o=document.createElement('option'); o.textContent=a; frag.appendChild(o);} ageSel.appendChild(frag);})();
-  (function buildHeight(){ const frag=document.createDocumentFragment(); const u=document.createElement('option'); u.textContent='Under 5 feet'; frag.appendChild(u); for(let f=5;f<=7;f++){ for(let i=0;i<12;i++){ const o=document.createElement('option'); o.textContent=`${f}’${i}”`; frag.appendChild(o);} } const o7=document.createElement('option'); o7.textContent='Over 7 feet'; frag.appendChild(o7); heightSel.appendChild(frag);})();
-  $('#backToRecorder').addEventListener('click', ()=> go(0));
-
-  const photoGrid = $('#photoGrid'); const photoFiles=[null,null,null,null];
-  photoGrid.querySelectorAll('.photo').forEach(tile=>{
-    const input=tile.querySelector('input[type="file"]'); const overlay=tile.querySelector('.overlay'); const idx=+tile.dataset.idx;
-    tile.addEventListener('click', (e)=>{ if(e.target.classList.contains('change')||e.target.classList.contains('remove')) return; input?.click(); });
-    tile.addEventListener('pointerdown', (e)=>{ if(e.pointerType==='touch' && e.target===tile){ input?.click(); e.preventDefault(); } }, {passive:false});
-    input.addEventListener('change', ()=>{ const file=input.files?.[0]; if(!file) return; photoFiles[idx]=file; const img=tile.querySelector('img')||document.createElement('img'); tile.querySelector('.hint')?.remove(); const r=new FileReader(); r.onload=e=>{ img.src=e.target.result; tile.appendChild(img); overlay.classList.remove('hidden'); }; r.readAsDataURL(file); });
-    overlay.querySelector('.change').addEventListener('click', (e)=>{ e.stopPropagation(); input.click(); });
-    overlay.querySelector('.remove').addEventListener('click', (e)=>{ e.stopPropagation(); photoFiles[idx]=null; input.value=''; tile.querySelector('img')?.remove(); overlay.classList.add('hidden'); if(!tile.querySelector('.hint')){ const h=document.createElement('div'); h.className='hint'; h.textContent='Tap to add'; tile.appendChild(h);} });
-  });
-
-  /***** SAVE PROFILE → upload to Storage + DB *****/
-  const storagePaths = {
-    line: uid => `lines/${uid}/${Date.now()}.webm`,
-    photo: (uid,i,ext) => `profiles/${uid}/photo${i}.${ext}`
-  };
-
-  $('#saveProfile').addEventListener('click', async ()=>{
-    if(!currentUser){ alert('Connecting…'); return; }
-    if(!window.__recBlob){ alert('Record your pickup line first.'); return; }
-
-    const required = { name: $('#name').value.trim(), age: $('#age').value, gender: $('#gender').value, into: $('#into').value };
-    if(!required.name || !required.age || !required.gender || !required.into){
-      alert('Please complete Name, Age, Gender, and I’m into.'); return;
+  function stopRecording() {
+    if (mediaRecorder && recording) {
+      mediaRecorder.stop();
+      recStream?.getTracks().forEach(t => t.stop());
+      recording = false;
+      recLabel.textContent = 'Start Recording';
     }
-    const btn = $('#saveProfile'); const old = btn.textContent; btn.disabled=true; btn.textContent='Saving…';
+  }
+  recordBtn.addEventListener('click', () => recording ? stopRecording() : startRecording());
 
-    try{
-      // Upload pickup line
-      const lineRef = sRef(storage, storagePaths.line(currentUser.uid));
-      await uploadBytes(lineRef, window.__recBlob, {contentType: window.__recBlob.type || 'audio/webm'});
-      const lineURL = await getDownloadURL(lineRef);
-
-      // Upload selected photos
-      const photoURLs=[];
-      for(let i=0;i<photoFiles.length;i++){
-        const f=photoFiles[i];
-        if(!f){ photoURLs.push(null); continue; }
-        const ext=(f.type && f.type.split('/')[1]) || 'jpg';
-        const imgRef = sRef(storage, storagePaths.photo(currentUser.uid, i, ext));
-        await uploadBytes(imgRef, f, {contentType:f.type || 'image/jpeg'});
-        photoURLs.push(await getDownloadURL(imgRef));
-      }
-
-      // Write profile
-      const data = {
-        uid: currentUser.uid,
-        name: required.name,
-        age: required.age,
-        height: $('#height').value || '',
-        gender: required.gender,
-        into: required.into,
-        vocab: $('#vocab').value || 'Prefer not to say',
-        looks: $('#looks').value || 'Prefer not to say',
-        personality: $('#personality').value || 'Prefer not to say',
-        photos: photoURLs,
-        lineURL,
-        ts: serverTimestamp()
-      };
-      await set(rRef(db, `profiles/${currentUser.uid}`), data);
-      localStorage.setItem('ll_user_profile', JSON.stringify(data));
-
-      go(2); initDeck();
-    }catch(err){ console.error(err); alert('Save failed. Check Firebase config/rules.'); }
-    finally{ btn.disabled=false; btn.textContent=old; }
+  const fmt = s => { s = Math.floor(s); const m = Math.floor(s / 60), r = s % 60; return `${m}:${r.toString().padStart(2, '0')}`; };
+  function updateTime(c, d) { time.textContent = `${fmt(c)} / ${d ? fmt(d) : '0:00'}`; }
+  playToggle.addEventListener('click', () => {
+    if (audioEl.paused) { audioEl.play(); playToggle.textContent = '⏸'; } else { audioEl.pause(); playToggle.textContent = '▶'; }
+  });
+  audioEl.addEventListener('pause', () => playToggle.textContent = '▶');
+  audioEl.addEventListener('play', () => playToggle.textContent = '⏸');
+  audioEl.addEventListener('timeupdate', () => {
+    const d = audioEl.duration || 0, c = audioEl.currentTime || 0, pct = d ? (c / d) * 100 : 0;
+    fill.style.inset = `0 ${100 - pct}% 0 0`;
+    updateTime(c, d);
+  });
+  seekBar.addEventListener('click', (e) => {
+    const r = seekBar.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    if (audioEl.duration) audioEl.currentTime = x * audioEl.duration;
+  });
+  retakeBtn.addEventListener('click', () => {
+    if (!audioEl.paused) audioEl.pause();
+    playerBlock.classList.add('hidden');
+    document.getElementById('editorBlock').classList.add('hidden');
+    window.__recBlob = null;
+    audioEl.removeAttribute('src');
   });
 
-  /***** SWIPE: REAL PROFILES *****/
-  const deckEl = $('#deck'); let deck=[], deckIdx=0; window.__deckInit=false;
+  /***** AUDIO EDITOR *****/
+  let audioCtx, sourceNode, editedBuffer;
+  async function initEditor(url) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const resp = await fetch(url);
+    const arrayBuf = await resp.arrayBuffer();
+    editedBuffer = await audioCtx.decodeAudioData(arrayBuf);
+    renderTimeline();
+  }
 
-  function listenProfiles(){
-    // live list of others (exclude me), only those with lineURL
-    const pRef = rRef(db, 'profiles');
-    onValue(pRef, snap=>{
+  function renderTimeline() {
+    const tl = document.getElementById('timeline');
+    tl.innerHTML = '';
+    const seg = document.createElement('div');
+    seg.className = 'segment';
+    seg.style.width = '100%';
+    tl.appendChild(seg);
+    // Basic drag support
+    let isDragging = false;
+    seg.addEventListener('mousedown', () => isDragging = true);
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        // Update segment position (simplified)
+      }
+    });
+    window.addEventListener('mouseup', () => isDragging = false);
+  }
+
+  document.querySelectorAll('.effect-btn').forEach(btn => {
+    btn.addEventListener('click', applyEffect);
+  });
+
+  async function applyEffect(e) {
+    const effect = e.target.dataset.effect;
+    if (effect === 'echo') {
+      const convolver = audioCtx.createConvolver();
+      const impulse = audioCtx.createBuffer(2, audioCtx.sampleRate * 0.5, audioCtx.sampleRate);
+      for (let i = 0; i < impulse.length; i++) {
+        impulse.getChannelData(0)[i] = (Math.random() * 2 - 1) * (1 - i / impulse.length) * 0.2;
+        impulse.getChannelData(1)[i] = (Math.random() * 2 - 1) * (1 - i / impulse.length) * 0.2;
+      }
+      convolver.buffer = impulse;
+      sourceNode = audioCtx.createBufferSource();
+      sourceNode.buffer = editedBuffer;
+      sourceNode.connect(convolver).connect(audioCtx.destination);
+      sourceNode.start();
+    } else if (effect === 'pitchUp') {
+      sourceNode = audioCtx.createBufferSource();
+      sourceNode.buffer = editedBuffer;
+      sourceNode.playbackRate.value = 1.2;
+      sourceNode.connect(audioCtx.destination);
+      sourceNode.start();
+    } else if (effect === 'addSound') {
+      const sound = e.target.dataset.sound;
+      // Assume sound files in Firebase Storage: e.g., /sounds/laugh.mp3
+      const soundUrl = await getDownloadURL(sRef(storage, `sounds/${sound}.mp3`));
+      const resp = await fetch(soundUrl);
+      const soundBuf = await audioCtx.decodeAudioData(await resp.arrayBuffer());
+      // Mix: create new buffer
+      const maxLen = Math.max(editedBuffer.length, soundBuf.length);
+      const newBuffer = audioCtx.createBuffer(2, maxLen, audioCtx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const data = newBuffer.getChannelData(ch);
+        const orig = editedBuffer.getChannelData(ch);
+        const snd = soundBuf.getChannelData(ch);
+        for (let i = 0; i < maxLen; i++) {
+          data[i] = (orig[i] || 0) + (snd[i] || 0) * 0.5; // Simple mix
+        }
+      }
+      editedBuffer = newBuffer;
+      sourceNode = audioCtx.createBufferSource();
+      sourceNode.buffer = editedBuffer;
+      sourceNode.connect(audioCtx.destination);
+      sourceNode.start();
+    }
+    // Update preview
+    const tempBlob = await audioBufferToBlob(editedBuffer);
+    audioEl.src = URL.createObjectURL(tempBlob);
+  }
+
+  async function audioBufferToBlob(buffer) {
+    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+    const src = offlineCtx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(offlineCtx.destination);
+    src.start();
+    const rendered = await offlineCtx.startRendering();
+    const wav = await audioBufferToWav(rendered);
+    return new Blob([wav], { type: 'audio/wav' });
+  }
+
+  async function audioBufferToWav(buffer) {
+    const numChannels = buffer.numberOfChannels;
+    const sampleRate = buffer.sampleRate;
+    const length = buffer.length * numChannels * 2 + 44;
+    const arrayBuffer = new ArrayBuffer(length);
+    const view = new DataView(arrayBuffer);
+
+    function writeString(view, offset, string) {
+      for (let i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+      }
+    }
+
+    let offset = 0;
+    writeString(view, offset, 'RIFF'); offset += 4;
+    view.setUint32(offset, 36 + buffer.length * numChannels * 2, true); offset += 4;
+    writeString(view, offset, 'WAVE'); offset += 4;
+    writeString(view, offset, 'fmt '); offset += 4;
+    view.setUint32(offset, 16, true); offset += 4;
+    view.setUint16(offset, 1, true); offset += 2;
+    view.setUint16(offset, numChannels, true); offset += 2;
+    view.setUint32(offset, sampleRate, true); offset += 4;
+    view.setUint32(offset, sampleRate * numChannels * 2, true); offset += 4;
+    view.setUint16(offset, numChannels * 2, true); offset += 2;
+    view.setUint16(offset, 16, true); offset += 2;
+    writeString(view, offset, 'data'); offset += 4;
+    view.setUint32(offset, buffer.length * numChannels * 2, true); offset += 4;
+
+    for (let i = 0; i < buffer.length; i++) {
+      for (let ch = 0; ch < numChannels; ch++) {
+        const sample = Math.max(-1, Math.min(1, buffer.getChannelData(ch)[i]));
+        view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+        offset += 2;
+      }
+    }
+    return arrayBuffer;
+  }
+
+  saveEditBtn.addEventListener('click', async () => {
+    if (!window.__recBlob) { alert('Record and edit your pickup line first.'); return; }
+    const lineRef = sRef(storage, `lines/${currentUser.uid}/${Date.now()}.wav`);
+    await uploadBytes(lineRef, window.__recBlob, { contentType: 'audio/wav' });
+    const lineURL = await getDownloadURL(lineRef);
+    await set(rRef(db, `lines/${currentUser.uid}`), { uid: currentUser.uid, lineURL, ts: serverTimestamp() });
+    go(1);
+    initDeck();
+  });
+
+  /***** SWIPE: AUDIO LINES *****/
+  const deckEl = $('#deck');
+  let deck = [], deckIdx = 0;
+  window.__deckInit = false;
+
+  function listenLines() {
+    const pRef = rRef(db, 'lines');
+    onValue(pRef, snap => {
       const all = snap.val() || {};
       deck = Object.values(all).filter(p => p.uid !== currentUser?.uid && p.lineURL);
-      deckIdx = 0; renderCard();
+      deckIdx = 0;
+      renderCard();
     });
   }
 
-  function initDeck(){ if(window.__deckInit) return; window.__deckInit=true; listenProfiles(); }
+  function initDeck() {
+    if (window.__deckInit) return;
+    window.__deckInit = true;
+    listenLines();
+  }
 
-  async function renderCard(){
-    deckEl.innerHTML='';
-    if(!deck.length || deckIdx>=deck.length){
-      const empty=document.createElement('div');
-      empty.className='card';
-      empty.innerHTML=`<h3>${deck.length? 'That’s all for now' : 'No lines yet'}</h3>
-        <div class="small">${deck.length? 'New pickup lines appear as more people join.' : 'Be the first—share your link and come back soon.'}</div>`;
-      deckEl.appendChild(empty); return;
+  async function renderCard() {
+    deckEl.innerHTML = '';
+    if (!deck.length || deckIdx >= deck.length) {
+      const empty = document.createElement('div');
+      empty.className = 'card';
+      empty.innerHTML = `<h3>${deck.length ? 'That’s all for now' : 'No lines yet'}</h3>
+        <div class="small">${deck.length ? 'New pickup lines appear as more people join.' : 'Be the first—share your link!'}</div>`;
+      deckEl.appendChild(empty);
+      return;
     }
     const p = deck[deckIdx];
-    const card=document.createElement('div'); card.className='card';
-    card.innerHTML=`
-      <div class="small">🎧 Voice only. Profiles unlock on a match.</div>
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="small">🎧 Listen to their creative pickup line.</div>
       <div class="rec-wrap">
         <div class="player">
           <button class="play-toggle">▶</button>
@@ -403,147 +453,214 @@
       </div>`;
     deckEl.appendChild(card);
 
-    const audio=card.querySelector('audio'); audio.src=p.lineURL;
-    const playBtn=card.querySelector('.play-toggle'); const bar=card.querySelector('.bar'); const fill=card.querySelector('.fill'); const tm=card.querySelector('.time');
-    const fmt=s=>{ s=Math.floor(s); const m=Math.floor(s/60), r=s%60; return `${m}:${r.toString().padStart(2,'0')}`; };
-    playBtn.addEventListener('click', ()=>{ if(audio.paused){ audio.play(); playBtn.textContent='⏸'; } else { audio.pause(); playBtn.textContent='▶'; }});
-    audio.addEventListener('pause', ()=> playBtn.textContent='▶');
-    audio.addEventListener('play', ()=> playBtn.textContent='⏸');
-    audio.addEventListener('timeupdate', ()=>{ const d=audio.duration||0, c=audio.currentTime||0, pct=d?(c/d)*100:0; fill.style.inset=`0 ${100-pct}% 0 0`; tm.textContent=`${fmt(c)} / ${d?fmt(d):'0:00'}`; });
-    bar.addEventListener('click',(e)=>{ const r=bar.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width; if(audio.duration) audio.currentTime=x*audio.duration; });
+    const audio = card.querySelector('audio');
+    audio.src = p.lineURL;
+    const playBtn = card.querySelector('.play-toggle');
+    const bar = card.querySelector('.bar');
+    const fill = card.querySelector('.fill');
+    const tm = card.querySelector('.time');
+    const fmt = s => { s = Math.floor(s); const m = Math.floor(s / 60), r = s % 60; return `${m}:${r.toString().padStart(2, '0')}`; };
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) { audio.play(); playBtn.textContent = '⏸'; } else { audio.pause(); playBtn.textContent = '▶'; }
+    });
+    audio.addEventListener('pause', () => playBtn.textContent = '▶');
+    audio.addEventListener('play', () => playBtn.textContent = '⏸');
+    audio.addEventListener('timeupdate', () => {
+      const d = audio.duration || 0, c = audio.currentTime || 0, pct = d ? (c / d) * 100 : 0;
+      fill.style.inset = `0 ${100 - pct}% 0 0`;
+      tm.textContent = `${fmt(c)} / ${d ? fmt(d) : '0:00'}`;
+    });
+    bar.addEventListener('click', (e) => {
+      const r = bar.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      if (audio.duration) audio.currentTime = x * audio.duration;
+    });
 
-    card.querySelector('.pass').addEventListener('click', ()=>{ audio.pause(); deckIdx++; renderCard(); });
-    card.querySelector('.like').addEventListener('click', ()=>{ audio.pause(); handleLike(p.uid); });
+    card.querySelector('.pass').addEventListener('click', () => { audio.pause(); deckIdx++; renderCard(); });
+    card.querySelector('.like').addEventListener('click', () => { audio.pause(); handleLike(p.uid); });
   }
 
   /***** MATCHING *****/
-  function pairIdFor(a,b){ return [a,b].sort().join('_'); }
+  function pairIdFor(a, b) { return [a, b].sort().join('_'); }
 
-  async function handleLike(themUid){
+  async function handleLike(themUid) {
     const me = currentUser.uid;
     const myLikeRef = rRef(db, `likes/${me}/${themUid}`);
     const theirLikeRef = rRef(db, `likes/${themUid}/${me}`);
 
-    // write my like
     await set(myLikeRef, true);
-
-    // check reciprocal
     const theirLikeSnap = await get(theirLikeRef);
     const matched = !!theirLikeSnap.val();
 
-    if(!matched){ deckIdx++; renderCard(); return; }
+    if (!matched) { deckIdx++; renderCard(); return; }
 
-    // create pair + room if missing
     const pid = pairIdFor(me, themUid);
     const pairRef = rRef(db, `pairs/${pid}`);
     const pairSnap = await get(pairRef);
 
-    if(!pairSnap.exists()){
-      // room id == pair id
+    if (!pairSnap.exists()) {
       await set(pairRef, { id: pid, a: me, b: themUid, roomId: pid, ts: serverTimestamp() });
       await set(rRef(db, `rooms/${pid}`), { id: pid, a: me, b: themUid, created: serverTimestamp() });
     }
 
-    // fetch other profile for reveal
-    const themSnap = await get(rRef(db, `profiles/${themUid}`));
-    const them = themSnap.val() || {};
-    showMatch(them, pid);
+    showMatch(pid);
   }
 
-  function showMatch(person, roomId){
-    const m = $('#matchModal'); const box = $('#matchProfile');
-    const rows = [
-      ['Name', person.name], ['Age', person.age], ['Gender', person.gender], ['I’m into', person.into],
-      ['Height', person.height], ['Looks', person.looks], ['Personality', person.personality]
-    ].map(([k,v])=>`<div><strong>${k}:</strong> ${v ?? ''}</div>`).join('');
-    box.innerHTML = rows;
-    m.style.display='flex';
-    $('#closeMatch').onclick = ()=>{ m.style.display='none'; deckIdx++; renderCard(); };
-    $('#openChat').onclick = ()=>{ m.style.display='none'; openChat(roomId, person); };
+  function showMatch(roomId) {
+    const m = $('#matchModal');
+    m.style.display = 'flex';
+    $('#closeMatch').onclick = () => { m.style.display = 'none'; deckIdx++; renderCard(); };
+    $('#openChat').onclick = () => { m.style.display = 'none'; openChat(roomId); };
   }
 
-  /***** CHAT (Realtime DB + Storage) *****/
-  let activeRoom = null; window.__activeRoom = null; let messagesUnsub = null;
+  /***** CHAT (Realtime DB + Storage + WebRTC) *****/
+  let activeRoom = null;
+  window.__activeRoom = null;
+  let messagesUnsub = null;
+  let peerConnection = null;
 
-  function pushBubble(who, content, type='text'){
-    const log = $('#chatLog'); const b=document.createElement('div'); b.className=`bubble ${who}`;
-    if(type==='text'){ b.textContent = content; }
-    if(type==='image'){ const img=document.createElement('img'); img.src=content; b.appendChild(img); }
-    if(type==='audio'){ const a=document.createElement('audio'); a.controls=true; a.src=content; b.appendChild(a); }
-    log.appendChild(b); log.scrollTop = log.scrollHeight;
+  function pushBubble(who, content, type = 'text') {
+    const log = $('#chatLog');
+    const b = document.createElement('div');
+    b.className = `bubble ${who}`;
+    if (type === 'text') { b.textContent = content; }
+    if (type === 'image') { const img = document.createElement('img'); img.src = content; b.appendChild(img); }
+    if (type === 'audio') { const a = document.createElement('audio'); a.controls = true; a.src = content; b.appendChild(a); }
+    log.appendChild(b);
+    log.scrollTop = log.scrollHeight;
   }
 
-  function openChat(roomId, otherProfile){
-    activeRoom = roomId; window.__activeRoom = roomId;
-    $('#chatLog').innerHTML='';
-    go(3);
+  function openChat(roomId) {
+    activeRoom = roomId;
+    window.__activeRoom = roomId;
+    $('#chatLog').innerHTML = '';
+    go(2);
 
-    // live messages stream
     const msgsRef = rRef(db, `rooms/${roomId}/messages`);
-    if(messagesUnsub) messagesUnsub(); // clean previous
-    messagesUnsub = onValue(msgsRef, snap=>{
-      $('#chatLog').innerHTML='';
+    if (messagesUnsub) messagesUnsub();
+    messagesUnsub = onValue(msgsRef, snap => {
+      $('#chatLog').innerHTML = '';
       const msgs = snap.val() || {};
-      // sort by key order (push keys roughly chronological)
-      Object.entries(msgs).forEach(([,m])=>{
+      Object.entries(msgs).forEach(([, m]) => {
         const who = m.from === currentUser.uid ? 'me' : 'them';
-        if(m.type==='text') pushBubble(who, m.text, 'text');
-        if(m.type==='image') pushBubble(who, m.url, 'image');
-        if(m.type==='audio') pushBubble(who, m.url, 'audio');
+        if (m.type === 'text') pushBubble(who, m.text, 'text');
+        if (m.type === 'image') pushBubble(who, m.url, 'image');
+        if (m.type === 'audio') pushBubble(who, m.url, 'audio');
       });
       $('#chatLog').scrollTop = $('#chatLog').scrollHeight;
     });
-
-    // pre-fill playful opener (local only)
-    if(otherProfile?.name) setTimeout(()=> pushBubble('them', `Loved your line. Now that we matched, hi—I’m ${otherProfile.name}.`), 600);
   }
 
-  // send text
-  $('#chatSendBtn').addEventListener('click', async ()=>{
-    const roomId = activeRoom; if(!roomId) return;
-    const input=$('#chatInput'); const text=input.value.trim(); if(!text) return;
-    input.value='';
+  $('#chatSendBtn').addEventListener('click', async () => {
+    const roomId = activeRoom;
+    if (!roomId) return;
+    const input = $('#chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
     const msgRef = push(rRef(db, `rooms/${roomId}/messages`));
-    await set(msgRef, { from: currentUser.uid, type:'text', text, ts: serverTimestamp() });
+    await set(msgRef, { from: currentUser.uid, type: 'text', text, ts: serverTimestamp() });
   });
 
-  // send image
-  $('#chatPhotoBtn').addEventListener('click', ()=> $('#chatPhoto').click());
-  $('#chatPhoto').addEventListener('change', async ()=>{
-    const roomId = activeRoom; if(!roomId) return;
-    const f = $('#chatPhoto').files?.[0]; if(!f) return;
-    const ext=(f.type && f.type.split('/')[1]) || 'jpg';
+  $('#chatPhotoBtn').addEventListener('click', () => $('#chatPhoto').click());
+  $('#chatPhoto').addEventListener('change', async () => {
+    const roomId = activeRoom;
+    if (!roomId) return;
+    const f = $('#chatPhoto').files?.[0];
+    if (!f) return;
+    const ext = (f.type && f.type.split('/')[1]) || 'jpg';
     const ref = sRef(storage, `chats/${roomId}/images/${Date.now()}.${ext}`);
-    await uploadBytes(ref, f, {contentType:f.type || 'image/jpeg'});
+    await uploadBytes(ref, f, { contentType: f.type || 'image/jpeg' });
     const url = await getDownloadURL(ref);
     const msgRef = push(rRef(db, `rooms/${roomId}/messages`));
-    await set(msgRef, { from: currentUser.uid, type:'image', url, ts: serverTimestamp() });
+    await set(msgRef, { from: currentUser.uid, type: 'image', url, ts: serverTimestamp() });
   });
 
-  // send voice memo
-  let chatRec=null, chatChunks=[], chatStream=null, chatMime='';
-  $('#chatVoiceBtn').addEventListener('click', async (e)=>{
-    const btn = e.currentTarget; const roomId = activeRoom; if(!roomId) return;
-    if(!chatRec){
-      try{
+  let chatRec = null, chatChunks = [], chatStream = null, chatMime = '';
+  $('#chatVoiceBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const roomId = activeRoom;
+    if (!roomId) return;
+    if (!chatRec) {
+      try {
         chatMime = supportedMime();
-        chatStream = await navigator.mediaDevices.getUserMedia({audio:true});
-        chatRec = new MediaRecorder(chatStream, chatMime?{mimeType:chatMime}:undefined);
+        chatStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chatRec = new MediaRecorder(chatStream, chatMime ? { mimeType: chatMime } : undefined);
         chatChunks = [];
-        chatRec.ondataavailable = ev => { if(ev.data?.size) chatChunks.push(ev.data); };
-        chatRec.onstop = async ()=>{
-          const blob=new Blob(chatChunks,{type:chatMime||'audio/webm'});
+        chatRec.ondataavailable = ev => { if (ev.data?.size) chatChunks.push(ev.data); };
+        chatRec.onstop = async () => {
+          const blob = new Blob(chatChunks, { type: chatMime || 'audio/webm' });
           const ref = sRef(storage, `chats/${roomId}/voice/${Date.now()}.webm`);
-          await uploadBytes(ref, blob, {contentType: blob.type || 'audio/webm'});
+          await uploadBytes(ref, blob, { contentType: blob.type || 'audio/webm' });
           const url = await getDownloadURL(ref);
           const msgRef = push(rRef(db, `rooms/${roomId}/messages`));
-          await set(msgRef, { from: currentUser.uid, type:'audio', url, ts: serverTimestamp() });
+          await set(msgRef, { from: currentUser.uid, type: 'audio', url, ts: serverTimestamp() });
         };
-        chatRec.start(); btn.textContent='⏹️';
-      }catch(err){ alert('Mic access needed.'); console.error(err); chatRec=null; chatStream?.getTracks().forEach(t=>t.stop()); }
-    }else{
-      chatRec.stop(); chatStream?.getTracks().forEach(t=>t.stop()); chatRec=null; btn.textContent='🎙️';
+        chatRec.start();
+        btn.textContent = '⏹️';
+      } catch (err) { alert('Mic access needed.'); console.error(err); chatRec = null; chatStream?.getTracks().forEach(t => t.stop()); }
+    } else {
+      chatRec.stop();
+      chatStream?.getTracks().forEach(t => t.stop());
+      chatRec = null;
+      btn.textContent = '🎙️';
     }
+  });
+
+  // WebRTC Voice Call
+  $('#callBtn').addEventListener('click', async () => {
+    const roomId = activeRoom;
+    if (!roomId) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      peerConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+      stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+      await set(rRef(db, `calls/${roomId}/${currentUser.uid}`), {
+        offer: { type: offer.type, sdp: offer.sdp },
+        ts: serverTimestamp()
+      });
+
+      onValue(rRef(db, `calls/${roomId}`), snap => {
+        const data = snap.val();
+        if (!data) return;
+        Object.entries(data).forEach(async ([uid, call]) => {
+          if (uid === currentUser.uid) return;
+          if (call.offer && !peerConnection.remoteDescription) {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(call.offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            await set(rRef(db, `calls/${roomId}/${currentUser.uid}/answer`), {
+              type: answer.type, sdp: answer.sdp
+            });
+          }
+          if (call.answer && peerConnection.remoteDescription?.type === 'offer') {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(call.answer));
+          }
+        });
+      });
+
+      peerConnection.ontrack = e => {
+        const audio = document.createElement('audio');
+        audio.srcObject = e.streams[0];
+        audio.autoplay = true;
+        document.body.appendChild(audio);
+      };
+
+      peerConnection.onicecandidate = e => {
+        if (e.candidate) {
+          push(rRef(db, `calls/${roomId}/${currentUser.uid}/candidates`), e.candidate);
+        }
+      };
+
+      onValue(rRef(db, `calls/${roomId}/${currentUser.uid}/candidates`), snap => {
+        const candidates = snap.val();
+        if (candidates) {
+          Object.values(candidates).forEach(candidate => peerConnection.addIceCandidate(new RTCIceCandidate(candidate)));
+        }
+      });
+    } catch (err) { console.error('Voice call failed', err); alert('Voice call setup failed.'); }
   });
 
   /***** START APP *****/
