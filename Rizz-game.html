@@ -26,7 +26,7 @@
   .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.18)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center} .hidden{display:none !important}
   label{font-size:12px;color:#e5e5e5;margin-bottom:6px;display:block}
-  input[type="text"],select{width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px;touch-action:manipulation}
+  input[type="text"],select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px;touch-action:manipulation}
   input[type="range"]{flex:1}
   .rec-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px}
   .record-btn{width:160px;height:160px;border-radius:999px;border:1px solid rgba(255,255,255,.15);cursor:pointer;background:var(--red);color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 6px rgba(225,191,120,.08) inset}
@@ -44,18 +44,12 @@
   .segments-container{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible}
   .segment{position:absolute;height:30px;background:rgba(225,191,120,.2);border:1px solid var(--gold);cursor:move;opacity:0.7;top:calc(var(--layer) * 35px);transition:opacity .2s, transform .2s}
   .segment:hover{opacity:1; transform:scale(1.02)}
-  .segment.effect{background:rgba(6,149,78,.2);border-color:var(--green)}
+  .segment.sound{background:rgba(6,149,78,.2);border-color:var(--green)}
   .segment .volume-control{position:absolute;top:-60px;left:0;width:100px;padding:4px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
   .segment:hover .volume-control{display:block}
-  .segment .effect-banner{position:absolute;top:-30px;padding:4px 8px;border-radius:4px;font-size:10px;cursor:pointer}
-  .segment .effect-banner.echo{background:var(--green);border:1px solid rgba(6,149,78,.5)}
-  .segment .effect-banner.pitchUp{background:var(--blue);border:1px solid rgba(6,149,94,.5)}
-  .segment .effect-params{position:absolute;top:-90px;padding:8px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
   .segment .trim-left, .segment .trim-right{position:absolute;top:50%;width:12px;height:12px;border:2px solid var(--gold);border-width:0 2px 2px 0;transform:rotate(135deg);background:#151515;cursor:ew-resize}
   .segment .trim-left{left:-6px;transform:rotate(-45deg)}
   .segment .trim-right{right:-6px}
-  .segment .keyframe-marker{position:absolute;top:-30px;width:10px;height:10px;border:2px solid var(--gold);transform:rotate(45deg);background:#151515;cursor:pointer}
-  .segment .keyframe-params{position:absolute;top:-90px;padding:8px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
   .effects{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
   .effect-btn{padding:6px 10px;border-radius:999px;background:#151515;border:1px solid rgba(255,255,255,.15);cursor:grab;font-size:12px;color:#fff}
   .effect-btn.active{background:var(--gold);color:#111}
@@ -77,8 +71,11 @@
   .composer{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.08);background:#101010}
   .composer input[type="text"]{flex:1;background:#0f0f0f;border:1px solid rgba(255,255,255,.12)}
   .small{font-size:12px;color:var(--muted)} .tip{color:var(--muted);font-size:12px;margin-top:6px}
-  .param-row{display:flex;gap:8px;align-items:center;margin-top:8px}
   .snap-line{position:absolute;top:0;bottom:0;width:2px;background:rgba(225,191,120,.5);box-shadow:0 0 8px rgba(225,191,120,.8);display:none}
+  .photo-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:10px}
+  .photo-slot{width:100%;aspect-ratio:1;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+  .photo-slot img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+  .photo-slot .delete{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;border-radius:50%;width:15px;height:15px;line-height:15px;text-align:center;cursor:pointer;font-size:10px}
 </style>
 </head>
 <body>
@@ -87,13 +84,14 @@
     <header>
       <img src="golden-le-libido-logo.png" alt="Le Libido" onerror="this.style.opacity=0">
       <div class="title">Blind Audio Pickup</div>
-      <div class="small">Craft your pickup line with effects. Match to unlock chats.</div>
+      <div class="small">Craft your pickup line, create a profile, swipe, and chat.</div>
     </header>
 
     <div class="steps" id="stepper">
       <div class="step-pill active">1 • Record & Edit</div>
-      <div class="step-pill">2 • Swipe</div>
-      <div class="step-pill">3 • Chat</div>
+      <div class="step-pill">2 • Profile</div>
+      <div class="step-pill">3 • Swipe</div>
+      <div class="step-pill">4 • Chat</div>
     </div>
 
     <!-- STEP 1: Record & Edit -->
@@ -131,10 +129,8 @@
               <div id="snapLine" class="snap-line"></div>
             </div>
             <div class="effects">
-              <button class="effect-btn" data-effect="echo" draggable="true">Echo</button>
-              <button class="effect-btn" data-effect="pitchUp" draggable="true">Pitch Up</button>
               <button class="effect-btn" data-effect="trim" draggable="true">Trim Clip</button>
-              <button class="effect-btn" data-effect="keyframe" draggable="true">Add Keyframe</button>
+              <button class="effect-btn" data-effect="cut" draggable="true">Cut Clip</button>
             </div>
             <div class="row" style="margin-top:10px">
               <button class="btn" id="recordSoundBtn">Record New Sound</button>
@@ -143,30 +139,69 @@
               <div id="effectsList" class="effects" style="flex:1;"></div>
             </div>
             <div class="row" style="margin-top:10px">
-              <button class="btn gold" id="saveEditBtn">Save & Swipe →</button>
+              <button class="btn gold" id="saveEditBtn">Save & Profile →</button>
             </div>
           </div>
         </div>
         <div class="rec-wrap">
           <strong>Great pickup lines are:</strong>
           <ul style="margin-top:8px; color:#ddd; line-height:1.5">
-            <li>Short, playful, creative with effects</li>
+            <li>Short, playful, creative with sounds</li>
             <li>Flirty and fun, not cheesy</li>
-            <li>Unique with sounds or vibe</li>
+            <li>Unique with layered audio</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- STEP 2: Swipe -->
+    <!-- STEP 2: Profile -->
     <section class="panel hidden" id="step2">
-      <h2>Step 2 — Swipe pickup lines</h2>
+      <h2>Step 2 — Create Your Profile</h2>
+      <div class="rec-wrap">
+        <div class="photo-grid" id="photoGrid">
+          <div class="photo-slot" data-index="0">Add Photo</div>
+          <div class="photo-slot" data-index="1">Add Photo</div>
+          <div class="photo-slot" data-index="2">Add Photo</div>
+          <div class="photo-slot" data-index="3">Add Photo</div>
+          <div class="photo-slot" data-index="4">Add Photo</div>
+          <div class="photo-slot" data-index="5">Add Photo</div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" class="hidden">
+        <div class="row" style="margin-top:16px">
+          <div style="flex:1">
+            <label>Name</label>
+            <input type="text" id="profileName" placeholder="Your name">
+          </div>
+          <div style="flex:1">
+            <label>Age</label>
+            <input type="text" id="profileAge" placeholder="Your age">
+          </div>
+        </div>
+        <div class="row" style="margin-top:16px">
+          <div style="flex:1">
+            <label>Height</label>
+            <input type="text" id="profileHeight" placeholder="e.g., 5'10&quot;">
+          </div>
+          <div style="flex:1">
+            <label>My Type</label>
+            <input type="text" id="profileType" placeholder="Describe your vibe">
+          </div>
+        </div>
+        <div class="row" style="margin-top:16px">
+          <button class="btn gold" id="saveProfileBtn">Save & Swipe →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3: Swipe -->
+    <section class="panel hidden" id="step3">
+      <h2>Step 3 — Swipe pickup lines</h2>
       <div class="deck" id="deck"></div>
       <div class="tip">Hear creative lines. Like to match and unlock chats.</div>
     </section>
 
-    <!-- STEP 3: Chat -->
-    <section class="panel hidden" id="step3">
+    <!-- STEP 4: Chat -->
+    <section class="panel hidden" id="step4">
       <h2>Private Chat</h2>
       <div class="chat" id="chat">
         <div class="chat-log" id="chatLog"></div>
@@ -216,7 +251,7 @@
   const $$ = s => document.querySelectorAll(s);
   const stepper = $('#stepper').children;
   function go(i) {
-    ['#step1', '#step2', '#step3'].forEach((id, idx) => {
+    ['#step1', '#step2', '#step3', '#step4'].forEach((id, idx) => {
       const el = $(id);
       if (idx === i) { el.classList.remove('hidden'); stepper[idx].classList.add('active'); }
       else { el.classList.add('hidden'); stepper[idx].classList.remove('active'); }
@@ -227,9 +262,10 @@
     pill.style.cursor = 'pointer';
     pill.addEventListener('click', () => {
       if (idx === 1 && !window.__recBlob) { alert('Record and edit your pickup line first.'); return; }
-      if (idx === 2 && !window.__activeRoom) { alert('Open a match from the deck to chat.'); return; }
+      if (idx === 2 && !window.__profileSaved) { alert('Create your profile first.'); return; }
+      if (idx === 3 && !window.__activeRoom) { alert('Open a match from the deck to chat.'); return; }
       go(idx);
-      if (idx === 1 && !window.__deckInit) initDeck();
+      if (idx === 2 && !window.__deckInit) initDeck();
     });
   });
 
@@ -238,7 +274,6 @@
   const audioEl = $('#audio'), playerBlock = $('#playerBlock');
   const playToggle = $('#playToggle'), seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
   const retakeBtn = $('#retakeBtn'), saveEditBtn = $('#saveEditBtn');
-  const trimBtn = $('#trimBtn'), keyframeBtn = $('#keyframeBtn');
   let mediaRecorder, recChunks = [], recStream = null, recMime = '', recording = false;
   window.__recBlob = null;
 
@@ -313,8 +348,8 @@
 
   /***** AUDIO EDITOR *****/
   let audioCtx, timelineCanvas = $('#timelineCanvas');
-  let segments = []; // [{id, start, duration, buffer, type: 'main' or 'sound', layer: 0+, volume: 1.0, soundId, effects: [{type, params}], keyframes: [{time, volume}]}]
-  let sounds = []; // [{id, name, buffer}]
+  let segments = []; // [{id, start, duration, buffer, originalBuffer, type: 'main' or 'sound', layer, volume, soundId, isTrimmed}]
+  let sounds = []; // [{id, name, buffer, url}]
   let soundCounter = 0;
   let segmentCounter = 0;
   let history = [];
@@ -326,7 +361,7 @@
     const resp = await fetch(url);
     const arrayBuf = await resp.arrayBuffer();
     const buffer = await audioCtx.decodeAudioData(arrayBuf);
-    segments = [{id: segmentCounter++, start: 0, duration: buffer.duration, buffer, type: 'main', layer: 2, volume: 1.0, effects: [], keyframes: [{time: 0, volume: 1.0}]}];
+    segments = [{id: segmentCounter++, start: 0, duration: buffer.duration, buffer, originalBuffer: buffer, type: 'main', layer: 2, volume: 1.0, isTrimmed: false}];
     pushHistory();
     updateSegmentsUI();
     drawWaveform();
@@ -336,7 +371,7 @@
   function pushHistory() {
     history = history.slice(0, historyIndex + 1);
     history.push({
-      segments: JSON.parse(JSON.stringify(segments.map(s => ({...s, buffer: null})))),
+      segments: JSON.parse(JSON.stringify(segments.map(s => ({...s, buffer: null, originalBuffer: null})))),
       sounds: JSON.parse(JSON.stringify(sounds.map(s => ({...s, buffer: null}))))
     });
     historyIndex = history.length - 1;
@@ -357,10 +392,10 @@
     segments = await Promise.all(state.segments.map(async s => {
       if (s.type === 'main') {
         const mainSeg = segments.find(seg => seg.type === 'main') || {buffer: await audioCtx.decodeAudioData(await (await fetch(audioEl.src)).arrayBuffer())};
-        return {...s, buffer: mainSeg.buffer};
+        return {...s, buffer: mainSeg.buffer, originalBuffer: mainSeg.buffer};
       } else {
         const sound = sounds.find(snd => snd.id === s.soundId);
-        return {...s, buffer: sound?.buffer};
+        return {...s, buffer: sound?.buffer, originalBuffer: sound?.buffer};
       }
     }));
     updateSegmentsUI();
@@ -384,10 +419,10 @@
     segments = await Promise.all(state.segments.map(async s => {
       if (s.type === 'main') {
         const mainSeg = segments.find(seg => seg.type === 'main') || {buffer: await audioCtx.decodeAudioData(await (await fetch(audioEl.src)).arrayBuffer())};
-        return {...s, buffer: mainSeg.buffer};
+        return {...s, buffer: mainSeg.buffer, originalBuffer: mainSeg.buffer};
       } else {
         const sound = sounds.find(snd => snd.id === s.soundId);
-        return {...s, buffer: sound?.buffer};
+        return {...s, buffer: sound?.buffer, originalBuffer: sound?.buffer};
       }
     }));
     updateSegmentsUI();
@@ -450,7 +485,7 @@
     const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
     segments.forEach(seg => {
       const div = document.createElement('div');
-      div.className = `segment ${seg.type === 'sound' ? 'effect' : ''}`;
+      div.className = `segment ${seg.type === 'sound' ? 'sound' : ''}`;
       div.dataset.id = seg.id;
       div.style.left = `${(seg.start / maxDuration) * 100}%`;
       div.style.width = `${(seg.duration / maxDuration) * 100}%`;
@@ -461,89 +496,16 @@
       volControl.innerHTML = `<input type="range" min="0" max="1" step="0.01" value="${seg.volume}" class="volume-slider">`;
       div.appendChild(volControl);
 
-      seg.effects.forEach(effect => {
-        const banner = document.createElement('div');
-        banner.className = `effect-banner ${effect.type}`;
-        banner.textContent = effect.type.charAt(0).toUpperCase() + effect.type.slice(1);
-        banner.dataset.effectType = effect.type;
-        const paramsDiv = document.createElement('div');
-        paramsDiv.className = 'effect-params';
-        if (effect.type === 'echo') {
-          paramsDiv.innerHTML = `
-            <label>Delay:</label><input type="range" min="0.1" max="1" step="0.1" value="${effect.params.delay}" class="echo-delay">
-            <label>Decay:</label><input type="range" min="0.1" max="0.9" step="0.1" value="${effect.params.decay}" class="echo-decay">
-          `;
-        } else if (effect.type === 'pitchUp') {
-          paramsDiv.innerHTML = `
-            <label>Amount:</label><input type="range" min="0.5" max="2" step="0.1" value="${effect.params.amount}" class="pitch-amount">
-          `;
-        } else if (effect.type === 'trim') {
-          const trimLeft = document.createElement('div');
-          trimLeft.className = 'trim-left';
-          const trimRight = document.createElement('div');
-          trimRight.className = 'trim-right';
-          div.appendChild(trimLeft);
-          div.appendChild(trimRight);
-          makeTrimHandle(trimLeft, seg, 'left', maxDuration);
-          makeTrimHandle(trimRight, seg, 'right', maxDuration);
-        }
-        banner.addEventListener('click', e => {
-          e.stopPropagation();
-          paramsDiv.style.display = paramsDiv.style.display === 'block' ? 'none' : 'block';
-        });
-        paramsDiv.querySelectorAll('input').forEach(input => {
-          input.addEventListener('input', async () => {
-            const effectIdx = seg.effects.findIndex(e => e.type === effect.type);
-            if (effect.type === 'echo') {
-              seg.effects[effectIdx].params = {
-                delay: parseFloat(paramsDiv.querySelector('.echo-delay').value),
-                decay: parseFloat(paramsDiv.querySelector('.echo-decay').value)
-              };
-            } else if (effect.type === 'pitchUp') {
-              seg.effects[effectIdx].params = {
-                amount: parseFloat(paramsDiv.querySelector('.pitch-amount').value)
-              };
-            }
-            seg.buffer = await applyEffectsToBuffer(seg);
-            updatePreview();
-            drawWaveform();
-            pushHistory();
-          });
-        });
-        div.appendChild(banner);
-        div.appendChild(paramsDiv);
-      });
-
-      seg.keyframes.forEach((kf, idx) => {
-        if (idx === 0) return; // Skip first keyframe (default)
-        const marker = document.createElement('div');
-        marker.className = 'keyframe-marker';
-        marker.dataset.index = idx;
-        marker.style.left = `${((kf.time - seg.start) / seg.duration) * 100}%`;
-        const paramsDiv = document.createElement('div');
-        paramsDiv.className = 'keyframe-params';
-        paramsDiv.innerHTML = `
-          <label>Volume:</label><input type="range" min="0" max="1" step="0.01" value="${kf.volume}" class="keyframe-volume">
-          <button class="btn" style="padding:4px 8px;font-size:10px">Delete</button>
-        `;
-        marker.addEventListener('click', e => {
-          e.stopPropagation();
-          paramsDiv.style.display = paramsDiv.style.display === 'block' ? 'none' : 'block';
-        });
-        paramsDiv.querySelector('.keyframe-volume').addEventListener('input', () => {
-          seg.keyframes[idx].volume = parseFloat(paramsDiv.querySelector('.keyframe-volume').value);
-          updatePreview();
-          pushHistory();
-        });
-        paramsDiv.querySelector('button').addEventListener('click', () => {
-          seg.keyframes.splice(idx, 1);
-          updateSegmentsUI();
-          updatePreview();
-          pushHistory();
-        });
-        div.appendChild(marker);
-        div.appendChild(paramsDiv);
-      });
+      if (seg.isTrimmed) {
+        const trimLeft = document.createElement('div');
+        trimLeft.className = 'trim-left';
+        const trimRight = document.createElement('div');
+        trimRight.className = 'trim-right';
+        div.appendChild(trimLeft);
+        div.appendChild(trimRight);
+        makeTrimHandle(trimLeft, seg, 'left', maxDuration);
+        makeTrimHandle(trimRight, seg, 'right', maxDuration);
+      }
 
       container.appendChild(div);
       makeDraggable(div, maxDuration);
@@ -556,36 +518,54 @@
   }
 
   function makeDraggable(el, maxDuration) {
-    let startX, startLeft, startWidth, startLayer;
+    let startX, startLeft, startTime, isDragging = false, clickTimeout;
     el.addEventListener('mousedown', e => {
-      if (e.target.classList.contains('effect-banner') || e.target.classList.contains('keyframe-marker') || e.target.classList.contains('trim-left') || e.target.classList.contains('trim-right')) return;
-      startX = e.clientX;
-      startLeft = parseFloat(el.style.left) || 0;
-      startWidth = parseFloat(el.style.width) || 0;
-      startLayer = parseInt(el.style.getPropertyValue('--layer')) || 0;
-      let lastX = startX;
-      function onMove(e) {
-        const deltaPct = ((e.clientX - startX) / timelineCanvas.offsetWidth) * 100;
-        el.style.left = `${Math.max(0, startLeft + deltaPct)}%`;
-        requestAnimationFrame(() => lastX = e.clientX);
+      if (e.target.classList.contains('trim-left') || e.target.classList.contains('trim-right')) return;
+      e.stopPropagation();
+      clickTimeout = setTimeout(() => {
+        isDragging = true;
+        startX = e.clientX;
+        startLeft = parseFloat(el.style.left) || 0;
+        startTime = parseFloat(el.dataset.start) || 0;
+        let lastX = startX;
+        function onMove(e) {
+          if (!isDragging) return;
+          const deltaPct = ((e.clientX - startX) / timelineCanvas.offsetWidth) * 100;
+          el.style.left = `${Math.max(0, startLeft + deltaPct)}%`;
+          requestAnimationFrame(() => lastX = e.clientX);
+        }
+        function onUp() {
+          if (isDragging) {
+            isDragging = false;
+            updateSegmentFromUI(el);
+            drawWaveform();
+            pushHistory();
+          }
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      }, 200);
+    });
+    el.addEventListener('click', e => {
+      if (!isDragging) {
+        clearTimeout(clickTimeout);
+        const volControl = el.querySelector('.volume-control');
+        volControl.style.display = volControl.style.display === 'block' ? 'none' : 'block';
+        e.stopPropagation();
       }
-      function onUp() {
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('mouseup', onUp);
-        updateSegmentFromUI(el);
-        drawWaveform();
-        pushHistory();
-      }
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup', onUp);
-      el.addEventListener('contextmenu', e => {
-        e.preventDefault();
-        const seg = segments.find(s => s.id == el.dataset.id);
-        seg.layer = (seg.layer + 1) % maxLayers;
-        el.style.setProperty('--layer', seg.layer);
-        updateSegmentsUI();
-        pushHistory();
-      });
+    });
+    document.addEventListener('click', () => {
+      $$('.volume-control').forEach(vc => vc.style.display = 'none');
+    });
+    el.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      const seg = segments.find(s => s.id == el.dataset.id);
+      seg.layer = (seg.layer + 1) % maxLayers;
+      el.style.setProperty('--layer', seg.layer);
+      updateSegmentsUI();
+      pushHistory();
     });
   }
 
@@ -631,23 +611,17 @@
       seg.start = leftPct * maxDuration;
       seg.duration = widthPct * maxDuration;
       if (oldDuration !== seg.duration || oldStart !== seg.start) {
-        const startSample = seg.start > oldStart ? Math.round((seg.start - oldStart) * seg.buffer.sampleRate) : 0;
-        const endSample = Math.round(seg.duration * seg.buffer.sampleRate);
-        seg.buffer = sliceBuffer(seg.buffer, startSample, endSample);
-        seg.keyframes = seg.keyframes.map(kf => ({
-          time: seg.start + (kf.time - oldStart) * (seg.duration / oldDuration),
-          volume: kf.volume
-        }));
-        seg.buffer = seg.originalBuffer ? seg.originalBuffer : seg.buffer;
-        seg.originalBuffer = seg.buffer;
-        seg.buffer = applyEffectsToBuffer(seg);
+        const startSample = Math.round(seg.start * seg.originalBuffer.sampleRate);
+        const endSample = Math.round((seg.start + seg.duration) * seg.originalBuffer.sampleRate);
+        seg.buffer = sliceBuffer(seg.originalBuffer, startSample, endSample);
+        seg.isTrimmed = true;
       }
     }
     updatePreview();
   }
 
   function sliceBuffer(buffer, startSample, endSample) {
-    const durationSamples = endSample - startSample;
+    const durationSamples = Math.max(0, endSample - startSample);
     if (durationSamples <= 0) return buffer;
     const newBuffer = audioCtx.createBuffer(buffer.numberOfChannels, durationSamples, buffer.sampleRate);
     for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
@@ -662,55 +636,172 @@
     });
   });
 
-  async function applyEffectsToBuffer(seg) {
-    let buffer = seg.originalBuffer || seg.buffer;
-    for (const effect of seg.effects) {
-      if (effect.type !== 'trim') {
-        buffer = await applyEffectToBuffer(buffer, effect.type, effect.params);
+  function setupTimelineDragDrop() {
+    const timeline = $('#timeline');
+    const snapLine = $('#snapLine');
+    let dropLayer = 0;
+    timeline.addEventListener('dragenter', e => e.preventDefault());
+    timeline.addEventListener('dragover', e => {
+      e.preventDefault();
+      const rect = timeline.getBoundingClientRect();
+      const dropX = e.clientX - rect.left;
+      const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
+      const dropTime = Math.round((dropX / rect.width) * maxDuration * 10) / 10;
+      snapLine.style.left = `${(dropTime / maxDuration) * 100}%`;
+      snapLine.style.display = 'block';
+      dropLayer = Math.floor(e.offsetY / 35);
+      if (dropLayer >= maxLayers) dropLayer = maxLayers - 1;
+    });
+    timeline.addEventListener('dragleave', () => {
+      snapLine.style.display = 'none';
+    });
+    timeline.addEventListener('drop', async e => {
+      e.preventDefault();
+      snapLine.style.display = 'none';
+      const soundId = e.dataTransfer.getData('soundId');
+      const effectType = e.dataTransfer.getData('effectType');
+      const rect = timeline.getBoundingClientRect();
+      const dropX = e.clientX - rect.left;
+      const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
+      const dropTime = Math.round((dropX / rect.width) * maxDuration * 10) / 10;
+
+      if (soundId) {
+        const sound = sounds.find(s => s.id == soundId);
+        if (!sound) return;
+        segments.push({
+          id: segmentCounter++,
+          start: dropTime,
+          duration: sound.buffer.duration,
+          buffer: sound.buffer,
+          originalBuffer: sound.buffer,
+          type: 'sound',
+          layer: dropLayer,
+          volume: 1.0,
+          soundId,
+          isTrimmed: false
+        });
+      } else if (effectType === 'trim') {
+        const seg = segments.find(s => {
+          const segStart = (s.start / maxDuration) * rect.width;
+          const segEnd = ((s.start + s.duration) / maxDuration) * rect.width;
+          return dropX >= segStart && dropX <= segEnd && Math.floor(e.offsetY / 35) === s.layer;
+        });
+        if (!seg) return;
+        seg.isTrimmed = true;
+      } else if (effectType === 'cut') {
+        const seg = segments.find(s => {
+          const segStart = (s.start / maxDuration) * rect.width;
+          const segEnd = ((s.start + s.duration) / maxDuration) * rect.width;
+          return dropX >= segStart && dropX <= segEnd && Math.floor(e.offsetY / 35) === s.layer;
+        });
+        if (!seg) return;
+        const cutTime = dropTime - seg.start;
+        if (cutTime <= 0 || cutTime >= seg.duration) return;
+        const firstDuration = cutTime;
+        const secondDuration = seg.duration - cutTime;
+        const firstBuffer = sliceBuffer(seg.originalBuffer, Math.round(seg.start * seg.originalBuffer.sampleRate), Math.round((seg.start + firstDuration) * seg.originalBuffer.sampleRate));
+        const secondBuffer = sliceBuffer(seg.originalBuffer, Math.round((seg.start + firstDuration) * seg.originalBuffer.sampleRate), Math.round((seg.start + seg.duration) * seg.originalBuffer.sampleRate));
+        segments = segments.filter(s => s.id !== seg.id);
+        segments.push({
+          id: segmentCounter++,
+          start: seg.start,
+          duration: firstDuration,
+          buffer: firstBuffer,
+          originalBuffer: seg.originalBuffer,
+          type: seg.type,
+          layer: seg.layer,
+          volume: seg.volume,
+          soundId: seg.soundId,
+          isTrimmed: seg.isTrimmed
+        }, {
+          id: segmentCounter++,
+          start: seg.start + firstDuration,
+          duration: secondDuration,
+          buffer: secondBuffer,
+          originalBuffer: seg.originalBuffer,
+          type: seg.type,
+          layer: seg.layer,
+          volume: seg.volume,
+          soundId: seg.soundId,
+          isTrimmed: seg.isTrimmed
+        });
+      }
+      updateSegmentsUI();
+      drawWaveform();
+      updatePreview();
+      pushHistory();
+    });
+  }
+
+  async function updatePreview() {
+    const mixedBuffer = await renderMixedBuffer();
+    const blob = await audioBufferToBlob(mixedBuffer);
+    audioEl.src = URL.createObjectURL(blob);
+  }
+
+  async function renderMixedBuffer() {
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
+    const length = Math.ceil(maxDuration * audioCtx.sampleRate);
+    const offlineCtx = new OfflineAudioContext(2, length, audioCtx.sampleRate);
+    segments.forEach(seg => {
+      const source = offlineCtx.createBufferSource();
+      source.buffer = seg.buffer;
+      const gainNode = offlineCtx.createGain();
+      gainNode.gain.value = seg.volume;
+      source.connect(gainNode);
+      gainNode.connect(offlineCtx.destination);
+      source.start(seg.start);
+    });
+    return await offlineCtx.startRendering();
+  }
+
+  async function audioBufferToBlob(buffer) {
+    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+    const src = offlineCtx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(offlineCtx.destination);
+    src.start();
+    const rendered = await offlineCtx.startRendering();
+    const wav = await audioBufferToWav(rendered);
+    return new Blob([wav], { type: 'audio/wav' });
+  }
+
+  async function audioBufferToWav(buffer) {
+    const numChannels = buffer.numberOfChannels;
+    const sampleRate = buffer.sampleRate;
+    const length = buffer.length * numChannels * 2 + 44;
+    const arrayBuffer = new ArrayBuffer(length);
+    const view = new DataView(arrayBuffer);
+
+    function writeString(view, offset, string) {
+      for (let i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
       }
     }
-    return buffer;
-  }
 
-  async function applyEffectToBuffer(buffer, effect, params) {
-    if (effect === 'echo') {
-      return await applyEcho(buffer, params.delay, params.decay);
-    } else if (effect === 'pitchUp') {
-      return await applyPitchShift(buffer, params.amount);
+    let offset = 0;
+    writeString(view, offset, 'RIFF'); offset += 4;
+    view.setUint32(offset, 36 + buffer.length * numChannels * 2, true); offset += 4;
+    writeString(view, offset, 'WAVE'); offset += 4;
+    writeString(view, offset, 'fmt '); offset += 4;
+    view.setUint32(offset, 16, true); offset += 4;
+    view.setUint16(offset, 1, true); offset += 2;
+    view.setUint16(offset, numChannels, true); offset += 2;
+    view.setUint32(offset, sampleRate, true); offset += 4;
+    view.setUint32(offset, sampleRate * numChannels * 2, true); offset += 4;
+    view.setUint16(offset, numChannels * 2, true); offset += 2;
+    view.setUint16(offset, 16, true); offset += 2;
+    writeString(view, offset, 'data'); offset += 4;
+    view.setUint32(offset, buffer.length * numChannels * 2, true); offset += 4;
+
+    for (let i = 0; i < buffer.length; i++) {
+      for (let ch = 0; ch < numChannels; ch++) {
+        const sample = Math.max(-1, Math.min(1, buffer.getChannelData(ch)[i]));
+        view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+        offset += 2;
+      }
     }
-    return buffer;
-  }
-
-  async function applyEcho(buffer, delay, decay) {
-    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length * 1.5, buffer.sampleRate);
-    const source = offlineCtx.createBufferSource();
-    source.buffer = buffer;
-    const delayNode = offlineCtx.createDelay(delay);
-    const gainNode = offlineCtx.createGain();
-    gainNode.gain.value = decay;
-    source.connect(delayNode);
-    delayNode.connect(gainNode);
-    gainNode.connect(offlineCtx.destination);
-    gainNode.connect(delayNode);
-    source.connect(offlineCtx.destination);
-    source.start();
-    return await offlineCtx.startRendering();
-  }
-
-  async function applyPitchShift(buffer, rate) {
-    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, Math.ceil(buffer.length / rate), buffer.sampleRate);
-    const source = offlineCtx.createBufferSource();
-    source.buffer = buffer;
-    source.playbackRate.value = rate;
-    source.connect(offlineCtx.destination);
-    source.start();
-    return await offlineCtx.startRendering();
-  }
-
-  function updateSoundsUI() {
-    const list = $('#effectsList');
-    list.innerHTML = '';
-    sounds.forEach(s => addSoundUI(s.id, s.name));
+    return arrayBuffer;
   }
 
   let soundRecorder, soundChunks = [], soundStream;
@@ -789,162 +880,56 @@
     });
   }
 
-  function setupTimelineDragDrop() {
-    const timeline = $('#timeline');
-    const snapLine = $('#snapLine');
-    let dropLayer = 0;
-    timeline.addEventListener('dragenter', e => e.preventDefault());
-    timeline.addEventListener('dragover', e => {
-      e.preventDefault();
-      const rect = timeline.getBoundingClientRect();
-      const dropX = e.clientX - rect.left;
-      const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
-      const dropTime = Math.round((dropX / rect.width) * maxDuration * 10) / 10;
-      snapLine.style.left = `${(dropTime / maxDuration) * 100}%`;
-      snapLine.style.display = 'block';
-      dropLayer = Math.floor(e.offsetY / 35);
-      if (dropLayer >= maxLayers) dropLayer = maxLayers - 1;
+  /***** PROFILE *****/
+  let profilePhotos = Array(6).fill(null);
+  window.__profileSaved = false;
+
+  $$('.photo-slot').forEach(slot => {
+    slot.addEventListener('click', () => {
+      $('#photoInput').dataset.index = slot.dataset.index;
+      $('#photoInput').click();
     });
-    timeline.addEventListener('dragleave', () => {
-      snapLine.style.display = 'none';
+  });
+
+  $('#photoInput').addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const index = parseInt(e.target.dataset.index);
+    const url = URL.createObjectURL(file);
+    profilePhotos[index] = { file, url };
+    const slot = $(`.photo-slot[data-index="${index}"]`);
+    slot.innerHTML = `<img src="${url}"><span class="delete">×</span>`;
+    slot.querySelector('.delete').addEventListener('click', e => {
+      e.stopPropagation();
+      profilePhotos[index] = null;
+      slot.innerHTML = 'Add Photo';
     });
-    timeline.addEventListener('drop', async e => {
-      e.preventDefault();
-      snapLine.style.display = 'none';
-      const soundId = e.dataTransfer.getData('soundId');
-      const effectType = e.dataTransfer.getData('effectType');
-      const rect = timeline.getBoundingClientRect();
-      const dropX = e.clientX - rect.left;
-      const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
-      const dropTime = Math.round((dropX / rect.width) * maxDuration * 10) / 10;
+  });
 
-      if (soundId) {
-        const sound = sounds.find(s => s.id == soundId);
-        if (!sound) return;
-        segments.push({
-          id: segmentCounter++,
-          start: dropTime,
-          duration: sound.buffer.duration,
-          buffer: sound.buffer,
-          originalBuffer: sound.buffer,
-          type: 'sound',
-          layer: dropLayer,
-          volume: 1.0,
-          soundId,
-          effects: [],
-          keyframes: [{time: dropTime, volume: 1.0}]
-        });
-      } else if (effectType) {
-        const seg = segments.find(s => {
-          const segStart = (s.start / maxDuration) * rect.width;
-          const segEnd = ((s.start + s.duration) / maxDuration) * rect.width;
-          return dropX >= segStart && dropX <= segEnd && Math.floor(e.offsetY / 35) === s.layer;
-        });
-        if (!seg) return;
-        if (effectType === 'keyframe') {
-          const time = dropTime;
-          seg.keyframes.push({time, volume: seg.volume});
-          seg.keyframes.sort((a, b) => a.time - b.time);
-        } else {
-          const params = effectType === 'echo' ? {delay: 0.3, decay: 0.5} : effectType === 'pitchUp' ? {amount: 1.2} : {};
-          seg.effects.push({type: effectType, params});
-          seg.buffer = await applyEffectsToBuffer(seg);
-        }
-      }
-      updateSegmentsUI();
-      drawWaveform();
-      updatePreview();
-      pushHistory();
-    });
-  }
-
-  async function updatePreview() {
-    const mixedBuffer = await renderMixedBuffer();
-    const blob = await audioBufferToBlob(mixedBuffer);
-    audioEl.src = URL.createObjectURL(blob);
-  }
-
-  async function renderMixedBuffer() {
-    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
-    const length = Math.ceil(maxDuration * audioCtx.sampleRate);
-    const offlineCtx = new OfflineAudioContext(2, length, audioCtx.sampleRate);
-    segments.forEach(seg => {
-      const source = offlineCtx.createBufferSource();
-      source.buffer = seg.buffer;
-      const gainNode = offlineCtx.createGain();
-      if (seg.keyframes.length > 1) {
-        seg.keyframes.forEach((kf, i) => {
-          const time = Math.min(Math.max(kf.time - seg.start, 0), seg.duration);
-          gainNode.gain.linearRampToValueAtTime(kf.volume, seg.start + time);
-        });
-      } else {
-        gainNode.gain.value = seg.volume;
-      }
-      source.connect(gainNode);
-      gainNode.connect(offlineCtx.destination);
-      source.start(seg.start);
-    });
-    return await offlineCtx.startRendering();
-  }
-
-  async function audioBufferToBlob(buffer) {
-    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
-    const src = offlineCtx.createBufferSource();
-    src.buffer = buffer;
-    src.connect(offlineCtx.destination);
-    src.start();
-    const rendered = await offlineCtx.startRendering();
-    const wav = await audioBufferToWav(rendered);
-    return new Blob([wav], { type: 'audio/wav' });
-  }
-
-  async function audioBufferToWav(buffer) {
-    const numChannels = buffer.numberOfChannels;
-    const sampleRate = buffer.sampleRate;
-    const length = buffer.length * numChannels * 2 + 44;
-    const arrayBuffer = new ArrayBuffer(length);
-    const view = new DataView(arrayBuffer);
-
-    function writeString(view, offset, string) {
-      for (let i = 0; i < string.length; i++) {
-        view.setUint8(offset + i, string.charCodeAt(i));
+  $('#saveProfileBtn').addEventListener('click', async () => {
+    const name = $('#profileName').value.trim();
+    const age = $('#profileAge').value.trim();
+    const height = $('#profileHeight').value.trim();
+    const type = $('#profileType').value.trim();
+    if (!name || !age || !height || !type) { alert('Please fill out all profile fields.'); return; }
+    const photoURLs = [];
+    for (let i = 0; i < profilePhotos.length; i++) {
+      if (profilePhotos[i]?.file) {
+        const ref = sRef(storage, `profiles/${currentUser.uid}/photo_${i}.${profilePhotos[i].file.type.split('/')[1] || 'jpg'}`);
+        await uploadBytes(ref, profilePhotos[i].file, { contentType: profilePhotos[i].file.type || 'image/jpeg' });
+        const url = await getDownloadURL(ref);
+        photoURLs.push(url);
       }
     }
-
-    let offset = 0;
-    writeString(view, offset, 'RIFF'); offset += 4;
-    view.setUint32(offset, 36 + buffer.length * numChannels * 2, true); offset += 4;
-    writeString(view, offset, 'WAVE'); offset += 4;
-    writeString(view, offset, 'fmt '); offset += 4;
-    view.setUint32(offset, 16, true); offset += 4;
-    view.setUint16(offset, 1, true); offset += 2;
-    view.setUint16(offset, numChannels, true); offset += 2;
-    view.setUint32(offset, sampleRate, true); offset += 4;
-    view.setUint32(offset, sampleRate * numChannels * 2, true); offset += 4;
-    view.setUint16(offset, numChannels * 2, true); offset += 2;
-    view.setUint16(offset, 16, true); offset += 2;
-    writeString(view, offset, 'data'); offset += 4;
-    view.setUint32(offset, buffer.length * numChannels * 2, true); offset += 4;
-
-    for (let i = 0; i < buffer.length; i++) {
-      for (let ch = 0; ch < numChannels; ch++) {
-        const sample = Math.max(-1, Math.min(1, buffer.getChannelData(ch)[i]));
-        view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
-        offset += 2;
-      }
-    }
-    return arrayBuffer;
-  }
-
-  saveEditBtn.addEventListener('click', async () => {
-    if (segments.length === 0) { alert('Record and edit your pickup line first.'); return; }
-    const mixedBuffer = await renderMixedBuffer();
-    window.__recBlob = await audioBufferToBlob(mixedBuffer);
+    await set(rRef(db, `profiles/${currentUser.uid}`), {
+      name, age, height, type, photos: photoURLs, ts: serverTimestamp()
+    });
     const lineRef = sRef(storage, `lines/${currentUser.uid}/${Date.now()}.wav`);
     await uploadBytes(lineRef, window.__recBlob, { contentType: 'audio/wav' });
     const lineURL = await getDownloadURL(lineRef);
     await set(rRef(db, `lines/${currentUser.uid}`), { uid: currentUser.uid, lineURL, ts: serverTimestamp() });
-    go(1);
+    window.__profileSaved = true;
+    go(2);
     initDeck();
   });
 
@@ -1076,7 +1061,7 @@
     activeRoom = roomId;
     window.__activeRoom = roomId;
     $('#chatLog').innerHTML = '';
-    go(2);
+    go(3);
 
     const msgsRef = rRef(db, `rooms/${roomId}/messages`);
     if (messagesUnsub) messagesUnsub();
