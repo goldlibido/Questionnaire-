@@ -29,7 +29,8 @@
   input[type="text"],select{width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px;touch-action:manipulation}
   input[type="range"]{flex:1}
   .rec-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px}
-  .record-btn{width:160px;height:160px;border-radius:999px;border:1px solid rgba(255,255,255,.15);cursor:pointer;background:radial-gradient(closest-side, rgba(225,191,120,.25) 0%, rgba(225,191,120,0) 78%),linear-gradient(180deg,#272727,#161616);color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 6px rgba(225,191,120,.08) inset}
+  .record-btn{width:160px;height:160px;border-radius:999px;border:1px solid rgba(255,255,255,.15);cursor:pointer;background:var(--red);color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 6px rgba(225,191,120,.08) inset}
+  .record-btn.recording{background:radial-gradient(closest-side, rgba(225,191,120,.25) 0%, rgba(225,191,120,0) 78%),linear-gradient(180deg,#272727,#161616)}
   .rec-indicator{width:10px;height:10px;background:#f34a4a;border-radius:50%;box-shadow:0 0 12px rgba(243,74,74,.9);display:inline-block;margin-right:8px;vertical-align:middle;animation:pulse 1s infinite}
   @keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.65}100%{transform:scale(1);opacity:1}}
   .player{display:flex;align-items:center;gap:12px;margin-top:14px}
@@ -46,8 +47,10 @@
   .segment.effect{background:rgba(6,149,78,.2);border-color:var(--green)}
   .segment .volume-control{position:absolute;top:-30px;left:0;width:100px;padding:4px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
   .segment:hover .volume-control{display:block}
+  .segment .effect-banner{position:absolute;top:-50px;padding:4px 8px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:4px;font-size:10px;cursor:pointer}
+  .segment .effect-params{position:absolute;top:-80px;padding:8px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
   .effects{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-  .effect-btn{padding:6px 10px;border-radius:999px;background:#151515;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-size:12px;color:#fff}
+  .effect-btn{padding:6px 10px;border-radius:999px;background:#151515;border:1px solid rgba(255,255,255,.15);cursor:grab;font-size:12px;color:#fff}
   .effect-item{padding:6px;border-radius:8px;background:rgba(0,0,0,.5);cursor:grab;border:1px solid rgba(255,255,255,.2);margin:5px;position:relative}
   .effect-item .delete{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;border-radius:50%;width:15px;height:15px;line-height:15px;text-align:center;cursor:pointer;font-size:10px}
   .deck{position:relative;height:420px;border-radius:16px;overflow:hidden;background:#0f0f10;border:1px solid rgba(255,255,255,.08)}
@@ -93,7 +96,6 @@
           <div class="row" style="align-items:center; justify-content:center; gap:18px; margin-bottom:12px">
             <button class="btn" id="undoBtn">Undo</button>
             <button class="btn" id="redoBtn">Redo</button>
-            <button class="btn" id="aiAmazeBtn">AI Amazement</button>
           </div>
           <div class="row" style="align-items:center; justify-content:center; gap:18px; margin-bottom:12px">
             <button class="record-btn" id="recordBtn"><span id="recLabel">Start Recording</span></button>
@@ -121,16 +123,10 @@
               <div id="snapLine" class="snap-line"></div>
             </div>
             <div class="effects">
-              <button class="effect-btn" data-effect="echo">Echo</button>
-              <div class="param-row hidden" id="echoParams">
-                <label>Delay:</label><input type="range" min="0.1" max="1" step="0.1" value="0.3" id="echoDelay">
-                <label>Decay:</label><input type="range" min="0.1" max="0.9" step="0.1" value="0.5" id="echoDecay">
-              </div>
-              <button class="effect-btn" data-effect="pitchUp">Pitch Up</button>
-              <div class="param-row hidden" id="pitchParams">
-                <label>Amount:</label><input type="range" min="0.5" max="2" step="0.1" value="1.2" id="pitchAmount">
-              </div>
-              <button class="effect-btn" id="cutBtn">Cut Selection</button>
+              <button class="effect-btn" data-effect="echo" draggable="true">Echo</button>
+              <button class="effect-btn" data-effect="pitchUp" draggable="true">Pitch Up</button>
+              <button class="effect-btn" id="trimBtn">Trim Clip</button>
+              <button class="effect-btn" id="keyframeBtn">Add Keyframe</button>
             </div>
             <div class="row" style="margin-top:10px">
               <button class="btn" id="recordSoundBtn">Record New Sound</button>
@@ -234,8 +230,10 @@
   const audioEl = $('#audio'), playerBlock = $('#playerBlock');
   const playToggle = $('#playToggle'), seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
   const retakeBtn = $('#retakeBtn'), saveEditBtn = $('#saveEditBtn');
-  const undoBtn = $('#undoBtn'), redoBtn = $('#redoBtn'), aiAmazeBtn = $('#aiAmazeBtn');
+  const undoBtn = $('#undoBtn'), redoBtn = $('#redoBtn');
+  const trimBtn = $('#trimBtn'), keyframeBtn = $('#keyframeBtn');
   let mediaRecorder, recChunks = [], recStream = null, recMime = '', recording = false;
+  let trimMode = false, keyframeMode = false;
   window.__recBlob = null;
 
   function supportedMime() {
@@ -261,6 +259,7 @@
       mediaRecorder.start();
       recording = true;
       recLabel.innerHTML = '<span class="rec-indicator"></span> Recording…';
+      recordBtn.classList.add('recording');
     } catch (err) { alert('Mic permission needed. Use HTTPS.'); console.error(err); }
   }
   function stopRecording() {
@@ -269,6 +268,7 @@
       recStream?.getTracks().forEach(t => t.stop());
       recording = false;
       recLabel.textContent = 'Start Recording';
+      recordBtn.classList.remove('recording');
     }
   }
   recordBtn.addEventListener('click', () => recording ? stopRecording() : startRecording());
@@ -303,16 +303,18 @@
     $('#effectsList').innerHTML = '';
     $('#segmentsContainer').innerHTML = '';
     timelineCanvas.getContext('2d').clearRect(0, 0, timelineCanvas.width, timelineCanvas.height);
-    selectedStart = selectedEnd = null;
+    trimMode = false;
+    keyframeMode = false;
+    trimBtn.classList.remove('active');
+    keyframeBtn.classList.remove('active');
   });
 
   /***** AUDIO EDITOR *****/
   let audioCtx, timelineCanvas = $('#timelineCanvas');
-  let segments = []; // [{id, start: seconds, duration: seconds, buffer, type: 'main' or 'sound', layer: 0+, volume: 0-1, soundId}]
+  let segments = []; // [{id, start, duration, buffer, type: 'main' or 'sound', layer: 0+, volume: 1.0, soundId, effects: [{type, params}], keyframes: [{time, volume}]}]
   let sounds = []; // [{id, name, buffer}]
   let soundCounter = 0;
   let segmentCounter = 0;
-  let selectedStart = null, selectedEnd = null; // selection in pct
   let history = [];
   let historyIndex = -1;
   const maxLayers = 5;
@@ -322,12 +324,11 @@
     const resp = await fetch(url);
     const arrayBuf = await resp.arrayBuffer();
     const buffer = await audioCtx.decodeAudioData(arrayBuf);
-    segments = [{id: segmentCounter++, start: 0, duration: buffer.duration, buffer, type: 'main', layer: 0, volume: 1.0}];
+    segments = [{id: segmentCounter++, start: 0, duration: buffer.duration, buffer, type: 'main', layer: 0, volume: 1.0, effects: [], keyframes: [{time: 0, volume: 1.0}]}];
     pushHistory();
     updateSegmentsUI();
     drawWaveform();
-    setupTimelineEvents();
-    setupSoundDragDrop();
+    setupTimelineDragDrop();
   }
 
   function pushHistory() {
@@ -339,14 +340,14 @@
   undoBtn.addEventListener('click', async () => {
     if (historyIndex <= 0) return;
     historyIndex--;
-    const targetState = history[historyIndex];
+    const targetState = JSON.parse(JSON.stringify(history[historyIndex]));
     segments = await Promise.all(targetState.map(async s => {
       if (s.type === 'main') {
-        const mainSeg = segments.find(seg => seg.type === 'main');
+        const mainSeg = segments.find(seg => seg.type === 'main') || {buffer: await audioCtx.decodeAudioData(await (await fetch(audioEl.src)).arrayBuffer())};
         return {...s, buffer: mainSeg.buffer};
       } else {
         const sound = sounds.find(snd => snd.id === s.soundId);
-        return {...s, buffer: sound.buffer};
+        return {...s, buffer: sound?.buffer};
       }
     }));
     updateSegmentsUI();
@@ -357,14 +358,14 @@
   redoBtn.addEventListener('click', async () => {
     if (historyIndex >= history.length - 1) return;
     historyIndex++;
-    const targetState = history[historyIndex];
+    const targetState = JSON.parse(JSON.stringify(history[historyIndex]));
     segments = await Promise.all(targetState.map(async s => {
       if (s.type === 'main') {
-        const mainSeg = segments.find(seg => seg.type === 'main');
+        const mainSeg = segments.find(seg => seg.type === 'main') || {buffer: await audioCtx.decodeAudioData(await (await fetch(audioEl.src)).arrayBuffer())};
         return {...s, buffer: mainSeg.buffer};
       } else {
         const sound = sounds.find(snd => snd.id === s.soundId);
-        return {...s, buffer: sound.buffer};
+        return {...s, buffer: sound?.buffer};
       }
     }));
     updateSegmentsUI();
@@ -374,7 +375,7 @@
 
   function drawWaveform() {
     const canvas = timelineCanvas;
-    canvas.width = canvas.offsetWidth * 2; // HiDPI
+    canvas.width = canvas.offsetWidth * 2;
     canvas.height = canvas.offsetHeight * 2;
     const ctx = canvas.getContext('2d');
     ctx.scale(2, 2);
@@ -435,10 +436,58 @@
       volControl.className = 'volume-control';
       volControl.innerHTML = `<input type="range" min="0" max="1" step="0.01" value="${seg.volume}" class="volume-slider">`;
       div.appendChild(volControl);
+      seg.effects.forEach(effect => {
+        const banner = document.createElement('div');
+        banner.className = 'effect-banner';
+        banner.textContent = effect.type.charAt(0).toUpperCase() + effect.type.slice(1);
+        banner.dataset.effectType = effect.type;
+        const paramsDiv = document.createElement('div');
+        paramsDiv.className = 'effect-params';
+        if (effect.type === 'echo') {
+          paramsDiv.innerHTML = `
+            <label>Delay:</label><input type="range" min="0.1" max="1" step="0.1" value="${effect.params.delay}" class="echo-delay">
+            <label>Decay:</label><input type="range" min="0.1" max="0.9" step="0.1" value="${effect.params.decay}" class="echo-decay">
+          `;
+        } else if (effect.type === 'pitchUp') {
+          paramsDiv.innerHTML = `
+            <label>Amount:</label><input type="range" min="0.5" max="2" step="0.1" value="${effect.params.amount}" class="pitch-amount">
+          `;
+        }
+        banner.addEventListener('click', () => {
+          paramsDiv.style.display = paramsDiv.style.display === 'block' ? 'none' : 'block';
+        });
+        paramsDiv.querySelectorAll('input').forEach(input => {
+          input.addEventListener('input', async () => {
+            const effectIdx = seg.effects.findIndex(e => e.type === effect.type);
+            if (effect.type === 'echo') {
+              seg.effects[effectIdx].params = {
+                delay: parseFloat(paramsDiv.querySelector('.echo-delay').value),
+                decay: parseFloat(paramsDiv.querySelector('.echo-decay').value)
+              };
+            } else if (effect.type === 'pitchUp') {
+              seg.effects[effectIdx].params = {
+                amount: parseFloat(paramsDiv.querySelector('.pitch-amount').value)
+              };
+            }
+            seg.buffer = await applyEffectsToBuffer(seg);
+            updatePreview();
+            drawWaveform();
+            pushHistory();
+          });
+        });
+        div.appendChild(banner);
+        div.appendChild(paramsDiv);
+      });
       container.appendChild(div);
       makeDraggable(div, maxDuration);
       volControl.querySelector('.volume-slider').addEventListener('input', e => {
-        seg.volume = parseFloat(e.target.value);
+        if (keyframeMode) {
+          const time = seg.start + (seg.duration * (e.offsetX / div.offsetWidth));
+          seg.keyframes.push({time, volume: parseFloat(e.target.value)});
+          seg.keyframes.sort((a, b) => a.time - b.time);
+        } else {
+          seg.volume = parseFloat(e.target.value);
+        }
         updatePreview();
         pushHistory();
       });
@@ -448,16 +497,27 @@
   function makeDraggable(el, maxDuration) {
     let startX, startLeft, startWidth, startLayer, resizeDir = null;
     el.addEventListener('mousedown', e => {
-      if (e.offsetX < 10) resizeDir = 'left';
-      else if (e.offsetX > el.offsetWidth - 10) resizeDir = 'right';
-      else resizeDir = null;
+      if (trimMode) {
+        if (e.offsetX < 10) resizeDir = 'left';
+        else if (e.offsetX > el.offsetWidth - 10) resizeDir = 'right';
+        else return;
+      } else if (keyframeMode) {
+        const seg = segments.find(s => s.id == el.dataset.id);
+        const time = seg.start + (seg.duration * (e.offsetX / el.offsetWidth));
+        seg.keyframes.push({time, volume: seg.volume});
+        seg.keyframes.sort((a, b) => a.time - b.time);
+        updatePreview();
+        pushHistory();
+        return;
+      } else {
+        resizeDir = e.offsetX < 10 ? 'left' : e.offsetX > el.offsetWidth - 10 ? 'right' : null;
+      }
       startX = e.clientX;
       startLeft = parseFloat(el.style.left) || 0;
       startWidth = parseFloat(el.style.width) || 0;
       startLayer = parseInt(el.style.getPropertyValue('--layer')) || 0;
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
-      // Handle layer change on right-click or long press
       el.addEventListener('contextmenu', e => {
         e.preventDefault();
         const seg = segments.find(s => s.id == el.dataset.id);
@@ -493,69 +553,20 @@
     const widthPct = parseFloat(el.style.width) / 100;
     const seg = segments.find(s => s.id == el.dataset.id);
     if (seg) {
+      const oldDuration = seg.duration;
       seg.start = leftPct * maxDuration;
       seg.duration = widthPct * maxDuration;
       if (resizeDir) {
-        seg.buffer = sliceBuffer(seg.buffer, 0, seg.duration * seg.buffer.sampleRate);
+        const startSample = resizeDir === 'left' ? Math.round((oldDuration - seg.duration) * seg.buffer.sampleRate) : 0;
+        seg.buffer = sliceBuffer(seg.buffer, startSample, seg.duration * seg.buffer.sampleRate);
+        seg.keyframes = seg.keyframes.map(kf => ({
+          time: seg.start + (kf.time - seg.start) * (seg.duration / oldDuration),
+          volume: kf.volume
+        }));
       }
     }
     updatePreview();
   }
-
-  function setupTimelineEvents() {
-    const canvas = timelineCanvas;
-    let isSelecting = false;
-    let startX;
-    canvas.addEventListener('mousedown', e => {
-      isSelecting = true;
-      startX = e.offsetX / canvas.offsetWidth;
-    });
-    canvas.addEventListener('mousemove', e => {
-      if (isSelecting) {
-        // Visual feedback for selection could be added
-      }
-    });
-    canvas.addEventListener('mouseup', e => {
-      if (isSelecting) {
-        const endX = e.offsetX / canvas.offsetWidth;
-        selectedStart = Math.min(startX, endX);
-        selectedEnd = Math.max(startX, endX);
-        isSelecting = false;
-      }
-    });
-  }
-
-  $('#cutBtn').addEventListener('click', () => {
-    if (selectedStart === null || selectedEnd === null) return alert('Select a range on the timeline first.');
-    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
-    const cutStartTime = selectedStart * maxDuration;
-    const cutEndTime = selectedEnd * maxDuration;
-    let newSegments = [];
-    segments.forEach(seg => {
-      if (cutEndTime <= seg.start || cutStartTime >= seg.start + seg.duration) {
-        newSegments.push(seg);
-      } else {
-        if (cutStartTime > seg.start) {
-          const leftDuration = cutStartTime - seg.start;
-          const leftBuffer = sliceBuffer(seg.buffer, 0, leftDuration * seg.buffer.sampleRate);
-          newSegments.push({id: segmentCounter++, start: seg.start, duration: leftDuration, buffer: leftBuffer, type: seg.type, layer: seg.layer, volume: seg.volume});
-        }
-        if (cutEndTime < seg.start + seg.duration) {
-          const rightStart = cutEndTime;
-          const rightDuration = (seg.start + seg.duration) - cutEndTime;
-          const rightOffset = (rightStart - seg.start) * seg.buffer.sampleRate;
-          const rightBuffer = sliceBuffer(seg.buffer, rightOffset, rightDuration * seg.buffer.sampleRate);
-          newSegments.push({id: segmentCounter++, start: rightStart, duration: rightDuration, buffer: rightBuffer, type: seg.type, layer: seg.layer, volume: seg.volume});
-        }
-      }
-    });
-    segments = newSegments;
-    updateSegmentsUI();
-    drawWaveform();
-    updatePreview();
-    pushHistory();
-    selectedStart = selectedEnd = null;
-  });
 
   function sliceBuffer(buffer, startSample, durationSamples) {
     const newBuffer = audioCtx.createBuffer(buffer.numberOfChannels, durationSamples, buffer.sampleRate);
@@ -565,31 +576,33 @@
     return newBuffer;
   }
 
-  document.querySelectorAll('.effect-btn:not(#cutBtn)').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const effect = btn.dataset.effect;
-      const paramsDiv = $(`#${effect}Params`);
-      paramsDiv.classList.toggle('hidden');
-      if (!paramsDiv.classList.contains('hidden')) return;
-      const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
-      const selStartTime = selectedStart ? selectedStart * maxDuration : null;
-      const selEndTime = selectedEnd ? selectedEnd * maxDuration : null;
-      for (let i = 0; i < segments.length; i++) {
-        if (!selStartTime || (segments[i].start < selEndTime && segments[i].start + segments[i].duration > selStartTime)) {
-          let params = {};
-          if (effect === 'echo') {
-            params = { delay: parseFloat($('#echoDelay').value), decay: parseFloat($('#echoDecay').value) };
-          } else if (effect === 'pitchUp') {
-            params = { amount: parseFloat($('#pitchAmount').value) };
-          }
-          segments[i].buffer = await applyEffectToBuffer(segments[i].buffer, effect, params);
-        }
-      }
-      updatePreview();
-      drawWaveform();
-      pushHistory();
+  document.querySelectorAll('.effect-btn[data-effect]').forEach(btn => {
+    btn.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('effectType', btn.dataset.effect);
     });
   });
+
+  trimBtn.addEventListener('click', () => {
+    trimMode = !trimMode;
+    keyframeMode = false;
+    trimBtn.classList.toggle('active');
+    keyframeBtn.classList.remove('active');
+  });
+
+  keyframeBtn.addEventListener('click', () => {
+    keyframeMode = !keyframeMode;
+    trimMode = false;
+    keyframeBtn.classList.toggle('active');
+    trimBtn.classList.remove('active');
+  });
+
+  async function applyEffectsToBuffer(seg) {
+    let buffer = seg.buffer;
+    for (const effect of seg.effects) {
+      buffer = await applyEffectToBuffer(buffer, effect.type, effect.params);
+    }
+    return buffer;
+  }
 
   async function applyEffectToBuffer(buffer, effect, params) {
     if (effect === 'echo') {
@@ -617,7 +630,7 @@
   }
 
   async function applyPitchShift(buffer, rate) {
-    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length * (1 / rate), buffer.sampleRate);
+    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, Math.ceil(buffer.length / rate), buffer.sampleRate);
     const source = offlineCtx.createBufferSource();
     source.buffer = buffer;
     source.playbackRate.value = rate;
@@ -699,7 +712,7 @@
     });
   }
 
-  function setupSoundDragDrop() {
+  function setupTimelineDragDrop() {
     const timeline = $('#timeline');
     const snapLine = $('#snapLine');
     let dropLayer = 0;
@@ -709,7 +722,7 @@
       const rect = timeline.getBoundingClientRect();
       const dropX = e.clientX - rect.left;
       const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
-      const dropTime = Math.round((dropX / rect.width) * maxDuration * 10) / 10; // Snap to 0.1s
+      const dropTime = Math.round((dropX / rect.width) * maxDuration * 10) / 10;
       snapLine.style.left = `${(dropTime / maxDuration) * 100}%`;
       snapLine.style.display = 'block';
       dropLayer = Math.floor(e.offsetY / 35);
@@ -722,22 +735,38 @@
       e.preventDefault();
       snapLine.style.display = 'none';
       const soundId = e.dataTransfer.getData('soundId');
-      const sound = sounds.find(s => s.id == soundId);
-      if (!sound) return;
+      const effectType = e.dataTransfer.getData('effectType');
       const rect = timeline.getBoundingClientRect();
       const dropX = e.clientX - rect.left;
       const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
-      const dropTime = Math.round((dropX / rect.width) * maxDuration * 10) / 10; // Snap to 0.1s
-      segments.push({
-        id: segmentCounter++,
-        start: dropTime,
-        duration: sound.buffer.duration,
-        buffer: sound.buffer,
-        type: 'sound',
-        layer: dropLayer,
-        volume: 1.0,
-        soundId
-      });
+      const dropTime = Math.round((dropX / rect.width) * maxDuration * 10) / 10;
+
+      if (soundId) {
+        const sound = sounds.find(s => s.id == soundId);
+        if (!sound) return;
+        segments.push({
+          id: segmentCounter++,
+          start: dropTime,
+          duration: sound.buffer.duration,
+          buffer: sound.buffer,
+          type: 'sound',
+          layer: dropLayer,
+          volume: 1.0,
+          soundId,
+          effects: [],
+          keyframes: [{time: dropTime, volume: 1.0}]
+        });
+      } else if (effectType) {
+        const seg = segments.find(s => {
+          const segStart = (s.start / maxDuration) * rect.width;
+          const segEnd = ((s.start + s.duration) / maxDuration) * rect.width;
+          return dropX >= segStart && dropX <= segEnd && Math.floor(e.offsetY / 35) === s.layer;
+        });
+        if (!seg) return;
+        const params = effectType === 'echo' ? {delay: 0.3, decay: 0.5} : {amount: 1.2};
+        seg.effects.push({type: effectType, params});
+        seg.buffer = await applyEffectsToBuffer(seg);
+      }
       updateSegmentsUI();
       drawWaveform();
       updatePreview();
@@ -759,7 +788,14 @@
       const source = offlineCtx.createBufferSource();
       source.buffer = seg.buffer;
       const gainNode = offlineCtx.createGain();
-      gainNode.gain.value = seg.volume;
+      if (seg.keyframes.length > 1) {
+        seg.keyframes.forEach((kf, i) => {
+          const time = Math.min(Math.max(kf.time - seg.start, 0), seg.duration);
+          gainNode.gain.linearRampToValueAtTime(kf.volume, seg.start + time);
+        });
+      } else {
+        gainNode.gain.value = seg.volume;
+      }
       source.connect(gainNode);
       gainNode.connect(offlineCtx.destination);
       source.start(seg.start);
@@ -815,10 +851,6 @@
     }
     return arrayBuffer;
   }
-
-  aiAmazeBtn.addEventListener('click', () => {
-    alert('AI Amazement feature coming soon! Add your OpenAI API key to enable transcription and smart sound placement.');
-  });
 
   saveEditBtn.addEventListener('click', async () => {
     if (segments.length === 0) { alert('Record and edit your pickup line first.'); return; }
