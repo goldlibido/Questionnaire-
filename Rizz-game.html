@@ -27,6 +27,7 @@
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center} .hidden{display:none !important}
   label{font-size:12px;color:#e5e5e5;margin-bottom:6px;display:block}
   input[type="text"],select{width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px;touch-action:manipulation}
+  input[type="range"]{flex:1}
   .rec-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px}
   .record-btn{width:160px;height:160px;border-radius:999px;border:1px solid rgba(255,255,255,.15);cursor:pointer;background:radial-gradient(closest-side, rgba(225,191,120,.25) 0%, rgba(225,191,120,0) 78%),linear-gradient(180deg,#272727,#161616);color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 6px rgba(225,191,120,.08) inset}
   .rec-indicator{width:10px;height:10px;background:#f34a4a;border-radius:50%;box-shadow:0 0 12px rgba(243,74,74,.9);display:inline-block;margin-right:8px;vertical-align:middle;animation:pulse 1s infinite}
@@ -37,15 +38,18 @@
   .bar .fill{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--red),var(--blue),var(--green));border-right:2px solid rgba(255,255,255,.5)}
   .time{font-size:12px;color:var(--muted);width:74px;text-align:right}
   .editor-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px;margin-top:16px}
-  .timeline{position:relative;height:120px;background:#0f0f0f;border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:hidden}
-  .timeline canvas{width:100%;height:100%;}
-  .segments-container{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;}
-  .segment{position:absolute;height:100%;background:rgba(225,191,120,.2);border:1px solid var(--gold);cursor:move;opacity:0.7;}
-  .segment:hover{opacity:1;}
-  .segment.effect{background:rgba(6,149,78,.2);border-color:var(--green);}
+  .timeline{position:relative;height:180px;background:#0f0f0f;border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:hidden}
+  .timeline canvas{width:100%;height:100%}
+  .segments-container{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible}
+  .segment{position:absolute;height:30px;background:rgba(225,191,120,.2);border:1px solid var(--gold);cursor:move;opacity:0.7;top:calc(var(--layer) * 35px);transition:opacity .2s}
+  .segment:hover{opacity:1}
+  .segment.effect{background:rgba(6,149,78,.2);border-color:var(--green)}
+  .segment .volume-control{position:absolute;top:-30px;left:0;width:100px;padding:4px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
+  .segment:hover .volume-control{display:block}
   .effects{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
   .effect-btn{padding:6px 10px;border-radius:999px;background:#151515;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-size:12px;color:#fff}
-  .effect-item{padding:6px;border-radius:8px;background:rgba(0,0,0,.5);cursor:grab;border:1px solid rgba(255,255,255,.2);margin:5px;}
+  .effect-item{padding:6px;border-radius:8px;background:rgba(0,0,0,.5);cursor:grab;border:1px solid rgba(255,255,255,.2);margin:5px;position:relative}
+  .effect-item .delete{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;border-radius:50%;width:15px;height:15px;line-height:15px;text-align:center;cursor:pointer;font-size:10px}
   .deck{position:relative;height:420px;border-radius:16px;overflow:hidden;background:#0f0f10;border:1px solid rgba(255,255,255,.08)}
   .card{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(1200px 500px at 100% -10%, rgba(255,255,255,.06), transparent 70%),linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01))}
   .swipe-actions{display:flex;gap:10px}
@@ -62,13 +66,14 @@
   .composer{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.08);background:#101010}
   .composer input[type="text"]{flex:1;background:#0f0f0f;border:1px solid rgba(255,255,255,.12)}
   .small{font-size:12px;color:var(--muted)} .tip{color:var(--muted);font-size:12px;margin-top:6px}
+  .param-row{display:flex;gap:8px;align-items:center;margin-top:8px}
 </style>
 </head>
 <body>
 <div class="border-wrap">
   <div class="app">
     <header>
-      <img src="golden-le-libido-logo.png" alt="Le Libido" onerror="this.style.opacity=.0">
+      <img src="golden-le-libido-logo.png" alt="Le Libido" onerror="this.style.opacity=0">
       <div class="title">Blind Audio Pickup</div>
       <div class="small">Craft your pickup line with effects. Match to unlock chats.</div>
     </header>
@@ -84,6 +89,11 @@
       <h2>Step 1 — Craft your pickup line</h2>
       <div class="grid cols-2">
         <div class="rec-wrap">
+          <div class="row" style="align-items:center; justify-content:center; gap:18px; margin-bottom:12px">
+            <button class="btn" id="undoBtn">Undo</button>
+            <button class="btn" id="redoBtn">Redo</button>
+            <button class="btn" id="aiAmazeBtn">AI Amazement</button>
+          </div>
           <div class="row" style="align-items:center; justify-content:center; gap:18px; margin-bottom:12px">
             <button class="record-btn" id="recordBtn"><span id="recLabel">Start Recording</span></button>
             <div>
@@ -110,7 +120,14 @@
             </div>
             <div class="effects">
               <button class="effect-btn" data-effect="echo">Echo</button>
+              <div class="param-row hidden" id="echoParams">
+                <label>Delay:</label><input type="range" min="0.1" max="1" step="0.1" value="0.3" id="echoDelay">
+                <label>Decay:</label><input type="range" min="0.1" max="0.9" step="0.1" value="0.5" id="echoDecay">
+              </div>
               <button class="effect-btn" data-effect="pitchUp">Pitch Up</button>
+              <div class="param-row hidden" id="pitchParams">
+                <label>Amount:</label><input type="range" min="0.5" max="2" step="0.1" value="1.2" id="pitchAmount">
+              </div>
               <button class="effect-btn" id="cutBtn">Cut Selection</button>
             </div>
             <div class="row" style="margin-top:10px">
@@ -176,12 +193,25 @@
 <!-- Firebase + App logic -->
 <script type="module">
   /***** FIREBASE IMPORTS *****/
-  import { app, db } from './firebase-config.js';
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js';
   import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js';
-  import { ref as rRef, set, get, onValue, push, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
+  import { getDatabase, ref as rRef, set, get, onValue, push, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js';
 
+  // Firebase config (replace with your own)
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    databaseURL: "YOUR_DATABASE_URL",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getDatabase(app);
   const storage = getStorage(app);
 
   let currentUser = null;
@@ -190,6 +220,7 @@
 
   /***** BASIC NAV / STEP UI *****/
   const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
   const stepper = $('#stepper').children;
   function go(i) {
     ['#step1', '#step2', '#step3'].forEach((id, idx) => {
@@ -214,8 +245,9 @@
   const audioEl = $('#audio'), playerBlock = $('#playerBlock');
   const playToggle = $('#playToggle'), seekBar = $('#seekBar'), fill = $('#fill'), time = $('#time');
   const retakeBtn = $('#retakeBtn'), saveEditBtn = $('#saveEditBtn');
+  const undoBtn = $('#undoBtn'), redoBtn = $('#redoBtn'), aiAmazeBtn = $('#aiAmazeBtn');
   let mediaRecorder, recChunks = [], recStream = null, recMime = '', recording = false;
-  window.__recBlob = null; // pickup line blob
+  window.__recBlob = null;
 
   function supportedMime() {
     const c = ['audio/webm;codecs=opus', 'audio/mp4;codecs=aac', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/aac'];
@@ -264,7 +296,7 @@
     fill.style.inset = `0 ${100 - pct}% 0 0`;
     updateTime(c, d);
   });
-  seekBar.addEventListener('click', (e) => {
+  seekBar.addEventListener('click', e => {
     const r = seekBar.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width;
     if (audioEl.duration) audioEl.currentTime = x * audioEl.duration;
@@ -275,9 +307,10 @@
     document.getElementById('editorBlock').classList.add('hidden');
     window.__recBlob = null;
     audioEl.removeAttribute('src');
-    // Clear editor state
     segments = [];
     sounds = [];
+    history = [];
+    historyIndex = -1;
     $('#effectsList').innerHTML = '';
     $('#segmentsContainer').innerHTML = '';
     timelineCanvas.getContext('2d').clearRect(0, 0, timelineCanvas.width, timelineCanvas.height);
@@ -286,22 +319,69 @@
 
   /***** AUDIO EDITOR *****/
   let audioCtx, timelineCanvas = $('#timelineCanvas');
-  let segments = []; // [{id, start: seconds, duration: seconds, buffer, type: 'main' or 'sound'}]
+  let segments = []; // [{id, start: seconds, duration: seconds, buffer, type: 'main' or 'sound', layer: 0+, volume: 0-1, soundId}]
   let sounds = []; // [{id, name, buffer}]
   let soundCounter = 0;
   let segmentCounter = 0;
   let selectedStart = null, selectedEnd = null; // selection in pct
+  let history = [];
+  let historyIndex = -1;
+  const maxLayers = 5;
+
   async function initEditor(url) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const resp = await fetch(url);
     const arrayBuf = await resp.arrayBuffer();
     const buffer = await audioCtx.decodeAudioData(arrayBuf);
-    segments = [{id: segmentCounter++, start: 0, duration: buffer.duration, buffer, type: 'main'}];
+    segments = [{id: segmentCounter++, start: 0, duration: buffer.duration, buffer, type: 'main', layer: 0, volume: 1.0}];
+    pushHistory();
     updateSegmentsUI();
     drawWaveform();
     setupTimelineEvents();
     setupSoundDragDrop();
   }
+
+  function pushHistory() {
+    history = history.slice(0, historyIndex + 1);
+    history.push(JSON.parse(JSON.stringify(segments.map(s => ({...s, buffer: null})))));
+    historyIndex = history.length - 1;
+  }
+
+  undoBtn.addEventListener('click', async () => {
+    if (historyIndex <= 0) return;
+    historyIndex--;
+    const targetState = history[historyIndex];
+    segments = await Promise.all(targetState.map(async s => {
+      if (s.type === 'main') {
+        const mainSeg = segments.find(seg => seg.type === 'main');
+        return {...s, buffer: mainSeg.buffer};
+      } else {
+        const sound = sounds.find(snd => snd.id === s.soundId);
+        return {...s, buffer: sound.buffer};
+      }
+    }));
+    updateSegmentsUI();
+    drawWaveform();
+    updatePreview();
+  });
+
+  redoBtn.addEventListener('click', async () => {
+    if (historyIndex >= history.length - 1) return;
+    historyIndex++;
+    const targetState = history[historyIndex];
+    segments = await Promise.all(targetState.map(async s => {
+      if (s.type === 'main') {
+        const mainSeg = segments.find(seg => seg.type === 'main');
+        return {...s, buffer: mainSeg.buffer};
+      } else {
+        const sound = sounds.find(snd => snd.id === s.soundId);
+        return {...s, buffer: sound.buffer};
+      }
+    }));
+    updateSegmentsUI();
+    drawWaveform();
+    updatePreview();
+  });
 
   function drawWaveform() {
     const canvas = timelineCanvas;
@@ -313,37 +393,35 @@
     const height = canvas.offsetHeight;
     ctx.clearRect(0, 0, width, height);
 
-    // Find max duration
-    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
-    if (maxDuration === 0) return;
-
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
     segments.forEach(seg => {
       const data = seg.buffer.getChannelData(0);
       const samples = Math.floor(width * (seg.duration / maxDuration));
-      const blockSize = Math.floor(data.length / samples);
+      const blockSize = Math.floor(data.length / samples) || 1;
       const filteredData = [];
       for (let i = 0; i < samples; i++) {
-        let blockStart = blockSize * i;
         let sum = 0;
         for (let j = 0; j < blockSize; j++) {
-          sum += Math.abs(data[blockStart + j] || 0);
+          sum += Math.abs(data[blockSize * i + j] || 0);
         }
         filteredData.push(sum / blockSize);
       }
-      const multiplier = Math.pow(Math.max(...filteredData), -1) || 1;
+      const multiplier = Math.pow(Math.max(...filteredData, 1), -1);
       const normalizedData = filteredData.map(n => n * multiplier);
 
       const startX = (seg.start / maxDuration) * width;
+      const segHeight = 30;
+      const yOffset = seg.layer * 35 + 5;
       ctx.beginPath();
-      ctx.moveTo(startX, height / 2);
+      ctx.moveTo(startX, yOffset + segHeight / 2);
       for (let i = 0; i < samples; i++) {
-        const x = startX + i * (width / samples * (seg.duration / maxDuration) * samples / width); // scale
-        const y = (1 - normalizedData[i]) * (height / 2);
+        const x = startX + i * (width * (seg.duration / maxDuration) / samples);
+        const y = yOffset + (1 - normalizedData[i]) * (segHeight / 2);
         ctx.lineTo(x, y);
       }
       for (let i = samples - 1; i >= 0; i--) {
-        const x = startX + i * (width / samples * (seg.duration / maxDuration) * samples / width);
-        const y = (1 + normalizedData[i]) * (height / 2);
+        const x = startX + i * (width * (seg.duration / maxDuration) / samples);
+        const y = yOffset + (1 + normalizedData[i]) * (segHeight / 2);
         ctx.lineTo(x, y);
       }
       ctx.closePath();
@@ -356,20 +434,30 @@
     const container = $('#segmentsContainer');
     container.innerHTML = '';
     const timelineWidth = timelineCanvas.offsetWidth;
-    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
     segments.forEach(seg => {
       const div = document.createElement('div');
       div.className = `segment ${seg.type === 'sound' ? 'effect' : ''}`;
       div.dataset.id = seg.id;
       div.style.left = `${(seg.start / maxDuration) * 100}%`;
       div.style.width = `${(seg.duration / maxDuration) * 100}%`;
+      div.style.setProperty('--layer', seg.layer);
+      const volControl = document.createElement('div');
+      volControl.className = 'volume-control';
+      volControl.innerHTML = `<input type="range" min="0" max="1" step="0.01" value="${seg.volume}" class="volume-slider">`;
+      div.appendChild(volControl);
       container.appendChild(div);
       makeDraggable(div, maxDuration);
+      volControl.querySelector('.volume-slider').addEventListener('input', e => {
+        seg.volume = parseFloat(e.target.value);
+        updatePreview();
+        pushHistory();
+      });
     });
   }
 
   function makeDraggable(el, maxDuration) {
-    let startX, startLeft, startWidth, resizeDir = null;
+    let startX, startLeft, startWidth, startLayer, resizeDir = null;
     el.addEventListener('mousedown', e => {
       if (e.offsetX < 10) resizeDir = 'left';
       else if (e.offsetX > el.offsetWidth - 10) resizeDir = 'right';
@@ -377,18 +465,28 @@
       startX = e.clientX;
       startLeft = parseFloat(el.style.left) || 0;
       startWidth = parseFloat(el.style.width) || 0;
+      startLayer = parseInt(el.style.getPropertyValue('--layer')) || 0;
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
+      // Handle layer change on right-click or long press
+      el.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        const seg = segments.find(s => s.id == el.dataset.id);
+        seg.layer = (seg.layer + 1) % maxLayers;
+        el.style.setProperty('--layer', seg.layer);
+        pushHistory();
+      });
     });
     function onMove(e) {
       const deltaPct = ((e.clientX - startX) / timelineCanvas.offsetWidth) * 100;
       if (resizeDir === 'left') {
-        el.style.left = `${startLeft + deltaPct}%`;
-        el.style.width = `${startWidth - deltaPct}%`;
+        const newLeft = Math.max(0, startLeft + deltaPct);
+        el.style.left = `${newLeft}%`;
+        el.style.width = `${startWidth - (newLeft - startLeft)}%`;
       } else if (resizeDir === 'right') {
-        el.style.width = `${startWidth + deltaPct}%`;
+        el.style.width = `${Math.max(0, startWidth + deltaPct)}%`;
       } else {
-        el.style.left = `${startLeft + deltaPct}%`;
+        el.style.left = `${Math.max(0, startLeft + deltaPct)}%`;
       }
     }
     function onUp() {
@@ -396,22 +494,23 @@
       document.removeEventListener('mouseup', onUp);
       updateSegmentFromUI(el);
       drawWaveform();
+      pushHistory();
     }
   }
 
   function updateSegmentFromUI(el) {
-    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
     const leftPct = parseFloat(el.style.left) / 100;
     const widthPct = parseFloat(el.style.width) / 100;
     const seg = segments.find(s => s.id == el.dataset.id);
     if (seg) {
       seg.start = leftPct * maxDuration;
       seg.duration = widthPct * maxDuration;
-      // Trim buffer if resized
       if (resizeDir) {
         seg.buffer = sliceBuffer(seg.buffer, 0, seg.duration * seg.buffer.sampleRate);
       }
     }
+    updatePreview();
   }
 
   function setupTimelineEvents() {
@@ -424,7 +523,7 @@
     });
     canvas.addEventListener('mousemove', e => {
       if (isSelecting) {
-        // Could draw selection rect
+        // Visual feedback for selection could be added
       }
     });
     canvas.addEventListener('mouseup', e => {
@@ -433,14 +532,13 @@
         selectedStart = Math.min(startX, endX);
         selectedEnd = Math.max(startX, endX);
         isSelecting = false;
-        // Highlight selection if needed
       }
     });
   }
 
   $('#cutBtn').addEventListener('click', () => {
     if (selectedStart === null || selectedEnd === null) return alert('Select a range on the timeline first.');
-    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
     const cutStartTime = selectedStart * maxDuration;
     const cutEndTime = selectedEnd * maxDuration;
     let newSegments = [];
@@ -448,30 +546,25 @@
       if (cutEndTime <= seg.start || cutStartTime >= seg.start + seg.duration) {
         newSegments.push(seg);
       } else {
-        // Split
         if (cutStartTime > seg.start) {
           const leftDuration = cutStartTime - seg.start;
           const leftBuffer = sliceBuffer(seg.buffer, 0, leftDuration * seg.buffer.sampleRate);
-          newSegments.push({id: segmentCounter++, start: seg.start, duration: leftDuration, buffer: leftBuffer, type: seg.type});
+          newSegments.push({id: segmentCounter++, start: seg.start, duration: leftDuration, buffer: leftBuffer, type: seg.type, layer: seg.layer, volume: seg.volume});
         }
-        const midStart = Math.max(cutStartTime, seg.start);
-        const midEnd = Math.min(cutEndTime, seg.start + seg.duration);
-        const midDuration = midEnd - midStart;
-        const midOffset = (midStart - seg.start) * seg.buffer.sampleRate;
-        const midBuffer = sliceBuffer(seg.buffer, midOffset, midDuration * seg.buffer.sampleRate);
-        newSegments.push({id: segmentCounter++, start: midStart, duration: midDuration, buffer: midBuffer, type: seg.type});
         if (cutEndTime < seg.start + seg.duration) {
           const rightStart = cutEndTime;
           const rightDuration = (seg.start + seg.duration) - cutEndTime;
           const rightOffset = (rightStart - seg.start) * seg.buffer.sampleRate;
           const rightBuffer = sliceBuffer(seg.buffer, rightOffset, rightDuration * seg.buffer.sampleRate);
-          newSegments.push({id: segmentCounter++, start: rightStart, duration: rightDuration, buffer: rightBuffer, type: seg.type});
+          newSegments.push({id: segmentCounter++, start: rightStart, duration: rightDuration, buffer: rightBuffer, type: seg.type, layer: seg.layer, volume: seg.volume});
         }
       }
     });
     segments = newSegments;
     updateSegmentsUI();
     drawWaveform();
+    updatePreview();
+    pushHistory();
     selectedStart = selectedEnd = null;
   });
 
@@ -483,54 +576,53 @@
     return newBuffer;
   }
 
-  // Predefined effects
   document.querySelectorAll('.effect-btn:not(#cutBtn)').forEach(btn => {
     btn.addEventListener('click', async () => {
       const effect = btn.dataset.effect;
-      if (selectedStart === null) {
-        // Apply to all
-        for (let i = 0; i < segments.length; i++) {
-          segments[i].buffer = await applyEffectToBuffer(segments[i].buffer, effect);
-        }
-      } else {
-        const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
-        const selStartTime = selectedStart * maxDuration;
-        const selEndTime = selectedEnd * maxDuration;
-        for (let i = 0; i < segments.length; i++) {
-          if (segments[i].start < selEndTime && segments[i].start + segments[i].duration > selStartTime) {
-            segments[i].buffer = await applyEffectToBuffer(segments[i].buffer, effect);
+      const paramsDiv = $(`#${effect}Params`);
+      paramsDiv.classList.toggle('hidden');
+      if (!paramsDiv.classList.contains('hidden')) return;
+      const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
+      const selStartTime = selectedStart ? selectedStart * maxDuration : null;
+      const selEndTime = selectedEnd ? selectedEnd * maxDuration : null;
+      for (let i = 0; i < segments.length; i++) {
+        if (!selStartTime || (segments[i].start < selEndTime && segments[i].start + segments[i].duration > selStartTime)) {
+          let params = {};
+          if (effect === 'echo') {
+            params = { delay: parseFloat($('#echoDelay').value), decay: parseFloat($('#echoDecay').value) };
+          } else if (effect === 'pitchUp') {
+            params = { amount: parseFloat($('#pitchAmount').value) };
           }
+          segments[i].buffer = await applyEffectToBuffer(segments[i].buffer, effect, params);
         }
       }
       updatePreview();
       drawWaveform();
+      pushHistory();
     });
   });
 
-  async function applyEffectToBuffer(buffer, effect) {
+  async function applyEffectToBuffer(buffer, effect, params) {
     if (effect === 'echo') {
-      return await applyEcho(buffer);
+      return await applyEcho(buffer, params.delay, params.decay);
     } else if (effect === 'pitchUp') {
-      return await applyPitchShift(buffer, 1.2);
+      return await applyPitchShift(buffer, params.amount);
     }
     return buffer;
   }
 
-  async function applyEcho(buffer) {
-    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length * 1.5, buffer.sampleRate); // Extra space for echo
+  async function applyEcho(buffer, delay, decay) {
+    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length * 1.5, buffer.sampleRate);
     const source = offlineCtx.createBufferSource();
     source.buffer = buffer;
-    const convolver = offlineCtx.createConvolver();
-    const impulse = offlineCtx.createBuffer(buffer.numberOfChannels, offlineCtx.sampleRate * 0.5, offlineCtx.sampleRate);
-    for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
-      const data = impulse.getChannelData(ch);
-      for (let i = 0; i < impulse.length; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / impulse.length, 3) * 0.3;
-      }
-    }
-    convolver.buffer = impulse;
-    source.connect(convolver);
-    convolver.connect(offlineCtx.destination);
+    const delayNode = offlineCtx.createDelay(delay);
+    const gainNode = offlineCtx.createGain();
+    gainNode.gain.value = decay;
+    source.connect(delayNode);
+    delayNode.connect(gainNode);
+    gainNode.connect(offlineCtx.destination);
+    gainNode.connect(delayNode);
+    source.connect(offlineCtx.destination);
     source.start();
     return await offlineCtx.startRendering();
   }
@@ -545,7 +637,6 @@
     return await offlineCtx.startRendering();
   }
 
-  // Record new sounds
   let soundRecorder, soundChunks = [], soundStream;
   $('#recordSoundBtn').addEventListener('click', async () => {
     if (!soundRecorder) {
@@ -575,17 +666,18 @@
     }
   });
 
-  // Upload sound
   $('#uploadSoundBtn').addEventListener('click', () => $('#soundFileInput').click());
-  $('#soundFileInput').addEventListener('change', async (e) => {
+  $('#soundFileInput').addEventListener('change', async e => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = async (ev) => {
-      const buf = await audioCtx.decodeAudioData(ev.target.result);
-      const id = soundCounter++;
-      sounds.push({id, name: file.name, buffer: buf});
-      addSoundUI(id, file.name);
+    reader.onload = async ev => {
+      try {
+        const buf = await audioCtx.decodeAudioData(ev.target.result);
+        const id = soundCounter++;
+        sounds.push({id, name: file.name, buffer: buf});
+        addSoundUI(id, file.name);
+      } catch (err) { alert('Invalid audio file.'); }
     };
     reader.readAsArrayBuffer(file);
   });
@@ -597,6 +689,21 @@
     div.draggable = true;
     div.textContent = name;
     div.dataset.id = id;
+    const delBtn = document.createElement('span');
+    delBtn.className = 'delete';
+    delBtn.textContent = '×';
+    delBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to delete this sound? It will be permanently erased.')) {
+        sounds = sounds.filter(s => s.id !== id);
+        segments = segments.filter(s => s.soundId !== id);
+        div.remove();
+        updateSegmentsUI();
+        drawWaveform();
+        updatePreview();
+        pushHistory();
+      }
+    });
+    div.appendChild(delBtn);
     list.appendChild(div);
     div.addEventListener('dragstart', e => {
       e.dataTransfer.setData('soundId', id);
@@ -605,7 +712,12 @@
 
   function setupSoundDragDrop() {
     const timeline = $('#timeline');
-    timeline.addEventListener('dragover', e => e.preventDefault());
+    let dropLayer = 0;
+    timeline.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropLayer = Math.floor(e.offsetY / 35);
+      if (dropLayer >= maxLayers) dropLayer = maxLayers - 1;
+    });
     timeline.addEventListener('drop', async e => {
       e.preventDefault();
       const soundId = e.dataTransfer.getData('soundId');
@@ -613,12 +725,22 @@
       if (!sound) return;
       const rect = timeline.getBoundingClientRect();
       const dropX = e.clientX - rect.left;
-      const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+      const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
       const dropTime = (dropX / rect.width) * maxDuration;
-      segments.push({id: segmentCounter++, start: dropTime, duration: sound.buffer.duration, buffer: sound.buffer, type: 'sound'});
+      segments.push({
+        id: segmentCounter++,
+        start: dropTime,
+        duration: sound.buffer.duration,
+        buffer: sound.buffer,
+        type: 'sound',
+        layer: dropLayer,
+        volume: 1.0,
+        soundId
+      });
       updateSegmentsUI();
       drawWaveform();
       updatePreview();
+      pushHistory();
     });
   }
 
@@ -629,13 +751,16 @@
   }
 
   async function renderMixedBuffer() {
-    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
-    const length = maxDuration * audioCtx.sampleRate;
-    const offlineCtx = new OfflineAudioContext(2, length, audioCtx.sampleRate); // Assume 2 channels
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0) || 1;
+    const length = Math.ceil(maxDuration * audioCtx.sampleRate);
+    const offlineCtx = new OfflineAudioContext(2, length, audioCtx.sampleRate);
     segments.forEach(seg => {
       const source = offlineCtx.createBufferSource();
       source.buffer = seg.buffer;
-      source.connect(offlineCtx.destination);
+      const gainNode = offlineCtx.createGain();
+      gainNode.gain.value = seg.volume;
+      source.connect(gainNode);
+      gainNode.connect(offlineCtx.destination);
       source.start(seg.start);
     });
     return await offlineCtx.startRendering();
@@ -689,6 +814,10 @@
     }
     return arrayBuffer;
   }
+
+  aiAmazeBtn.addEventListener('click', () => {
+    alert('AI Amazement feature coming soon! Add your OpenAI API key to enable transcription and smart sound placement.');
+  });
 
   saveEditBtn.addEventListener('click', async () => {
     if (segments.length === 0) { alert('Record and edit your pickup line first.'); return; }
@@ -758,7 +887,6 @@
     const bar = card.querySelector('.bar');
     const fill = card.querySelector('.fill');
     const tm = card.querySelector('.time');
-    const fmt = s => { s = Math.floor(s); const m = Math.floor(s / 60), r = s % 60; return `${m}:${r.toString().padStart(2, '0')}`; };
     playBtn.addEventListener('click', () => { if (audio.paused) { audio.play(); playBtn.textContent = '⏸'; } else { audio.pause(); playBtn.textContent = '▶'; } });
     audio.addEventListener('pause', () => playBtn.textContent = '▶');
     audio.addEventListener('play', () => playBtn.textContent = '⏸');
@@ -767,7 +895,7 @@
       fill.style.inset = `0 ${100 - pct}% 0 0`;
       tm.textContent = `${fmt(c)} / ${d ? fmt(d) : '0:00'}`;
     });
-    bar.addEventListener('click', (e) => {
+    bar.addEventListener('click', e => {
       const r = bar.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width;
       if (audio.duration) audio.currentTime = x * audio.duration;
@@ -821,7 +949,7 @@
     const b = document.createElement('div');
     b.className = `bubble ${who}`;
     if (type === 'text') { b.textContent = content; }
-    if (type === 'image') { const img = document.createElement('img'); img.src = content; b.appendChild(img); }
+    if (type === 'image') { const img = document.createElement('img'); img.src = content; img.style.maxWidth = '100%'; b.appendChild(img); }
     if (type === 'audio') { const a = document.createElement('audio'); a.controls = true; a.src = content; b.appendChild(a); }
     log.appendChild(b);
     log.scrollTop = log.scrollHeight;
@@ -874,7 +1002,7 @@
   });
 
   let chatRec = null, chatChunks = [], chatStream = null, chatMime = '';
-  $('#chatVoiceBtn').addEventListener('click', async (e) => {
+  $('#chatVoiceBtn').addEventListener('click', async e => {
     const btn = e.currentTarget;
     const roomId = activeRoom;
     if (!roomId) return;
@@ -904,7 +1032,6 @@
     }
   });
 
-  // WebRTC Voice Call
   $('#callBtn').addEventListener('click', async () => {
     const roomId = activeRoom;
     if (!roomId) return;
