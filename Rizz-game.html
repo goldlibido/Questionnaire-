@@ -42,6 +42,7 @@
   .segments-container{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;}
   .segment{position:absolute;height:100%;background:rgba(225,191,120,.2);border:1px solid var(--gold);cursor:move;opacity:0.7;}
   .segment:hover{opacity:1;}
+  .segment.effect{background:rgba(6,149,78,.2);border-color:var(--green);}
   .effects{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
   .effect-btn{padding:6px 10px;border-radius:999px;background:#151515;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-size:12px;color:#fff}
   .effect-item{padding:6px;border-radius:8px;background:rgba(0,0,0,.5);cursor:grab;border:1px solid rgba(255,255,255,.2);margin:5px;}
@@ -113,7 +114,9 @@
               <button class="effect-btn" id="cutBtn">Cut Selection</button>
             </div>
             <div class="row" style="margin-top:10px">
-              <button class="btn" id="recordEffectBtn">Record New Effect</button>
+              <button class="btn" id="recordSoundBtn">Record New Sound</button>
+              <button class="btn" id="uploadSoundBtn">Upload Sound</button>
+              <input type="file" id="soundFileInput" accept="audio/*" class="hidden">
               <div id="effectsList" class="effects" style="flex:1;"></div>
             </div>
             <div class="row" style="margin-top:10px">
@@ -273,30 +276,31 @@
     window.__recBlob = null;
     audioEl.removeAttribute('src');
     // Clear editor state
-    segments = [{start: 0, end: 1, buffer: null}];
-    effects = [];
+    segments = [];
+    sounds = [];
     $('#effectsList').innerHTML = '';
     $('#segmentsContainer').innerHTML = '';
     timelineCanvas.getContext('2d').clearRect(0, 0, timelineCanvas.width, timelineCanvas.height);
+    selectedStart = selectedEnd = null;
   });
 
   /***** AUDIO EDITOR *****/
-  let audioCtx, editedBuffer, timelineCanvas = $('#timelineCanvas');
-  let segments = []; // [{id, startPct, endPct, buffer}]
-  let effects = []; // [{id, name, buffer}]
-  let effectCounter = 0;
+  let audioCtx, timelineCanvas = $('#timelineCanvas');
+  let segments = []; // [{id, start: seconds, duration: seconds, buffer, type: 'main' or 'sound'}]
+  let sounds = []; // [{id, name, buffer}]
+  let soundCounter = 0;
   let segmentCounter = 0;
-  let selectedStart = null, selectedEnd = null; // For cutting selection
+  let selectedStart = null, selectedEnd = null; // selection in pct
   async function initEditor(url) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const resp = await fetch(url);
     const arrayBuf = await resp.arrayBuffer();
-    editedBuffer = await audioCtx.decodeAudioData(arrayBuf);
-    segments = [{id: segmentCounter++, start: 0, end: editedBuffer.length / editedBuffer.sampleRate, buffer: editedBuffer}];
+    const buffer = await audioCtx.decodeAudioData(arrayBuf);
+    segments = [{id: segmentCounter++, start: 0, duration: buffer.duration, buffer, type: 'main'}];
     updateSegmentsUI();
     drawWaveform();
     setupTimelineEvents();
-    setupEffectDragDrop();
+    setupSoundDragDrop();
   }
 
   function drawWaveform() {
@@ -308,107 +312,106 @@
     const width = canvas.offsetWidth;
     const height = canvas.offsetHeight;
     ctx.clearRect(0, 0, width, height);
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1;
 
-    // Combine all segments into one buffer for drawing
-    const fullBuffer = mergeSegments();
-    const rawData = fullBuffer.getChannelData(0);
-    const samples = width;
-    const blockSize = Math.floor(rawData.length / samples);
-    const filteredData = [];
-    for (let i = 0; i < samples; i++) {
-      let blockStart = blockSize * i;
-      let sum = 0;
-      for (let j = 0; j < blockSize; j++) {
-        sum += Math.abs(rawData[blockStart + j] || 0);
+    // Find max duration
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+    if (maxDuration === 0) return;
+
+    segments.forEach(seg => {
+      const data = seg.buffer.getChannelData(0);
+      const samples = Math.floor(width * (seg.duration / maxDuration));
+      const blockSize = Math.floor(data.length / samples);
+      const filteredData = [];
+      for (let i = 0; i < samples; i++) {
+        let blockStart = blockSize * i;
+        let sum = 0;
+        for (let j = 0; j < blockSize; j++) {
+          sum += Math.abs(data[blockStart + j] || 0);
+        }
+        filteredData.push(sum / blockSize);
       }
-      filteredData.push(sum / blockSize);
-    }
-    const multiplier = Math.pow(Math.max(...filteredData), -1) || 1;
-    const normalizedData = filteredData.map(n => n * multiplier);
+      const multiplier = Math.pow(Math.max(...filteredData), -1) || 1;
+      const normalizedData = filteredData.map(n => n * multiplier);
 
-    ctx.beginPath();
-    ctx.moveTo(0, height / 2);
-    for (let i = 0; i < samples; i++) {
-      const x = i;
-      const y = (1 - normalizedData[i]) * (height / 2);
-      ctx.lineTo(x, y);
-    }
-    for (let i = samples - 1; i >= 0; i--) {
-      const x = i;
-      const y = (1 + normalizedData[i]) * (height / 2);
-      ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(225,191,120,.5)';
-    ctx.fill();
+      const startX = (seg.start / maxDuration) * width;
+      ctx.beginPath();
+      ctx.moveTo(startX, height / 2);
+      for (let i = 0; i < samples; i++) {
+        const x = startX + i * (width / samples * (seg.duration / maxDuration) * samples / width); // scale
+        const y = (1 - normalizedData[i]) * (height / 2);
+        ctx.lineTo(x, y);
+      }
+      for (let i = samples - 1; i >= 0; i--) {
+        const x = startX + i * (width / samples * (seg.duration / maxDuration) * samples / width);
+        const y = (1 + normalizedData[i]) * (height / 2);
+        ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = seg.type === 'main' ? 'rgba(225,191,120,.5)' : 'rgba(6,149,78,.5)';
+      ctx.fill();
+    });
   }
 
   function updateSegmentsUI() {
     const container = $('#segmentsContainer');
     container.innerHTML = '';
     const timelineWidth = timelineCanvas.offsetWidth;
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
     segments.forEach(seg => {
       const div = document.createElement('div');
-      div.className = 'segment';
+      div.className = `segment ${seg.type === 'sound' ? 'effect' : ''}`;
       div.dataset.id = seg.id;
-      div.style.left = `${(seg.start / getTotalDuration()) * 100}%`;
-      div.style.width = `${((seg.end - seg.start) / getTotalDuration()) * 100}%`;
+      div.style.left = `${(seg.start / maxDuration) * 100}%`;
+      div.style.width = `${(seg.duration / maxDuration) * 100}%`;
       container.appendChild(div);
-      makeDraggable(div);
+      makeDraggable(div, maxDuration);
     });
   }
 
-  function makeDraggable(el) {
-    let startX, startLeft;
+  function makeDraggable(el, maxDuration) {
+    let startX, startLeft, startWidth, resizeDir = null;
     el.addEventListener('mousedown', e => {
+      if (e.offsetX < 10) resizeDir = 'left';
+      else if (e.offsetX > el.offsetWidth - 10) resizeDir = 'right';
+      else resizeDir = null;
       startX = e.clientX;
       startLeft = parseFloat(el.style.left) || 0;
+      startWidth = parseFloat(el.style.width) || 0;
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
     });
     function onMove(e) {
-      const delta = (e.clientX - startX) / timelineCanvas.offsetWidth * 100;
-      el.style.left = `${startLeft + delta}%`;
-      // Snap or constrain if needed
+      const deltaPct = ((e.clientX - startX) / timelineCanvas.offsetWidth) * 100;
+      if (resizeDir === 'left') {
+        el.style.left = `${startLeft + deltaPct}%`;
+        el.style.width = `${startWidth - deltaPct}%`;
+      } else if (resizeDir === 'right') {
+        el.style.width = `${startWidth + deltaPct}%`;
+      } else {
+        el.style.left = `${startLeft + deltaPct}%`;
+      }
     }
     function onUp() {
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
-      updateSegmentTimes();
+      updateSegmentFromUI(el);
       drawWaveform();
     }
   }
 
-  function updateSegmentTimes() {
-    const totalDuration = getTotalDuration();
-    segments.forEach(seg => {
-      const div = document.querySelector(`.segment[data-id="${seg.id}"]`);
-      const leftPct = parseFloat(div.style.left) / 100;
-      const widthPct = parseFloat(div.style.width) / 100;
-      seg.start = leftPct * totalDuration;
-      seg.end = seg.start + widthPct * totalDuration;
-    });
-    // Sort segments by start
-    segments.sort((a,b) => a.start - b.start);
-  }
-
-  function getTotalDuration() {
-    return segments.reduce((sum, seg) => sum + (seg.end - seg.start), 0);
-  }
-
-  function mergeSegments() {
-    const totalLength = segments.reduce((sum, seg) => sum + seg.buffer.length, 0);
-    const merged = audioCtx.createBuffer(editedBuffer.numberOfChannels, totalLength, editedBuffer.sampleRate);
-    let offset = 0;
-    for (const seg of segments) {
-      for (let ch = 0; ch < merged.numberOfChannels; ch++) {
-        merged.copyToChannel(seg.buffer.getChannelData(ch), ch, offset);
+  function updateSegmentFromUI(el) {
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+    const leftPct = parseFloat(el.style.left) / 100;
+    const widthPct = parseFloat(el.style.width) / 100;
+    const seg = segments.find(s => s.id == el.dataset.id);
+    if (seg) {
+      seg.start = leftPct * maxDuration;
+      seg.duration = widthPct * maxDuration;
+      // Trim buffer if resized
+      if (resizeDir) {
+        seg.buffer = sliceBuffer(seg.buffer, 0, seg.duration * seg.buffer.sampleRate);
       }
-      offset += seg.buffer.length;
     }
-    return merged;
   }
 
   function setupTimelineEvents() {
@@ -417,92 +420,112 @@
     let startX;
     canvas.addEventListener('mousedown', e => {
       isSelecting = true;
-      startX = e.offsetX;
+      startX = e.offsetX / canvas.offsetWidth;
     });
     canvas.addEventListener('mousemove', e => {
       if (isSelecting) {
-        // Show selection overlay or something
+        // Could draw selection rect
       }
     });
     canvas.addEventListener('mouseup', e => {
       if (isSelecting) {
-        const endX = e.offsetX;
-        selectedStart = Math.min(startX, endX) / canvas.offsetWidth;
-        selectedEnd = Math.max(startX, endX) / canvas.offsetWidth;
+        const endX = e.offsetX / canvas.offsetWidth;
+        selectedStart = Math.min(startX, endX);
+        selectedEnd = Math.max(startX, endX);
         isSelecting = false;
+        // Highlight selection if needed
       }
     });
   }
 
   $('#cutBtn').addEventListener('click', () => {
     if (selectedStart === null || selectedEnd === null) return alert('Select a range on the timeline first.');
-    // Find segment to cut
-    const totalDuration = getTotalDuration();
-    const cutStartTime = selectedStart * totalDuration;
-    const cutEndTime = selectedEnd * totalDuration;
-    for (let i = 0; i < segments.length; i++) {
-      const seg = segments[i];
-      if (cutStartTime >= seg.start && cutEndTime <= seg.end) {
-        // Split into left, middle (cut), right
-        const leftDuration = cutStartTime - seg.start;
-        const midDuration = cutEndTime - cutStartTime;
-        const rightDuration = seg.end - cutEndTime;
-
-        const leftBuffer = sliceBuffer(seg.buffer, 0, leftDuration * seg.buffer.sampleRate);
-        const midBuffer = sliceBuffer(seg.buffer, leftDuration * seg.buffer.sampleRate, midDuration * seg.buffer.sampleRate);
-        const rightBuffer = sliceBuffer(seg.buffer, (leftDuration + midDuration) * seg.buffer.sampleRate, rightDuration * seg.buffer.sampleRate);
-
-        segments.splice(i, 1);
-        if (leftDuration > 0) segments.push({id: segmentCounter++, start: seg.start, end: seg.start + leftDuration, buffer: leftBuffer});
-        if (midDuration > 0) segments.push({id: segmentCounter++, start: cutStartTime, end: cutEndTime, buffer: midBuffer});
-        if (rightDuration > 0) segments.push({id: segmentCounter++, start: cutEndTime, end: seg.end, buffer: rightBuffer});
-        segments.sort((a,b) => a.start - b.start);
-        updateSegmentsUI();
-        drawWaveform();
-        selectedStart = selectedEnd = null;
-        break;
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+    const cutStartTime = selectedStart * maxDuration;
+    const cutEndTime = selectedEnd * maxDuration;
+    let newSegments = [];
+    segments.forEach(seg => {
+      if (cutEndTime <= seg.start || cutStartTime >= seg.start + seg.duration) {
+        newSegments.push(seg);
+      } else {
+        // Split
+        if (cutStartTime > seg.start) {
+          const leftDuration = cutStartTime - seg.start;
+          const leftBuffer = sliceBuffer(seg.buffer, 0, leftDuration * seg.buffer.sampleRate);
+          newSegments.push({id: segmentCounter++, start: seg.start, duration: leftDuration, buffer: leftBuffer, type: seg.type});
+        }
+        const midStart = Math.max(cutStartTime, seg.start);
+        const midEnd = Math.min(cutEndTime, seg.start + seg.duration);
+        const midDuration = midEnd - midStart;
+        const midOffset = (midStart - seg.start) * seg.buffer.sampleRate;
+        const midBuffer = sliceBuffer(seg.buffer, midOffset, midDuration * seg.buffer.sampleRate);
+        newSegments.push({id: segmentCounter++, start: midStart, duration: midDuration, buffer: midBuffer, type: seg.type});
+        if (cutEndTime < seg.start + seg.duration) {
+          const rightStart = cutEndTime;
+          const rightDuration = (seg.start + seg.duration) - cutEndTime;
+          const rightOffset = (rightStart - seg.start) * seg.buffer.sampleRate;
+          const rightBuffer = sliceBuffer(seg.buffer, rightOffset, rightDuration * seg.buffer.sampleRate);
+          newSegments.push({id: segmentCounter++, start: rightStart, duration: rightDuration, buffer: rightBuffer, type: seg.type});
+        }
       }
-    }
+    });
+    segments = newSegments;
+    updateSegmentsUI();
+    drawWaveform();
+    selectedStart = selectedEnd = null;
   });
 
-  function sliceBuffer(buffer, startSample, lengthSamples) {
-    const numChannels = buffer.numberOfChannels;
-    const newBuffer = audioCtx.createBuffer(numChannels, lengthSamples, buffer.sampleRate);
-    for (let ch = 0; ch < numChannels; ch++) {
-      const newData = newBuffer.getChannelData(ch);
-      const origData = buffer.getChannelData(ch);
-      for (let i = 0; i < lengthSamples; i++) {
-        newData[i] = origData[startSample + i] || 0;
-      }
+  function sliceBuffer(buffer, startSample, durationSamples) {
+    const newBuffer = audioCtx.createBuffer(buffer.numberOfChannels, durationSamples, buffer.sampleRate);
+    for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+      newBuffer.copyToChannel(buffer.getChannelData(ch).subarray(startSample, startSample + durationSamples), ch);
     }
     return newBuffer;
   }
 
-  // Effects (predefined)
+  // Predefined effects
   document.querySelectorAll('.effect-btn:not(#cutBtn)').forEach(btn => {
     btn.addEventListener('click', async () => {
       const effect = btn.dataset.effect;
-      // Apply to whole for simplicity, or to selected
-      if (effect === 'echo') {
-        editedBuffer = await applyEcho(editedBuffer);
-      } else if (effect === 'pitchUp') {
-        editedBuffer = await applyPitchShift(editedBuffer, 1.2);
+      if (selectedStart === null) {
+        // Apply to all
+        for (let i = 0; i < segments.length; i++) {
+          segments[i].buffer = await applyEffectToBuffer(segments[i].buffer, effect);
+        }
+      } else {
+        const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+        const selStartTime = selectedStart * maxDuration;
+        const selEndTime = selectedEnd * maxDuration;
+        for (let i = 0; i < segments.length; i++) {
+          if (segments[i].start < selEndTime && segments[i].start + segments[i].duration > selStartTime) {
+            segments[i].buffer = await applyEffectToBuffer(segments[i].buffer, effect);
+          }
+        }
       }
       updatePreview();
       drawWaveform();
     });
   });
 
+  async function applyEffectToBuffer(buffer, effect) {
+    if (effect === 'echo') {
+      return await applyEcho(buffer);
+    } else if (effect === 'pitchUp') {
+      return await applyPitchShift(buffer, 1.2);
+    }
+    return buffer;
+  }
+
   async function applyEcho(buffer) {
-    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length * 1.5, buffer.sampleRate); // Extra space for echo
     const source = offlineCtx.createBufferSource();
     source.buffer = buffer;
     const convolver = offlineCtx.createConvolver();
-    const impulse = offlineCtx.createBuffer(2, offlineCtx.sampleRate * 0.5, offlineCtx.sampleRate);
-    for (let ch = 0; ch < 2; ch++) {
+    const impulse = offlineCtx.createBuffer(buffer.numberOfChannels, offlineCtx.sampleRate * 0.5, offlineCtx.sampleRate);
+    for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
       const data = impulse.getChannelData(ch);
       for (let i = 0; i < impulse.length; i++) {
-        data[i] = (Math.random() * 2 - 1) * (1 - i / impulse.length) * 0.2;
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / impulse.length, 3) * 0.3;
       }
     }
     convolver.buffer = impulse;
@@ -513,7 +536,7 @@
   }
 
   async function applyPitchShift(buffer, rate) {
-    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length / rate, buffer.sampleRate);
+    const offlineCtx = new OfflineAudioContext(buffer.numberOfChannels, buffer.length * (1 / rate), buffer.sampleRate);
     const source = offlineCtx.createBufferSource();
     source.buffer = buffer;
     source.playbackRate.value = rate;
@@ -522,37 +545,52 @@
     return await offlineCtx.startRendering();
   }
 
-  // Record new effects
-  let effectRecorder, effectChunks = [], effectStream;
-  $('#recordEffectBtn').addEventListener('click', async () => {
-    if (!effectRecorder) {
+  // Record new sounds
+  let soundRecorder, soundChunks = [], soundStream;
+  $('#recordSoundBtn').addEventListener('click', async () => {
+    if (!soundRecorder) {
       try {
-        effectStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        effectRecorder = new MediaRecorder(effectStream);
-        effectChunks = [];
-        effectRecorder.ondataavailable = e => effectChunks.push(e.data);
-        effectRecorder.onstop = async () => {
-          const blob = new Blob(effectChunks, { type: 'audio/webm' });
+        soundStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        soundRecorder = new MediaRecorder(soundStream);
+        soundChunks = [];
+        soundRecorder.ondataavailable = e => soundChunks.push(e.data);
+        soundRecorder.onstop = async () => {
+          const blob = new Blob(soundChunks, { type: 'audio/webm' });
           const url = URL.createObjectURL(blob);
           const resp = await fetch(url);
           const arrayBuf = await resp.arrayBuffer();
           const buf = await audioCtx.decodeAudioData(arrayBuf);
-          const id = effectCounter++;
-          effects.push({id, name: `Effect ${id + 1}`, buffer: buf});
-          addEffectUI(id, `Effect ${id + 1}`);
+          const id = soundCounter++;
+          sounds.push({id, name: `Sound ${id + 1}`, buffer: buf});
+          addSoundUI(id, `Sound ${id + 1}`);
         };
-        effectRecorder.start();
-        $('#recordEffectBtn').textContent = 'Stop Recording Effect';
+        soundRecorder.start();
+        $('#recordSoundBtn').textContent = 'Stop Recording Sound';
       } catch (err) { alert('Mic access needed.'); }
     } else {
-      effectRecorder.stop();
-      effectStream.getTracks().forEach(t => t.stop());
-      effectRecorder = null;
-      $('#recordEffectBtn').textContent = 'Record New Effect';
+      soundRecorder.stop();
+      soundStream.getTracks().forEach(t => t.stop());
+      soundRecorder = null;
+      $('#recordSoundBtn').textContent = 'Record New Sound';
     }
   });
 
-  function addEffectUI(id, name) {
+  // Upload sound
+  $('#uploadSoundBtn').addEventListener('click', () => $('#soundFileInput').click());
+  $('#soundFileInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      const buf = await audioCtx.decodeAudioData(ev.target.result);
+      const id = soundCounter++;
+      sounds.push({id, name: file.name, buffer: buf});
+      addSoundUI(id, file.name);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+
+  function addSoundUI(id, name) {
     const list = $('#effectsList');
     const div = document.createElement('div');
     div.className = 'effect-item';
@@ -560,54 +598,47 @@
     div.textContent = name;
     div.dataset.id = id;
     list.appendChild(div);
+    div.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('soundId', id);
+    });
   }
 
-  function setupEffectDragDrop() {
-    document.querySelectorAll('.effect-item').forEach(item => {
-      item.addEventListener('dragstart', e => {
-        e.dataTransfer.setData('effectId', item.dataset.id);
-      });
-    });
+  function setupSoundDragDrop() {
     const timeline = $('#timeline');
     timeline.addEventListener('dragover', e => e.preventDefault());
     timeline.addEventListener('drop', async e => {
       e.preventDefault();
-      const effectId = e.dataTransfer.getData('effectId');
-      const effect = effects.find(ef => ef.id == effectId);
-      if (!effect) return;
+      const soundId = e.dataTransfer.getData('soundId');
+      const sound = sounds.find(s => s.id == soundId);
+      if (!sound) return;
       const rect = timeline.getBoundingClientRect();
       const dropX = e.clientX - rect.left;
-      const dropTime = (dropX / rect.width) * getTotalDuration();
-      // Mix effect into merged buffer at dropTime
-      const merged = mergeSegments();
-      editedBuffer = await mixBufferAtTime(merged, effect.buffer, dropTime);
-      // Update segments or just redraw
-      segments = [{id: segmentCounter++, start: 0, end: editedBuffer.duration, buffer: editedBuffer}];
+      const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+      const dropTime = (dropX / rect.width) * maxDuration;
+      segments.push({id: segmentCounter++, start: dropTime, duration: sound.buffer.duration, buffer: sound.buffer, type: 'sound'});
       updateSegmentsUI();
       drawWaveform();
       updatePreview();
     });
   }
 
-  async function mixBufferAtTime(mainBuffer, addBuffer, atTime) {
-    const offsetSamples = Math.floor(atTime * mainBuffer.sampleRate);
-    const newLength = Math.max(mainBuffer.length, offsetSamples + addBuffer.length);
-    const offlineCtx = new OfflineAudioContext(mainBuffer.numberOfChannels, newLength, mainBuffer.sampleRate);
-    const mainSource = offlineCtx.createBufferSource();
-    mainSource.buffer = mainBuffer;
-    mainSource.connect(offlineCtx.destination);
-    mainSource.start(0);
-    const addSource = offlineCtx.createBufferSource();
-    addSource.buffer = addBuffer;
-    addSource.connect(offlineCtx.destination);
-    addSource.start(atTime);
-    return await offlineCtx.startRendering();
+  async function updatePreview() {
+    const mixedBuffer = await renderMixedBuffer();
+    const blob = await audioBufferToBlob(mixedBuffer);
+    audioEl.src = URL.createObjectURL(blob);
   }
 
-  async function updatePreview() {
-    const merged = mergeSegments();
-    const blob = await audioBufferToBlob(merged);
-    audioEl.src = URL.createObjectURL(blob);
+  async function renderMixedBuffer() {
+    const maxDuration = segments.reduce((max, seg) => Math.max(max, seg.start + seg.duration), 0);
+    const length = maxDuration * audioCtx.sampleRate;
+    const offlineCtx = new OfflineAudioContext(2, length, audioCtx.sampleRate); // Assume 2 channels
+    segments.forEach(seg => {
+      const source = offlineCtx.createBufferSource();
+      source.buffer = seg.buffer;
+      source.connect(offlineCtx.destination);
+      source.start(seg.start);
+    });
+    return await offlineCtx.startRendering();
   }
 
   async function audioBufferToBlob(buffer) {
@@ -622,7 +653,6 @@
   }
 
   async function audioBufferToWav(buffer) {
-    // Same as before
     const numChannels = buffer.numberOfChannels;
     const sampleRate = buffer.sampleRate;
     const length = buffer.length * numChannels * 2 + 44;
@@ -661,9 +691,9 @@
   }
 
   saveEditBtn.addEventListener('click', async () => {
-    if (!window.__recBlob) { alert('Record and edit your pickup line first.'); return; }
-    const merged = mergeSegments();
-    window.__recBlob = await audioBufferToBlob(merged);
+    if (segments.length === 0) { alert('Record and edit your pickup line first.'); return; }
+    const mixedBuffer = await renderMixedBuffer();
+    window.__recBlob = await audioBufferToBlob(mixedBuffer);
     const lineRef = sRef(storage, `lines/${currentUser.uid}/${Date.now()}.wav`);
     await uploadBytes(lineRef, window.__recBlob, { contentType: 'audio/wav' });
     const lineURL = await getDownloadURL(lineRef);
@@ -673,13 +703,262 @@
   });
 
   /***** SWIPE: AUDIO LINES *****/
-  // ... (unchanged from previous)
+  const deckEl = $('#deck');
+  let deck = [], deckIdx = 0;
+  window.__deckInit = false;
+
+  function listenLines() {
+    const pRef = rRef(db, 'lines');
+    onValue(pRef, snap => {
+      const all = snap.val() || {};
+      deck = Object.values(all).filter(p => p.uid !== currentUser?.uid && p.lineURL);
+      deckIdx = 0;
+      renderCard();
+    });
+  }
+
+  function initDeck() {
+    if (window.__deckInit) return;
+    window.__deckInit = true;
+    listenLines();
+  }
+
+  async function renderCard() {
+    deckEl.innerHTML = '';
+    if (!deck.length || deckIdx >= deck.length) {
+      const empty = document.createElement('div');
+      empty.className = 'card';
+      empty.innerHTML = `<h3>${deck.length ? 'That’s all for now' : 'No lines yet'}</h3>
+        <div class="small">${deck.length ? 'New pickup lines appear as more people join.' : 'Be the first—share your link!'}</div>`;
+      deckEl.appendChild(empty);
+      return;
+    }
+    const p = deck[deckIdx];
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="small">🎧 Listen to their creative pickup line.</div>
+      <div class="rec-wrap">
+        <div class="player">
+          <button class="play-toggle">▶</button>
+          <div class="bar"><div class="fill"></div></div>
+          <div class="time">0:00</div>
+        </div>
+        <audio preload="metadata" class="hidden"></audio>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="pass">Pass</button>
+        <button class="like">Like</button>
+      </div>`;
+    deckEl.appendChild(card);
+
+    const audio = card.querySelector('audio');
+    audio.src = p.lineURL;
+    const playBtn = card.querySelector('.play-toggle');
+    const bar = card.querySelector('.bar');
+    const fill = card.querySelector('.fill');
+    const tm = card.querySelector('.time');
+    const fmt = s => { s = Math.floor(s); const m = Math.floor(s / 60), r = s % 60; return `${m}:${r.toString().padStart(2, '0')}`; };
+    playBtn.addEventListener('click', () => { if (audio.paused) { audio.play(); playBtn.textContent = '⏸'; } else { audio.pause(); playBtn.textContent = '▶'; } });
+    audio.addEventListener('pause', () => playBtn.textContent = '▶');
+    audio.addEventListener('play', () => playBtn.textContent = '⏸');
+    audio.addEventListener('timeupdate', () => {
+      const d = audio.duration || 0, c = audio.currentTime || 0, pct = d ? (c / d) * 100 : 0;
+      fill.style.inset = `0 ${100 - pct}% 0 0`;
+      tm.textContent = `${fmt(c)} / ${d ? fmt(d) : '0:00'}`;
+    });
+    bar.addEventListener('click', (e) => {
+      const r = bar.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      if (audio.duration) audio.currentTime = x * audio.duration;
+    });
+
+    card.querySelector('.pass').addEventListener('click', () => { audio.pause(); deckIdx++; renderCard(); });
+    card.querySelector('.like').addEventListener('click', () => { audio.pause(); handleLike(p.uid); });
+  }
 
   /***** MATCHING *****/
-  // ... (unchanged)
+  function pairIdFor(a, b) { return [a, b].sort().join('_'); }
+
+  async function handleLike(themUid) {
+    const me = currentUser.uid;
+    const myLikeRef = rRef(db, `likes/${me}/${themUid}`);
+    const theirLikeRef = rRef(db, `likes/${themUid}/${me}`);
+
+    await set(myLikeRef, true);
+    const theirLikeSnap = await get(theirLikeRef);
+    const matched = !!theirLikeSnap.val();
+
+    if (!matched) { deckIdx++; renderCard(); return; }
+
+    const pid = pairIdFor(me, themUid);
+    const pairRef = rRef(db, `pairs/${pid}`);
+    const pairSnap = await get(pairRef);
+
+    if (!pairSnap.exists()) {
+      await set(pairRef, { id: pid, a: me, b: themUid, roomId: pid, ts: serverTimestamp() });
+      await set(rRef(db, `rooms/${pid}`), { id: pid, a: me, b: themUid, created: serverTimestamp() });
+    }
+
+    showMatch(pid);
+  }
+
+  function showMatch(roomId) {
+    const m = $('#matchModal');
+    m.style.display = 'flex';
+    $('#closeMatch').onclick = () => { m.style.display = 'none'; deckIdx++; renderCard(); };
+    $('#openChat').onclick = () => { m.style.display = 'none'; openChat(roomId); };
+  }
 
   /***** CHAT (Realtime DB + Storage + WebRTC) *****/
-  // ... (unchanged)
+  let activeRoom = null;
+  window.__activeRoom = null;
+  let messagesUnsub = null;
+  let peerConnection = null;
+
+  function pushBubble(who, content, type = 'text') {
+    const log = $('#chatLog');
+    const b = document.createElement('div');
+    b.className = `bubble ${who}`;
+    if (type === 'text') { b.textContent = content; }
+    if (type === 'image') { const img = document.createElement('img'); img.src = content; b.appendChild(img); }
+    if (type === 'audio') { const a = document.createElement('audio'); a.controls = true; a.src = content; b.appendChild(a); }
+    log.appendChild(b);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function openChat(roomId) {
+    activeRoom = roomId;
+    window.__activeRoom = roomId;
+    $('#chatLog').innerHTML = '';
+    go(2);
+
+    const msgsRef = rRef(db, `rooms/${roomId}/messages`);
+    if (messagesUnsub) messagesUnsub();
+    messagesUnsub = onValue(msgsRef, snap => {
+      $('#chatLog').innerHTML = '';
+      const msgs = snap.val() || {};
+      Object.entries(msgs).forEach(([, m]) => {
+        const who = m.from === currentUser.uid ? 'me' : 'them';
+        if (m.type === 'text') pushBubble(who, m.text, 'text');
+        if (m.type === 'image') pushBubble(who, m.url, 'image');
+        if (m.type === 'audio') pushBubble(who, m.url, 'audio');
+      });
+      $('#chatLog').scrollTop = $('#chatLog').scrollHeight;
+    });
+  }
+
+  $('#chatSendBtn').addEventListener('click', async () => {
+    const roomId = activeRoom;
+    if (!roomId) return;
+    const input = $('#chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    const msgRef = push(rRef(db, `rooms/${roomId}/messages`));
+    await set(msgRef, { from: currentUser.uid, type: 'text', text, ts: serverTimestamp() });
+  });
+
+  $('#chatPhotoBtn').addEventListener('click', () => $('#chatPhoto').click());
+  $('#chatPhoto').addEventListener('change', async () => {
+    const roomId = activeRoom;
+    if (!roomId) return;
+    const f = $('#chatPhoto').files?.[0];
+    if (!f) return;
+    const ext = (f.type && f.type.split('/')[1]) || 'jpg';
+    const ref = sRef(storage, `chats/${roomId}/images/${Date.now()}.${ext}`);
+    await uploadBytes(ref, f, { contentType: f.type || 'image/jpeg' });
+    const url = await getDownloadURL(ref);
+    const msgRef = push(rRef(db, `rooms/${roomId}/messages`));
+    await set(msgRef, { from: currentUser.uid, type: 'image', url, ts: serverTimestamp() });
+  });
+
+  let chatRec = null, chatChunks = [], chatStream = null, chatMime = '';
+  $('#chatVoiceBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const roomId = activeRoom;
+    if (!roomId) return;
+    if (!chatRec) {
+      try {
+        chatMime = supportedMime();
+        chatStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chatRec = new MediaRecorder(chatStream, chatMime ? { mimeType: chatMime } : undefined);
+        chatChunks = [];
+        chatRec.ondataavailable = ev => { if (ev.data?.size) chatChunks.push(ev.data); };
+        chatRec.onstop = async () => {
+          const blob = new Blob(chatChunks, { type: chatMime || 'audio/webm' });
+          const ref = sRef(storage, `chats/${roomId}/voice/${Date.now()}.webm`);
+          await uploadBytes(ref, blob, { contentType: blob.type || 'audio/webm' });
+          const url = await getDownloadURL(ref);
+          const msgRef = push(rRef(db, `rooms/${roomId}/messages`));
+          await set(msgRef, { from: currentUser.uid, type: 'audio', url, ts: serverTimestamp() });
+        };
+        chatRec.start();
+        btn.textContent = '⏹️';
+      } catch (err) { alert('Mic access needed.'); console.error(err); chatRec = null; chatStream?.getTracks().forEach(t => t.stop()); }
+    } else {
+      chatRec.stop();
+      chatStream?.getTracks().forEach(t => t.stop());
+      chatRec = null;
+      btn.textContent = '🎙️';
+    }
+  });
+
+  // WebRTC Voice Call
+  $('#callBtn').addEventListener('click', async () => {
+    const roomId = activeRoom;
+    if (!roomId) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      peerConnection = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+      stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+      await set(rRef(db, `calls/${roomId}/${currentUser.uid}`), {
+        offer: { type: offer.type, sdp: offer.sdp },
+        ts: serverTimestamp()
+      });
+
+      onValue(rRef(db, `calls/${roomId}`), snap => {
+        const data = snap.val();
+        if (!data) return;
+        Object.entries(data).forEach(async ([uid, call]) => {
+          if (uid === currentUser.uid) return;
+          if (call.offer && !peerConnection.remoteDescription) {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(call.offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            await set(rRef(db, `calls/${roomId}/${currentUser.uid}/answer`), {
+              type: answer.type, sdp: answer.sdp
+            });
+          }
+          if (call.answer && peerConnection.remoteDescription?.type === 'offer') {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(call.answer));
+          }
+        });
+      });
+
+      peerConnection.ontrack = e => {
+        const audio = document.createElement('audio');
+        audio.srcObject = e.streams[0];
+        audio.autoplay = true;
+        document.body.appendChild(audio);
+      };
+
+      peerConnection.onicecandidate = e => {
+        if (e.candidate) {
+          push(rRef(db, `calls/${roomId}/${currentUser.uid}/candidates`), e.candidate.toJSON());
+        }
+      };
+
+      onValue(rRef(db, `calls/${roomId}/${currentUser.uid}/candidates`), snap => {
+        const candidates = snap.val();
+        if (candidates) {
+          Object.values(candidates).forEach(candidate => peerConnection.addIceCandidate(new RTCIceCandidate(candidate)));
+        }
+      });
+    } catch (err) { console.error('Voice call failed', err); alert('Voice call setup failed.'); }
+  });
 
   /***** START APP *****/
   go(0);
