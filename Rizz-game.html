@@ -26,9 +26,13 @@
   .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.18)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center} .hidden{display:none !important}
   label{font-size:12px;color:#e5e5e5;margin-bottom:6px;display:block}
-  input[type="text"],select{width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px;touch-action:manipulation}
+  input[type="text"],select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#111;color:#fff;outline:none;font-size:14px;touch-action:manipulation}
+  input[type="range"]{flex:1}
   .rec-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px}
-  .record-btn{width:160px;height:160px;border-radius:999px;border:1px solid rgba(255,255,255,.15);cursor:pointer;background:radial-gradient(closest-side, rgba(225,191,120,.25) 0%, rgba(225,191,120,0) 78%),linear-gradient(180deg,#272727,#161616);color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 6px rgba(225,191,120,.08) inset}
+  .record-btn{width:160px;height:160px;border-radius:999px;border:2px solid rgba(255,255,255,.2);cursor:pointer;background:linear-gradient(145deg, #b50b0b, #7b0505);color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;box-shadow:0 8px 16px rgba(0,0,0,.5), inset 0 2px 4px rgba(255,255,255,.3), inset 0 -2px 4px rgba(0,0,0,.4);transition:transform .1s, box-shadow .1s}
+  .record-btn:hover{transform:scale(1.02);box-shadow:0 10px 20px rgba(0,0,0,.6), inset 0 2px 4px rgba(255,255,255,.3), inset 0 -2px 4px rgba(0,0,0,.4)}
+  .record-btn.pressed{transform:translateY(2px);box-shadow:0 4px 8px rgba(0,0,0,.4), inset 0 1px 2px rgba(255,255,255,.2), inset 0 -1px 2px rgba(0,0,0,.3)}
+  .record-btn.recording{background:radial-gradient(closest-side, rgba(225,191,120,.25) 0%, rgba(225,191,120,0) 78%),linear-gradient(180deg,#272727,#161616);box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 6px rgba(225,191,120,.08) inset;border:1px solid rgba(255,255,255,.15)}
   .rec-indicator{width:10px;height:10px;background:#f34a4a;border-radius:50%;box-shadow:0 0 12px rgba(243,74,74,.9);display:inline-block;margin-right:8px;vertical-align:middle;animation:pulse 1s infinite}
   @keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.65}100%{transform:scale(1);opacity:1}}
   .player{display:flex;align-items:center;gap:12px;margin-top:14px}
@@ -37,18 +41,18 @@
   .bar .fill{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--red),var(--blue),var(--green));border-right:2px solid rgba(255,255,255,.5)}
   .time{font-size:12px;color:var(--muted);width:74px;text-align:right}
   .editor-wrap{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px;margin-top:16px}
-  .timeline{position:relative;height:180px;background:#0f0f0f;border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:hidden}
+  .timeline{position:relative;height:180px;background:#0f0f0f;border:1px solid rgba(255,255,255,.1);border-radius:8px;overflow:visible}
   .timeline canvas{width:100%;height:100%}
-  .segments-container{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;}
-  .segment{position:absolute;height:30px;background:rgba(225,191,120,.2);border:1px solid var(--gold);cursor:move;opacity:0.7;top:calc(var(--layer) * 35px);transition:opacity .2s}
-  .segment:hover{opacity:1}
-  .segment.effect{background:rgba(6,149,78,.2);border-color:var(--green)}
-  .effects{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-  .effect-btn{padding:6px 10px;border-radius:999px;background:#151515;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-size:12px;color:#fff}
+  .segments-container{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible}
+  .segment{position:absolute;height:30px;background:rgba(225,191,120,.2);border:1px solid var(--gold);cursor:move;opacity:0.7;top:calc(var(--layer) * 35px);transition:opacity .2s, transform .2s}
+  .segment:hover{opacity:1; transform:scale(1.02)}
+  .segment.sound{background:rgba(6,149,78,.2);border-color:var(--green)}
+  .segment .volume-control{position:absolute;top:-60px;left:0;width:100px;padding:4px;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:none}
+  .segment:hover .volume-control{display:block}
   .effect-item{padding:6px;border-radius:8px;background:rgba(0,0,0,.5);cursor:grab;border:1px solid rgba(255,255,255,.2);margin:5px;position:relative}
   .effect-item .delete{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;border-radius:50%;width:15px;height:15px;line-height:15px;text-align:center;cursor:pointer;font-size:10px}
   .deck{position:relative;height:420px;border-radius:16px;overflow:hidden;background:#0f0f10;border:1px solid rgba(255,255,255,.08)}
-  .card{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(1200px 500px at 100% -10%, rgba(255,255,255,.06), transparent 70%),linear-gradient(180deg, rgba(255,255,255,.02),rgba(255,255,255,.01))}
+  .card{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(1200px 500px at 100% -10%, rgba(255,255,255,.06), transparent 70%),linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01))}
   .swipe-actions{display:flex;gap:10px}
   .pass,.like{flex:1;padding:12px 14px;border-radius:10px;font-weight:800;border:1px solid rgba(255,255,255,.12);cursor:pointer}
   .pass{background:#151515;color:#ddd}
@@ -63,7 +67,6 @@
   .composer{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.08);background:#101010}
   .composer input[type="text"]{flex:1;background:#0f0f0f;border:1px solid rgba(255,255,255,.12)}
   .small{font-size:12px;color:var(--muted)} .tip{color:var(--muted);font-size:12px;margin-top:6px}
-  .param-row{display:flex;gap:8px;align-items:center;margin-top:8px}
   .photo-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:10px}
   .photo-slot{width:100%;aspect-ratio:1;background:#151515;border:1px solid rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
   .photo-slot img{width:100%;height:100%;object-fit:cover;border-radius:8px}
@@ -271,13 +274,27 @@
   }
   async function startRecording() {
     try {
-      // Show "Preparing…" state immediately
+      // Show pressed state immediately
       recLabel.innerHTML = 'Preparing…';
-      recordBtn.classList.add('recording');
+      recordBtn.classList.add('pressed');
 
       // Optimize for faster stream acquisition
       recMime = supportedMime();
-      recStream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: 44100, channelCount: 1 } });
+      recStream = await navigator.mediaDevices.getUserMedia({ 
+        audio: { 
+          sampleRate: 44100, 
+          channelCount: 1, 
+          echoCancellation: false, 
+          noiseSuppression: false, 
+          autoGainControl: false 
+        }
+      });
+      
+      // Transition to recording state
+      recordBtn.classList.remove('pressed');
+      recordBtn.classList.add('recording');
+      recLabel.innerHTML = '<span class="rec-indicator"></span> Recording…';
+      
       mediaRecorder = new MediaRecorder(recStream, recMime ? { mimeType: recMime } : undefined);
       recChunks = [];
       mediaRecorder.ondataavailable = e => { if (e.data?.size) recChunks.push(e.data); };
@@ -291,10 +308,10 @@
       };
       mediaRecorder.start();
       recording = true;
-      recLabel.innerHTML = '<span class="rec-indicator"></span> Recording…';
     } catch (err) {
+      // Revert to initial red 3D state on error
       recLabel.textContent = 'Start Recording';
-      recordBtn.classList.remove('recording');
+      recordBtn.classList.remove('pressed', 'recording');
       alert('Mic permission needed or recording failed. Ensure HTTPS and try again.');
       console.error('Recording error:', err);
     }
@@ -305,7 +322,7 @@
       recStream?.getTracks().forEach(t => t.stop());
       recording = false;
       recLabel.textContent = 'Start Recording';
-      recordBtn.classList.remove('recording');
+      recordBtn.classList.remove('recording', 'pressed');
     }
   }
   recordBtn.addEventListener('click', () => {
@@ -670,7 +687,8 @@
   saveEditBtn.addEventListener('click', async () => {
     if (!window.__recBlob) { alert('No recording to save. Please record a pickup line first.'); return; }
     const mixedBuffer = await renderMixedBuffer();
-    window.__recBlob = await audioBufferToBlob(mixedBuffer);
+    const blob = await audioBufferToBlob(mixedBuffer);
+    window.__recBlob = blob;
     go(1);
   });
 
@@ -678,7 +696,7 @@
   $('#recordSoundBtn').addEventListener('click', async () => {
     if (!soundRecorder) {
       try {
-        soundStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        soundStream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: 44100, channelCount: 1 } });
         soundRecorder = new MediaRecorder(soundStream);
         soundChunks = [];
         soundRecorder.ondataavailable = e => soundChunks.push(e.data);
@@ -789,13 +807,15 @@
         await uploadBytes(ref, profilePhotos[i].file, { contentType: profilePhotos[i].file.type || 'image/jpeg' });
         const url = await getDownloadURL(ref);
         photoURLs.push(url);
-      } else {
-        photoURLs.push(null);
       }
     }
     await set(rRef(db, `profiles/${currentUser.uid}`), {
       name, age, height, type, photos: photoURLs, ts: serverTimestamp()
     });
+    const lineRef = sRef(storage, `lines/${currentUser.uid}/${Date.now()}.wav`);
+    await uploadBytes(lineRef, window.__recBlob, { contentType: 'audio/wav' });
+    const lineURL = await getDownloadURL(lineRef);
+    await set(rRef(db, `lines/${currentUser.uid}`), { uid: currentUser.uid, lineURL, ts: serverTimestamp() });
     window.__profileSaved = true;
     go(2);
     initDeck();
