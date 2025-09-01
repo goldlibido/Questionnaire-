@@ -293,10 +293,6 @@
   const ageSel = $('#age'), heightSel = $('#height');
   (function buildAge(){ const frag=document.createDocumentFragment(); const ph=document.createElement('option'); ph.value=''; ph.textContent='Choose'; ph.disabled=true; ph.selected=true; frag.appendChild(ph); for(let a=18;a<=99;a++){ const o=document.createElement('option'); o.textContent=a; frag.appendChild(o);} ageSel.appendChild(frag);})();
   (function buildHeight(){ const frag=document.createDocumentFragment(); const u=document.createElement('option'); u.textContent='Under 5 feet'; frag.appendChild(u); for(let f=5;f<=7;f++){ for(let i=0;i<12;i++){ const o=document.createElement('option'); o.textContent=`${f}’${i}”`; frag.appendChild(o);} } const o7=document.createElement('option'); o7.textContent='Over 7 feet'; frag.appendChild(o7); heightSel.appendChild(frag);})();
-  ['#age','#height','#gender','#into','#vocab','#looks','#personality'].forEach(id=>{
-    const el=document.querySelector(id);
-    el.addEventListener('pointerdown',(e)=>{ if(typeof el.showPicker==='function'){ el.showPicker(); e.preventDefault(); } },{passive:false});
-  });
   $('#backToRecorder').addEventListener('click', ()=> go(0));
 
   const photoGrid = $('#photoGrid'); const photoFiles=[null,null,null,null];
